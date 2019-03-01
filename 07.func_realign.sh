@@ -35,11 +35,11 @@ let nTR=nTR-${vdsc}-1
 # 01.1. Apply McFlirt
 echo "Applying McFlirt"
 
-if [[ ! -d ${func}_split ]]; then mkdir ${func}_split; fi
-if [[ ! -d ${func}_merge ]]; then mkdir ${func}_merge; fi
+if [[ ! -d "${func}_split" ]]; then mkdir ${func}_split; fi
+if [[ ! -d "${func}_merge" ]]; then mkdir ${func}_merge; fi
 fslsplit ${func}_pe ${func}_split/vol_ -t
 
-for i in $(seq -f %04g 0 ${nTR})
+for i in $( seq -f %04g 0 ${nTR} )
 do
 	flirt -in ${func}_split/vol_${i} -ref ${mref} -applyxfm \
 	-init ../reg/${func}_mcf.mat/MAT_${i} -out ${func}_merge/vol_${i}
@@ -51,7 +51,7 @@ fslmerge -tr ${func}_mcf ${func}_merge/vol_* ${TR}
 
 rm -r ${func}_merge
 
-if [ "${moio}" -gt 0 ]
+if [[ "${moio}" -gt 0 ]]
 then
 	# 01.3. Compute various metrics
 	fsl_motion_outlier -i ${func}_mcf -o ${func}_mcf_dvars_confounds -s ${func}_dvars.par -p ${func}_dvars --dvars --nomoco --dummy=${vdsc}

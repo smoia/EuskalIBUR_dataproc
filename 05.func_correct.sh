@@ -33,7 +33,7 @@ nTR=$(fslval ${func} dim4)
 
 ## 01. Corrections
 # 01.1. Discard first volumes if there's more than one TR
-if [ [ "${nTR}" -gt "1" ] -a [ "${vdsc}" -gt "0" ] ]
+if [[ "${nTR}" -gt "1" -a "${vdsc}" -gt "0" ]]
 then
 	3dcalc -a ${func}.nii.gz'[${vdsc}..$]' -expr 'a' -prefix ${func}.nii.gz -overwrite
 fi
@@ -41,17 +41,19 @@ fi
 3drefit -deoblique ${func}.nii.gz
 3dresample -orient RPI -inset ${func}.nii.gz -prefix ${func}_RPI.nii.gz -overwrite
 # 01.3. Compute outlier fraction if there's more than one TR
-if [ "${nTR}" -gt "1" ]
+if [[ "${nTR}" -gt "1" ]]
 then
 	fslmaths ${func}_RPI -Tmean ${func}_avg
 	bet ${func}_avg ${func}_brain -R -f 0.5 -g 0 -n -m
 	3dToutcount -mask ${func}_brain_mask.nii.gz -fraction -polort ${dtdord} -legendre ${func}_brain.nii.gz > ${func}_outcount.1D
+	#!#
 	imrm ${func}_avg ${func}_brain ${func}_brain_mask
 fi
 # 01.4. Despike if asked
-if [ "${dspk}" != "0" ]
+if [[ "${dspk}" != "0" ]]
 then
 	3dDespike -prefix ${func}_dsk.nii.gz ${func}_RPI.nii.gz
+	#!#
 fi
 
 ## 02. Slice Interpolation # try quintic or heptic instead of Fourier
@@ -64,10 +66,9 @@ fi
 
 ## 03. PEpolar
 
-if [ [ "${brev}" != "none" ] -a [ "${bfor}" != "none" ] ]
+if [[ "${brev}" != "none" -a "${bfor}" != "none" -o "${pepl}" != "none" ]]
 then
-	#!# Check SBREF FILES
-	if [ "${pepl}" == "none" ]
+	if [[ "${pepl}" == "none" ]]
 	then
 		pepl=$( echo ${func%_*} | sed 's/_rec-[^_]*//' )
 		# 03.1. Computing the warping to midpoint
@@ -80,7 +81,7 @@ then
 	fi
 
 	# 03.2. Applying the warping to the functional volume
-	3dNwarpApply -quintic -nwarp ${func}_pepolar_For_WARP.nii.gz \
+	3dNwarpApply -quintic -nwarp ${pepl}_For_WARP.nii.gz \
 	-source ${func}_RPI.nii.gz \
 	-prefix ${func}_pe.nii.gz
 fi

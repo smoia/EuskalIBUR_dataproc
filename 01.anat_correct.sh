@@ -38,7 +38,7 @@ N4BiasFieldCorrection -d 3 -i ${anat}_trunc.nii.gz -o ${anat}_bfc.nii.gz
 echo "Done"
 
 ## 03. Anat coreg
-if [ "${aref}" != "none" ]
+if [[ "${aref}" != "none" ]]
 then
 	flirt -in ${anat} -ref ${aref} -cost normmi -searchcost normmi -omat ../reg/${anat}2${aref}.mat
 fi

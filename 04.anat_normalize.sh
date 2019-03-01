@@ -25,7 +25,7 @@ cd ${adir}
 
 ## 01. Normalization
 
-if [ ! -e ${std}_mask ]
+if [[ ! -e ${std}_mask ]]
 then
 	fslmaths ${std} -bin ${std}_mask
 fi
@@ -52,6 +52,8 @@ antsRegistration -d 3 -r [${std}.nii.gz,${anat}_brain.nii.gz,1] \
 -z 1 -v 1
 
 ## 02. Registration to downsampled MNI
+
+#!#
 cd ../reg
 WarpImageMultiTransform 3 ../${adir}/${anat}_brain.nii.gz \
 ${anat}2std_resamp_${mmres}mm.nii.gz -R ${std}_resamp_${mmres}mm.nii.gz ${anat}2std1Warp.nii.gz ${anat}2std0GenericAffine.mat

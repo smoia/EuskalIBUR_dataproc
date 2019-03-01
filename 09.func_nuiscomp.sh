@@ -47,8 +47,9 @@ fi
 
 ## 04. Nuisance computation
 # 04.2. Create matrix
-
+# add censoring, save matrix w and w/o censoring
 3dDeconvolve -input ${func}_pe.nii.gz \
+	# -censor censor_${subj}_combined_2.1D -cenmode ZERO \
 -polort 5 -float \
 -num_stimts  2 \
 -stim_file 1 ${func}_avg_tissue.1D'[0]' -stim_base 1 -stim_label 1 CSF \
@@ -56,10 +57,9 @@ fi
 -ortvec ${func}_mcf_demean.par motdemean \
 -ortvec ${func}_mcf_deriv1.par motderiv1 \
 -ortvec ${func}_meica/rej_ort.par meica \
--fout -tout -x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
+-x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
 -x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
--x1D_stop \
--bucket ${func}_allparams.nii.gz
+-x1D_stop
 
 ## 06. Nuisance
 
@@ -69,7 +69,6 @@ then
 	3dTproject -polort 0 -input ${func}_pe.nii.gz  -mask func_mask.nii.gz \
 	-ort ${func}_nuisreg_uncensored_mat.1D -prefix ${func}_prj.nii.gz \
 	-overwrite
-	# -censor censor_${subj}_combined_2.1D -cenmode ZERO \
 	fslmaths ${func}_prj -add ${func}_avg ${func}_den.nii.gz
 fi
 

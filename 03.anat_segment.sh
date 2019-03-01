@@ -34,19 +34,20 @@ Atropos -d 3 -a ${anat}_brain.nii.gz \
 3dcalc -a ${anat}_seg.nii.gz -expr 'equals(a,3)' -prefix ${anat}_WM.nii.gz -overwrite
 3dcalc -a ${anat}_seg.nii.gz -expr 'equals(a,2)' -prefix ${anat}_GM.nii.gz -overwrite
 
-dicsf=-2
-diwm=-3
+dicsf=-3
+diwm=-4
 
 3dmask_tool -input ${anat}_CSF.nii.gz -prefix ${anat}_CSF_eroded.nii.gz -dilate_input ${dicsf} -overwrite
 3dmask_tool -input ${anat}_WM.nii.gz -prefix ${anat}_WM_eroded.nii.gz -fill_holes -dilate_input ${diwm} -overwrite
 3dmask_tool -input ${anat}_GM.nii.gz -prefix ${anat}_GM_dilated.nii.gz -dilate_input 2 -overwrite
-
-until [ [ "$(fslstats ${anat}_CSF_eroded -p 100)" != "0" ] || [ "${dicsf}" == "0" ] ]
+### Check number voxels > compcorr components
+### Or center of mass
+until [[ "$(fslstats ${anat}_CSF_eroded -p 100)" != "0" -o "${dicsf}" == "0" ]]
 do
 	let dicsf+=1
 	3dmask_tool -input ${anat}_CSF.nii.gz -prefix ${anat}_CSF_eroded.nii.gz -dilate_input ${dicsf} -overwrite
 done 
-until [ [ "$(fslstats ${anat}_WM_eroded -p 100)" != "0" ] || [ "${diwm}" == "0" ] ]
+until [[ "$(fslstats ${anat}_WM_eroded -p 100)" != "0" -o "${diwm}" == "0" ]]
 do
 	let diwm+=1
 	3dmask_tool -input ${anat}_WM.nii.gz -prefix ${anat}_WM_eroded.nii.gz -fill_holes -dilate_input ${diwm} -overwrite

@@ -7,12 +7,10 @@
 #########
 
 ## Variables
-# functional
+# file
 func=$1
 # folders
 fdir=$2
-# FWHM
-fwhm=$3
 
 ######################################
 ######### Script starts here #########
@@ -22,16 +20,9 @@ cwd=$(pwd)
 
 cd ${fdir}
 
-## 01. Smooth
-if [ -e "${func}_den.nii.gz" ]
-then
-	in=${func}_den.nii.gz
-else
-	in=${func}_mcf.nii.gz
-fi
+echo "Computing SPC of ${func} ( [X-avg(X)]/avg(X) )"
 
-echo "Smmothing ${func}"
-3dBlurInMask -input ${in}.nii.gz -prefix ${func}_sm.nii.gz -mask ${func}_brain_mask.nii.gz \
--preserve -FWHM ${fwhm} -overwrite
+fslmaths ${func} -Tmean ${func}_mean
+fslmaths ${func} -sub ${func}_mean -div ${func}_mean ${func}_SPC
 
 cd ${cwd}

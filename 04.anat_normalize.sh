@@ -25,27 +25,29 @@ cd ${adir}
 
 ## 01. Normalization
 
-if [[ ! -e ${std}_mask ]]
+if [[ ! -e ../reg/${std}_mask.nii.gz ]]
 then
-	fslmaths ${std} -bin ${std}_mask
+	echo "Creating mask for ${std}"
+	fslmaths ../reg/${std} -bin ../reg/${std}_mask
 fi
 
-antsRegistration -d 3 -r [${std}.nii.gz,${anat}_brain.nii.gz,1] \
+echo "Normalizing ${anat} to ${std}"
+antsRegistration -d 3 -r [../reg/${std}.nii.gz,${anat}_brain.nii.gz,1] \
 -o [../reg/${anat}2std,../reg/${anat}2std.nii.gz,../reg/std2${anat}.nii.gz] \
--x [${std}_mask.nii.gz, ${anat}_brain_mask.nii.gz] \
+-x [../reg/${std}_mask.nii.gz, ${anat}_brain_mask.nii.gz] \
 -n Linear -u 0 -w [0.005,0.995] \
 -t Rigid[0.1] \
--m MI[${std}.nii.gz,${anat}_brain.nii.gz,1,48,Regular,0.1] \
+-m MI[../reg/${std}.nii.gz,${anat}_brain.nii.gz,1,48,Regular,0.1] \
 -c [1000x500x250x100,1e-6,10] \
 -f 8x4x2x1 \
 -s 3x2x1x0vox \
 -t Affine[0.1] \
--m MI[${std}.nii.gz,${anat}_brain.nii.gz,1,48,Regular,0.1] \
+-m MI[../reg/${std}.nii.gz,${anat}_brain.nii.gz,1,48,Regular,0.1] \
 -c [1000x500x250x100,1e-6,10] \
 -f 8x4x2x1 \
 -s 3x2x1x0vox \
 -t SyN[0.1,3,0] \
--m CC[${std}.nii.gz,${anat}_brain.nii.gz,1,5] \
+-m CC[../reg/${std}.nii.gz,${anat}_brain.nii.gz,1,5] \
 -c [100x70x50x20,1e-6,10] \
 -f 8x4x2x1 \
 -s 3x2x1x0vox \
@@ -55,8 +57,16 @@ antsRegistration -d 3 -r [${std}.nii.gz,${anat}_brain.nii.gz,1] \
 
 #!#
 cd ../reg
-WarpImageMultiTransform 3 ../${adir}/${anat}_brain.nii.gz \
-${anat}2std_resamp_${mmres}mm.nii.gz -R ${std}_resamp_${mmres}mm.nii.gz ${anat}2std1Warp.nii.gz ${anat}2std0GenericAffine.mat
+
+if [ ! -e ${std}_resamp_${mmres}mm.nii.gz ]
+then
+	echo "Resampling ${std} at ${mmres}mm"
+	ResampleImageBySpacing 3 ${std}.nii.gz ${std}_resamp_${mmres}mm.nii.gz ${mmres} ${mmres} ${mmres} 0
+fi
+
+echo "Registering ${anat} to resampled standard"
+WarpImageMultiTransform 3 ${adir}/${anat}_brain.nii.gz \
+${adir}/${anat}2std_resamp_${mmres}mm.nii.gz -R ${std}_resamp_${mmres}mm.nii.gz ${anat}2std1Warp.nii.gz ${anat}2std0GenericAffine.mat
 
 
 cd ${cwd}

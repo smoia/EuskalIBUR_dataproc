@@ -26,6 +26,7 @@ cwd=$(pwd)
 
 cd ${fdir}
 
+echo "Normalising ${func}"
 WarpImageMultiTransform 3 ${func}_sm.nii.gz ${func}_std.nii.gz \
 -R ../reg/${std}_resamp_${mmres}mm.nii.gz \
 ../reg/${anat}2std1Warp.nii.gz \

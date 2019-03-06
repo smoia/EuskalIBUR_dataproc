@@ -6,6 +6,16 @@
 # Date:    06.02.2019
 #########
 
+####
+# TODO:
+# - better Input Output with % and #
+# - delete intermediate steps
+# - add a "nobet flag"
+# - improve flags
+# - improve MEICA namings
+# - Censors!
+
+
 # sub=$1
 # ses=$2
 sub=001
@@ -14,7 +24,7 @@ ses=01
 flpr=sub-${sub}_ses-${ses}
 
 # wdr=$3
-wdr=/home/nemo/Nextcloud/PJMASKTEST
+wdr=/home/nemo/Scrivania/PJMASKTEST
 
 anat1=${flpr}_acq-uni_T1w 
 anat2=${flpr}_T2w
@@ -22,14 +32,19 @@ anat2=${flpr}_T2w
 adir=${wdr}/sub-${sub}/ses-${ses}/anat_preproc
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 fmap=${wdr}/sub-${sub}/ses-${ses}/fmap_preproc
+stdp=${wdr}/TEMPLATES_ATLAS
 
 vdsc=10
-std=MNI152_2009_template
+std=MNI152_T1_1mm_
 mmres=2.5
 fwhm=6
 
-TEs='[10.6,28.69,46.78,64.87,82.96]'
+TEs=10.6,28.69,46.78,64.87,82.96
 nTE=5
+
+# slice order file (full path to)
+siot=none
+# siot=${wdr}/sliceorder.txt
 
 dspk=0
 jstr=0
@@ -60,6 +75,7 @@ ln -s func/* func_preproc/.
 imcp anat/${anat1} anat_preproc/.
 imcp anat/${anat2} anat_preproc/.
 imcp fmap/* fmap_preproc/.
+imcp ${stdp}/${std} reg/.
 
 cd ${cwd}
 
@@ -111,11 +127,11 @@ do
 		echo "************************************"
 
 		func=${flpr}_dir-${d}_task-${f}_epi
-		./05.func_correct.sh ${func} ${fmap} 0 0 none none none
+		./05.func_correct.sh ${func} ${fmap} 0 0 none none none ${siot}
 	done
 
-	bfor=${fmap}/${flpr}_dir-AP_task-${f}_epi
-	brev=${fmap}/${flpr}_dir-PA_task-${f}_epi
+	bfor=${fmap}/${flpr}_dir-PA_task-${f}_epi
+	brev=${fmap}/${flpr}_dir-AP_task-${f}_epi
 
 	for e in $( seq 1 ${nTE} )
 	do
@@ -126,7 +142,10 @@ do
 		echo "************************************"
 
 		sbrf=${flpr}_task-breathhold_echo-${e}_sbref
-		./05.func_correct.sh ${sbrf} ${fdir} 0 0 none ${brev} ${bfor}
+		if [[ ! -e ${sbrf}_cr.nii.gz ]]
+		then
+			./05.func_correct.sh ${sbrf} ${fdir} 0 0 none ${brev} ${bfor} ${siot}
+		fi
 
 		echo "************************************"
 		echo "*** Func correct ${f} BOLD echo ${e}"
@@ -135,7 +154,7 @@ do
 
 		bold=${flpr}_task-${f}_echo-${e}_bold
 		pepl=${flpr}_task-${f}_echo-${e}_pepolar
-		./05.func_correct.sh ${bold} ${fdir} ${vdsc} 0 ${pepl} ${brev} ${bfor}
+		./05.func_correct.sh ${bold} ${fdir} ${vdsc} 0 ${pepl} ${brev} ${bfor} ${siot}
 	done
  	# Maybe echo 3? BUT echo 1 for anat realign
 
@@ -144,7 +163,7 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	./06.func_spacecomp.sh ${flpr}_task-${f}_echo-1_bold ${fdir} ${vdsc} ${anat2} ${flpr}_task-breathhold_echo-1_sbref 0
+	./06.func_spacecomp.sh ${flpr}_task-${f}_echo-1_bold ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_echo-1_sbref_cr 0
 
 	for e in $( seq 1 ${nTE} )
 	do
@@ -153,9 +172,10 @@ do
 		echo "************************************"
 		echo "************************************"
 
-		sbrf=${flpr}_task-breathhold_echo-${e}_sbref
+		sbrf=${flpr}_task-breathhold_echo-${e}_sbref_cr
+		mask=${flpr}_task-breathhold_echo-1_sbref_cr_brain_mask
 		bold=${flpr}_task-${f}_echo-${e}_bold
-		./07.func_realign.sh ${bold} ${fdir} ${vdsc} ${sbrf} ${moio}
+		./07.func_realign.sh ${bold} ${flpr}_task-${f}_echo-1_bold ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
 	done
 
 	echo "************************************"
@@ -163,7 +183,7 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	./08.func_meica.sh ${flpr}_task-${f}_echo-1_bold ${fdir} ${TEs}
+	./08.func_meica.sh ${flpr}_task-${f}_echo-1_bold_bet ${fdir} ${TEs}
 
 	sbrf=${flpr}_task-breathhold_echo-1_sbref
 	
@@ -188,12 +208,20 @@ do
 		echo "************************************"
 
 		./10.func_smooth.sh ${bold} ${fdir} ${fwhm}
+		
+		echo "************************************"
+		echo "*** Func SPC ${f} BOLD echo ${e}"
+		echo "************************************"
+		echo "************************************"
 
-		# SPC
+		./11.func_spc.sh ${bold}_sm ${fdir}
 
-		# ./11.func_normalize.sh ${bold} ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+		immv ${fdir}/${bold}_sm_SPC ${fdir}/00.${bold}_native_preprocessed
 
-		# SPC
+		# ./12.func_normalize.sh ${bold} ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+
+		# ./11.func_spc.sh ${bold}_norm ${fdir}
+		# immv ${fdir}/${bold}_norm_SPC ${fdir}/00.${bold}_std_preprocessed
 
 	done
 

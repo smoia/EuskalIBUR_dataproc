@@ -35,41 +35,50 @@ let nTR=nTR-${vdsc}-1
 ## 01. Motion Computation
 
 # 01.1. Mcflirt
-echo "McFlirting"
-
 if [[ "${mref}" == "none" ]]
 then
+	echo "Creating a reference for ${func}"
 	mref=${func}_avgref
-	fslmaths ${func}_pe -Tmean ${mref}
+	fslmaths ${func}_cr -Tmean ${mref}
 fi
 
-mcflirt -in ${func}_pe -r ${mref} -out ${func}_mcf -stats -mats -plots
+echo "McFlirting ${func}"
+if [[ -d ${func}_mcf.mat ]]; then rm -r ${func}_mcf.mat; fi
+mcflirt -in ${func}_cr -r ${mref} -out ${func}_mcf -stats -mats -plots
 
 # 01.2. Demean motion parameters
-1d_tool.py -infile ${func}_mcf.par -demean -write ${func}_mcf_demean.par
-#!#
+echo "Demean and derivate ${func} motion parameters"
+1d_tool.py -infile ${func}_mcf.par -demean -write ${func}_mcf_demean.par -overwrite
+1d_tool.py -infile ${func}_mcf_demean.par -derivative -write ${func}_mcf_deriv1.par -overwrite
 
 
 if [[ ! -e "${mref}_brain_mask" ]]
 then
+	echo "BETting reference ${mref}"
 	bet ${mref} ${mref}_brain -R -f 0.5 -g 0 -n -m
 fi
 
 # 01.3. Compute various metrics
-fsl_motion_outlier -i ${func}_mcf -o ${func}_mcf_dvars_confounds -s ${func}_dvars.par -p ${func}_dvars \
+echo "Computing DVARS and FD for ${func}"
+fsl_motion_outliers -i ${func}_mcf -o ${func}_mcf_dvars_confounds -s ${func}_dvars.par -p ${func}_dvars \
 --dvars --nomoco --dummy=${vdsc} -m ${mref}_brain_mask
 # Momentarily
 #!# 0.3
-fsl_motion_outlier -i ${func}_pe -o ${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd \
+fsl_motion_outliers -i ${func}_cr -o ${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd \
 --fd --dummy=${vdsc} -m ${mref}_brain_mask
+
+# 01.4. Apply mask
+echo "BETting ${func}"
+fslmaths ${func}_mcf -mas ${mref}_brain_mask ${func}_bet
 
 ## 02. Anat Coreg
 
 if [[ "${anat}" != "none" ]]
 then
-	flirt -in ${anat} -ref ${mref}_brain_mask -out ${anat}2${mref} -omat ${anat}2${mref}_fsl.mat \
+	echo "Coregistering ${func} to ${anat}"
+	flirt -in ${anat} -ref ${mref}_brain -out ${anat}2${mref} -omat ${anat}2${mref}_fsl.mat \
 	-searchry -90 90 -searchrx -90 90 -searchrz -90 90
-	echo "Affining"
+	echo "Affining for ANTs"
 	c3d_affine_tool -ref ${mref}_brain_mask -src ${anat} \
 	${anat}2${mref}_fsl.mat -fsl2ras -oitk ${anat}2${mref}0GenericAffine.mat
 	mv ${anat}2${mref}* ../reg/.
@@ -78,18 +87,21 @@ fi
 ## 03. Split and affine to ANTs if required
 if [[ "${jstr}" -gt 0 ]]
 then
+	echo "Splitting ${func}"
 	if [[ ! -d "${func}_split" ]]; then mkdir ${func}_split; fi
 	if [[ ! -d "../reg/${func}_mcf_ants_mat" ]]; then mkdir ../reg/${func}_mcf_ants_mat; fi
-	fslsplit ${func}_pe ${func}_split/vol_ -t
+	fslsplit ${func}_cr ${func}_split/vol_ -t
 
 	for i in $( seq -f %04g 0 ${nTR} )
 	do
+		echo "Affining volume ${i} of ${nTR} in ${func}"
 		c3d_affine_tool -ref ${mref}_brain_mask -src ${func}_split/vol_${i}.nii.gz \
 		${func}_mcf.mat/MAT_${i} -fsl2ras -oitk ../reg/mcf_ants_mat/v${i}2${func}.mat
 	done
 	rm -r ${func}_split
 fi
 
+if [[ -d ../reg/${func}_mcf.mat ]]; then rm -r ../reg/${func}_mcf.mat; fi
 mv ${func}_mcf.mat ../reg/.
 
 cd ${cwd}

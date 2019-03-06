@@ -27,24 +27,28 @@ cd ${adir}
 
 if [[ "${mask}" == "none" ]]
 then
+	echo "Skull Stripping ${anat}"
 	3dSkullStrip -input ${anat}_bfc.nii.gz \
 	-prefix ${anat}_brain.nii.gz \
 	-orig_vol -overwrite
 	fslmaths ${anat}_brain -bin ${anat}_brain_mask
-elif [[ -e "${mask}.nii.gz" ]]; then
-	fslmaths ${anat}_bfc -mas ${mask} ${anat}_brain
-elif [[ -e "${mask}_brain_mask.nii.gz" ]]; then
-	fslmaths ${anat}_bfc -mas ${mask}_brain_mask ${anat}_brain
+	mask=${anat}_brain_mask
 else
-	echo "**** WARNING"
-	echo "**** A problem arose with the specified mask"
-	echo "**** Check this step"
+	if [[ -e "${mask}_brain_mask.nii.gz" ]]
+	then
+		mask=${mask}_brain_mask
+	fi
+	echo "Masking ${anat}"
+	fslmaths ${anat}_bfc -mas ${mask} ${anat}_brain
+	fslmaths ${anat}_brain -bin ${anat}_brain_mask
 fi
 
 if [[ "${aref}" != "none" ]]
 then
+	echo "Flirting ${mask} into ${aref}"
 	flirt -in ${mask} -ref ${aref} -cost normmi -searchcost normmi \
-	-init ../reg/${anat}2${aref}.mat -o ${aref}_brain_mask
+	-init ../reg/${anat}2${aref}.mat -o ${aref}_brain_mask \
+	-applyxfm -interp nearestneighbour
 fi
 	
 

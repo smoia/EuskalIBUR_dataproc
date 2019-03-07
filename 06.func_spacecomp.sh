@@ -76,10 +76,10 @@ fslmaths ${func}_mcf -mas ${mref}_brain_mask ${func}_bet
 if [[ "${anat}" != "none" ]]
 then
 	echo "Coregistering ${func} to ${anat}"
-	flirt -in ${anat} -ref ${mref}_brain -out ${anat}2${mref} -omat ${anat}2${mref}_fsl.mat \
+	flirt -in ${anat}_brain -ref ${mref}_brain -out ${anat}2${mref} -omat ${anat}2${mref}_fsl.mat \
 	-searchry -90 90 -searchrx -90 90 -searchrz -90 90
 	echo "Affining for ANTs"
-	c3d_affine_tool -ref ${mref}_brain -src ${anat} \
+	c3d_affine_tool -ref ${mref}_brain -src ${anat}_brain \
 	${anat}2${mref}_fsl.mat -fsl2ras -oitk ${anat}2${mref}0GenericAffine.mat
 	mv ${anat}2${mref}* ../reg/.
 fi

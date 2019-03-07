@@ -14,6 +14,9 @@
 # - improve flags
 # - improve MEICA namings
 # - Censors!
+# - OC!
+# - visual output
+# - check vdsc
 
 
 # sub=$1
@@ -163,7 +166,11 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	./06.func_spacecomp.sh ${flpr}_task-${f}_echo-1_bold ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_echo-1_sbref_cr 0
+	fmat=${flpr}_task-${f}_echo-1_bold
+
+	./06.func_spacecomp.sh ${fmat} ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_echo-1_sbref_cr 0
+	
+	mask=${flpr}_task-breathhold_echo-1_sbref_cr_brain_mask
 
 	for e in $( seq 1 ${nTE} )
 	do
@@ -173,9 +180,8 @@ do
 		echo "************************************"
 
 		sbrf=${flpr}_task-breathhold_echo-${e}_sbref_cr
-		mask=${flpr}_task-breathhold_echo-1_sbref_cr_brain_mask
 		bold=${flpr}_task-${f}_echo-${e}_bold
-		./07.func_realign.sh ${bold} ${flpr}_task-${f}_echo-1_bold ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
+		./07.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
 	done
 
 	echo "************************************"
@@ -183,9 +189,9 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	./08.func_meica.sh ${flpr}_task-${f}_echo-1_bold_bet ${fdir} ${TEs}
+	./08.func_meica.sh ${fmat}_bet ${fdir} ${TEs}
 
-	sbrf=${flpr}_task-breathhold_echo-1_sbref
+	sbrf=${flpr}_task-breathhold_echo-1_sbref_cr
 	
 	for e in $( seq 1 ${nTE} )
 	do
@@ -195,11 +201,11 @@ do
 		echo "************************************"
 
 		bold=${flpr}_task-${f}_echo-${e}_bold
-		if [[ "${f}" == *task-rest* ]]
+		if [[ "${f}" == *rest* ]]
 		then
-			./09.func_nuiscomp.sh ${bold} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 1
+			./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 1
 		else
-			./09.func_nuiscomp.sh ${bold} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
+			./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
 		fi
 		
 		echo "************************************"
@@ -207,7 +213,7 @@ do
 		echo "************************************"
 		echo "************************************"
 
-		./10.func_smooth.sh ${bold} ${fdir} ${fwhm}
+		./10.func_smooth.sh ${bold} ${fdir} ${fwhm} ${mask}
 		
 		echo "************************************"
 		echo "*** Func SPC ${f} BOLD echo ${e}"

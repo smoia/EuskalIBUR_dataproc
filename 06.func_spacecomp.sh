@@ -61,11 +61,11 @@ fi
 # 01.3. Compute various metrics
 echo "Computing DVARS and FD for ${func}"
 fsl_motion_outliers -i ${func}_mcf -o ${func}_mcf_dvars_confounds -s ${func}_dvars.par -p ${func}_dvars \
---dvars --nomoco --dummy=${vdsc} -m ${mref}_brain_mask
+--dvars --nomoco -m ${mref}_brain_mask
 # Momentarily
 #!# 0.3
 fsl_motion_outliers -i ${func}_cr -o ${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd \
---fd --dummy=${vdsc} -m ${mref}_brain_mask
+--fd -m ${mref}_brain_mask
 
 # 01.4. Apply mask
 echo "BETting ${func}"
@@ -79,7 +79,7 @@ then
 	flirt -in ${anat} -ref ${mref}_brain -out ${anat}2${mref} -omat ${anat}2${mref}_fsl.mat \
 	-searchry -90 90 -searchrx -90 90 -searchrz -90 90
 	echo "Affining for ANTs"
-	c3d_affine_tool -ref ${mref}_brain_mask -src ${anat} \
+	c3d_affine_tool -ref ${mref}_brain -src ${anat} \
 	${anat}2${mref}_fsl.mat -fsl2ras -oitk ${anat}2${mref}0GenericAffine.mat
 	mv ${anat}2${mref}* ../reg/.
 fi

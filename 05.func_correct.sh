@@ -39,7 +39,7 @@ nTR=$(fslval ${func} dim4)
 funcsource=${func}
 if [[ "${nTR}" -gt "1" && "${vdsc}" -gt "0" ]]
 then
-	echo "Discarding first ${vdsc} volumes"
+	echo "Discarding first ${vdsc+1} volumes"
 	let vdsc--
 	fslroi ${func} ${func}_dsd.nii.gz ${vdsc} -1
 	funcsource=${func}_dsd
@@ -56,7 +56,7 @@ then
 	echo "Computing outlier fraction in ${func}"
 	fslmaths ${func}_RPI -Tmean ${func}_avg
 	bet ${func}_avg ${func}_brain -R -f 0.5 -g 0 -n -m
-	3dToutcount -mask ${func}_brain_mask.nii.gz -fraction -polort 5 -legendre ${func}_brain.nii.gz > ${func}_outcount.1D
+	3dToutcount -mask ${func}_brain_mask.nii.gz -fraction -polort 5 -legendre ${func}_RPI.nii.gz > ${func}_outcount.1D
 	imrm ${func}_avg ${func}_brain ${func}_brain_mask
 fi
 # 01.4. Despike if asked

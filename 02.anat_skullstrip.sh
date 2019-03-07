@@ -47,7 +47,7 @@ if [[ "${aref}" != "none" ]]
 then
 	echo "Flirting ${mask} into ${aref}"
 	flirt -in ${mask} -ref ${aref} -cost normmi -searchcost normmi \
-	-init ../reg/${anat}2${aref}.mat -o ${aref}_brain_mask \
+	-init ../reg/${anat}2${aref}_fsl.mat -o ${aref}_brain_mask \
 	-applyxfm -interp nearestneighbour
 fi
 	

@@ -13,6 +13,8 @@ func=$1
 fdir=$2
 # FWHM
 fwhm=$3
+# mask
+mask=$4
 
 ######################################
 ######### Script starts here #########
@@ -27,11 +29,11 @@ if [ -e "${func}_den.nii.gz" ]
 then
 	in=${func}_den.nii.gz
 else
-	in=${func}_mcf.nii.gz
+	in=${func}_bet.nii.gz
 fi
 
-echo "Smmothing ${func}"
-3dBlurInMask -input ${in}.nii.gz -prefix ${func}_sm.nii.gz -mask ${func}_brain_mask.nii.gz \
+echo "Smoothing ${func}"
+3dBlurInMask -input ${in} -prefix ${func}_sm.nii.gz -mask ${mask}.nii.gz \
 -preserve -FWHM ${fwhm} -overwrite
 
 cd ${cwd}

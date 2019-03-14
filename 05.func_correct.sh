@@ -39,8 +39,9 @@ nTR=$(fslval ${func} dim4)
 funcsource=${func}
 if [[ "${nTR}" -gt "1" && "${vdsc}" -gt "0" ]]
 then
-	echo "Discarding first ${vdsc+1} volumes"
-	let vdsc--
+	echo "Discarding first ${vdsc} volumes"
+	# The next line was added due to fslroi starting from 0, however it does not.
+	# let vdsc--
 	fslroi ${func} ${func}_dsd.nii.gz ${vdsc} -1
 	funcsource=${func}_dsd
 fi

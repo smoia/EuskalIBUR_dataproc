@@ -68,17 +68,17 @@ echo "*** Preparing folders"
 echo "************************************"
 echo "************************************"
 
-# for fld in anat_preproc func_preproc fmap_preproc reg
-# do
-# 	if [[ -d "${fld}" ]]; then rm -r ${fld}; fi
-# 	mkdir ${fld}
-# done
+for fld in anat_preproc func_preproc fmap_preproc reg
+do
+	if [[ -d "${fld}" ]]; then rm -r ${fld}; fi
+	mkdir ${fld}
+done
 
 imcp func/* func_preproc/.
-# imcp anat/${anat1} anat_preproc/.
-# imcp anat/${anat2} anat_preproc/.
-# imcp fmap/* fmap_preproc/.
-# imcp ${stdp}/${std} reg/.
+imcp anat/${anat1} anat_preproc/.
+imcp anat/${anat2} anat_preproc/.
+imcp fmap/* fmap_preproc/.
+imcp ${stdp}/${std} reg/.
 
 cd ${cwd}
 
@@ -87,39 +87,39 @@ echo "*** Anat correction ${anat1}"
 echo "************************************"
 echo "************************************"
 
-# ./01.anat_correct.sh ${anat1} ${adir}
+./01.anat_correct.sh ${anat1} ${adir}
 
 echo "************************************"
 echo "*** Anat correction ${anat2}"
 echo "************************************"
 echo "************************************"
 
-# ./01.anat_correct.sh ${anat2} ${adir} ${anat1}
+./01.anat_correct.sh ${anat2} ${adir} ${anat1}
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat2}"
 echo "************************************"
 echo "************************************"
 
-# ./02.anat_skullstrip.sh ${anat2} ${adir} none ${anat1}
+./02.anat_skullstrip.sh ${anat2} ${adir} none ${anat1}
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat1}"
 echo "************************************"
 echo "************************************"
 
-# ./02.anat_skullstrip.sh ${anat1} ${adir} ${anat1}_brain_mask
+./02.anat_skullstrip.sh ${anat1} ${adir} ${anat1}_brain_mask
 
 echo "************************************"
 echo "*** Anat segment"
 echo "************************************"
 echo "************************************"
 
-# ./03.anat_segment.sh ${anat1} ${adir}
+./03.anat_segment.sh ${anat1} ${adir}
 
 # ./04.anat_normalize.sh ${anat1} ${adir} ${std} ${mmres}
 
-for f in breathhold rest_run-01
+for f in breathhold rest_run-01 #breathhold #rest_run-01
 do 
 	for d in AP PA
 	do
@@ -144,7 +144,7 @@ do
 		echo "************************************"
 		echo "************************************"
 
-		sbrf=${flpr}_task-breathhold_echo-${e}_sbref
+		sbrf=${flpr}_task-${f}_echo-${e}_sbref
 		if [[ ! -e ${sbrf}_cr.nii.gz ]]
 		then
 			./05.func_correct.sh ${sbrf} ${fdir} 0 0 none ${brev} ${bfor} ${siot}

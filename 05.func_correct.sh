@@ -87,22 +87,19 @@ then
 	if [[ "${pepl}" == "none" ]]
 	then
 		echo "Computing PEPOLAR map for ${func}"
-		pepl=$( echo ${func%_*} | sed 's/_rec-[^_]*//' )_pepolar
-		# 03.1. Computing the warping to midpoint
-		3dQwarp -plusminus -pmNAMES Rev For \
-		-pblur 0.05 0.05 -blur -1 -1 \
-		-noweight -minpatch 9 -overwrite \
-		-source ${brev}.nii.gz \
-		-base ${bfor}.nii.gz \
-		-prefix ${pepl}.nii.gz
+
+		mkdir ${func}_topup
+		fslmerge -t ${func}_topup/mgdmap ${brev} ${bfor}
+
+		cd ${func}_topup
+		topup --imain=mgdmap --datain=${cwd}/acqparam.txt --out=outtp
+		cd ..
 	fi
 
 	# 03.2. Applying the warping to the functional volume
 	echo "Applying PEPOLAR map on ${func}"
-	3dNwarpApply -quintic -nwarp ${pepl}_For_WARP.nii.gz \
-	-source ${funcsource}.nii.gz -overwrite \
-	-prefix ${func}_pe.nii.gz
-	funcsource=${func}_pe
+	applytopup --imain=${funcsource} --datain=${cwd}/acqparam.txt --inindex=1 --topup=outtp --out=${func}_tpp --verbose --method=jac
+	funcsource=${func}_tpp
 fi
 
 ## 04. Change name to script output

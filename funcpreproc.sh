@@ -156,7 +156,7 @@ do
 		echo "************************************"
 
 		bold=${flpr}_task-${f}_echo-${e}_bold
-		pepl=${flpr}_task-${f}_echo-${e}_pepolar
+		pepl=${flpr}_task-${f}_echo-${e}_sbref_topup
 		./05.func_correct.sh ${bold} ${fdir} ${vdsc} 0 ${pepl} ${brev} ${bfor} ${siot}
 	done
  	# Maybe echo 3? BUT echo 1 for anat realign

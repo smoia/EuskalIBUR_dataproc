@@ -98,7 +98,7 @@ then
 
 	# 03.2. Applying the warping to the functional volume
 	echo "Applying PEPOLAR map on ${func}"
-	applytopup --imain=${funcsource} --datain=${cwd}/acqparam.txt --inindex=1 --topup=outtp --out=${func}_tpp --verbose --method=jac
+	applytopup --imain=${funcsource} --datain=${cwd}/acqparam.txt --inindex=1 --topup=${pepl}/outtp --out=${func}_tpp --verbose --method=jac
 	funcsource=${func}_tpp
 fi
 

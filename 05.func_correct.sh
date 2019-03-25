@@ -87,11 +87,12 @@ then
 	if [[ "${pepl}" == "none" ]]
 	then
 		echo "Computing PEPOLAR map for ${func}"
+		pepl=${func}_topup
 
-		mkdir ${func}_topup
-		fslmerge -t ${func}_topup/mgdmap ${brev} ${bfor}
+		mkdir ${pepl}
+		fslmerge -t ${pepl}/mgdmap ${brev} ${bfor}
 
-		cd ${func}_topup
+		cd ${pepl}
 		topup --imain=mgdmap --datain=${cwd}/acqparam.txt --out=outtp
 		cd ..
 	fi

@@ -18,6 +18,9 @@ fdir=$6
 adir=$7
 # action
 dprj=${8:-1}
+# thresholds
+mthr=${9:-0.3}
+othr=${10:-0.05}
 
 ######################################
 ######### Script starts here #########
@@ -49,8 +52,11 @@ then
 fi
 
 ## 04. Nuisance computation
+# 04.1. Preparing censoring of fd > b & c > d in AFNI format
+echo "Preparing censoring"
+1deval -a ${fmat}_fd.par -b ${mthr} -c ${func}_outcount.1D -d ${othr} -expr 'isnegative(a-b)*isnegative(c-d)' > ${func}_censors.1D
+
 # 04.2. Create matrix
-# add censoring, save matrix w and w/o censoring
 echo "Preparing nuisance matrix"
 3dDeconvolve -input ${func}_bet.nii.gz \
 -polort 5 -float \
@@ -60,10 +66,12 @@ echo "Preparing nuisance matrix"
 -ortvec ${fmat}_mcf_demean.par motdemean \
 -ortvec ${fmat}_mcf_deriv1.par motderiv1 \
 -ortvec ${fmat}_bet_rej_ort.1D meica \
+-censor ${func}_censors.1D \
 -x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
 -x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
 -x1D_stop
-	# -censor censor_${subj}_combined_2.1D -cenmode ZERO \
+# -cenmode ZERO \
+
 
 ## 06. Nuisance
 

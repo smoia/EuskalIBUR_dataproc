@@ -54,7 +54,7 @@ fi
 ## 04. Nuisance computation
 # 04.1. Preparing censoring of fd > b & c > d in AFNI format
 echo "Preparing censoring"
-1deval -a ${fmat}_fd.par -b ${mthr} -c ${func}_outcount.1D -d ${othr} -expr 'isnegative(a-b)*isnegative(c-d)' > ${func}_censors.1D
+1deval -a ${fmat}_fd.par -b=${mthr} -c ${func}_outcount.1D -d=${othr} -expr 'isnegative(a-b)*isnegative(c-d)' > ${func}_censors.1D
 
 # 04.2. Create matrix
 echo "Preparing nuisance matrix"

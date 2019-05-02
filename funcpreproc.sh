@@ -21,13 +21,13 @@
 
 # sub=$1
 # ses=$2
-sub=001
-ses=01
+sub=007
+ses=04
 
 flpr=sub-${sub}_ses-${ses}
 
 # wdr=$3
-wdr=/home/nemo/Scrivania/PJMASKTEST
+wdr=/scratch/smoia
 
 anat1=${flpr}_acq-uni_T1w 
 anat2=${flpr}_T2w
@@ -64,6 +64,13 @@ cwd=$(pwd)
 cd ${wdr}/sub-${sub}/ses-${ses}
 
 echo "************************************"
+echo "************************************"
+echo "***   Runnning  ${flpr}   ***"
+echo "************************************"
+echo "************************************"
+echo ""
+echo ""
+echo "************************************"
 echo "*** Preparing folders"
 echo "************************************"
 echo "************************************"
@@ -81,6 +88,10 @@ imcp fmap/* fmap_preproc/.
 imcp ${stdp}/${std} reg/.
 
 cd ${cwd}
+
+######################################
+#########    Anat preproc    #########
+######################################
 
 echo "************************************"
 echo "*** Anat correction ${anat1}"
@@ -119,7 +130,12 @@ echo "************************************"
 
 # ./04.anat_normalize.sh ${anat1} ${adir} ${std} ${mmres}
 
-for f in breathhold rest_run-01 #breathhold #rest_run-01
+
+######################################
+#########    Task preproc    #########
+######################################
+
+for f in breathhold TASK1 TASK2 TASK3
 do 
 	for d in AP PA
 	do
@@ -129,12 +145,12 @@ do
 		echo "************************************"
 		echo "************************************"
 
-		func=${flpr}_dir-${d}_task-${f}_epi
+		func=${flpr}_acq-${f}_dir-${d}_epi
 		./05.func_correct.sh ${func} ${fmap} 0 0 none none none ${siot}
 	done
 
-	bfor=${fmap}/${flpr}_dir-PA_task-${f}_epi
-	brev=${fmap}/${flpr}_dir-AP_task-${f}_epi
+	bfor=${fmap}/${flpr}_acq-${f}_dir-PA_epi
+	brev=${fmap}/${flpr}_acq-${f}_dir-AP_epi
 
 	for e in $( seq 1 ${nTE} )
 	do
@@ -144,7 +160,7 @@ do
 		echo "************************************"
 		echo "************************************"
 
-		sbrf=${flpr}_task-${f}_echo-${e}_sbref
+		sbrf=${flpr}_task-${f}_rec-magnitude_echo-${e}_sbref
 		if [[ ! -e ${sbrf}_cr.nii.gz ]]
 		then
 			./05.func_correct.sh ${sbrf} ${fdir} 0 0 none ${brev} ${bfor} ${siot}
@@ -156,7 +172,7 @@ do
 		echo "************************************"
 
 		bold=${flpr}_task-${f}_echo-${e}_bold
-		pepl=${flpr}_task-${f}_echo-${e}_sbref_topup
+		pepl=${flpr}_task-${f}_rec-magnitude_echo-${e}_sbref_topup
 		./05.func_correct.sh ${bold} ${fdir} ${vdsc} 0 ${pepl} ${brev} ${bfor} ${siot}
 	done
  	# Maybe echo 3? BUT echo 1 for anat realign
@@ -170,7 +186,7 @@ do
 
 	./06.func_spacecomp.sh ${fmat} ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_echo-1_sbref_cr 0
 	
-	mask=${flpr}_task-breathhold_echo-1_sbref_cr_brain_mask
+	mask=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain_mask
 
 	for e in $( seq 1 ${nTE} )
 	do
@@ -179,7 +195,7 @@ do
 		echo "************************************"
 		echo "************************************"
 
-		sbrf=${flpr}_task-breathhold_echo-${e}_sbref_cr
+		sbrf=${flpr}_task-breathhold_rec-magnitude_echo-${e}_sbref_cr
 		bold=${flpr}_task-${f}_echo-${e}_bold
 		./07.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
 	done
@@ -191,7 +207,7 @@ do
 
 	./08.func_meica.sh ${fmat}_bet ${fdir} ${TEs}
 
-	sbrf=${flpr}_task-breathhold_echo-1_sbref_cr
+	sbrf=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
 	
 	for e in $( seq 1 ${nTE} )
 	do
@@ -201,12 +217,12 @@ do
 		echo "************************************"
 
 		bold=${flpr}_task-${f}_echo-${e}_bold
-		if [[ "${f}" == *rest* ]]
-		then
-			./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 1
-		else
-			./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
-		fi
+		# if [[ "${f}" == *rest* ]]
+		# then
+		# 	./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 1
+		# else
+		./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
+		# fi
 		
 		echo "************************************"
 		echo "*** Func smooth ${f} BOLD echo ${e}"
@@ -233,3 +249,115 @@ do
 
 done
 
+
+######################################
+#########    Rest preproc    #########
+######################################
+
+for r in {01..04}
+do 
+	for d in AP PA
+	do
+
+		echo "************************************"
+		echo "*** Func correct rest PE ${d}"
+		echo "************************************"
+		echo "************************************"
+
+		func=${flpr}_acq-rest_dir-${d}_run-${r}_epi
+		./05.func_correct.sh ${func} ${fmap} 0 0 none none none ${siot}
+	done
+
+	bfor=${fmap}/${flpr}_acq-rest_dir-PA_run-${r}_epi
+	brev=${fmap}/${flpr}_acq-rest_dir-AP_run-${r}_epi
+
+	for e in $( seq 1 ${nTE} )
+	do
+
+		echo "************************************"
+		echo "*** Func correct rest SBREF echo ${e}"
+		echo "************************************"
+		echo "************************************"
+
+		sbrf=${flpr}_task-rest_rec-magnitude_run-${r}_echo-${e}_sbref
+		if [[ ! -e ${sbrf}_cr.nii.gz ]]
+		then
+			./05.func_correct.sh ${sbrf} ${fdir} 0 0 none ${brev} ${bfor} ${siot}
+		fi
+
+		echo "************************************"
+		echo "*** Func correct rest BOLD echo ${e}"
+		echo "************************************"
+		echo "************************************"
+
+		bold=${flpr}_task-rest_run-${r}_echo-${e}_bold
+		pepl=${flpr}_task-rest_rec-magnitude_run-${r}_echo-${e}_sbref_topup
+		./05.func_correct.sh ${bold} ${fdir} ${vdsc} 0 ${pepl} ${brev} ${bfor} ${siot}
+	done
+
+	echo "************************************"
+	echo "*** Func spacecomp rest echo 1"
+	echo "************************************"
+	echo "************************************"
+
+	fmat=${flpr}_task-rest_run-${r}_echo-1_bold
+
+	./06.func_spacecomp.sh ${fmat} ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_run-${r}_echo-1_sbref_cr 0
+	
+	mask=${flpr}_task-breathhold_rec-magnitude_run-${r}_echo-1_sbref_cr_brain_mask
+
+	for e in $( seq 1 ${nTE} )
+	do
+		echo "************************************"
+		echo "*** Func realign rest BOLD echo ${e}"
+		echo "************************************"
+		echo "************************************"
+
+		sbrf=${flpr}_task-breathhold_rec-magnitude_run-${r}_echo-${e}_sbref_cr
+		bold=${flpr}_task-rest_run-${r}_echo-${e}_bold
+		./07.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
+	done
+
+	echo "************************************"
+	echo "*** Func MEICA rest BOLD"
+	echo "************************************"
+	echo "************************************"
+
+	./08.func_meica.sh ${fmat}_bet ${fdir} ${TEs}
+
+	sbrf=${flpr}_task-breathhold_rec-magnitude_run-${r}_echo-1_sbref_cr
+	
+	for e in $( seq 1 ${nTE} )
+	do
+		echo "************************************"
+		echo "*** Func nuiscomp rest BOLD echo ${e}"
+		echo "************************************"
+		echo "************************************"
+
+		bold=${flpr}_task-rest_run-${r}_echo-${e}_bold
+		./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 1
+		
+		echo "************************************"
+		echo "*** Func smooth rest BOLD echo ${e}"
+		echo "************************************"
+		echo "************************************"
+
+		./10.func_smooth.sh ${bold} ${fdir} ${fwhm} ${mask}
+		
+		echo "************************************"
+		echo "*** Func SPC rest BOLD echo ${e}"
+		echo "************************************"
+		echo "************************************"
+
+		./11.func_spc.sh ${bold}_sm ${fdir}
+
+		immv ${fdir}/${bold}_sm_SPC ${fdir}/00.${bold}_native_preprocessed
+
+		# ./12.func_normalize.sh ${bold} ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+
+		# ./11.func_spc.sh ${bold}_norm ${fdir}
+		# immv ${fdir}/${bold}_norm_SPC ${fdir}/00.${bold}_std_preprocessed
+
+	done
+
+done

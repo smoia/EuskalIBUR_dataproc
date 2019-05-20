@@ -40,7 +40,7 @@ std=MNI152_T1_1mm_
 mmres=2.5
 fwhm=6
 
-TEs=10.6,28.69,46.78,64.87,82.96
+TEs="10.6 28.69 46.78 64.87 82.96"
 nTE=5
 
 # slice order file (full path to)

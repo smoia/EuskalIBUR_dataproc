@@ -30,7 +30,8 @@ esffx=${func#*_echo-?}
 echo "Merging ${func} for MEICA"
 fslmerge -z ${func}_concat $( ls ${eprfx}* | grep ${esffx}.nii.gz )
 
-${cwd}/meica.libs/tedana.py -d ${func}_concat.nii.gz -e ${TEs} --fout --label=${func}_meica
+mkdir ${func}_meica
+tedana -d ${func}_concat.nii.gz -e ${TEs} --verbose --tedort --png --out-dir ${func}_meica
 # ${cwd}/meica.libs/tedana.py -d ${func}_concat.nii.gz -e ${TEs} --fout --denoiseTEs --label=${func}_meica
 
 # 01.2. Ortogonalising good and bad components

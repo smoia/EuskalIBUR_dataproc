@@ -152,7 +152,7 @@ def fitmodels_direct(catd,mmix,mask,t2s,tes,fout=None,reindex=False,mmixN=None,f
 
 			#Save out files
 			out = np.zeros((nx,ny,nz,4))
-			if fout is not None: 
+			if fout!=None: 
 				ccname = "cc%.3d.nii" % i
 			else: ccname = ".cc_temp.nii.gz"
 

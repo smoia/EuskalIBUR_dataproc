@@ -346,22 +346,6 @@ if __name__=='__main__':
 	niwrite(t2ss,aff,'t2ss%s.nii' % suf )
 	niwrite(s0vs,aff,'s0vs%s.nii' % suf )
 
-
-	##########
-	### Mods by smoia 03.02.18 to be used with Posse (1999) Method
-	##########
-
-	niwrite(t2s,aff,'t2s%s.nii' % suf )
-
-	if options.combmode == 't2s':
-		t2s[t2s<0]=0
-		niwrite(t2s,aff,'t2s_NN%s.nii' % suf )
-
-	##########
-	### End of mod
-	##########
-
-
 	print "++ Computing optimal combination"
 	tsoc = np.array(optcom(catd,t2s,tes,mask),dtype=float)
 

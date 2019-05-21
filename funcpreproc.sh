@@ -219,12 +219,7 @@ do
 		echo "************************************"
 
 		bold=${flpr}_task-${f}_echo-${e}_bold
-		# if [[ "${f}" == *rest* ]]
-		# then
-		# 	./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 1
-		# else
 		./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
-		# fi
 		
 		echo "************************************"
 		echo "*** Func smooth ${f} BOLD echo ${e}"
@@ -252,7 +247,7 @@ do
 done
 
 ######################################
-#########    Task preproc    #########
+#########    Rest preproc    #########
 ######################################
 
 for r in $( seq -f %02g 1 4 )

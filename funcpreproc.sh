@@ -207,7 +207,7 @@ do
 	echo "************************************"
 	echo "************************************"
 
- 	./08.func_meica.sh ${fmat}_bet ${fdir} ${TEs}
+ 	./08.func_meica.sh ${fmat}_bet ${fdir} "${TEs}"
 
 	sbrf=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
 	
@@ -319,7 +319,7 @@ do
 	echo "************************************"
 	echo "************************************"
 
- 	./08.func_meica.sh ${fmat}_bet ${fdir} ${TEs}
+ 	./08.func_meica.sh ${fmat}_bet ${fdir} "${TEs}"
 
 	sbrf=${flpr}_task-breathhold_rec-magnitude_run-${r}_echo-1_sbref_cr
 	

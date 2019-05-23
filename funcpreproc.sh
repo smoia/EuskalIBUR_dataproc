@@ -186,7 +186,7 @@ do
 
 	fmat=${flpr}_task-${f}_echo-1_bold
 
- 	./06.func_spacecomp.sh ${fmat} ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr 0
+	./06.func_spacecomp.sh ${fmat} ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr 0
 	
 	mask=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain_mask
 
@@ -199,7 +199,7 @@ do
 
 		sbrf=${flpr}_task-breathhold_rec-magnitude_echo-${e}_sbref_cr
 		bold=${flpr}_task-${f}_echo-${e}_bold
- 		./07.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
+		./07.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
 	done
 
 	echo "************************************"
@@ -207,7 +207,7 @@ do
 	echo "************************************"
 	echo "************************************"
 
- 	./08.func_meica.sh ${fmat}_bet ${fdir} "${TEs}"
+	./08.func_meica.sh ${fmat}_bet ${fdir} "${TEs}"
 
 	sbrf=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
 	
@@ -298,7 +298,7 @@ do
 
 	fmat=${flpr}_task-rest_run-${r}_echo-1_bold
 
- 	./06.func_spacecomp.sh ${fmat} ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_rec-magnitude_run-${r}_echo-1_sbref_cr 0
+	./06.func_spacecomp.sh ${fmat} ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_rec-magnitude_run-${r}_echo-1_sbref_cr 0
 	
 	mask=${flpr}_task-breathhold_rec-magnitude_run-${r}_echo-1_sbref_cr_brain_mask
 
@@ -311,7 +311,7 @@ do
 
 		sbrf=${flpr}_task-breathhold_rec-magnitude_run-${r}_echo-${e}_sbref_cr
 		bold=${flpr}_task-rest_run-${r}_echo-${e}_bold
- 		./07.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
+		./07.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
 	done
 
 	echo "************************************"
@@ -319,7 +319,7 @@ do
 	echo "************************************"
 	echo "************************************"
 
- 	./08.func_meica.sh ${fmat}_bet ${fdir} "${TEs}"
+	./08.func_meica.sh ${fmat}_bet ${fdir} "${TEs}"
 
 	sbrf=${flpr}_task-breathhold_rec-magnitude_run-${r}_echo-1_sbref_cr
 	

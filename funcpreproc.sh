@@ -57,13 +57,20 @@ moio=0
 ######### Script starts here #########
 ######################################
 
+# Preparing log folder and log file, removing the previous one
 if [[ ! -d "${wdr}/log" ]]; then mkdir ${wdr}/log; fi
+if [[ -e "${wdr}/log/${flpr}_log" ]]; then rm ${wdr}/log/${flpr}_log; fi
+
 echo "************************************" >> ${wdr}/log/${flpr}_log
 
 exec 3>&1 4>&2
 
 exec 1>${wdr}/log/${flpr}_log 2>&1
 
+echo $(date)
+echo "************************************"
+
+# saving the current wokdir
 cwd=$(pwd)
 
 echo "************************************"

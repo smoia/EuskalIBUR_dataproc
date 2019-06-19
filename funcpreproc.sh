@@ -145,7 +145,7 @@ echo "************************************"
 #########    Task preproc    #########
 ######################################
 
-for f in breathhold TASK1 TASK2 TASK3
+for f in breathhold #TASK1 TASK2 TASK3
 do 
 	for d in AP PA
 	do
@@ -258,6 +258,8 @@ do
 	done
 
 done
+
+exit
 
 ######################################
 #########    Rest preproc    #########

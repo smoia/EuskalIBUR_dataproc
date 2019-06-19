@@ -2,8 +2,8 @@
 
 ######### FULL PREPROC for PJMASK
 # Author:  Stefano Moia
-# Version: 0.1
-# Date:    06.02.2019
+# Version: 1.0
+# Date:    31.06.2019
 #########
 
 ####

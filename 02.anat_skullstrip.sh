@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-######### ANATOMICAL 01 for PJMASK
+######### ANATOMICAL 02 for PJMASK
 # Author:  Stefano Moia
-# Version: 0.1
-# Date:    06.02.2019
+# Version: 1.0
+# Date:    31.06.2019
 #########
 
 ## Variables

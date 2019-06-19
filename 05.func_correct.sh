@@ -60,6 +60,7 @@ then
 	3dToutcount -mask ${func}_brain_mask.nii.gz -fraction -polort 5 -legendre ${func}_RPI.nii.gz > ${func}_outcount.1D
 	imrm ${func}_avg ${func}_brain ${func}_brain_mask
 fi
+
 # 01.4. Despike if asked
 if [[ "${dspk}" -gt "0" ]]
 then

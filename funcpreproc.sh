@@ -214,7 +214,13 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	./08.func_meica.sh ${fmat}_bet ${fdir} "${TEs}"
+	for e in $( seq 1 ${nTE} )
+	do
+		bold=${flpr}_task-${f}_echo-${e}_bold_RPI
+		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} ${vdsc} 0 0 1
+	done
+
+	./08.func_meica.sh ${fmat}_RPI_bet ${fdir} "${TEs}"
 
 	sbrf=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
 	
@@ -326,7 +332,13 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	./08.func_meica.sh ${fmat}_bet ${fdir} "${TEs}"
+	for e in $( seq 1 ${nTE} )
+	do
+		bold=${flpr}_task-rest_run-${r}_echo-${e}_bold_RPI
+		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} ${vdsc} 0 0 1
+	done
+
+	./08.func_meica.sh ${fmat}_RPI_bet ${fdir} "${TEs}"
 
 	sbrf=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
 	

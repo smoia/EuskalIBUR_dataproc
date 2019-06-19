@@ -19,6 +19,8 @@ vdsc=$5
 mref=$6
 # Motion Outlier Images Output
 moio=${7:-1}
+# For tedana
+fted=${8:-0}
 
 ######################################
 ######### Script starts here #########
@@ -32,6 +34,23 @@ nTR=$(fslval ${func} dim4)
 TR=$(fslval ${func} pixdim4)
 let nTR=nTR-${vdsc}-1
 
+# If this script is called for meica, skip Motion Outliers
+# Also, change the script input from func_cr to input,
+# and run BET on it.
+if [[ "${fted}" -gt 0 ]]
+then
+	moio=0
+	funcsource=${func}
+	# func=tmp.${func}
+	mref=tmp.avgref
+	fslmaths ${func} -Tmean ${mref}
+	bet ${mref} ${mref}_brain -R -f 0.5 -g 0 -n -m
+	mask=${mref}_brain_mask
+else
+	funcsource=${func}_cr
+fi
+
+
 ## 01. Motion Realignment
 
 # 01.1. Apply McFlirt
@@ -39,7 +58,7 @@ echo "Applying McFlirt in ${func}"
 
 if [[ ! -d "${func}_split" ]]; then mkdir ${func}_split; fi
 if [[ ! -d "${func}_merge" ]]; then mkdir ${func}_merge; fi
-fslsplit ${func}_cr ${func}_split/vol_ -t
+fslsplit ${funcsource} ${func}_split/vol_ -t
 
 for i in $( seq -f %04g 0 ${nTR} )
 do
@@ -49,7 +68,6 @@ do
 done
 
 rm -r ${func}_split
-
 
 echo "Merging ${func}"
 fslmerge -tr ${func}_mcf ${func}_merge/vol_* ${TR}

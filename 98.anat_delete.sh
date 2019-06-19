@@ -22,5 +22,6 @@ cwd=$(pwd)
 cd ${adir}
 
 imrm ${anat} ${anat}_RPI ${anat}_trunc ${anat}_CSF ${anat}_WM
+imrm rm.*
 
 cd ${cwd}

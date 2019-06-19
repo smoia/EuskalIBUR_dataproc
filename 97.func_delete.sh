@@ -22,6 +22,7 @@ cwd=$(pwd)
 cd ${fdir}
 
 imrm ${func} ${func}_dsd ${func}_mcf ${func}_bet_concat ${func}_mean ${func}_avg ${func}_prj
+imrm rm.*
 # rm ${func}_topup/mgdmap
 
 cd ${cwd}

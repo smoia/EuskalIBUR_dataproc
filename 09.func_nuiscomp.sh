@@ -65,7 +65,7 @@ echo "Preparing nuisance matrix"
 -stim_file 2 ${func}_avg_tissue.1D'[2]' -stim_base 2 -stim_label 2 WM \
 -ortvec ${fmat}_mcf_demean.par motdemean \
 -ortvec ${fmat}_mcf_deriv1.par motderiv1 \
--ortvec ${fmat}_bet_rej_ort.1D meica \
+-ortvec ${fmat}_RPI_bet_rej_ort.1D meica \
 -censor ${func}_censors.1D \
 -x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
 -x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \

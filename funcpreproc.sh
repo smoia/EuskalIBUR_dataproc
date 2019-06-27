@@ -33,10 +33,10 @@ anat2=${flpr}_T2w
 adir=${wdr}/sub-${sub}/ses-${ses}/anat_preproc
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 fmap=${wdr}/sub-${sub}/ses-${ses}/fmap_preproc
-stdp=${wdr}/TEMPLATES_ATLAS
+stdp=${wdr}/pjmask_preproc
 
 vdsc=10
-std=MNI152_T1_1mm_
+std=MNI152_T1_1mm_brain
 mmres=2.5
 fwhm=6
 
@@ -60,7 +60,7 @@ moio=0
 # Preparing log folder and log file, removing the previous one
 if [[ ! -d "${wdr}/log" ]]; then mkdir ${wdr}/log; fi
 if [[ -e "${wdr}/log/${flpr}_log" ]]; then rm ${wdr}/log/${flpr}_log; fi
-
+//
 echo "************************************" >> ${wdr}/log/${flpr}_log
 
 exec 3>&1 4>&2
@@ -85,11 +85,11 @@ echo "************************************"
 echo "************************************"
 
 cd ${wdr}/sub-${sub}/ses-${ses}
-for fld in anat_preproc func_preproc fmap_preproc reg
-do
-	if [[ -d "${fld}" ]]; then rm -r ${fld}; fi
-	mkdir ${fld}
-done
+#for fld in anat_preproc func_preproc fmap_preproc reg
+#do
+#	if [[ -d "${fld}" ]]; then rm -r ${fld}; fi
+#	mkdir ${fld}
+#done
 
 imcp func/* func_preproc/.
 imcp anat/${anat1} anat_preproc/.
@@ -108,39 +108,39 @@ echo "*** Anat correction ${anat1}"
 echo "************************************"
 echo "************************************"
 
-./01.anat_correct.sh ${anat1} ${adir}
+#./01.anat_correct.sh ${anat1} ${adir}
 
 echo "************************************"
 echo "*** Anat correction ${anat2}"
 echo "************************************"
 echo "************************************"
 
-./01.anat_correct.sh ${anat2} ${adir} ${anat1}
+#./01.anat_correct.sh ${anat2} ${adir} ${anat1}
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat2}"
 echo "************************************"
 echo "************************************"
 
-./02.anat_skullstrip.sh ${anat2} ${adir} none ${anat1}
+#./02.anat_skullstrip.sh ${anat2} ${adir} none ${anat1}
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat1}"
 echo "************************************"
 echo "************************************"
 
-./02.anat_skullstrip.sh ${anat1} ${adir} ${anat1}_brain_mask
+#./02.anat_skullstrip.sh ${anat1} ${adir} ${anat1}_brain_mask
 
 echo "************************************"
 echo "*** Anat segment"
 echo "************************************"
 echo "************************************"
 
-./03.anat_segment.sh ${anat1} ${adir}
+#./03.anat_segment.sh ${anat1} ${adir}
 
 ./04.anat_normalize.sh ${anat1} ${adir} ${std} ${mmres}
 
-
+exit
 ######################################
 #########    Task preproc    #########
 ######################################
@@ -232,23 +232,23 @@ do
 		echo "************************************"
 
 		bold=${flpr}_task-${f}_echo-${e}_bold
-		./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
+#		./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
 		
 		echo "************************************"
 		echo "*** Func smooth ${f} BOLD echo ${e}"
 		echo "************************************"
 		echo "************************************"
 
-		./10.func_smooth.sh ${bold} ${fdir} ${fwhm} ${mask}
+#		./10.func_smooth.sh ${bold} ${fdir} ${fwhm} ${mask}
 		
 		echo "************************************"
 		echo "*** Func SPC ${f} BOLD echo ${e}"
 		echo "************************************"
 		echo "************************************"
 
-		./11.func_spc.sh ${bold}_sm ${fdir}
+#		./11.func_spc.sh ${bold}_sm ${fdir}
 
-		immv ${fdir}/${bold}_sm_SPC ${fdir}/00.${bold}_native_preprocessed
+#		immv ${fdir}/${bold}_sm_SPC ${fdir}/00.${bold}_native_preprocessed
 
 		# ./12.func_normalize.sh ${bold} ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
 

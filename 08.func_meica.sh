@@ -32,8 +32,19 @@ fslmerge -z ${func}_concat $( ls ${eprfx}* | grep ${esffx}.nii.gz )
 
 t2smap -d ${func}_concat -e ${TEs}
 
-mkdir ${func}_meica
-tedana -d ${func}_concat.nii.gz -e ${TEs} --png --out-dir ${func}_meica
+gzip TED.${func}_concat/ts_OC.nii
+
+mv TED.${func}_concat/ts_OC.nii.gz ${func}_OC.nii.gz
+rm -rf TED.${func}_concat
+
+melodic -i ${func}_OC.nii.gz -o mel.ica --nobet
+
+mv mel.ica/melodic_mix ${func}_melodic_mix
+rm -rf mel.ica
+
+mkdir ${func}_meica_melodic
+
+tedana -d ${func}_concat.nii.gz -e ${TEs} --mix ${func}_melodic_mix --png --out-dir ${func}_meica_melodic
 
 
 #tedana -d ${func}_concat.nii.gz -e ${TEs} --verbose --tedort --png --out-dir ${func}_meica

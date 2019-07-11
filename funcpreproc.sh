@@ -60,7 +60,7 @@ moio=0
 # Preparing log folder and log file, removing the previous one
 if [[ ! -d "${wdr}/log" ]]; then mkdir ${wdr}/log; fi
 if [[ -e "${wdr}/log/${flpr}_log" ]]; then rm ${wdr}/log/${flpr}_log; fi
-//
+
 echo "************************************" >> ${wdr}/log/${flpr}_log
 
 exec 3>&1 4>&2
@@ -91,11 +91,11 @@ cd ${wdr}/sub-${sub}/ses-${ses}
 #	mkdir ${fld}
 #done
 
-imcp func/* func_preproc/.
-imcp anat/${anat1} anat_preproc/.
-imcp anat/${anat2} anat_preproc/.
-imcp fmap/* fmap_preproc/.
-imcp ${stdp}/${std} reg/.
+#imcp func/* func_preproc/.
+#imcp anat/${anat1} anat_preproc/.
+#imcp anat/${anat2} anat_preproc/.
+#imcp fmap/* fmap_preproc/.
+#imcp ${stdp}/${std} reg/.
 
 cd ${cwd}
 
@@ -138,9 +138,8 @@ echo "************************************"
 
 #./03.anat_segment.sh ${anat1} ${adir}
 
-./04.anat_normalize.sh ${anat1} ${adir} ${std} ${mmres}
+#./04.anat_normalize.sh ${anat1} ${adir} ${std} ${mmres}
 
-exit
 ######################################
 #########    Task preproc    #########
 ######################################
@@ -156,7 +155,7 @@ do
 		echo "************************************"
 
 		func=${flpr}_acq-${f}_dir-${d}_epi
-		./05.func_correct.sh ${func} ${fmap} 0 0 none none none ${siot}
+#		./05.func_correct.sh ${func} ${fmap} 0 0 none none none ${siot}
 	done
 
 	bfor=${fmap}/${flpr}_acq-${f}_dir-PA_epi
@@ -171,10 +170,10 @@ do
 		echo "************************************"
 
 		sbrf=${flpr}_task-${f}_rec-magnitude_echo-${e}_sbref
-		if [[ ! -e ${sbrf}_cr.nii.gz ]]
-		then
-			./05.func_correct.sh ${sbrf} ${fdir} 0 0 none ${brev} ${bfor} ${siot}
-		fi
+#		if [[ ! -e ${sbrf}_cr.nii.gz ]]
+#		then
+#			./05.func_correct.sh ${sbrf} ${fdir} 0 0 none ${brev} ${bfor} ${siot}
+#		fi
 
 		echo "************************************"
 		echo "*** Func correct ${f} BOLD echo ${e}"
@@ -183,7 +182,7 @@ do
 
 		bold=${flpr}_task-${f}_echo-${e}_bold
 		pepl=${flpr}_task-${f}_rec-magnitude_echo-${e}_sbref_topup
-		./05.func_correct.sh ${bold} ${fdir} ${vdsc} 0 ${pepl} ${brev} ${bfor} ${siot}
+#		./05.func_correct.sh ${bold} ${fdir} ${vdsc} 0 ${pepl} ${brev} ${bfor} ${siot}
 	done
 
 	echo "************************************"
@@ -193,7 +192,7 @@ do
 
 	fmat=${flpr}_task-${f}_echo-1_bold
 
-	./06.func_spacecomp.sh ${fmat} ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr 0
+#	./06.func_spacecomp.sh ${fmat} ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr 0
 	
 	mask=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain_mask
 
@@ -206,7 +205,7 @@ do
 
 		sbrf=${flpr}_task-breathhold_rec-magnitude_echo-${e}_sbref_cr
 		bold=${flpr}_task-${f}_echo-${e}_bold
-		./07.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
+#		./07.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
 	done
 
 	echo "************************************"
@@ -217,11 +216,11 @@ do
 	for e in $( seq 1 ${nTE} )
 	do
 		bold=${flpr}_task-${f}_echo-${e}_bold_RPI
-		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} ${vdsc} 0 0 1
+#		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} ${vdsc} 0 0 1
 	done
 
 	./08.func_meica.sh ${fmat}_RPI_bet ${fdir} "${TEs}"
-
+exit
 	sbrf=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
 	
 	for e in $( seq 1 ${nTE} )

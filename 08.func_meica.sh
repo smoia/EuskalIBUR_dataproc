@@ -30,8 +30,8 @@ esffx=${func#*_echo-?}
 echo "Merging ${func} for MEICA"
 fslmerge -z ${func}_concat $( ls ${eprfx}* | grep ${esffx}.nii.gz )
 
-mkdir ${func}_meica
-tedana -d ${func}_concat.nii.gz -e ${TEs} --png --out-dir ${func}_meica
+mkdir ${func}_meica_stab
+tedana -d ${func}_concat.nii.gz -e ${TEs} --png --out-dir ${func}_meica_stab --tedpca kundu-stabilize
 #tedana -d ${func}_concat.nii.gz -e ${TEs} --verbose --tedort --png --out-dir ${func}_meica
 # Old tedana
 # ${cwd}/meica.libs/tedana.py -d ${func}_concat.nii.gz -e ${TEs} --fout --denoiseTEs --label=${func}_meica

@@ -19,7 +19,7 @@ anat=$2
 
 cwd=$(pwd)
 
-cd ${adir}
+cd ${adir}_preproc
 
 imrm ${anat} ${anat}_RPI ${anat}_trunc ${anat}_CSF ${anat}_WM
 imrm rm.*

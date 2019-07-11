@@ -30,31 +30,35 @@ esffx=${func#*_echo-?}
 echo "Merging ${func} for MEICA"
 fslmerge -z ${func}_concat $( ls ${eprfx}* | grep ${esffx}.nii.gz )
 
+t2smap -d ${func}_concat -e ${TEs}
+
 mkdir ${func}_meica
 tedana -d ${func}_concat.nii.gz -e ${TEs} --png --out-dir ${func}_meica
+
+
 #tedana -d ${func}_concat.nii.gz -e ${TEs} --verbose --tedort --png --out-dir ${func}_meica
 # Old tedana
 # ${cwd}/meica.libs/tedana.py -d ${func}_concat.nii.gz -e ${TEs} --fout --denoiseTEs --label=${func}_meica
 
 # 01.2. Ortogonalising good and bad components
 
-echo "Ortogonalising good and bad components in ${func}"
-cd ${func}_meica
+# echo "Ortogonalising good and bad components in ${func}"
+# cd ${func}_meica
 
-gzip *.nii
+# gzip *.nii
 
-cat comp_table_ica.txt | grep accepted | awk '{print $1}' | csvtool transpose - > accepted.txt
-cat comp_table_ica.txt | grep rejected | awk '{print $1}' | csvtool transpose - > rejected.txt
+# cat comp_table_ica.txt | grep accepted | awk '{print $1}' | csvtool transpose - > accepted.txt
+# cat comp_table_ica.txt | grep rejected | awk '{print $1}' | csvtool transpose - > rejected.txt
 
-nacc=$( cat accepted.txt )
-nrej=$( cat rejected.txt )
+# nacc=$( cat accepted.txt )
+# nrej=$( cat rejected.txt )
 
-1dcat meica_mix.1D"[$nacc]" > meica_good.1D
-1dcat meica_mix.1D"[$nrej]" > tmp.rej.tr.1D
-1dtranspose tmp.rej.tr.1D > meica_rej.1D
+# 1dcat meica_mix.1D"[$nacc]" > meica_good.1D
+# 1dcat meica_mix.1D"[$nrej]" > tmp.rej.tr.1D
+# 1dtranspose tmp.rej.tr.1D > meica_rej.1D
 
-3dTproject -ort meica_good.1D -polort -1 -prefix tmp.tr.1D -input meica_rej.1D -overwrite
-1dtranspose tmp.tr.1D > ../${func}_rej_ort.1D
+# 3dTproject -ort meica_good.1D -polort -1 -prefix tmp.tr.1D -input meica_rej.1D -overwrite
+# 1dtranspose tmp.tr.1D > ../${func}_rej_ort.1D
 
 rm tmp.*
 

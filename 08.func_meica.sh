@@ -34,6 +34,9 @@ mkdir ${func}_meica_skundu
 
 tedana -d ${func}_concat.nii.gz -e ${TEs} --tedpca kundu-stabilize --png --out-dir ${func}_meica_skundu
 
+cd ${func}_meica_skundu
+gzip *.nii
+
 #tedana -d ${func}_concat.nii.gz -e ${TEs} --verbose --tedort --png --out-dir ${func}_meica
 # Old tedana
 # ${cwd}/meica.libs/tedana.py -d ${func}_concat.nii.gz -e ${TEs} --fout --denoiseTEs --label=${func}_meica

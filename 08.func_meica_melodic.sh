@@ -30,12 +30,12 @@ esffx=${func#*_echo-?}
 echo "Merging ${func} for MEICA"
 fslmerge -z ${func}_concat $( ls ${eprfx}* | grep ${esffx}.nii.gz )
 
-t2smap -d ${func}_concat -e ${TEs}
+# t2smap -d ${func}_concat -e ${TEs}
 
-gzip TED.${func}_concat/ts_OC.nii
+# gzip TED.${func}_concat/ts_OC.nii
 
-mv TED.${func}_concat/ts_OC.nii.gz ${func}_OC.nii.gz
-rm -rf TED.${func}_concat
+cp ${func}_meica_skundu/ts_OC.nii.gz ${func}_OC.nii.gz
+# rm -rf TED.${func}_concat
 
 melodic -i ${func}_OC.nii.gz -o mel.ica --nobet
 

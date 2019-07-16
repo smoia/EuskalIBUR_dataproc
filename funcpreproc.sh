@@ -216,7 +216,7 @@ do
 	for e in $( seq 1 ${nTE} )
 	do
 		bold=${flpr}_task-${f}_echo-${e}_bold_RPI
-		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} ${vdsc} 0 0 1
+		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} 0 0 0 1
 	done
 
 	./08.func_meica.sh ${fmat}_RPI_bet ${fdir} "${TEs}"

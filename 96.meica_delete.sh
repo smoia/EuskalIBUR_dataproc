@@ -9,7 +9,7 @@
 ## Variables
 # folders
 fdir=$1
-# anat
+# base volume
 func=$2
 
 
@@ -22,6 +22,6 @@ cwd=$(pwd)
 cd ${fdir}/${func}_tedana
 
 imrm t2sv s0v lowk_* midk_* hik_* betas_* t2ss s0vs
-rm __meica_mix.txt
+if [ -e __meica_mix.txt ]; then rm __meica_mix.txt; fi
 
 cd ${cwd}

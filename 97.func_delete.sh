@@ -9,7 +9,7 @@
 ## Variables
 # folders
 fdir=$1
-# anat
+# base volume
 func=$2
 
 
@@ -19,10 +19,12 @@ func=$2
 
 cwd=$(pwd)
 
-cd ${fdir}
+cd ${fdir}_preproc
 
-imrm ${func} ${func}_dsd ${func}_mcf ${func}_bet_concat ${func}_mean ${func}_avg ${func}_prj
+imrm ${func} ${func}_dsd ${func}_mcf ${func}_bet_concat \
+${func}_mean ${func}_avg ${func}_prj ${func}_RPI_bet_concat \
+${func}_RPI_bet_OC ${func}_RPI_mcf
 imrm rm.*
-# rm ${func}_topup/mgdmap
+if [ -e ${func}_topup/mgdmap.nii.gz ]; then rm ${func}_topup/mgdmap*; fi
 
 cd ${cwd}

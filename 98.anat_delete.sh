@@ -19,9 +19,9 @@ anat=$2
 
 cwd=$(pwd)
 
-cd ${adir}_preproc
+cd ${adir}
 
 imrm ${anat} ${anat}_bfc ${anat}_RPI ${anat}_trunc ${anat}_CSF* ${anat}_WM_eroded
-imrm rm.*
+imrm rm.* tmp.*
 
 cd ${cwd}

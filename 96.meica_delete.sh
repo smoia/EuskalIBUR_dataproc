@@ -24,4 +24,6 @@ cd ${fdir}/${func}_tedana
 imrm t2sv s0v lowk_* midk_* hik_* betas_* t2ss s0vs
 if [ -e __meica_mix.txt ]; then rm __meica_mix.txt; fi
 
+imrm tmp.* rm.*
+
 cd ${cwd}

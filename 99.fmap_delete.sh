@@ -19,9 +19,9 @@ func=$2
 
 cwd=$(pwd)
 
-cd ${fdir}_preproc
+cd ${fdir}
 
 imrm ${func}
-imrm rm.*
+imrm rm.* tmp.*
 
 cd ${cwd}

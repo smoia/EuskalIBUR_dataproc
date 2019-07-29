@@ -19,12 +19,12 @@ func=$2
 
 cwd=$(pwd)
 
-cd ${fdir}_preproc
+cd ${fdir}
 
 imrm ${func} ${func}_dsd ${func}_mcf ${func}_bet_concat \
 ${func}_mean ${func}_avg ${func}_prj ${func}_RPI_bet_concat \
 ${func}_RPI_bet_OC ${func}_RPI_mcf
-imrm rm.*
+imrm rm.* tmp.*
 if [ -e ${func}_topup/mgdmap.nii.gz ]; then rm ${func}_topup/mgdmap*; fi
 
 cd ${cwd}

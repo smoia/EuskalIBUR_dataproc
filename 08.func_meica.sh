@@ -30,11 +30,11 @@ esffx=${func#*_echo-?}
 echo "Merging ${func} for MEICA"
 fslmerge -z ${func}_concat $( ls ${eprfx}* | grep ${esffx}.nii.gz )
 
-mkdir ${func}_meica_skundu
+mkdir ${func}_meica
 
 tedana -d ${func}_concat.nii.gz -e ${TEs} --tedpca kundu-stabilize --png --out-dir ${func}_meica_skundu
 
-cd ${func}_meica_skundu
+cd ${func}_meica
 gzip *.nii
 
 #tedana -d ${func}_concat.nii.gz -e ${TEs} --verbose --tedort --png --out-dir ${func}_meica
@@ -61,6 +61,6 @@ gzip *.nii
 # 3dTproject -ort meica_good.1D -polort -1 -prefix tmp.tr.1D -input meica_rej.1D -overwrite
 # 1dtranspose tmp.tr.1D > ../${func}_rej_ort.1D
 
-rm tmp.*
+# rm tmp.*
 
 cd ${cwd}

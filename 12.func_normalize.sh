@@ -27,11 +27,18 @@ cwd=$(pwd)
 cd ${fdir}
 
 echo "Normalising ${func}"
-WarpImageMultiTransform 3 ${func}_sm.nii.gz ${func}_std.nii.gz \
--R ../reg/${std}_resamp_${mmres}mm.nii.gz \
-../reg/${anat}2std1Warp.nii.gz \
-../reg/${anat}2std0GenericAffine.mat \
-../reg/${anat2}2${anat}0GenericAffine.mat \
--i ../reg/${anat2}2${mref}0GenericAffine.mat
+antsApplyTransforms -d 3 -i ${func}_sm.nii.gz \
+-r ../reg/${std}_resamp_${mmres}mm.nii.gz -o ${func}_std.nii.gz \
+-n Linear -t [../reg/${anat2}2${mref}0GenericAffine.mat,1] \
+-t ../reg/${anat2}2${anat}0GenericAffine.mat \
+-t ../reg/${anat}2std0GenericAffine.mat \
+-t ../reg/${anat}2std1Warp.nii.gz
+
+# WarpImageMultiTransform 3 ${func}_sm.nii.gz ${func}_std.nii.gz \
+# -R ../reg/${std}_resamp_${mmres}mm.nii.gz \
+# ../reg/${anat}2std1Warp.nii.gz \
+# ../reg/${anat}2std0GenericAffine.mat \
+# ../reg/${anat2}2${anat}0GenericAffine.mat \
+# -i ../reg/${anat2}2${mref}0GenericAffine.mat
 
 cd ${cwd}

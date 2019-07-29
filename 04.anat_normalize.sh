@@ -66,7 +66,7 @@ fi
 
 echo "Registering ${anat} to resampled standard"
 WarpImageMultiTransform 3 ${adir}/${anat}_brain.nii.gz \
-${adir}/${anat}2std_resamp_${mmres}mm.nii.gz -R ${std}_resamp_${mmres}mm.nii.gz ${anat}2std1Warp.nii.gz ${anat}2std0GenericAffine.mat
+${anat}2std_resamp_${mmres}mm.nii.gz -R ${std}_resamp_${mmres}mm.nii.gz ${anat}2std1Warp.nii.gz ${anat}2std0GenericAffine.mat
 
 
 cd ${cwd}

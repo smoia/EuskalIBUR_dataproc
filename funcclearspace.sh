@@ -6,18 +6,6 @@
 # Date:    31.06.2019
 #########
 
-####
-# TODO:
-# - better Input Output with % and #
-# - delete intermediate steps
-# - add a "nobet flag"
-# - improve flags
-# - improve MEICA namings
-# - Censors!
-# - OC!
-# - visual output
-# - check vdsc
-
 
 sub=$1
 ses=$2

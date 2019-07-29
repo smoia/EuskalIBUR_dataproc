@@ -13,7 +13,7 @@ ses=$2
 
 flpr=sub-${sub}_ses-${ses}
 
-wdr=/scratch/smoia
+wdr=/bcbl/home/public/PJMASK_2/preproc
 
 anat1=${flpr}_acq-uni_T1w 
 anat2=${flpr}_T2w

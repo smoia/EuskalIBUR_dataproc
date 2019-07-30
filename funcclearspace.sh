@@ -33,13 +33,13 @@ nTE=5
 
 # Preparing log folder and log file, removing the previous one
 if [[ ! -d "${wdr}/log" ]]; then mkdir ${wdr}/log; fi
-if [[ -e "${wdr}/log/${flpr}_log" ]]; then rm ${wdr}/log/${flpr}_log; fi
+if [[ -e "${wdr}/log/${flpr}_log_clear" ]]; then rm ${wdr}/log/${flpr}_log_clear; fi
 
-echo "************************************" >> ${wdr}/log/${flpr}_log
+echo "************************************" >> ${wdr}/log/${flpr}_log_clear
 
 exec 3>&1 4>&2
 
-exec 1>${wdr}/log/${flpr}_log 2>&1
+exec 1>${wdr}/log/${flpr}_log_clear 2>&1
 
 echo $(date)
 echo "************************************"

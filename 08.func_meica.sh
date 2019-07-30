@@ -32,7 +32,7 @@ fslmerge -z ${func}_concat $( ls ${eprfx}* | grep ${esffx}.nii.gz )
 
 mkdir ${func}_meica
 
-tedana -d ${func}_concat.nii.gz -e ${TEs} --tedpca kundu-stabilize --png --out-dir ${func}_meica_skundu
+tedana -d ${func}_concat.nii.gz -e ${TEs} --tedpca kundu-stabilize --png --out-dir ${func}_meica
 
 cd ${func}_meica
 gzip *.nii

@@ -25,7 +25,7 @@ ses=$2
 
 flpr=sub-${sub}_ses-${ses}
 
-wdr=/scratch/smoia
+wdr=/home/nemo/Scrivania/data
 
 anat1=${flpr}_acq-uni_T1w 
 anat2=${flpr}_T2w
@@ -85,17 +85,17 @@ echo "************************************"
 echo "************************************"
 
 cd ${wdr}/sub-${sub}/ses-${ses}
-for fld in func_preproc #anat_preproc func_preproc fmap_preproc reg
-do
-	if [[ -d "${fld}" ]]; then rm -r ${fld}; fi
-	mkdir ${fld}
-done
+# for fld in func_preproc #anat_preproc func_preproc fmap_preproc reg
+# do
+# 	if [[ -d "${fld}" ]]; then rm -r ${fld}; fi
+# 	mkdir ${fld}
+# done
 
 imcp func/* func_preproc/.
 # imcp anat/${anat1} anat_preproc/.
 # imcp anat/${anat2} anat_preproc/.
-# imcp fmap/* fmap_preproc/.
-# imcp ${stdp}/${std} reg/.
+imcp fmap/* fmap_preproc/.
+imcp ${stdp}/${std} reg/.
 
 cd ${cwd}
 
@@ -103,38 +103,38 @@ cd ${cwd}
 #########    Anat preproc    #########
 ######################################
 
-echo "************************************"
-echo "*** Anat correction ${anat1}"
-echo "************************************"
-echo "************************************"
+# echo "************************************"
+# echo "*** Anat correction ${anat1}"
+# echo "************************************"
+# echo "************************************"
 
 # ./01.anat_correct.sh ${anat1} ${adir}
 
-echo "************************************"
-echo "*** Anat correction ${anat2}"
-echo "************************************"
-echo "************************************"
+# echo "************************************"
+# echo "*** Anat correction ${anat2}"
+# echo "************************************"
+# echo "************************************"
 
 # ./01.anat_correct.sh ${anat2} ${adir} ${anat1}
 
-echo "************************************"
-echo "*** Anat skullstrip ${anat2}"
-echo "************************************"
-echo "************************************"
+# echo "************************************"
+# echo "*** Anat skullstrip ${anat2}"
+# echo "************************************"
+# echo "************************************"
 
 # ./02.anat_skullstrip.sh ${anat2} ${adir} none ${anat1}
 
-echo "************************************"
-echo "*** Anat skullstrip ${anat1}"
-echo "************************************"
-echo "************************************"
+# echo "************************************"
+# echo "*** Anat skullstrip ${anat1}"
+# echo "************************************"
+# echo "************************************"
 
 # ./02.anat_skullstrip.sh ${anat1} ${adir} ${anat1}_brain_mask
 
-echo "************************************"
-echo "*** Anat segment"
-echo "************************************"
-echo "************************************"
+# echo "************************************"
+# echo "*** Anat segment"
+# echo "************************************"
+# echo "************************************"
 
 # ./03.anat_segment.sh ${anat1} ${adir}
 
@@ -144,130 +144,129 @@ echo "************************************"
 #########    Task preproc    #########
 ######################################
 
-for f in breathhold #TASK1 TASK2 TASK3
-do 
-	for d in AP PA
-	do
+# for f in breathhold #TASK1 TASK2 TASK3
+# do 
+# 	for d in AP PA
+# 	do
 
-		echo "************************************"
-		echo "*** Func correct ${f} PE ${d}"
-		echo "************************************"
-		echo "************************************"
+# 		echo "************************************"
+# 		echo "*** Func correct ${f} PE ${d}"
+# 		echo "************************************"
+# 		echo "************************************"
 
-		func=${flpr}_acq-${f}_dir-${d}_epi
-		# ./05.func_correct.sh ${func} ${fmap} 0 0 none none none ${siot}
-	done
+# 		func=${flpr}_acq-${f}_dir-${d}_epi
+# 		# ./05.func_correct.sh ${func} ${fmap} 0 0 none none none ${siot}
+# 	done
 
-	bfor=${fmap}/${flpr}_acq-${f}_dir-PA_epi
-	brev=${fmap}/${flpr}_acq-${f}_dir-AP_epi
+# 	bfor=${fmap}/${flpr}_acq-${f}_dir-PA_epi
+# 	brev=${fmap}/${flpr}_acq-${f}_dir-AP_epi
 
-	for e in $( seq 1 ${nTE} )
-	do
+# 	for e in $( seq 1 ${nTE} )
+# 	do
 
-		echo "************************************"
-		echo "*** Func correct ${f} SBREF echo ${e}"
-		echo "************************************"
-		echo "************************************"
+# 		echo "************************************"
+# 		echo "*** Func correct ${f} SBREF echo ${e}"
+# 		echo "************************************"
+# 		echo "************************************"
 
-		sbrf=${flpr}_task-${f}_rec-magnitude_echo-${e}_sbref
-		# if [[ ! -e ${sbrf}_cr.nii.gz ]]
-		# then
-		# 	./05.func_correct.sh ${sbrf} ${fdir} 0 0 none ${brev} ${bfor} ${siot}
-		# fi
+# 		sbrf=${flpr}_task-${f}_rec-magnitude_echo-${e}_sbref
+# 		# if [[ ! -e ${sbrf}_cr.nii.gz ]]
+# 		# then
+# 		# 	./05.func_correct.sh ${sbrf} ${fdir} 0 0 none ${brev} ${bfor} ${siot}
+# 		# fi
 
-		echo "************************************"
-		echo "*** Func correct ${f} BOLD echo ${e}"
-		echo "************************************"
-		echo "************************************"
+# 		echo "************************************"
+# 		echo "*** Func correct ${f} BOLD echo ${e}"
+# 		echo "************************************"
+# 		echo "************************************"
 
-		bold=${flpr}_task-${f}_echo-${e}_bold
-		pepl=${flpr}_task-${f}_rec-magnitude_echo-${e}_sbref_topup
-		# ./05.func_correct.sh ${bold} ${fdir} ${vdsc} 0 ${pepl} ${brev} ${bfor} ${siot}
-	done
+# 		bold=${flpr}_task-${f}_echo-${e}_bold
+# 		pepl=${flpr}_task-${f}_rec-magnitude_echo-${e}_sbref_topup
+# 		# ./05.func_correct.sh ${bold} ${fdir} ${vdsc} 0 ${pepl} ${brev} ${bfor} ${siot}
+# 	done
 
-	echo "************************************"
-	echo "*** Func spacecomp ${f} echo 1"
-	echo "************************************"
-	echo "************************************"
+# 	echo "************************************"
+# 	echo "*** Func spacecomp ${f} echo 1"
+# 	echo "************************************"
+# 	echo "************************************"
 
-	fmat=${flpr}_task-${f}_echo-1_bold
+# 	fmat=${flpr}_task-${f}_echo-1_bold
 
-	# ./06.func_spacecomp.sh ${fmat} ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr 0
+# 	# ./06.func_spacecomp.sh ${fmat} ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr 0
 	
-	mask=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain_mask
+# 	mask=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain_mask
 
-	for e in $( seq 1 ${nTE} )
-	do
-		echo "************************************"
-		echo "*** Func realign ${f} BOLD echo ${e}"
-		echo "************************************"
-		echo "************************************"
+# 	for e in $( seq 1 ${nTE} )
+# 	do
+# 		echo "************************************"
+# 		echo "*** Func realign ${f} BOLD echo ${e}"
+# 		echo "************************************"
+# 		echo "************************************"
 
-		sbrf=${flpr}_task-breathhold_rec-magnitude_echo-${e}_sbref_cr
-		bold=${flpr}_task-${f}_echo-${e}_bold
-		# ./07.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
-	done
+# 		sbrf=${flpr}_task-breathhold_rec-magnitude_echo-${e}_sbref_cr
+# 		bold=${flpr}_task-${f}_echo-${e}_bold
+# 		# ./07.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
+# 	done
 
-	echo "************************************"
-	echo "*** Func MEICA ${f} BOLD"
-	echo "************************************"
-	echo "************************************"
+# 	echo "************************************"
+# 	echo "*** Func MEICA ${f} BOLD"
+# 	echo "************************************"
+# 	echo "************************************"
 
-	for e in $( seq 1 ${nTE} )
-	do
-		bold=${flpr}_task-${f}_echo-${e}_bold_RPI
-		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} 0 0 0 1
-	done
+# 	for e in $( seq 1 ${nTE} )
+# 	do
+# 		bold=${flpr}_task-${f}_echo-${e}_bold_RPI
+# 		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} 0 0 0 1
+# 	done
 
-	./08.func_meica.sh ${fmat}_RPI_bet ${fdir} "${TEs}"
-	# ./08.func_meica_melodic.sh ${fmat}_RPI_bet ${fdir} "${TEs}"
+# 	./08.func_meica.sh ${fmat}_RPI_bet ${fdir} "${TEs}"
+# 	# ./08.func_meica_melodic.sh ${fmat}_RPI_bet ${fdir} "${TEs}"
 
-exit
+# exit
 
-	sbrf=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
+# 	sbrf=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
 	
-	for e in $( seq 1 ${nTE} )
-	do
-		echo "************************************"
-		echo "*** Func nuiscomp ${f} BOLD echo ${e}"
-		echo "************************************"
-		echo "************************************"
+# 	for e in $( seq 1 ${nTE} )
+# 	do
+# 		echo "************************************"
+# 		echo "*** Func nuiscomp ${f} BOLD echo ${e}"
+# 		echo "************************************"
+# 		echo "************************************"
 
-		bold=${flpr}_task-${f}_echo-${e}_bold
-#		./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
+# 		bold=${flpr}_task-${f}_echo-${e}_bold
+# #		./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
 		
-		echo "************************************"
-		echo "*** Func smooth ${f} BOLD echo ${e}"
-		echo "************************************"
-		echo "************************************"
+# 		echo "************************************"
+# 		echo "*** Func smooth ${f} BOLD echo ${e}"
+# 		echo "************************************"
+# 		echo "************************************"
 
-#		./10.func_smooth.sh ${bold} ${fdir} ${fwhm} ${mask}
+# #		./10.func_smooth.sh ${bold} ${fdir} ${fwhm} ${mask}
 		
-		echo "************************************"
-		echo "*** Func SPC ${f} BOLD echo ${e}"
-		echo "************************************"
-		echo "************************************"
+# 		echo "************************************"
+# 		echo "*** Func SPC ${f} BOLD echo ${e}"
+# 		echo "************************************"
+# 		echo "************************************"
 
-#		./11.func_spc.sh ${bold}_sm ${fdir}
+# #		./11.func_spc.sh ${bold}_sm ${fdir}
 
-#		immv ${fdir}/${bold}_sm_SPC ${fdir}/00.${bold}_native_preprocessed
+# #		immv ${fdir}/${bold}_sm_SPC ${fdir}/00.${bold}_native_preprocessed
 
-		# ./12.func_normalize.sh ${bold} ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+# 		# ./12.func_normalize.sh ${bold} ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
 
-		# ./11.func_spc.sh ${bold}_norm ${fdir}
-		# immv ${fdir}/${bold}_norm_SPC ${fdir}/00.${bold}_std_preprocessed
+# 		# ./11.func_spc.sh ${bold}_norm ${fdir}
+# 		# immv ${fdir}/${bold}_norm_SPC ${fdir}/00.${bold}_std_preprocessed
 
-	done
+# 	done
 
-done
+# done
 
-exit
 
 ######################################
 #########    Rest preproc    #########
 ######################################
 
-for r in $( seq -f %02g 1 4 )
+for r in 01 # $( seq -f %02g 1 4 )
 do 
 	for d in AP PA
 	do
@@ -339,7 +338,7 @@ do
 	for e in $( seq 1 ${nTE} )
 	do
 		bold=${flpr}_task-rest_run-${r}_echo-${e}_bold_RPI
-		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} ${vdsc} 0 0 1
+		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} 0 0 0 1
 	done
 
 	./08.func_meica.sh ${fmat}_RPI_bet ${fdir} "${TEs}"
@@ -373,9 +372,10 @@ do
 		echo "************************************"
 		echo "************************************"
 
-		./11.func_spc.sh ${bold}_sm ${fdir}
+		# ./11.func_spc.sh ${bold}_sm ${fdir}
 
-		immv ${fdir}/${bold}_sm_SPC ${fdir}/00.${bold}_native_preprocessed
+		immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
+		# immv ${fdir}/${bold}_sm_SPC ${fdir}/00.${bold}_native_preprocessed
 
 		# ./12.func_normalize.sh ${bold} ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
 

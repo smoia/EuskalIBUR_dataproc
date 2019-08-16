@@ -108,6 +108,7 @@ def filter_signal(data_dec, channel=4):
 def get_peaks(resp_filt):
     # Finding peaks
     co = sgn.detrend(resp_filt, type='linear', bp=0)
+    #!#
     pidx = pk.peak.indexes(co, thres=0.5, min_dist=120).tolist()
     plt.figure()
     plt.plot(co)

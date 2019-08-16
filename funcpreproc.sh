@@ -25,7 +25,7 @@ ses=$2
 
 flpr=sub-${sub}_ses-${ses}
 
-wdr=/home/nemo/Scrivania/data
+wdr=/media
 
 anat1=${flpr}_acq-uni_T1w 
 anat2=${flpr}_T2w
@@ -386,3 +386,9 @@ do
 
 done
 
+echo $(date)
+echo "************************************"
+echo "************************************"
+echo "***      Preproc COMPLETE!       ***"
+echo "************************************"
+echo "************************************"

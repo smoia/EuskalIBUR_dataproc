@@ -1,6 +1,7 @@
 from __future__ import division
 
 import os
+import argparse
 
 import numpy as np
 import peakutils as pk
@@ -10,6 +11,44 @@ import scipy.signal as sgn
 import scipy.interpolate as spint
 import scipy.stats as sct
 
+
+def _get_parser():
+    """
+    Parses command line inputs for this function
+
+    Returns
+    -------
+    parser.parse_args() : argparse dict
+
+    """
+    parser = argparse.ArgumentParser()
+    # Argument parser follow template provided by RalphyZ, also used by tedana.
+    # https://stackoverflow.com/a/43456577
+    optional = parser._action_groups.pop()
+    required = parser.add_argument_group('required arguments')
+    required.add_argument('-f', '--file',
+                          dest='filename',
+                          type=str,
+                          help=('Name of the file to input, '
+                                'possibly with fullpath'),
+                          required=True)
+    optional.add_argument('-tr', '--tr',
+                          dest='tr',
+                          type=float,
+                          help='TR of the GM data',
+                          default=1.5)
+    optional.add_argument('-nf', '--newfreq',
+                          dest='newfreq',
+                          type=float,
+                          help='Desired frequency of the biopac files',
+                          default=40)
+    optional.add_argument('-itr', '--ign_tr',
+                          dest='ign_tr',
+                          type=float,
+                          help='Number of timepoints to discard',
+                          default=400)
+    parser._action_groups.append(optional)
+    return parser
 
 
 def create_hrf(newfreq=40):
@@ -42,7 +81,7 @@ def create_hrf(newfreq=40):
     return hrf
 
 
-def prep_data(filename, tr=1.5, newfreq=40):
+def prep_data(filename, newfreq=40):
     data = np.genfromtxt(filename + '.acq.tsv.gz')
     idz = (data[:, 0]>=0).argmax()
     data = data[idz:, ]
@@ -164,9 +203,9 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40):
         np.savetxt(txtname, co_dm, fmt='%.18f')
 
 
-def partone(filename, channel=4):
-    data_dec = prep_data(filename)
-    data_dec = np.genfromtxt(filename + '_BH_dec.tsv.gz')
+def partone(filename, channel=4, tr=1.5, newfreq=40):
+    data_dec = prep_data(filename, newfreq)
+    # data_dec = np.genfromtxt(filename + '_BH_dec.tsv.gz')
     resp_filt = filter_signal(data_dec, channel)
     [co, pidx] = get_peaks(resp_filt)
     plt.plot(co)
@@ -175,22 +214,33 @@ def partone(filename, channel=4):
 
 
 # def parttwo(filename):
-def parttwo(co, pidx, filename):
-    hrf = create_hrf()
-    co_conv = get_petco2(co, pidx, hrf, filename)
+def parttwo(co, pidx, filename, tr=1.5, newfreq=40, ign_tr=400):
+    hrf = create_hrf(newfreq)
+    co_conv = get_petco2(co, pidx, hrf, filename, ign_tr)
     co_conv = np.genfromtxt('regr/' + filename + '_co_conv.1D')
+    #!#
     GM_name = filename + '_GM_melodic'
-    get_regr(GM_name, co_conv)
+    get_regr(GM_name, co_conv, tr, newfreq)
     GM_name = filename + '_GM_skundu'
-    get_regr(GM_name, co_conv)
+    get_regr(GM_name, co_conv, tr, newfreq)
+
+
+def _main(argv=None):
+    options = _get_parser().parse_args(argv)
+    # Reading first data
+    # newfreq = 40
+    # nrep = 2000
+    # tr = 1.5
+    # tps=340
+    filename = options.filename
+    newfreq = options.newfreq
+    tr = options.tr
+    channel = options.channel
+    ign_tr = options.ign_tr
+
+    co, pidx = partone(filename, channel, tr, newfreq)
+    parttwo(co, pidx, filename, tr, newfreq, ign_tr)
 
 
 if __name__ == '__main__':
-    # Reading first data
-    newfreq = 40
-    # nrep = 2000
-    tr = 1.5
-    # tps=340
-
-    co, pidx = partone(filename, channel=4)
-    parttwo(co, pidx, filename)
+	_main()

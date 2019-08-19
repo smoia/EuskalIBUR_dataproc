@@ -1,0 +1,38 @@
+import biopac_preproc as bio
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+fn = '' # filename
+ch = 4 # or 5
+
+co, pidx = bio.partone(fn,ch)
+
+reject_list = np.array([])
+# init def try import from
+def onpick_manualedit(event):
+    thisline = event.artist
+    xdata = thisline.get_xdata()
+    ind = event.ind
+    xdataind = xdata[ind]
+    print('onpick xind:',xdata[ind])
+    plt.plot(xdataind,co[xdata[ind]],'ro')
+
+    global reject_list
+    reject_list = np.append(reject_list,xdataind)
+
+
+# prepare interactive picking
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.set_title('click on points to add them to a removed list')
+
+ax.plot(co)
+co_y = co[pidx]
+line, = ax.plot(pidx, co_y, 'm*', picker=5)
+
+fig.canvas.mpl_connect('pick_event', onpick_manualedit)
+
+npidx = bio.manualchange(fn,pidx,reject_list)
+
+bio.parttwo(co, npidx, fn)

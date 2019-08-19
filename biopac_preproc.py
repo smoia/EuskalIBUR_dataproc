@@ -5,12 +5,16 @@ import argparse
 
 import numpy as np
 import peakutils as pk
+import matplotlib
 
 import matplotlib.pyplot as plt
 import scipy.signal as sgn
 import scipy.interpolate as spint
 import scipy.stats as sct
 
+#matplotlib.use("TkAgg")
+matplotlib.interactive(True)
+reject_list = np.array([])
 
 def _get_parser():
     """
@@ -126,9 +130,10 @@ def get_petco2(co, pidx, hrf, filename, ign_tr=400):
     co_int = co_int-(np.mean(co_int))
     plt.figure()
     plt.plot(co_int)
-    # np.savetxt('co_int.1D',co_int,fmt='%.18f')
+    np.savetxt(filename + '_co_int.1D',co_int,fmt='%.18f')
 
     co_conv = np.convolve(co_int, hrf)
+    # also ignore last 15 seconds
     coln = coln - ign_tr
     co_conv = co_conv[ign_tr:coln]
     plt.figure()
@@ -148,15 +153,18 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40):
     nGMx = np.arange(0, atps*tr, 1/newfreq)
     GM_40 = f(nGMx)
     GMln_40 = len(nGMx)
+    # Getting rid of first and last breathhold (and part after)
+    BH_len = 2319
+    GM = GM[BH_len:16240]
 
     # Detrend GM
     GM_dt = sgn.detrend(GM_40, type='linear', bp=0)
     plt.figure()
     plt.plot(GM_dt)
 
-    gmnrep = len(co_conv) - GMln_40
+    gmnrep = len(co_conv) - GMln_40 + BH_len
     GM_r = np.zeros((gmnrep))
-    for k in range(0, gmnrep):
+    for k in range(BH_len, gmnrep):
         GM_r[k] = np.corrcoef(GM_dt, co_conv[0+k:GMln_40+k].T)[1, 0]
 
     tax = np.arange(0, gmnrep/newfreq, 1/newfreq)
@@ -204,26 +212,50 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40):
         np.savetxt(txtname, co_dm, fmt='%.18f')
 
 
+def onpick_manualedit(event):
+    thisline = event.artist
+    xdata = thisline.get_xdata()
+    ind = event.ind
+    xdataind = xdata[ind]
+    print('onpick xind:',xdataind)
+
+    global reject_list
+    reject_list = np.append(reject_list,xdataind)
+
+
 def partone(filename, channel=4, tr=1.5, newfreq=40):
-    data_dec = prep_data(filename, newfreq)
-    # data_dec = np.genfromtxt(filename + '_BH_dec.tsv.gz')
+    # data_dec = prep_data(filename, newfreq)
+    data_dec = np.genfromtxt(filename + '_BH_dec.tsv.gz')
     resp_filt = filter_signal(data_dec, channel)
     [co, pidx] = get_peaks(resp_filt)
-    plt.plot(co)
-    plt.plot(co, 'm*', markevery=pidx)
+    # export original peaks
+    textname = filename + '_autopeaks.1D'
+    np.savetxt(textname, pidx)
     return co, pidx
 
+
+def manualchange(filename,pidx,reject_list):
+    # masking pidx and saving manual selection
+    pidx = np.array(pidx)
+    pmask = np.in1d(pidx, reject_list)
+    npidx = list(pidx[~pmask])
+    textname = filename + '_manualpeaks.1D'
+    np.savetxt(textname, npidx)
+    return npidx
 
 # def parttwo(filename):
 def parttwo(co, pidx, filename, tr=1.5, newfreq=40, ign_tr=400):
     hrf = create_hrf(newfreq)
     co_conv = get_petco2(co, pidx, hrf, filename, ign_tr)
-    co_conv = np.genfromtxt('regr/' + filename + '_co_conv.1D')
+    if not os.path.exists('regr'):
+        os.makedirs('regr')
+
+    # co_conv = np.genfromtxt('regr/' + filename + '_co_conv.1D')
     #!#
-    GM_name = filename + '_GM_melodic'
+    GM_name = filename + '_GM_skundu_vessel'
     get_regr(GM_name, co_conv, tr, newfreq)
-    GM_name = filename + '_GM_skundu'
-    get_regr(GM_name, co_conv, tr, newfreq)
+    # GM_name = filename + '_GM_skundu'
+    # get_regr(GM_name, co_conv, tr, newfreq)
 
 
 def _main(argv=None):

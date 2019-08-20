@@ -12,9 +12,10 @@ import scipy.signal as sgn
 import scipy.interpolate as spint
 import scipy.stats as sct
 
-#matplotlib.use("TkAgg")
-matplotlib.interactive(True)
+# matplotlib.use("TkAgg")
+# matplotlib.interactive(True)
 reject_list = np.array([])
+
 
 def _get_parser():
     """
@@ -121,20 +122,20 @@ def get_peaks(resp_filt):
     return co, pidx
 
 
-def get_petco2(co, pidx, hrf, filename, ign_tr=400):
+def get_petco2(co, pidx, hrf, filename, ign_tr=400, newfreq=40):
     # Extract PETco2
     coln = len(co)
     nx = np.linspace(0, coln, coln)
     f = spint.interp1d(pidx, co[pidx], fill_value='extrapolate')
     co_int = f(nx)
-    co_int = co_int-(np.mean(co_int))
+    co_int = co_int - co_int.mean()
     plt.figure()
     plt.plot(co_int)
     np.savetxt(filename + '_co_int.1D',co_int,fmt='%.18f')
 
     co_conv = np.convolve(co_int, hrf)
-    # also ignore last 15 seconds
-    coln = coln - ign_tr
+    # also ignore last 2 seconds for shape adjustement
+    coln = coln - 2*newfreq
     co_conv = co_conv[ign_tr:coln]
     plt.figure()
     plt.plot(co_conv, '-', co_int*100, '-')
@@ -155,40 +156,46 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40):
     GMln_40 = len(nGMx)
     # Getting rid of first and last breathhold (and part after)
     BH_len = 2319
-    GM = GM[BH_len:16240]
+    GM_40_cut = GM_40[BH_len:16240]
+    GM_40_len = len(GM_40_cut)
 
-    # Detrend GM
-    GM_dt = sgn.detrend(GM_40, type='linear', bp=0)
+    # Detrend GM # Molly hinted it might be better not to
+    # GM_dt = sgn.detrend(GM_40_cut, type='linear', bp=0)
+    GM_dt = GM_40_cut
     plt.figure()
     plt.plot(GM_dt)
 
     gmnrep = len(co_conv) - GMln_40 + BH_len
-    GM_r = np.zeros((gmnrep))
+    GM_r = np.zeros((gmnrep - BH_len))
     for k in range(BH_len, gmnrep):
-        GM_r[k] = np.corrcoef(GM_dt, co_conv[0+k:GMln_40+k].T)[1, 0]
+        GM_r[k-BH_len] = np.corrcoef(GM_dt, co_conv[0+k:GM_40_len+k].T)[1, 0]
 
-    tax = np.arange(0, gmnrep/newfreq, 1/newfreq)
+    tax = np.arange(0, (gmnrep-BH_len)/newfreq, 1/newfreq)
     plt.figure()
     plt.plot(tax, GM_r)
     optshift = int(GM_r.argmax(0))
     co_shift = co_conv[optshift:optshift+GMln_40]
 
     plt.figure()
-    plt.plot(sct.zscore(GM_dt))
+    plt.plot(sct.zscore(GM_40))
     plt.plot(sct.zscore(co_shift))
 
-    # Interpolate CO_CONV at TR
+    # Interpolate CO_CONV at TR and exporting it.
     f = spint.interp1d(np.linspace(0, GMln_40, GMln_40), co_shift, fill_value='extrapolate')
     trx = np.linspace(0, GMln_40, round(GMln_40/newfreq/tr))
     co_tr = f(trx)
     plt.figure()
     plt.plot(co_tr)
-    co_dm = co_tr - np.mean(co_tr)
+    co_dm = co_tr - co_tr.mean()
     textname = GM_name + '_co_regr.1D'
     np.savetxt(textname, co_dm, fmt='%.18f')
 
     # Prepare number of repetitions
-    rnrep = int(newfreq*tr*6)
+    rnrep = int(newfreq*tr*8)
+    # Extending co_conv on the right with just a bunch of zeroes
+    # Thought about doing a sort of moving average, doesn't really make sense.
+    co_conv = np.pad(co_conv,(0,optshift+rnrep),'mean')
+
     if optshift-rnrep < 0:
         repmin = -optshift
     else:
@@ -207,7 +214,7 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40):
         co_shift = co_conv[optshift+k:optshift+GMln_40+k]
         f = spint.interp1d(np.linspace(0, GMln_40, GMln_40), co_shift, fill_value='extrapolate')
         co_tr = f(trx)
-        co_dm = co_tr - np.mean(co_tr)
+        co_dm = co_tr - co_tr.mean()
         txtname = GM_dir + '/shift_' + '%04d' % (k + rnrep) + '.1D'
         np.savetxt(txtname, co_dm, fmt='%.18f')
 
@@ -243,10 +250,11 @@ def manualchange(filename,pidx,reject_list):
     np.savetxt(textname, npidx)
     return npidx
 
+
 # def parttwo(filename):
 def parttwo(co, pidx, filename, tr=1.5, newfreq=40, ign_tr=400):
     hrf = create_hrf(newfreq)
-    co_conv = get_petco2(co, pidx, hrf, filename, ign_tr)
+    co_conv = get_petco2(co, pidx, hrf, filename, ign_tr, newfreq)
     if not os.path.exists('regr'):
         os.makedirs('regr')
 

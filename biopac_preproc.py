@@ -230,8 +230,8 @@ def onpick_manualedit(event):
 
 
 def partone(filename, channel=4, tr=1.5, newfreq=40):
-    data_dec = decimate_data(filename, newfreq)
-    # data_dec = np.genfromtxt(filename + '_dec.tsv.gz')
+    # data_dec = decimate_data(filename, newfreq)
+    data_dec = np.genfromtxt(filename + '_dec.tsv.gz')
     resp_filt = filter_signal(data_dec, channel)
     [co, pidx] = get_peaks(resp_filt)
     # export original peaks

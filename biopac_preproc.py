@@ -5,7 +5,6 @@ import argparse
 
 import numpy as np
 import peakutils as pk
-import matplotlib
 
 import matplotlib.pyplot as plt
 import scipy.signal as sgn
@@ -86,11 +85,11 @@ def create_hrf(newfreq=40):
     return hrf
 
 
-def prep_data(filename, newfreq=40):
+def decimate_data(filename, newfreq=40):
     data = np.genfromtxt(filename + '.acq.tsv.gz')
     idz = (data[:, 0]>=0).argmax()
     data = data[idz:, ]
-    f = spint.interp1d(data[idz:, 0], data[idz:, ], axis=0, fill_value='extrapolate')
+    f = spint.interp1d(data[:, 0], data[:, ], axis=0, fill_value='extrapolate')
     data_tdec = np.arange(0, data[-1, 0], 1/newfreq)
     data_dec = f(data_tdec)
 
@@ -231,8 +230,8 @@ def onpick_manualedit(event):
 
 
 def partone(filename, channel=4, tr=1.5, newfreq=40):
-    # data_dec = prep_data(filename, newfreq)
-    data_dec = np.genfromtxt(filename + '_BH_dec.tsv.gz')
+    data_dec = decimate_data(filename, newfreq)
+    # data_dec = np.genfromtxt(filename + '_dec.tsv.gz')
     resp_filt = filter_signal(data_dec, channel)
     [co, pidx] = get_peaks(resp_filt)
     # export original peaks
@@ -260,10 +259,8 @@ def parttwo(co, pidx, filename, tr=1.5, newfreq=40, ign_tr=400):
 
     # co_conv = np.genfromtxt('regr/' + filename + '_co_conv.1D')
     #!#
-    GM_name = filename + '_GM_skundu_vessel'
+    GM_name = filename + '_GM'
     get_regr(GM_name, co_conv, tr, newfreq)
-    # GM_name = filename + '_GM_skundu'
-    # get_regr(GM_name, co_conv, tr, newfreq)
 
 
 def _main(argv=None):

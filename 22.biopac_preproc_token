@@ -3,10 +3,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-fn = '' # filename
-ch = 4 # or 5
+# run once
+import biopac_decimate
 
-co, pidx = bio.partone(fn,ch)
+
+sub = '007'
+ses = '07'
+
+
+filename = 'PHYSIO/BIDS/sub-' + sub + '/ses-' + ses + '/func/sub-' + sub + '_ses-' + ses + '_task-breathhold_physio'
+GM_name = 'CVR/sub-' + sub + '_ses-' + ses + '_GM_OC_avg.txt'
+
+co = np.genfromtxt(filename + '_co_orig.1D')
+pidx = np.genfromtxt(filename + '_autopeaks.1D').astype('int')
 
 reject_list = np.array([])
 # init def try import from
@@ -33,6 +42,6 @@ line, = ax.plot(pidx, co_y, 'm*', picker=5)
 
 fig.canvas.mpl_connect('pick_event', onpick_manualedit)
 
-npidx = bio.manualchange(fn,pidx,reject_list)
+npidx = bio.manualchange(filename, pidx, reject_list)
 
-bio.parttwo(co, npidx, fn)
+bio.parttwo(co, npidx, filename, GM_name)

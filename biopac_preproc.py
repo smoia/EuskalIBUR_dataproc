@@ -36,6 +36,12 @@ def _get_parser():
                           help=('Name of the file to input, '
                                 'possibly with fullpath'),
                           required=True)
+    required.add_argument('-gm', '--gmfile',
+                          dest='GM_name',
+                          type=str,
+                          help=('Name of the average GM, '
+                                'possibly with fullpath'),
+                          required=True)
     optional.add_argument('-tr', '--tr',
                           dest='tr',
                           type=float,
@@ -86,7 +92,7 @@ def create_hrf(newfreq=40):
 
 
 def decimate_data(filename, newfreq=40):
-    data = np.genfromtxt(filename + '.acq.tsv.gz')
+    data = np.genfromtxt(filename + '.tsv.gz')
     idz = (data[:, 0]>=0).argmax()
     data = data[idz:, ]
     f = spint.interp1d(data[:, 0], data[:, ], axis=0, fill_value='extrapolate')
@@ -190,7 +196,7 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40):
     np.savetxt(textname, co_dm, fmt='%.18f')
 
     # Prepare number of repetitions
-    rnrep = int(newfreq*tr*8)
+    rnrep = int(newfreq*tr*10)
     # Extending co_conv on the right with just a bunch of zeroes
     # Thought about doing a sort of moving average, doesn't really make sense.
     co_conv = np.pad(co_conv,(0,optshift+rnrep),'mean')
@@ -230,17 +236,19 @@ def onpick_manualedit(event):
 
 
 def partone(filename, channel=4, tr=1.5, newfreq=40):
-    # data_dec = decimate_data(filename, newfreq)
-    data_dec = np.genfromtxt(filename + '_dec.tsv.gz')
+    data_dec = decimate_data(filename, newfreq)
+    # data_dec = np.genfromtxt(filename + '_dec.tsv.gz')
     resp_filt = filter_signal(data_dec, channel)
     [co, pidx] = get_peaks(resp_filt)
     # export original peaks
     textname = filename + '_autopeaks.1D'
     np.savetxt(textname, pidx)
+    textname = filename + '_co_orig.1D'
+    np.savetxt(textname, co)
     return co, pidx
 
 
-def manualchange(filename,pidx,reject_list):
+def manualchange(filename, pidx, reject_list):
     # masking pidx and saving manual selection
     pidx = np.array(pidx)
     pmask = np.in1d(pidx, reject_list)
@@ -251,7 +259,7 @@ def manualchange(filename,pidx,reject_list):
 
 
 # def parttwo(filename):
-def parttwo(co, pidx, filename, tr=1.5, newfreq=40, ign_tr=400):
+def parttwo(co, pidx, filename, GM_name, tr=1.5, newfreq=40, ign_tr=400):
     hrf = create_hrf(newfreq)
     co_conv = get_petco2(co, pidx, hrf, filename, ign_tr, newfreq)
     if not os.path.exists('regr'):
@@ -259,7 +267,6 @@ def parttwo(co, pidx, filename, tr=1.5, newfreq=40, ign_tr=400):
 
     # co_conv = np.genfromtxt('regr/' + filename + '_co_conv.1D')
     #!#
-    GM_name = filename + '_GM'
     get_regr(GM_name, co_conv, tr, newfreq)
 
 
@@ -271,13 +278,14 @@ def _main(argv=None):
     # tr = 1.5
     # tps=340
     filename = options.filename
+    GM_name = options.GM_name
     newfreq = options.newfreq
     tr = options.tr
     channel = options.channel
     ign_tr = options.ign_tr
 
     co, pidx = partone(filename, channel, tr, newfreq)
-    parttwo(co, pidx, filename, tr, newfreq, ign_tr)
+    parttwo(co, pidx, filename, GM_name, tr, newfreq, ign_tr)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+wdr=/media
+
+
+### Main ###
+
+cd ${wdr}
+
 for sub in $(seq -f %03g 1 10)
 do
 	for ses in $(seq -f %02g 1 10)

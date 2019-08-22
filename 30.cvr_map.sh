@@ -15,6 +15,7 @@ wdr=/media
 step=10
 lag=15
 freq=40
+tr=1.5
 
 
 ### Main ###
@@ -27,7 +28,7 @@ let miter=poslag*2
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 flpr=sub-${sub}_ses-${ses}
 
-shiftdir=${flpr}_GM_OC_avg.txt_regr_shift
+shiftdir=${flpr}_GM_OC_avg_regr_shift
 
 cd ${wdr}/CVR
 
@@ -86,7 +87,8 @@ do
 	fi
 done
 
-fslmerge -t ${flpr}_r2_time tmp.${flpr}_res/${flpr}_r2_*
+fslmerge -tr ${flpr}_r2_time tmp.${flpr}_res/${flpr}_r2_* ${1.5}
+fslmerge -tr ${flpr}_betas_time tmp.${flpr}_res/${flpr}_betas_* ${1.5}
 # fslmerge -t ${flpr}_betas_time tmp.${flpr}_res/${flpr}_betas_*
 
 fslmaths ${flpr}_r2_time -Tmaxn ${flpr}_cvr_idx
@@ -97,7 +99,7 @@ fslmaths ${flpr}_cvr_idx -mul ${step} -sub ${poslag} -mul 0.025 ${flpr}_cvr_lag
 
 maxidx=( $( fslstats ${flpr}_cvr_idx -R ) )
 
-for i in $( seq maxidx[0] maxidx[1] )
+for i in $( seq -f %g ${maxidx[0]} ${maxidx[1]} )
 do
 	let v=i*step
 	v=$( printf %04d $v )
@@ -116,7 +118,7 @@ then
 fi
 mv ${flpr}_cvr* ${flpr}_map_cvr/.
 
-rm -rf tmp.*
+# rm -rf tmp.*
 
 # done
 

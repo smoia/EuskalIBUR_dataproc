@@ -34,7 +34,7 @@ do
 
 		fslmaths ${anat}_GM_native -kernel gauss 2.5 -ero ${anat}_GM_eroded
 
-		fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_RPI_bet_meica/ts_OC -m ${anat}_GM_eroded > sub-${sub}_ses-${ses}_GM_OC_avg.txt
+		fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_RPI_bet_meica/ts_OC -m ${anat}_GM_eroded > sub-${sub}_ses-${ses}_GM_OC_avg.1D
 
 		cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_mcf_demean.par ./sub-${sub}_ses-${ses}_demean.par
 		cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_mcf_deriv1.par ./sub-${sub}_ses-${ses}_deriv1.par

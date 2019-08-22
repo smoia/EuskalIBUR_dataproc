@@ -151,7 +151,7 @@ def get_petco2(co, pidx, hrf, filename, ign_tr=400, newfreq=40):
 
 
 def get_regr(GM_name, co_conv, tr=1.5, newfreq=40):
-    GM = np.genfromtxt(GM_name)
+    GM = np.genfromtxt(GM_name + '.1D')
 
     # Interpolate GMOC at 40 Hz
     atps = len(GM)
@@ -161,7 +161,7 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40):
     GMln_40 = len(nGMx)
     # Getting rid of first and last breathhold (and part after)
     BH_len = 2319
-    GM_40_cut = GM_40[BH_len:16240]
+    GM_40_cut = GM_40[BH_len:16241]
     GM_40_len = len(GM_40_cut)
 
     # Detrend GM # Molly hinted it might be better not to
@@ -176,16 +176,25 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40):
         GM_r[k-BH_len] = np.corrcoef(GM_dt, co_conv[0+k:GM_40_len+k].T)[1, 0]
 
     tax = np.arange(0, (gmnrep-BH_len)/newfreq, 1/newfreq)
-    plt.figure()
+    set_dpi = 100
+    plt.figure(figsize=(18,10), dpi=set_dpi)
     plt.plot(tax, GM_r)
+    plt.title('optshift')
+    plt.savefig(GM_name + '_optshift.png', dpi=set_dpi)
+    plt.close()
     optshift = int(GM_r.argmax(0))
     co_shift = co_conv[optshift:optshift+GMln_40]
 
-    plt.figure()
+    set_dpi = 100
+    plt.figure(figsize=(18,10), dpi=set_dpi)
     plt.plot(sct.zscore(GM_40))
     plt.plot(sct.zscore(co_shift))
+    plt.title('GM and shift')
+    plt.savefig(GM_name + '_co_regr.png', dpi=set_dpi)
+    plt.close()
 
-    # Interpolate CO_CONV at TR and exporting it.
+
+    # Interpolate CO_SHIFT at TR and exporting it.
     f = spint.interp1d(np.linspace(0, GMln_40, GMln_40), co_shift, fill_value='extrapolate')
     trx = np.linspace(0, GMln_40, round(GMln_40/newfreq/tr))
     co_tr = f(trx)
@@ -201,11 +210,15 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40):
     # Thought about doing a sort of moving average, doesn't really make sense.
     co_conv = np.pad(co_conv,(0,optshift+rnrep),'mean')
 
-    if optshift-rnrep < 0:
-        repmin = -optshift
+    if optshift < rnrep:
+        extrapad = rnrep-optshift
+        co_conv = np.pad(co_conv,(extrapad),'mean')
     else:
-        repmin = -rnrep
+        extrapad = 0
 
+    repmin = -rnrep
+
+    # Possibly useless but it's on the side that is not a problem.
     if optshift+rnrep+GMln_40 > len(co_conv):
         repmax = len(co_conv)-optshift-GMln_40
     else:
@@ -213,10 +226,11 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40):
 
     # Save regressors
     GM_dir = GM_name + '_regr_shift'
-    os.mkdir(GM_dir)
+    if not os.path.exists('regr'):
+        os.makedirs('regr')
 
     for k in range(repmin, repmax+1):
-        co_shift = co_conv[optshift+k:optshift+GMln_40+k]
+        co_shift = co_conv[optshift+extrapad+k:optshift+extrapad+GMln_40+k]
         f = spint.interp1d(np.linspace(0, GMln_40, GMln_40), co_shift, fill_value='extrapolate')
         co_tr = f(trx)
         co_dm = co_tr - co_tr.mean()

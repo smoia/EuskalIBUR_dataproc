@@ -51,7 +51,7 @@ then
 	rm -rf tmp.${flpr}_res
 fi
 mkdir tmp.${flpr}_res
-# mkdir tmp.${flpr}_res_reml
+# # mkdir tmp.${flpr}_res_reml
 
 for i in $( seq -f %04g 0 ${step} ${miter} )
 do
@@ -68,7 +68,7 @@ do
 		-x1D_uncensored ${shiftdir}/${i}_uncensored_mat.1D \
 		-ortvec ${flpr}_demean.par motdemean \
 		-ortvec ${flpr}_deriv1.par motderiv1 \
-		-rout \
+		-rout -tout \
 		-bucket tmp.${flpr}_res/stats_${i}.nii.gz
 
 		3dbucket -prefix tmp.${flpr}_res/${flpr}_r2_${i}.nii.gz -abuc tmp.${flpr}_res/stats_${i}.nii.gz'[0]' -overwrite
@@ -87,8 +87,8 @@ do
 	fi
 done
 
-fslmerge -tr ${flpr}_r2_time tmp.${flpr}_res/${flpr}_r2_* ${1.5}
-fslmerge -tr ${flpr}_betas_time tmp.${flpr}_res/${flpr}_betas_* ${1.5}
+fslmerge -tr ${flpr}_r2_time tmp.${flpr}_res/${flpr}_r2_* ${tr}
+fslmerge -tr ${flpr}_betas_time tmp.${flpr}_res/${flpr}_betas_* ${tr}
 # fslmerge -t ${flpr}_betas_time tmp.${flpr}_res/${flpr}_betas_*
 
 fslmaths ${flpr}_r2_time -Tmaxn ${flpr}_cvr_idx

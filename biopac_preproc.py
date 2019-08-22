@@ -150,7 +150,7 @@ def get_petco2(co, pidx, hrf, filename, ign_tr=400, newfreq=40):
     return co_conv
 
 
-def get_regr(GM_name, co_conv, tr=1.5, newfreq=40):
+def get_regr(GM_name, co_conv, tr=1.5, newfreq=40, ign_tr=400):
     GM = np.genfromtxt(GM_name + '.1D')
 
     # Interpolate GMOC at 40 Hz
@@ -206,13 +206,15 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40):
 
     # Prepare number of repetitions
     rnrep = int(newfreq*tr*10)
+    #!# For some arcane reason I don't fully understand yet, add ign_tr to optshift
+    # optshift=optshift+ign_tr
     # Extending co_conv on the right with just a bunch of zeroes
     # Thought about doing a sort of moving average, doesn't really make sense.
     co_conv = np.pad(co_conv,(0,optshift+rnrep),'mean')
 
     if optshift < rnrep:
         extrapad = rnrep-optshift
-        co_conv = np.pad(co_conv,(extrapad),'mean')
+        co_conv = np.pad(co_conv,(extrapad,0),'mean')
     else:
         extrapad = 0
 
@@ -281,7 +283,7 @@ def parttwo(co, pidx, filename, GM_name, tr=1.5, newfreq=40, ign_tr=400):
 
     # co_conv = np.genfromtxt('regr/' + filename + '_co_conv.1D')
     #!#
-    get_regr(GM_name, co_conv, tr, newfreq)
+    get_regr(GM_name, co_conv, tr, newfreq, ign_tr)
 
 
 def _main(argv=None):

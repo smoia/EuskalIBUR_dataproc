@@ -14,7 +14,8 @@ import scipy.stats as sct
 # matplotlib.use("TkAgg")
 # matplotlib.interactive(True)
 reject_list = np.array([])
-
+SET_DPI = 100
+FIGSIZE = (18,10)
 
 def _get_parser():
     """
@@ -56,7 +57,7 @@ def _get_parser():
                           dest='ign_tr',
                           type=float,
                           help='Number of timepoints to discard',
-                          default=400)
+                          default=600)
     parser._action_groups.append(optional)
     return parser
 
@@ -127,117 +128,123 @@ def get_peaks(resp_filt):
     return co, pidx
 
 
-def get_petco2(co, pidx, hrf, filename, ign_tr=400, newfreq=40):
+def get_petco2(co, pidx, hrf, filename):
     # Extract PETco2
-    coln = len(co)
-    nx = np.linspace(0, coln, coln)
+    co_lenght = len(co)
+    nx = np.linspace(0, co_lenght, co_lenght)
     f = spint.interp1d(pidx, co[pidx], fill_value='extrapolate')
-    co_int = f(nx)
-    co_int = co_int - co_int.mean()
-    plt.figure()
-    plt.plot(co_int)
-    np.savetxt(filename + '_co_int.1D',co_int,fmt='%.18f')
+    co_peakline = f(nx)
 
-    co_conv = np.convolve(co_int, hrf)
-    # also ignore last 2 seconds for shape adjustement
-    coln = coln - 2*newfreq
-    co_conv = co_conv[ign_tr:coln]
-    plt.figure()
-    plt.plot(co_conv, '-', co_int*100, '-')
+    # Plot PETco2
+    plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+    plt.title('CO2 and regressor')
+    plt.plot(co, '-', co_peakline, '-')
+    plt.savefig(filename + '_co_peakline.png', dpi=SET_DPI)
+    plt.close()
+
+    # Demean and export
+    co_peakline = co_peakline - co_peakline.mean()
+    np.savetxt(filename + '_co_peakline.1D',co_peakline,fmt='%.18f')
+
+    # Convolve, and then rescale to have same amplitude (?)
+    co_conv = np.convolve(co_peakline, hrf)
+    co_conv = np.interp(co_conv, (co_conv.min(), co_conv.max()), (co_peakline.min(), co_peakline.max()))
+
+    # co_conv = co_conv[ign_tr:co_lenght]
+    plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+    plt.title('regressor and convolved regressor')
+    plt.plot(co_conv, '-', co_peakline, '-')
+    plt.savefig(filename + '_co_peakline.png', dpi=SET_DPI)
+    plt.close()
 
     np.savetxt(filename + '_co_conv.1D', co_conv, fmt='%.18f')
 
     return co_conv
 
 
-def get_regr(GM_name, co_conv, tr=1.5, newfreq=40, ign_tr=400):
-    GM = np.genfromtxt(GM_name + '.1D')
+def export_regressor(regr_x, co_shift, GM_x, GM_name, suffix='_co_regr'):
+    f = spint.interp1d(regr_x, co_shift, fill_value='extrapolate')
+    co_tr = f(GM_x)
+    co_tr = co_tr - co_tr.mean()
+    textname = GM_name + suffix + '.1D'
+    np.savetxt(textname, co_tr, fmt='%.18f')
 
-    # Interpolate GMOC at 40 Hz
-    atps = len(GM)
-    f = spint.interp1d(np.linspace(0, atps*tr, atps), GM, fill_value='extrapolate')
-    nGMx = np.arange(0, atps*tr, 1/newfreq)
-    GM_40 = f(nGMx)
-    GMln_40 = len(nGMx)
-    # Getting rid of first and last breathhold (and part after)
-    BH_len = 2319
-    GM_40_cut = GM_40[BH_len:16241]
-    GM_40_len = len(GM_40_cut)
+
+def get_regr(GM_name, co_conv, tr=1.5, newfreq=40, BH_len=58, nBH=8):
+    GM = np.genfromtxt(GM_name + '.1D')
+    sequence_tps = len(GM)
+
+    regr_x = np.arange(0, ((sequence_tps-1) * tr + 1/newfreq), 1/newfreq)
+    GM_x = np.linspace(0, (sequence_tps - 1) * tr, sequence_tps)
+
+    regr_len = len(regr_x)
+    BH_len_upsampled = BH_len*newfreq
+
+    f = spint.interp1d(GM_x, GM, fill_value='extrapolate')
+    GM_upsampled = f(regr_x)
+
+    # Preparing central breathhold and CO2 trace for Xcorr
+    # CO2 trace should have the equivalent of
+    # ten tr of bad data at the beginning of the file
+    GM_cut = GM_upsampled[BH_len_upsampled:BH_len_upsampled*(nBH-1)]
+    co_conv_cut = co_conv[BH_len_upsampled:]
 
     # Detrend GM # Molly hinted it might be better not to
-    # GM_dt = sgn.detrend(GM_40_cut, type='linear', bp=0)
-    GM_dt = GM_40_cut
-    plt.figure()
-    plt.plot(GM_dt)
+    # GM_dt = sgn.detrend(GM_cut, type='linear', bp=0)
 
-    gmnrep = len(co_conv) - GMln_40 + BH_len
-    GM_r = np.zeros((gmnrep - BH_len))
-    for k in range(BH_len, gmnrep):
-        GM_r[k-BH_len] = np.corrcoef(GM_dt, co_conv[0+k:GM_40_len+k].T)[1, 0]
+    GM_cut_len = len(GM_cut)
+    nrep = len(co_conv_cut) - GM_cut_len
+    if nrep > BH_len_upsampled:
+        nrep = BH_len_upsampled
 
-    tax = np.arange(0, (gmnrep-BH_len)/newfreq, 1/newfreq)
-    set_dpi = 100
-    plt.figure(figsize=(18,10), dpi=set_dpi)
-    plt.plot(tax, GM_r)
+    GM_co_r = np.zeros(nrep)
+    for i in range(0, nrep):
+        GM_co_r[i] = np.corrcoef(GM_cut, co_conv[0+i:GM_cut_len+i].T)[1, 0]
+
+    optshift = int(GM_co_r.argmax())
+    co_shift = co_conv[optshift:optshift+regr_len]
+
+    # preparing for and exporting figures of shift
+    time_axis = np.arange(0, nrep/newfreq, 1/newfreq)
+
+    plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+    plt.plot(time_axis, GM_co_r)
     plt.title('optshift')
-    plt.savefig(GM_name + '_optshift.png', dpi=set_dpi)
-    plt.close()
-    optshift = int(GM_r.argmax(0))
-    co_shift = co_conv[optshift:optshift+GMln_40]
+    plt.savefig(GM_name + '_optshift.png', dpi=SET_DPI)
 
-    set_dpi = 100
-    plt.figure(figsize=(18,10), dpi=set_dpi)
-    plt.plot(sct.zscore(GM_40))
-    plt.plot(sct.zscore(co_shift))
+    plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+    plt.plot(sct.zscore(co_shift), '-', sct.zscore(GM_upsampled), '-')
     plt.title('GM and shift')
-    plt.savefig(GM_name + '_co_regr.png', dpi=set_dpi)
-    plt.close()
+    plt.savefig(GM_name + '_co_regr.png', dpi=SET_DPI)
 
+    export_regressor(regr_x, co_shift, GM_x, GM_name, '_co_regr')
 
-    # Interpolate CO_SHIFT at TR and exporting it.
-    f = spint.interp1d(np.linspace(0, GMln_40, GMln_40), co_shift, fill_value='extrapolate')
-    trx = np.linspace(0, GMln_40, round(GMln_40/newfreq/tr))
-    co_tr = f(trx)
-    plt.figure()
-    plt.plot(co_tr)
-    co_dm = co_tr - co_tr.mean()
-    textname = GM_name + '_co_regr.1D'
-    np.savetxt(textname, co_dm, fmt='%.18f')
-
-    # Prepare number of repetitions
-    rnrep = int(newfreq*tr*10)
-    #!# For some arcane reason I don't fully understand yet, add ign_tr to optshift
-    # optshift=optshift+ign_tr
-    # Extending co_conv on the right with just a bunch of zeroes
-    # Thought about doing a sort of moving average, doesn't really make sense.
-    co_conv = np.pad(co_conv,(0,optshift+rnrep),'mean')
-
-    if optshift < rnrep:
-        extrapad = rnrep-optshift
-        co_conv = np.pad(co_conv,(extrapad,0),'mean')
-    else:
-        extrapad = 0
-
-    repmin = -rnrep
-
-    # Possibly useless but it's on the side that is not a problem.
-    if optshift+rnrep+GMln_40 > len(co_conv):
-        repmax = len(co_conv)-optshift-GMln_40
-    else:
-        repmax = rnrep
-
-    # Save regressors
+    # Create folder
     GM_dir = GM_name + '_regr_shift'
-    if not os.path.exists('regr'):
-        os.makedirs('regr')
+    if not os.path.exists(GM_dir):
+        os.makedirs(GM_dir)
 
-    for k in range(repmin, repmax+1):
-        co_shift = co_conv[optshift+extrapad+k:optshift+extrapad+GMln_40+k]
-        f = spint.interp1d(np.linspace(0, GMln_40, GMln_40), co_shift, fill_value='extrapolate')
-        co_tr = f(trx)
-        co_dm = co_tr - co_tr.mean()
-        txtname = GM_dir + '/shift_' + '%04d' % (k + rnrep) + '.1D'
-        np.savetxt(txtname, co_dm, fmt='%.18f')
+    # Set num of fine shifts: 9 seconds is a bit more than physiologically feasible
+    nrep = 9 * newfreq
+
+    # Padding regressor for shift, and padding optshift too
+    if nrep > optshift:
+        left_pad = nrep - optshift
+    else:
+        left_pad = 0
+
+    if (optshift + nrep + regr_len) > len(co_conv):
+        right_pad = (optshift + nrep + regr_len) - len(co_conv)
+    else:
+        right_pad = 0
+
+    co_padded = np.pad(co_conv, (left_pad, right_pad),'mean')
+    optshift_padded = optshift + left_pad
+
+    for i in range(-nrep, nrep):
+        co_shift = co_padded[optshift_padded-i:optshift_padded-i+regr_len]
+        suffix = '/shift_' + '%04d' % (i + nrep)
+        export_regressor(regr_x, co_shift, GM_x, GM_dir, suffix)
 
 
 def onpick_manualedit(event):
@@ -275,9 +282,9 @@ def manualchange(filename, pidx, reject_list):
 
 
 # def parttwo(filename):
-def parttwo(co, pidx, filename, GM_name, tr=1.5, newfreq=40, ign_tr=400):
+def parttwo(co, pidx, filename, GM_name, tr=1.5, newfreq=40, ign_tr=600):
     hrf = create_hrf(newfreq)
-    co_conv = get_petco2(co, pidx, hrf, filename, ign_tr, newfreq)
+    co_conv = get_petco2(co, pidx, hrf, filename)
     if not os.path.exists('regr'):
         os.makedirs('regr')
 

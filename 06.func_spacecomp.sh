@@ -73,7 +73,7 @@ fslmaths ${func}_mcf -mas ${mref}_brain_mask ${func}_bet
 
 ## 02. Anat Coreg
 
-if [[ "${anat}" != "none" ]]
+if [[ "${anat}" != "none" && ! -e "../reg/${anat}2${mref}0GenericAffine.mat" ]]
 then
 	echo "Coregistering ${func} to ${anat}"
 	flirt -in ${anat}_brain -ref ${mref}_brain -out ${anat}2${mref} -omat ${anat}2${mref}_fsl.mat \

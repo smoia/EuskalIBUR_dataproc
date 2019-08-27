@@ -17,6 +17,7 @@ reject_list = np.array([])
 SET_DPI = 100
 FIGSIZE = (18,10)
 
+
 def _get_parser():
     """
     Parses command line inputs for this function

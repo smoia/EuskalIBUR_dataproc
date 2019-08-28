@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wdr=/home/nemo/Scrivania/Test_workbench/Acq
+wdr=/media
 
 adir=anat_preproc
 fdir=func_preproc

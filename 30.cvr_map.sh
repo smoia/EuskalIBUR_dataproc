@@ -10,10 +10,11 @@
 sub=$1
 ses=$2
 
-wdr=/media
+# wdr=/media
+wdr=/home/nemo/Scrivania/Test_workbench/Acq
 
 step=10
-lag=15
+lag=9
 freq=40
 tr=1.5
 
@@ -73,6 +74,7 @@ do
 
 		3dbucket -prefix tmp.${flpr}_res/${flpr}_r2_${i}.nii.gz -abuc tmp.${flpr}_res/stats_${i}.nii.gz'[0]' -overwrite
 		3dbucket -prefix tmp.${flpr}_res/${flpr}_betas_${i}.nii.gz -abuc tmp.${flpr}_res/stats_${i}.nii.gz'[2]' -overwrite
+		3dbucket -prefix tmp.${flpr}_res/${flpr}_tstat_${i}.nii.gz -abuc tmp.${flpr}_res/stats_${i}.nii.gz'[3]' -overwrite
 
 		# 3dREMLfit -matrix ${shiftdir}/${i}_uncensored_mat.1D \
 		# -input ${flpr}_SPC.nii.gz -nobout \
@@ -89,6 +91,7 @@ done
 
 fslmerge -tr ${flpr}_r2_time tmp.${flpr}_res/${flpr}_r2_* ${tr}
 fslmerge -tr ${flpr}_betas_time tmp.${flpr}_res/${flpr}_betas_* ${tr}
+fslmerge -tr ${flpr}_tstat_time tmp.${flpr}_res/${flpr}_tstat_* ${tr}
 # fslmerge -t ${flpr}_betas_time tmp.${flpr}_res/${flpr}_betas_*
 
 fslmaths ${flpr}_r2_time -Tmaxn ${flpr}_cvr_idx
@@ -96,6 +99,7 @@ fslmaths ${flpr}_cvr_idx -mul ${step} -sub ${poslag} -mul 0.025 ${flpr}_cvr_lag
 
 # split idx volumes in masks, add
 3dcalc -a ${flpr}_cvr_idx.nii.gz -expr 'a*0' -prefix ${flpr}_cvr.nii.gz -overwrite
+3dcalc -a ${flpr}_cvr_idx.nii.gz -expr 'a*0' -prefix ${flpr}_tmap.nii.gz -overwrite
 
 maxidx=( $( fslstats ${flpr}_cvr_idx -R ) )
 
@@ -105,6 +109,8 @@ do
 	v=$( printf %04d $v )
 	3dcalc -a ${flpr}_cvr.nii.gz -b tmp.${flpr}_res/${flpr}_betas_${v}.nii.gz -c ${flpr}_cvr_idx.nii.gz \
 	-expr "a+b*equals(c,${i})" -prefix ${flpr}_cvr.nii.gz -overwrite
+	3dcalc -a ${flpr}_tmap.nii.gz -b tmp.${flpr}_res/${flpr}_tstat_${v}.nii.gz -c ${flpr}_cvr_idx.nii.gz \
+	-expr "a+b*equals(c,${i})" -prefix ${flpr}_tmap.nii.gz -overwrite
 done
 
 # the factor 71.2 is to take into account the pressure in mmHg:
@@ -117,6 +123,7 @@ then
 	mkdir ${flpr}_map_cvr
 fi
 mv ${flpr}_cvr* ${flpr}_map_cvr/.
+mv ${flpr}_tmap* ${flpr}_map_cvr/.
 
 # rm -rf tmp.*
 

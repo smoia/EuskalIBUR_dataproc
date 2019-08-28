@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wdr=/media
+wdr=/home/nemo/Scrivania/Test_workbench/Acq
 
 adir=anat_preproc
 fdir=func_preproc
@@ -14,9 +14,9 @@ then
 	mkdir CVR
 fi
 
-for sub in $( seq -f %03g 1 10 )
+for sub in 007 #$( seq -f %03g 1 10 )
 do
-	for ses in $( seq -f %02g 1 10 )
+	for ses in 07 #$( seq -f %02g 1 10 )
 	do
 		flpr=sub-${sub}_ses-${ses}
 		
@@ -25,10 +25,10 @@ do
 		mref=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
 		aref=${flpr}_T2w
 
-		# antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-${ses}/${adir}/${anat}_GM.nii.gz -r ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${mref}.nii.gz \
-		# -o ${wdr}/CVR/${anat}_GM_native.nii.gz -n MultiLabel \
-		# -t [${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${anat}0GenericAffine.mat,1] \
-		# -t ${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${mref}0GenericAffine.mat
+		antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-${ses}/${adir}/${anat}_GM.nii.gz -r ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${mref}.nii.gz \
+		-o ${wdr}/CVR/${anat}_GM_native.nii.gz -n MultiLabel \
+		-t [${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${anat}0GenericAffine.mat,1] \
+		-t ${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${mref}0GenericAffine.mat
 
 		cd ${wdr}/CVR
 

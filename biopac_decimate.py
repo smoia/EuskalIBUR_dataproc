@@ -4,16 +4,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 wdir = '/media/PHYSIO/BIDS'
-filename = '' # filename
-ch = 5 # or 5
+filename = ''  # filename
+ch = 4  # or 5
 
 
 for sub in range(9,11):
     for ses in range(7,11):
         if ses >= 7:
-            ch = 6
-        else:
             ch = 5
+        else:
+            ch = 4
 
         os.chdir(wdir)
         path = 'sub-' + str(sub).zfill(3) + '/ses-' + str(ses).zfill(2) + '/func'

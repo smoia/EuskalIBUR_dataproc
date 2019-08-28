@@ -1,4 +1,4 @@
-from __future__ import division
+#!/usr/bin/env python3
 
 import os
 import argparse
@@ -54,11 +54,16 @@ def _get_parser():
                           type=float,
                           help='Desired frequency of the biopac files',
                           default=40)
-    optional.add_argument('-itr', '--ign_tr',
-                          dest='ign_tr',
+    optional.add_argument('-bl', '--bh_len',
+                          dest='BH_len',
                           type=float,
-                          help='Number of timepoints to discard',
-                          default=600)
+                          help='Duration of whole BH period in sec',
+                          default=58)
+    optional.add_argument('-nbh', '--nBH',
+                          dest='nBH',
+                          type=float,
+                          help='Number of BH periods',
+                          default=8)
     parser._action_groups.append(optional)
     return parser
 
@@ -155,7 +160,7 @@ def get_petco2(co, pidx, hrf, filename):
     plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
     plt.title('regressor and convolved regressor')
     plt.plot(co_conv, '-', co_peakline, '-')
-    plt.savefig(filename + '_co_peakline.png', dpi=SET_DPI)
+    plt.savefig(filename + '_co_regressors.png', dpi=SET_DPI)
     plt.close()
 
     np.savetxt(filename + '_co_conv.1D', co_conv, fmt='%.18f')
@@ -283,7 +288,7 @@ def manualchange(filename, pidx, reject_list):
 
 
 # def parttwo(filename):
-def parttwo(co, pidx, filename, GM_name, tr=1.5, newfreq=40, ign_tr=600):
+def parttwo(co, pidx, filename, GM_name, tr=1.5, newfreq=40, BH_len=58, nBH=8):
     hrf = create_hrf(newfreq)
     co_conv = get_petco2(co, pidx, hrf, filename)
     if not os.path.exists('regr'):
@@ -291,7 +296,7 @@ def parttwo(co, pidx, filename, GM_name, tr=1.5, newfreq=40, ign_tr=600):
 
     # co_conv = np.genfromtxt('regr/' + filename + '_co_conv.1D')
     #!#
-    get_regr(GM_name, co_conv, tr, newfreq, ign_tr)
+    get_regr(GM_name, co_conv, tr, newfreq, BH_len, nBH)
 
 
 def _main(argv=None):
@@ -306,10 +311,11 @@ def _main(argv=None):
     newfreq = options.newfreq
     tr = options.tr
     channel = options.channel
-    ign_tr = options.ign_tr
+    BH_len = options.BH_len
+    nBH = options.nBH
 
     co, pidx = partone(filename, channel, tr, newfreq)
-    parttwo(co, pidx, filename, GM_name, tr, newfreq, ign_tr)
+    parttwo(co, pidx, filename, GM_name, tr, newfreq, BH_len, nBH)
 
 
 if __name__ == '__main__':

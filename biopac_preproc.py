@@ -190,7 +190,8 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40, BH_len=58, nBH=8):
     GM_x = np.linspace(0, (sequence_tps - 1) * tr, sequence_tps)
 
     regr_len = len(regr_x)
-    BH_len_upsampled = BH_len*newfreq
+    BH_len_upsampled = int(BH_len*newfreq)
+    nBH = int(nBH)
 
     f = spint.interp1d(GM_x, GM, fill_value='extrapolate')
     GM_upsampled = f(regr_x)

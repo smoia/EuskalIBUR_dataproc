@@ -67,7 +67,7 @@ def _get_parser():
     optional.add_argument('-ch', '--channel',
                           dest='channel',
                           type=int,
-                          help=('Channel (column) containing CO2 trace.'
+                          help=('Channel (column) containing CO2 trace.\n'
                                 'Remember that numeration starts from 0!'),
                           default=4)
     parser._action_groups.append(optional)

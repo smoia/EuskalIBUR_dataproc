@@ -116,7 +116,7 @@ done
 # the factor 71.2 is to take into account the pressure in mmHg:
 # CO2[mmHg] = ([pressure in Donosti]*[Lab altitude] - [Air expiration at body temperature])[mmHg]*(channel_trace[V]*10[V^(-1)]/100)
 # CO2[mmHg] = (768*0.988-47)[mmHg]*(channel_trace*10/100) ~ 71.2 mmHg
-fslmaths ${flpr}_cvr.nii.gz -Tmax -mul 71.2 ${flpr}_cvr_max.nii.gz
+fslmaths ${flpr}_cvr.nii.gz -mul 71.2 ${flpr}_cvr_max.nii.gz
 
 if [ ! -d ${flpr}_map_cvr ]
 then
@@ -128,6 +128,36 @@ mv ${flpr}_tmap* ${flpr}_map_cvr/.
 # rm -rf tmp.*
 
 # done
+
+##### ------------------ #
+####				    ##
+###   Getting T maps   ###
+##				      ####
+# ------------------ #####
+
+cd ${flpr}_map_cvr
+
+fslmaths ${flpr}_tmap -thr 2.3 ${flpr}_tmap_pos
+fslmaths ${flpr}_tmap_pos -bin ${flpr}_tmap_pos_mask
+fslmaths ${flpr}_tmap -mul -1 -thr 2.3 ${flpr}_tmap_neg
+fslmaths ${flpr}_tmap_neg -bin ${flpr}_tmap_neg_mask
+fslmaths ${flpr}_tmap_neg -add ${flpr}_tmap_pos ${flpr}_tmap_abs
+fslmaths ${flpr}_tmap_abs -bin ${flpr}_tmap_abs_mask
+
+fslmaths ${flpr}_cvr_idx -thr 25 -uthr 695 -bin ${flpr}_cvr_idx_plausible
+
+fslmaths ${flpr}_cvr_idx -mas ${flpr}_tmap_abs_mask -mas ${flpr}_cvr_idx_plausible ${flpr}_cvr_idx_corrected
+
+
+3dcalc -a ${flpr}_cvr_idx_corrected.nii.gz -expr 'a*0' -prefix ${flpr}_cvr_corrected.nii.gz -overwrite
+
+for i in $( seq -f %g ${maxidx[0]} ${maxidx[1]} )
+do
+	let v=i*step
+	v=$( printf %04d $v )
+	3dcalc -a ${flpr}_cvr_corrected.nii.gz -b ../tmp.${flpr}_res/${flpr}_betas_${v}.nii.gz -c ${flpr}_cvr_idx_corrected.nii.gz \
+	-expr "a+b*equals(c,${i})" -prefix ${flpr}_cvr_corrected.nii.gz -overwrite
+done
 
 
 ##### --------------- #

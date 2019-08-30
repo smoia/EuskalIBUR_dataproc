@@ -1,15 +1,17 @@
+#!/usr/bin/env python3
+
 import os
 import biopac_preproc as bio
 import matplotlib.pyplot as plt
-import numpy as np
+
 
 wdir = '/media/PHYSIO/BIDS'
 filename = ''  # filename
 ch = 4  # or 5
 
 
-for sub in range(9,11):
-    for ses in range(7,11):
+for sub in ['002', '003', '007']:
+    for ses in range(1,11):
         if ses >= 7:
             ch = 5
         else:

@@ -238,7 +238,7 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40, BH_len=58, nBH=8):
         os.makedirs(GM_dir)
 
     # Set num of fine shifts: 9 seconds is a bit more than physiologically feasible
-    nrep = 9 * newfreq
+    nrep = int(9 * newfreq)
 
     # Padding regressor for shift, and padding optshift too
     if nrep > optshift:

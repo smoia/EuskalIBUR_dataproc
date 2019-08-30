@@ -251,7 +251,7 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40, BH_len=58, nBH=8):
     else:
         right_pad = 0
 
-    co_padded = np.pad(co_conv, (left_pad, right_pad),'mean')
+    co_padded = np.pad(co_conv, (int(left_pad), int(right_pad)),'mean')
     optshift_padded = optshift + left_pad
 
     for i in range(-nrep, nrep):

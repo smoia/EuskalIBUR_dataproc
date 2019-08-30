@@ -116,7 +116,8 @@ done
 # the factor 71.2 is to take into account the pressure in mmHg:
 # CO2[mmHg] = ([pressure in Donosti]*[Lab altitude] - [Air expiration at body temperature])[mmHg]*(channel_trace[V]*10[V^(-1)]/100)
 # CO2[mmHg] = (768*0.988-47)[mmHg]*(channel_trace*10/100) ~ 71.2 mmHg
-fslmaths ${flpr}_cvr.nii.gz -mul 71.2 ${flpr}_cvr_max.nii.gz
+# multiply by 100 cause it's not BOLD % yet!
+fslmaths ${flpr}_cvr.nii.gz -div 71.2 -mul 100 ${flpr}_cvr_max.nii.gz
 
 if [ ! -d ${flpr}_map_cvr ]
 then

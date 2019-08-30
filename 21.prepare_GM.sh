@@ -14,7 +14,7 @@ then
 	mkdir CVR
 fi
 
-for sub in 002 003 007 #$( seq -f %03g 1 10 )
+for sub in 003 007 #$( seq -f %03g 1 10 )
 do
 	for ses in $( seq -f %02g 1 10 )
 	do

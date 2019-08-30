@@ -61,9 +61,15 @@ def _get_parser():
                           default=58)
     optional.add_argument('-nbh', '--nBH',
                           dest='nBH',
-                          type=float,
+                          type=int,
                           help='Number of BH periods',
                           default=8)
+    optional.add_argument('-ch', '--channel',
+                          dest='channel',
+                          type=int,
+                          help=('Channel (column) containing CO2 trace.'
+                                'Remember that numeration starts from 0!'),
+                          default=4)
     parser._action_groups.append(optional)
     return parser
 

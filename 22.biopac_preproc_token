@@ -6,7 +6,7 @@ import numpy as np
 
 # run once
 
-os.chdir('/home/nemo/Scrivania/data')
+os.chdir('/media/nemo/ANVILData/gdrive/PJMASK')
 
 import biopac_decimate
 

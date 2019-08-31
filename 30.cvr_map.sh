@@ -11,12 +11,13 @@ sub=$1
 ses=$2
 
 # wdr=/media
-wdr=/home/nemo/Scrivania/Test_workbench/Acq
+wdr=/media
 
 step=10
 lag=9
 freq=40
 tr=1.5
+tscore=2.6
 
 
 ### Main ###
@@ -63,12 +64,12 @@ do
 		3dDeconvolve -input ${flpr}_SPC.nii.gz -jobs 3 \
 		-float -num_stimts 1 \
 		-mask ${flpr}_mask.nii.gz \
+		-ortvec ${flpr}_demean.par motdemean \
+		-ortvec ${flpr}_deriv1.par motderiv1 \
 		-stim_file 1 ${shiftdir}/shift_${i}_pp.1D \
 		-x1D ${shiftdir}/mat.1D \
 		-xjpeg ${shiftdir}/mat.jpg \
 		-x1D_uncensored ${shiftdir}/${i}_uncensored_mat.1D \
-		-ortvec ${flpr}_demean.par motdemean \
-		-ortvec ${flpr}_deriv1.par motderiv1 \
 		-rout -tout \
 		-bucket tmp.${flpr}_res/stats_${i}.nii.gz
 
@@ -98,7 +99,7 @@ fslmaths ${flpr}_r2_time -Tmaxn ${flpr}_cvr_idx
 fslmaths ${flpr}_cvr_idx -mul ${step} -sub ${poslag} -mul 0.025 ${flpr}_cvr_lag
 
 # split idx volumes in masks, add
-3dcalc -a ${flpr}_cvr_idx.nii.gz -expr 'a*0' -prefix ${flpr}_cvr.nii.gz -overwrite
+3dcalc -a ${flpr}_cvr_idx.nii.gz -expr 'a*0' -prefix ${flpr}_spc_over_V.nii.gz -overwrite
 3dcalc -a ${flpr}_cvr_idx.nii.gz -expr 'a*0' -prefix ${flpr}_tmap.nii.gz -overwrite
 
 maxidx=( $( fslstats ${flpr}_cvr_idx -R ) )
@@ -107,8 +108,8 @@ for i in $( seq -f %g ${maxidx[0]} ${maxidx[1]} )
 do
 	let v=i*step
 	v=$( printf %04d $v )
-	3dcalc -a ${flpr}_cvr.nii.gz -b tmp.${flpr}_res/${flpr}_betas_${v}.nii.gz -c ${flpr}_cvr_idx.nii.gz \
-	-expr "a+b*equals(c,${i})" -prefix ${flpr}_cvr.nii.gz -overwrite
+	3dcalc -a ${flpr}_spc_over_V.nii.gz -b tmp.${flpr}_res/${flpr}_betas_${v}.nii.gz -c ${flpr}_cvr_idx.nii.gz \
+	-expr "a+b*equals(c,${i})" -prefix ${flpr}_spc_over_V.nii.gz -overwrite
 	3dcalc -a ${flpr}_tmap.nii.gz -b tmp.${flpr}_res/${flpr}_tstat_${v}.nii.gz -c ${flpr}_cvr_idx.nii.gz \
 	-expr "a+b*equals(c,${i})" -prefix ${flpr}_tmap.nii.gz -overwrite
 done
@@ -117,13 +118,15 @@ done
 # CO2[mmHg] = ([pressure in Donosti]*[Lab altitude] - [Air expiration at body temperature])[mmHg]*(channel_trace[V]*10[V^(-1)]/100)
 # CO2[mmHg] = (768*0.988-47)[mmHg]*(channel_trace*10/100) ~ 71.2 mmHg
 # multiply by 100 cause it's not BOLD % yet!
-fslmaths ${flpr}_cvr.nii.gz -div 71.2 -mul 100 ${flpr}_cvr_max.nii.gz
+fslmaths ${flpr}_spc_over_V.nii.gz -div 71.2 -mul 100 ${flpr}_cvr.nii.gz
 
 if [ ! -d ${flpr}_map_cvr ]
 then
 	mkdir ${flpr}_map_cvr
 fi
+
 mv ${flpr}_cvr* ${flpr}_map_cvr/.
+mv ${flpr}_spc* ${flpr}_map_cvr/.
 mv ${flpr}_tmap* ${flpr}_map_cvr/.
 
 # rm -rf tmp.*
@@ -138,28 +141,29 @@ mv ${flpr}_tmap* ${flpr}_map_cvr/.
 
 cd ${flpr}_map_cvr
 
-fslmaths ${flpr}_tmap -thr 2.3 ${flpr}_tmap_pos
+fslmaths ${flpr}_tmap -thr ${tscore} ${flpr}_tmap_pos
 fslmaths ${flpr}_tmap_pos -bin ${flpr}_tmap_pos_mask
-fslmaths ${flpr}_tmap -mul -1 -thr 2.3 ${flpr}_tmap_neg
+fslmaths ${flpr}_tmap -mul -1 -thr ${tscore} ${flpr}_tmap_neg
 fslmaths ${flpr}_tmap_neg -bin ${flpr}_tmap_neg_mask
 fslmaths ${flpr}_tmap_neg -add ${flpr}_tmap_pos ${flpr}_tmap_abs
 fslmaths ${flpr}_tmap_abs -bin ${flpr}_tmap_abs_mask
 
-fslmaths ${flpr}_cvr_idx -thr 25 -uthr 695 -bin ${flpr}_cvr_idx_plausible
+fslmaths ${flpr}_cvr_idx -thr 25 -uthr 695 -bin ${flpr}_cvr_idx_physio_constrained
 
-fslmaths ${flpr}_cvr_idx -mas ${flpr}_tmap_abs_mask -mas ${flpr}_cvr_idx_plausible ${flpr}_cvr_idx_corrected
+fslmaths ${flpr}_cvr_idx -mas ${flpr}_tmap_abs_mask -mas ${flpr}_cvr_idx_physio_constrained ${flpr}_cvr_idx_corrected
 
 
-3dcalc -a ${flpr}_cvr_idx_corrected.nii.gz -expr 'a*0' -prefix ${flpr}_cvr_corrected.nii.gz -overwrite
+3dcalc -a ${flpr}_cvr_idx_corrected.nii.gz -expr 'a*0' -prefix ${flpr}_spc_over_V_corrected.nii.gz -overwrite
 
 for i in $( seq -f %g ${maxidx[0]} ${maxidx[1]} )
 do
 	let v=i*step
 	v=$( printf %04d $v )
-	3dcalc -a ${flpr}_cvr_corrected.nii.gz -b ../tmp.${flpr}_res/${flpr}_betas_${v}.nii.gz -c ${flpr}_cvr_idx_corrected.nii.gz \
-	-expr "a+b*equals(c,${i})" -prefix ${flpr}_cvr_corrected.nii.gz -overwrite
+	3dcalc -a ${flpr}_spc_over_V_corrected.nii.gz -b ../tmp.${flpr}_res/${flpr}_betas_${v}.nii.gz -c ${flpr}_cvr_idx_corrected.nii.gz \
+	-expr "a+b*equals(c,${i})" -prefix ${flpr}_spc_over_V_corrected.nii.gz -overwrite
 done
 
+fslmaths ${flpr}_spc_over_V_corrected.nii.gz -div 71.2 -mul 100 ${flpr}_cvr_corrected.nii.gz
 
 ##### --------------- #
 ####				 ##

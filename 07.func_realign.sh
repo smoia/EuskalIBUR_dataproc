@@ -43,8 +43,11 @@ then
 	funcsource=${func}
 	# func=tmp.${func}
 	mref=tmp.avgref
-	fslmaths ${func} -Tmean ${mref}
-	bet ${mref} ${mref}_brain -R -f 0.5 -g 0 -n -m
+	if [[ ! -e ${mref}_brain_mask.nii.gz ]]
+	then
+		fslmaths ${func} -Tmean ${mref}
+		bet ${mref} ${mref}_brain -R -f 0.5 -g 0 -n -m
+	fi
 	mask=${mref}_brain_mask
 else
 	funcsource=${func}_cr

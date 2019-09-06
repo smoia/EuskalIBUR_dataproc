@@ -27,12 +27,14 @@ imcp CVR/sub-${sub}_ses-01_map_cvr/sub-${sub}_ses-01_tmap CVR/00.Reliability/sub
 echo "Initialising common mask"
 imcp CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-01_cvr_idx_mask CVR/00.Reliability/sub-${sub}_allses_mask
 # coreg
-if [[ ${sub} == "002" ]]
-then
-	lastses=9
-else
-	lastses=10
-fi
+# if [[ ${sub} == "002" ]]
+# then
+# 	lastses=9
+# else
+# 	lastses=10
+# fi
+
+lastses=9
 
 for ses in $( seq -f %02g 2 ${lastses} )
 do
@@ -62,33 +64,29 @@ done
 
 cd ${wdr}/CVR/00.Reliability
 echo "Initialising csv files"
-if [[ -e sub-${sub}_tvals.csv ]]; then rm -f sub-${sub}_tvals.csv; fi
-if [[ -e sub-${sub}_cvrvals.csv ]]; then rm -f sub-${sub}_cvrvals.csv; fi
-if [[ -e sub-${sub}_lagvals.csv ]]; then rm -f sub-${sub}_lagvals.csv; fi
 
-for ses in $( seq -f %02g 1 ${lastses} )
+for fname in tvals cvrvals lagvals
 do
-	echo "Extracting voxel informations in session ${ses}"
-	echo "ses-${ses}" > tmp.sub-${sub}_${ses}_cvrvals.csv
-	fslmeants -i sub-${sub}/sub-${sub}_ses-${ses}_cvr -m sub-${sub}_allses_mask --showall --transpose \
-	| csvtool -t SPACE col 4 - >> tmp.sub-${sub}_${ses}_cvrvals.csv
-	echo "ses-${ses}" > tmp.sub-${sub}_${ses}_lagvals.csv
-	fslmeants -i sub-${sub}/sub-${sub}_ses-${ses}_cvr_lag -m sub-${sub}_allses_mask --showall --transpose \
-	| csvtool -t SPACE col 4 - >> tmp.sub-${sub}_${ses}_lagvals.csv
-	echo "ses-${ses}" > tmp.sub-${sub}_${ses}_tvals.csv
-	fslmeants -i sub-${sub}/sub-${sub}_ses-${ses}_tmap -m sub-${sub}_allses_mask --showall --transpose \
-	| csvtool -t SPACE col 4 - >> tmp.sub-${sub}_${ses}_tvals.csv
+	if [[ -e sub-${sub}_${fname}.csv ]]; then rm -f sub-${sub}_${fname}.csv; fi
+
+	case ${fname} in
+		tvals ) fvol=tmap ;;
+		cvrvals ) fvol=cvr ;;
+		lagvals ) fvol=cvr_lag ;;
+	esac
+
+	for ses in $( seq -f %02g 1 ${lastses} )
+	do
+		echo "Extracting voxel informations in session ${ses} for ${fname}"
+		echo "ses-${ses}" > tmp.sub-${sub}_${ses}_${fname}.csv
+		fslmeants -i sub-${sub}/sub-${sub}_ses-${ses}_${fvol} -m sub-${sub}_allses_mask --showall --transpose \
+		| csvtool -t SPACE col 4 - >> tmp.sub-${sub}_${ses}_${fname}.csv
+	done
+
+	echo "Paste and Trim"
+	paste tmp.sub-${sub}_??_${fname}.csv -d , | csvtool trim b - > sub-${sub}_${fname}.csv
+
+	rm -f tmp.sub*.csv
 done
-
-paste tmp.sub-${sub}_??_cvrvals.csv -d , > sub-${sub}_cvrvals.csv
-paste tmp.sub-${sub}_??_lagvals.csv -d , > sub-${sub}_lagvals.csv
-paste tmp.sub-${sub}_??_tvals.csv -d , > sub-${sub}_tvals.csv
-
-rm -f tmp.sub*.csv
-
-echo "Trim"
-csvtool trim sub-${sub}_tvals.csv
-csvtool trim sub-${sub}_cvrvals.csv
-csvtool trim sub-${sub}_lagvals.csv
 
 cd ${cwd}

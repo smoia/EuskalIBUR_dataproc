@@ -27,7 +27,7 @@ cwd=$(pwd)
 cd ${fdir}
 
 echo "Normalising ${func}"
-antsApplyTransforms -d 3 -i ${func}_sm.nii.gz \
+antsApplyTransforms -d 3 -i ${func}.nii.gz \
 -r ../reg/${std}_resamp_${mmres}mm.nii.gz -o ${func}_std.nii.gz \
 -n Linear -t [../reg/${anat2}2${mref}0GenericAffine.mat,1] \
 -t ../reg/${anat2}2${anat}0GenericAffine.mat \

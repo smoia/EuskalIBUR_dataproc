@@ -10,6 +10,7 @@
 wdr=/media/nemo/ANVILData/gdrive/PJMASK
 
 sub=$1
+ftype=$2
 
 ### Main ###
 cwd=$( pwd )
@@ -19,13 +20,13 @@ echo "Creating folders"
 mkdir CVR/00.Reliability CVR/00.Reliability/sub-${sub}
 
 echo "Copying session 01"
-imcp CVR/sub-${sub}_ses-01_map_cvr/sub-${sub}_ses-01_cvr_idx_mask CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-01_cvr_idx_mask
-imcp CVR/sub-${sub}_ses-01_map_cvr/sub-${sub}_ses-01_cvr CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-01_cvr
-imcp CVR/sub-${sub}_ses-01_map_cvr/sub-${sub}_ses-01_cvr_lag CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-01_cvr_lag
-imcp CVR/sub-${sub}_ses-01_map_cvr/sub-${sub}_ses-01_tmap CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-01_tmap
+imcp CVR/sub-${sub}_ses-01_${ftype}_map_cvr/sub-${sub}_ses-01_${ftype}_cvr_idx_mask CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-01_${ftype}_cvr_idx_mask
+imcp CVR/sub-${sub}_ses-01_${ftype}_map_cvr/sub-${sub}_ses-01_${ftype}_cvr CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-01_${ftype}_cvr
+imcp CVR/sub-${sub}_ses-01_${ftype}_map_cvr/sub-${sub}_ses-01_${ftype}_cvr_lag CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-01_${ftype}_cvr_lag
+imcp CVR/sub-${sub}_ses-01_${ftype}_map_cvr/sub-${sub}_ses-01_${ftype}_tmap CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-01_${ftype}_tmap
 
 echo "Initialising common mask"
-imcp CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-01_cvr_idx_mask CVR/00.Reliability/sub-${sub}_allses_mask
+imcp CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-01_${ftype}_cvr_idx_mask CVR/00.Reliability/sub-${sub}_${ftype}_allses_mask
 # coreg
 # if [[ ${sub} == "002" ]]
 # then
@@ -44,22 +45,22 @@ do
 
 	echo "Flirting session ${ses} to session 01"
 	flirt -in ${infile} -ref ${reffile} -out ${outfile} -omat ${outfile}.mat -cost normcorr -searchcost normcorr
-	flirt -in CVR/sub-${sub}_ses-${ses}_map_cvr/sub-${sub}_ses-${ses}_cvr_idx_mask -ref ${reffile} \
-	-out CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-${ses}_cvr_idx_mask -interp nearestneighbour \
+	flirt -in CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_idx_mask -ref ${reffile} \
+	-out CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-${ses}_${ftype}_cvr_idx_mask -interp nearestneighbour \
 	-applyxfm -init ${outfile}.mat
-	flirt -in CVR/sub-${sub}_ses-${ses}_map_cvr/sub-${sub}_ses-${ses}_cvr -ref ${reffile} \
-	-out CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-${ses}_cvr -interp nearestneighbour \
+	flirt -in CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr -ref ${reffile} \
+	-out CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-${ses}_${ftype}_cvr -interp nearestneighbour \
 	-applyxfm -init ${outfile}.mat
-	flirt -in CVR/sub-${sub}_ses-${ses}_map_cvr/sub-${sub}_ses-${ses}_cvr_lag -ref ${reffile} \
-	-out CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-${ses}_cvr_lag -interp nearestneighbour \
+	flirt -in CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag -ref ${reffile} \
+	-out CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-${ses}_${ftype}_cvr_lag -interp nearestneighbour \
 	-applyxfm -init ${outfile}.mat
-	flirt -in CVR/sub-${sub}_ses-${ses}_map_cvr/sub-${sub}_ses-${ses}_tmap -ref ${reffile} \
-	-out CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-${ses}_tmap -interp nearestneighbour \
+	flirt -in CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap -ref ${reffile} \
+	-out CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-${ses}_${ftype}_tmap -interp nearestneighbour \
 	-applyxfm -init ${outfile}.mat
 
 	echo "Updating common mask"
-	fslmaths CVR/00.Reliability/sub-${sub}_allses_mask -mas CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-${ses}_cvr_idx_mask \
-	CVR/00.Reliability/sub-${sub}_allses_mask
+	fslmaths CVR/00.Reliability/sub-${sub}_${ftype}_allses_mask -mas CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-${ses}_${ftype}_cvr_idx_mask \
+	CVR/00.Reliability/sub-${sub}_${ftype}_allses_mask
 done
 
 cd ${wdr}/CVR/00.Reliability
@@ -67,7 +68,7 @@ echo "Initialising csv files"
 
 for fname in tvals cvrvals lagvals
 do
-	if [[ -e sub-${sub}_${fname}.csv ]]; then rm -f sub-${sub}_${fname}.csv; fi
+	if [[ -e sub-${sub}_${ftype}_${fname}.csv ]]; then rm -f sub-${sub}_${ftype}_${fname}.csv; fi
 
 	case ${fname} in
 		tvals ) fvol=tmap ;;
@@ -78,13 +79,13 @@ do
 	for ses in $( seq -f %02g 1 ${lastses} )
 	do
 		echo "Extracting voxel informations in session ${ses} for ${fname}"
-		echo "ses-${ses}" > tmp.sub-${sub}_${ses}_${fname}.csv
-		fslmeants -i sub-${sub}/sub-${sub}_ses-${ses}_${fvol} -m sub-${sub}_allses_mask --showall --transpose \
-		| csvtool -t SPACE col 4 - >> tmp.sub-${sub}_${ses}_${fname}.csv
+		echo "ses-${ses}" > tmp.sub-${sub}_${ses}_${ftype}_${fname}.csv
+		fslmeants -i sub-${sub}/sub-${sub}_ses-${ses}_${ftype}_${fvol} -m sub-${sub}_${ftype}_allses_mask --showall --transpose \
+		| csvtool -t SPACE col 4 - >> tmp.sub-${sub}_${ses}_${ftype}_${fname}.csv
 	done
 
 	echo "Paste and Trim"
-	paste tmp.sub-${sub}_??_${fname}.csv -d , | csvtool trim b - > sub-${sub}_${fname}.csv
+	paste tmp.sub-${sub}_??_${ftype}_${fname}.csv -d , | csvtool trim b - > sub-${sub}_${ftype}_${fname}.csv
 
 	rm -f tmp.sub*.csv
 done

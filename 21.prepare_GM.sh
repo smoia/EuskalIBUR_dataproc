@@ -20,7 +20,7 @@ fi
 flpr=sub-${sub}_ses-${ses}
 
 anat=${flpr}_acq-uni_T1w
-func=${flpr}_task-breathhold_echo-1_bold
+func=${flpr}_task-breathhold
 mref=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
 aref=${flpr}_T2w
 
@@ -33,10 +33,12 @@ cd ${wdr}/CVR
 
 fslmaths ${anat}_GM_native -kernel gauss 2.5 -ero ${anat}_GM_eroded
 
-fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_RPI_bet_meica/ts_OC -m ${anat}_GM_eroded > sub-${sub}_ses-${ses}_GM_OC_avg.1D
+fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_optcom_bold_bet -m ${anat}_GM_eroded > sub-${sub}_ses-${ses}_GM_optcom_avg.1D
+fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_echo-2_bold_bet -m ${anat}_GM_eroded > sub-${sub}_ses-${ses}_GM_echo-2_avg.1D
+# fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_meica_bold_bet -m ${anat}_GM_eroded > sub-${sub}_ses-${ses}_GM_meica_avg.1D
 
-cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_mcf_demean.par ./sub-${sub}_ses-${ses}_demean.par
-cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_mcf_deriv1.par ./sub-${sub}_ses-${ses}_deriv1.par
+cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_echo-1_bold_mcf_demean.par ./sub-${sub}_ses-${ses}_demean.par
+cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_echo-1_bold_mcf_deriv1.par ./sub-${sub}_ses-${ses}_deriv1.par
 
 # Here should go the decomposition extraction
 

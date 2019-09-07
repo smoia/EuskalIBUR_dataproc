@@ -14,9 +14,8 @@ import biopac_decimate
 sub = '007'
 ses = '07'
 
-
+ftype_list = ['optcom', 'echo-2', 'meica']
 filename = 'PHYSIO/BIDS/sub-' + sub + '/ses-' + ses + '/func/sub-' + sub + '_ses-' + ses + '_task-breathhold_physio'
-GM_name = 'CVR/sub-' + sub + '_ses-' + ses + '_GM_OC_avg'
 
 co = np.genfromtxt(filename + '_co_orig.1D')
 pidx = np.genfromtxt(filename + '_autopeaks.1D').astype('int')
@@ -50,4 +49,6 @@ npidx = bio.manualchange(filename, pidx, reject_list)
 # npidx = np.genfromtxt(filename + '_manualpeaks.1D').astype('int')
 # co = np.genfromtxt(filename + '_co_orig.1D')
 
-bio.parttwo(co, npidx, filename, GM_name)
+for ftype in ftype_list:
+	GM_name = 'CVR/sub-' + sub + '_ses-' + ses + '_GM_' + ftype + '_avg'
+	bio.parttwo(co, npidx, filename, GM_name)

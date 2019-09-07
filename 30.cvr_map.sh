@@ -63,8 +63,8 @@ do
 		3dDeconvolve -input ${flpr}_${ftype}_SPC.nii.gz -jobs 2 \
 		-float -num_stimts 1 \
 		-mask ${flpr}_mask.nii.gz \
-		-ortvec ${flpr}_${ftype}_demean.par motdemean \
-		-ortvec ${flpr}_${ftype}_deriv1.par motderiv1 \
+		-ortvec ${flpr}_demean.par motdemean \
+		-ortvec ${flpr}_deriv1.par motderiv1 \
 		-stim_file 1 ${shiftdir}/shift_${i}_pp.1D \
 		-x1D ${shiftdir}/mat.1D \
 		-xjpeg ${shiftdir}/mat.jpg \

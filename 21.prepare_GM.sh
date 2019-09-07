@@ -12,12 +12,10 @@ ses=$2
 cwd=$( pwd )
 cd ${wdr}
 
-if [ -d CVR ]
+if [ ! -d CVR ]
 then
-	rm -rf CVR
+	mkdir CVR
 fi
-
-mkdir CVR
 
 flpr=sub-${sub}_ses-${ses}
 

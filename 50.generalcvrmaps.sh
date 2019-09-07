@@ -17,7 +17,14 @@ cwd=$( pwd )
 cd ${wdr}
 
 echo "Creating folders"
-mkdir CVR/00.Reliability CVR/00.Reliability/sub-${sub}
+if [ ! -d CVR/00.Reliability ]
+then
+	mkdir CVR/00.Reliability
+fi
+if [ ! -d CVR/00.Reliability/sub-${sub} ]
+then
+	mkdir CVR/00.Reliability/sub-${sub}
+fi
 
 echo "Copying session 01"
 imcp CVR/sub-${sub}_ses-01_${ftype}_map_cvr/sub-${sub}_ses-01_${ftype}_cvr_idx_mask CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-01_${ftype}_cvr_idx_mask

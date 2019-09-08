@@ -2,23 +2,23 @@
 
 wdr=/media
 
-sub=$1
-ses=$2
-
 ### Main ###
-
+cwd=$( pwd )
 cd ${wdr}
 
-csvtool namedcol Num,"${sub}_${ses}" Decomposition.csv > "${sub}_${ses}_comp"
-cat "${sub}_${ses}_comp" | grep ,R | csvtool col 1 - > "${sub}_${ses}_rc"
+echo "Processing sheet"
+# python3 sheet_preproc.py
 
-while read -r line
+for sub in 007 003 002
 do
-	let line++
-	echo $line
-done < "${sub}_${ses}_rc" > "${sub}_${ses}_rd"
+	for ses in $( seq -f %02g 1 9 )
+	do
+		echo "Denoising sub ${sub} ses ${ses}"
+		fsl_regfilt -i sub-${sub}/ses-${ses}/func_preproc/sub-${sub}_ses-${ses}_task-breathhold_optcom_bold_bet \
+		-d sub-${sub}/ses-${ses}/func_preproc/sub-${sub}_ses-${ses}_task-breathhold_echo-1_bold_RPI_bet_meica/meica_mix.1D \
+		-f "$( cat sub-${sub}_ses-${ses}_rejected.1D )" \
+		-o sub-${sub}/ses-${ses}/func_preproc/sub-${sub}_ses-${ses}_task-breathhold_meica_bold_bet
+	done
+done
 
-csvtool transpose "${sub}_${ses}_rd" > "${sub}_${ses}_rej"
-
-rm 0??_??_rc
-rm 0??_??_rd
+cd ${cwd}

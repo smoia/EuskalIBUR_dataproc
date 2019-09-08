@@ -7,7 +7,8 @@ from numpy import savetxt
 
 cwd = os.getcwd()
 
-os.chdir('/media')
+# os.chdir('/media')
+os.chdir('/media/nemo/ANVILData/gdrive/PJMASK')
 
 sub_list = ['007', '003', '002']
 
@@ -23,6 +24,8 @@ for sub in sub_list:
         vas = rej + sub_table.index[sub_table[col] == 'V'].tolist()
         net = vas + sub_table.index[sub_table[col] == 'N'].tolist()
 
-        savetxt(f'sub-{sub}_{col}_rejected.1D', rej, fmt='%d')
-        savetxt(f'sub-{sub}_{col}_vascular.1D', vas, fmt='%d')
-        savetxt(f'sub-{sub}_{col}_networks.1D', net, fmt='%d')
+        savetxt(f'sub-{sub}_{col}_rejected.1D', rej, fmt='%d', delimiter=',', newline=',')
+        savetxt(f'sub-{sub}_{col}_vascular.1D', vas, fmt='%d', delimiter=',', newline=',')
+        savetxt(f'sub-{sub}_{col}_networks.1D', net, fmt='%d', delimiter=',', newline=',')
+
+os.chdir(cwd)

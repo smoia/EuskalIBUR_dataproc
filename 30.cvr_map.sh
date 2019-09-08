@@ -22,6 +22,11 @@ freq=40
 tr=1.5
 tscore=2.6
 
+if [[ ${ftype} == 'meica' ]]
+then
+	tscore=2.7
+fi
+
 
 ### Main ###
 
@@ -60,17 +65,30 @@ do
 	then
 		3dDetrend -prefix - -polort 3 ${shiftdir}/shift_${i}.1D\' > ${shiftdir}/shift_${i}_pp.1D
 
-		3dDeconvolve -input ${flpr}_${ftype}_SPC.nii.gz -jobs 2 \
-		-float -num_stimts 1 \
-		-mask ${flpr}_mask.nii.gz \
-		-ortvec ${flpr}_demean.par motdemean \
-		-ortvec ${flpr}_deriv1.par motderiv1 \
-		-stim_file 1 ${shiftdir}/shift_${i}_pp.1D \
-		-x1D ${shiftdir}/mat.1D \
-		-xjpeg ${shiftdir}/mat.jpg \
-		-x1D_uncensored ${shiftdir}/${i}_uncensored_mat.1D \
-		-rout -tout \
-		-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz
+		if [[ ${ftype} == 'meica' ]]
+		then
+			3dDeconvolve -input ${flpr}_${ftype}_SPC.nii.gz -jobs 2 \
+			-float -num_stimts 1 \
+			-mask ${flpr}_mask.nii.gz \
+			-stim_file 1 ${shiftdir}/shift_${i}_pp.1D \
+			-x1D ${shiftdir}/mat.1D \
+			-xjpeg ${shiftdir}/mat.jpg \
+			-x1D_uncensored ${shiftdir}/${i}_uncensored_mat.1D \
+			-rout -tout \
+			-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz
+		else
+			3dDeconvolve -input ${flpr}_${ftype}_SPC.nii.gz -jobs 2 \
+			-float -num_stimts 1 \
+			-mask ${flpr}_mask.nii.gz \
+			-ortvec ${flpr}_demean.par motdemean \
+			-ortvec ${flpr}_deriv1.par motderiv1 \
+			-stim_file 1 ${shiftdir}/shift_${i}_pp.1D \
+			-x1D ${shiftdir}/mat.1D \
+			-xjpeg ${shiftdir}/mat.jpg \
+			-x1D_uncensored ${shiftdir}/${i}_uncensored_mat.1D \
+			-rout -tout \
+			-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz
+		fi
 
 		3dbucket -prefix tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_r2_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz'[0]' -overwrite
 		3dbucket -prefix tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz'[2]' -overwrite
@@ -180,4 +198,4 @@ cd ..
 
 #rm -rf tmp.*
 
-cd ${cwr}
+cd ${cwd}

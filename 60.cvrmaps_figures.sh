@@ -14,6 +14,12 @@ do
 	do
 		for ftype in echo-2 optcom meica
 		do
+			if [[ "${ftype}" == "meica" ]]
+			then
+				tval=2.7
+			else
+				tval=2.6
+			fi
 			echo "sub ${sub} ses ${ses} ftype ${ftype}"
 			fsleyes render -of sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr --size 1400 500 --scene lightbox --sliceSpacing 18 --zrange 21 131 \
 			--ncols 6 --nrows 1 --hideCursor --bgColour 0.0 0.0 0.0 --fgColour 1.0 1.0 1.0 --showColourBar --colourBarLocation top \
@@ -41,7 +47,7 @@ do
 			--colourBarLabelSide top-left --colourBarSize 50 --labelSize 11 \
 			--performance 3 /media/nemo/ANVILData/gdrive/PJMASK/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap.nii.gz \
 			--name "tmap" --overlayType volume --alpha 100.0 --cmap red-yellow --negativeCmap blue-lightblue --useNegativeCmap \
-			--displayRange 2.6 50.0 --clippingRange 2.6 100.0 --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 \
+			--displayRange ${tval} 50.0 --clippingRange ${tval} 100.0 --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 \
 			--smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
 			echo "lag"
 			fsleyes render -of sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag --size 1400 500 --scene lightbox --sliceSpacing 18 --zrange 21 131 \

@@ -40,8 +40,6 @@ if [[ "${aref}" != "none" ]]
 then
 	echo "Flirting ${anat} on ${aref}"
 	flirt -in ${anat} -ref ${aref} -cost normmi -searchcost normmi -omat ../reg/${anat}2${aref}_fsl.mat
-	c3d_affine_tool -ref ${aref} -src ${anat} \
-	../reg/${anat}2${aref}_fsl.mat -fsl2ras -oitk ../reg/${anat}2${aref}0GenericAffine.mat
 fi
 
 cd ${cwd}

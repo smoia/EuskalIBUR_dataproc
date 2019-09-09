@@ -134,14 +134,14 @@ echo "*** Anat skullstrip ${anat2}"
 echo "************************************"
 echo "************************************"
 
-./02.anat_skullstrip.sh ${anat2} ${adir} none ${anat1}
+./02.anat_skullstrip.sh ${anat2} ${adir} none ${anat1} none
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat1}"
 echo "************************************"
 echo "************************************"
 
-./02.anat_skullstrip.sh ${anat1} ${adir} ${anat1}_brain_mask
+./02.anat_skullstrip.sh ${anat1} ${adir} ${anat1}_brain_mask none ${anat2}
 
 echo "************************************"
 echo "*** Anat segment"

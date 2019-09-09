@@ -21,6 +21,7 @@
 
 sub=$1
 ses=$2
+overwrite=${3:-overwrite}
 
 
 flpr=sub-${sub}_ses-${ses}
@@ -85,29 +86,32 @@ echo "************************************"
 echo "************************************"
 
 cd ${wdr}/sub-${sub}/ses-${ses}
-for fld in anat_preproc func_preproc fmap_preproc reg
-do
-	if [[ -d "${fld}" ]]
-	then
-		if [[ "${fld}" == "func_preproc" ]]
-		then
-			# backup the only necessary files for meica
-			for bck in $( ls -d ${fld}/*_meica )
-			do
-				tar -zcvf $( date +%F_%X )_sub${b#*sub*}_bck.tar.gz ${bck}/comp_table* ${bck}/*mix*
-			done
-		fi
-			
-		rm -r ${fld}
-	fi
-	mkdir ${fld}
-done
+# if [[ "${overwrite}" == "overwrite" ]]
+# then
+# 	for fld in anat_preproc func_preproc fmap_preproc reg
+# 	do
+# 		if [[ -d "${fld}" ]]
+# 		then
+# 			if [[ "${fld}" == "func_preproc" ]]
+# 			then
+# 				# backup only the necessary files for meica
+# 				for bck in $( ls -d ${fld}/*_meica )
+# 				do
+# 					tar -zcvf $( date +%F_%X )_sub${b#*sub*}_bck.tar.gz ${bck}/comp_table* ${bck}/*mix*
+# 				done
+# 			fi
+				
+# 			rm -r ${fld}
+# 		fi
+# 		mkdir ${fld}
+# 	done
+# fi
 
-imcp func/* func_preproc/.
-imcp anat/${anat1} anat_preproc/.
-imcp anat/${anat2} anat_preproc/.
-imcp fmap/* fmap_preproc/.
-imcp ${stdp}/${std} reg/.
+# imcp func/* func_preproc/.
+# imcp anat/${anat1} anat_preproc/.
+# imcp anat/${anat2} anat_preproc/.
+# imcp fmap/* fmap_preproc/.
+# imcp ${stdp}/${std} reg/.
 
 cd ${cwd}
 
@@ -120,21 +124,21 @@ echo "*** Anat correction ${anat1}"
 echo "************************************"
 echo "************************************"
 
-./01.anat_correct.sh ${anat1} ${adir}
+# ./01.anat_correct.sh ${anat1} ${adir}
 
 echo "************************************"
 echo "*** Anat correction ${anat2}"
 echo "************************************"
 echo "************************************"
 
-./01.anat_correct.sh ${anat2} ${adir} ${anat1}
+# ./01.anat_correct.sh ${anat2} ${adir} ${anat1}
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat2}"
 echo "************************************"
 echo "************************************"
 
-./02.anat_skullstrip.sh ${anat2} ${adir} none ${anat1} none
+# ./02.anat_skullstrip.sh ${anat2} ${adir} none ${anat1} none
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat1}"
@@ -142,6 +146,8 @@ echo "************************************"
 echo "************************************"
 
 ./02.anat_skullstrip.sh ${anat1} ${adir} ${anat1}_brain_mask none ${anat2}
+
+exit
 
 echo "************************************"
 echo "*** Anat segment"

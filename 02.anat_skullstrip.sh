@@ -56,7 +56,7 @@ if [[ "${c3dsrc}" != "none" ]]
 then
 	echo "Moving from FSL to ants in brain extracted images"
 	c3d_affine_tool -ref ${anat}_brain -src ${c3dsrc}_brain \
-	../reg/${c3dsrc}2${anat}_fsl.mat -fsl2ras -oitk ../reg/${anat}2${anat}0GenericAffine.mat
+	../reg/${c3dsrc}2${anat}_fsl.mat -fsl2ras -oitk ../reg/${c3dsrc}2${anat}0GenericAffine.mat
 fi
 
 

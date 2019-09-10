@@ -182,8 +182,8 @@ def export_regressor(regr_x, co_shift, GM_x, GM_name, suffix='_co_regr'):
     np.savetxt(textname, co_tr, fmt='%.18f')
 
 
-def get_regr(GM_name, co_conv, tr=1.5, newfreq=40, BH_len=58, nBH=8):
-    GM = np.genfromtxt(GM_name + '.1D')
+def get_regr(GM_name, co_conv, tr=1.5, newfreq=40, BH_len=58, nBH=8, ext='.1D'):
+    GM = np.genfromtxt(GM_name + ext)
     sequence_tps = len(GM)
 
     regr_x = np.arange(0, ((sequence_tps-1) * tr + 1/newfreq), 1/newfreq)
@@ -199,7 +199,12 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40, BH_len=58, nBH=8):
     # Preparing central breathhold and CO2 trace for Xcorr
     # CO2 trace should have the equivalent of
     # ten tr of bad data at the beginning of the file
-    GM_cut = GM_upsampled[BH_len_upsampled:BH_len_upsampled*(nBH-1)]
+    if BH_len:
+        last_tp = BH_len_upsampled*(nBH-1)
+    else:
+        last_tp = -1
+
+    GM_cut = GM_upsampled[BH_len_upsampled:last_tp]
     co_conv_cut = co_conv[BH_len_upsampled:]
 
     # Detrend GM # Molly hinted it might be better not to
@@ -207,7 +212,7 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40, BH_len=58, nBH=8):
 
     GM_cut_len = len(GM_cut)
     nrep = len(co_conv_cut) - GM_cut_len
-    if nrep > BH_len_upsampled:
+    if BH_len and nrep > BH_len_upsampled:
         nrep = BH_len_upsampled
 
     GM_co_r = np.zeros(nrep)
@@ -219,6 +224,12 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40, BH_len=58, nBH=8):
 
     # preparing for and exporting figures of shift
     time_axis = np.arange(0, nrep/newfreq, 1/newfreq)
+    # #!# I should change to following line but not tested yet
+    # time_axis = np.linspace(0, nrep*newfreq, nrep)
+    if nrep < len(time_axis):
+        time_axis = time_axis[:nrep]
+    elif nrep > len(time_axis):
+        time_axis = np.pad(time_axis, (0, int(nrep - len(time_axis))), 'linear_ramp')
 
     plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
     plt.plot(time_axis, GM_co_r)

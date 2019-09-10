@@ -21,6 +21,7 @@ do
 				tval=2.6
 			fi
 			echo "sub ${sub} ses ${ses} ftype ${ftype}"
+			echo "cvr"
 			fsleyes render -of sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr --size 1400 500 --scene lightbox --sliceSpacing 18 --zrange 21 131 \
 			--ncols 6 --nrows 1 --hideCursor --bgColour 0.0 0.0 0.0 --fgColour 1.0 1.0 1.0 --showColourBar --colourBarLocation top \
 			--colourBarLabelSide top-left --colourBarSize 50 --labelSize 11 \

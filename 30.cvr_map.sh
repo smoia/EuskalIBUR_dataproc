@@ -67,7 +67,7 @@ do
 
 		if [[ ${ftype} == 'meica' ]]
 		then
-			3dDeconvolve -input ${flpr}_${ftype}_SPC.nii.gz -jobs 2 \
+			3dDeconvolve -input ${flpr}_${ftype}_SPC.nii.gz -jobs 6 \
 			-float -num_stimts 1 \
 			-mask ${flpr}_mask.nii.gz \
 			-stim_file 1 ${shiftdir}/shift_${i}_pp.1D \
@@ -77,7 +77,7 @@ do
 			-rout -tout \
 			-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz
 		else
-			3dDeconvolve -input ${flpr}_${ftype}_SPC.nii.gz -jobs 2 \
+			3dDeconvolve -input ${flpr}_${ftype}_SPC.nii.gz -jobs 6 \
 			-float -num_stimts 1 \
 			-mask ${flpr}_mask.nii.gz \
 			-ortvec ${flpr}_demean.par motdemean \

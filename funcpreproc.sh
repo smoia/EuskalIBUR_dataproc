@@ -124,21 +124,21 @@ echo "*** Anat correction ${anat1}"
 echo "************************************"
 echo "************************************"
 
-# ./01.anat_correct.sh ${anat1} ${adir}
+./01.anat_correct.sh ${anat1} ${adir}
 
 echo "************************************"
 echo "*** Anat correction ${anat2}"
 echo "************************************"
 echo "************************************"
 
-# ./01.anat_correct.sh ${anat2} ${adir} ${anat1}
+./01.anat_correct.sh ${anat2} ${adir} ${anat1}
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat2}"
 echo "************************************"
 echo "************************************"
 
-# ./02.anat_skullstrip.sh ${anat2} ${adir} none ${anat1} none
+./02.anat_skullstrip.sh ${anat2} ${adir} none ${anat1} none
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat1}"
@@ -146,8 +146,6 @@ echo "************************************"
 echo "************************************"
 
 ./02.anat_skullstrip.sh ${anat1} ${adir} ${anat1}_brain_mask none ${anat2}
-
-exit
 
 echo "************************************"
 echo "*** Anat segment"

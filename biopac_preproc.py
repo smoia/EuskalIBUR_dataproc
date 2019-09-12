@@ -220,6 +220,10 @@ def get_regr(GM_name, co_conv, tr=1.5, newfreq=40, BH_len=58, nBH=8, ext='.1D'):
         GM_co_r[i] = np.corrcoef(GM_cut, co_conv[0+i:GM_cut_len+i].T)[1, 0]
 
     optshift = int(GM_co_r.argmax())
+    textname = GM_name + '_optshift.1D'
+    # #!#
+    optshiftout = np.array((optshift/newfreq,0))
+    np.savetxt(textname, optshiftout, fmt='%.4f')
     co_shift = co_conv[optshift:optshift+regr_len]
 
     # preparing for and exporting figures of shift

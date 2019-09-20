@@ -244,7 +244,7 @@ do
 	
 	if [[ ${f} != "breathhold" ]]
 	then
-		
+		# If not breathhold, apply smoothing and denoising.
 		for e in $( seq 1 ${nTE} )
 		do
 			echo "************************************"
@@ -312,6 +312,7 @@ do
 		immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/01.${bold}_std_SPC_preprocessed
 
 	else
+		# If breathhold, skip smoothing and denoising!
 		for e in $( seq 1 ${nTE} )
 		do
 			echo "************************************"
@@ -327,17 +328,16 @@ do
 			echo "************************************"
 			echo "************************************"
 
-			./12.func_normalize.sh ${bold}_sm ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+			./12.func_normalize.sh ${bold}_bet ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
 
-			./11.func_spc.sh ${bold}_sm_norm ${fdir}
+			./11.func_spc.sh ${bold}_bet_norm ${fdir}
 
-			immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
-			immv ${fdir}/${bold}_sm_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-			immv ${fdir}/${bold}_sm_norm ${fdir}/00.${bold}_std_preprocessed
-			immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/01.${bold}_std_SPC_preprocessed
+			immv ${fdir}/${bold}_bet ${fdir}/00.${bold}_native_preprocessed
+			immv ${fdir}/${bold}_bet_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
+			immv ${fdir}/${bold}_bet_norm ${fdir}/00.${bold}_std_preprocessed
+			immv ${fdir}/${bold}_bet_norm_SPC ${fdir}/01.${bold}_std_SPC_preprocessed
 
 		done
-
 
 		bold=${flpr}_task-${f}_optcom_bold
 
@@ -357,10 +357,10 @@ do
 
 		./11.func_spc.sh ${bold}_bet_norm ${fdir}
 
-		immv ${bold}_bet ${fdir}/00.${bold}_native_preprocessed
-		immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-		immv ${fdir}/${bold}_norm_SPC ${fdir}/00.${bold}_std_preprocessed
-		immv ${fdir}/${bold}_norm_SPC ${fdir}/01.${bold}_std_SPC_preprocessed
+		immv ${fdir}/${bold}_bet ${fdir}/00.${bold}_native_preprocessed
+		immv ${fdir}/${bold}_bet_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
+		immv ${fdir}/${bold}_bet_norm ${fdir}/00.${bold}_std_preprocessed
+		immv ${fdir}/${bold}_bet_norm_SPC ${fdir}/01.${bold}_std_SPC_preprocessed
 
 	fi
 
@@ -460,12 +460,7 @@ do
 		echo "************************************"
 
 		bold=${flpr}_task-rest_run-${r}_echo-${e}_bold
-		if [[ "rest" == *rest* ]]
-		then
-			./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 1
-		else
-			./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
-		fi
+		./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 1
 		
 		echo "************************************"
 		echo "*** Func smooth rest BOLD echo ${e}"

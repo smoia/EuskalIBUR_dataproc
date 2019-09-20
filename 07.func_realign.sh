@@ -85,9 +85,10 @@ if [[ "${moio}" -gt 0 ]]
 then
 	echo "Computing DVARS and FD for ${func}"
 	# 01.3. Compute various metrics
-	fsl_motion_outliers -i ${func}_mcf -o ${func}_mcf_dvars_confounds -s ${func}_dvars.par -p ${func}_dvars --dvars --nomoco
-	# Momentarily
-	fsl_motion_outliers -i ${func}_cr -o ${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd --fd --nomoco
+	fsl_motion_outliers -i ${func}_mcf -o ${func}_mcf_dvars_confounds -s ${func}_dvars_post.par -p ${func}_dvars_post --dvars --nomoco
+	fsl_motion_outliers -i ${func}_cr -o ${func}_mcf_dvars_confounds -s ${func}_dvars_pre.par -p ${func}_dvars_pre --dvars
+	fsl_motion_outliers -i ${func}_cr -o ${func}_mcf_dvars_confounds -s ${func}_dvars_pre.par -p ${func}_dvars_pre --dvars
+	fsl_motion_outliers -i ${func}_cr -o ${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd --fd
 fi
 
 cd ${cwd}

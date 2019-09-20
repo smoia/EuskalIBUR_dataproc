@@ -319,7 +319,8 @@ do
 			echo "************************************"
 			echo "************************************"
 
-			./11.func_spc.sh ${bold}_sm ${fdir}
+			bold=${flpr}_task-${f}_echo-${e}_bold
+			./11.func_spc.sh ${bold}_bet ${fdir}
 
 			echo "************************************"
 			echo "*** Func normalise ${f} BOLD echo ${e}"

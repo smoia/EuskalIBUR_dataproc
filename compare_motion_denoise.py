@@ -68,5 +68,21 @@ for sub in sub_list:
         slope_table[f'{sub}_avg_{ftype_list[i]}'] = slopes[i*10:(i*10+10)]
 
 
+    # Need to make graphs
+
+    # PSEUDOCODE
+
+    # Graph one: slopes
+    # For each session, for each ftype
+        # Create a fake point that is (10,10*m)
+        # Plot a line in blue?
+    # Average: repeat session but plot in red
+
+    # Graph two: violin plot
+    # For each ftype
+        # Append all the subjects and sessions
+        # If needed, tidy the matrix
+        # Violin plot
+
 
 os.chdir(cwd)

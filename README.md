@@ -1,4 +1,5 @@
-# Dataprocessing for EuskalIBUR
+Dataprocessing for EuskalIBUR
+=============================
 
 01 - 19: neuroimaging preproc
 20 - 29: Non-MRI data preproc

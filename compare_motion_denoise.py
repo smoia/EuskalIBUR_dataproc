@@ -17,6 +17,9 @@ cwd = os.getcwd()
 os.chdir('/media')
 # os.chdir('/media/nemo/ANVILData/gdrive/PJMASK')
 
+
+os.chdir('ME_Denoising')
+
 sub_list = ['007', '003', '002']
 ftype_list = ['echo-2', 'optcom', 'meica']
 
@@ -67,6 +70,9 @@ for sub in sub_list:
         slopes[ses*(i+1)-1] = compute_slope(sub_table[delta_col_name], sub_table[f'{sub}_svg_fd'])
         slope_table[f'{sub}_avg_{ftype_list[i]}'] = slopes[i*10:(i*10+10)]
 
+
+sub_table.to_csv('sub_table.csv',compression='gzip')
+slope_table.to_csv('slope_table.csv',compression='gzip')
 
     # Need to make graphs
 

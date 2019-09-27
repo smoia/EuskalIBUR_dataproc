@@ -26,7 +26,7 @@ do
 		-o sub-${sub}/ses-${ses}/func_preproc/sub-${sub}_ses-${ses}_task-breathhold_meica_bold_bet_vascular
 		fsl_regfilt -i ${func} \
 		-d sub-${sub}/ses-${ses}/func_preproc/sub-${sub}_ses-${ses}_task-breathhold_echo-1_bold_RPI_bet_meica/meica_mix.1D \
-		-f "$( cat sub-${sub}_ses-${ses}_network.1D )" \
+		-f "$( cat sub-${sub}_ses-${ses}_networks.1D )" \
 		-o sub-${sub}/ses-${ses}/func_preproc/sub-${sub}_ses-${ses}_task-breathhold_meica_bold_bet_network
 
 		exit

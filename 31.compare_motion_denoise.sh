@@ -8,7 +8,7 @@
 
 sub=$1
 ses=$2
-wdr=${1:-/data}
+wdr=${3:-/data}
 
 ### Main ###
 cwd=$( pwd )

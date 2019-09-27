@@ -56,8 +56,8 @@ for sub in sub_list:
                                          / sub_table[f'{sub}_{ses:02d}_fd'])
             sub_table[delta_col_name][0] = 0
 
-            slopes[ses*(i+1)-1] = compute_slope(sub_table[delta_col_name],
-                                                sub_table[f'{sub}_{ses:02d}_fd'])
+            slopes[ses*(i+1)-1] = compute_slope(np.array(sub_table[delta_col_name]),
+                                                np.array(sub_table[f'{sub}_{ses:02d}_fd']))
 
         for i in range(3):
             slope_table[f'{sub}_{ses:02d}_{ftype_list[i]}'] = slopes[i*10:(i*10+10)]
@@ -71,8 +71,8 @@ for sub in sub_list:
                                      sub_table[f'{sub}_avg_fd'])
         sub_table[delta_col_name][0] = 0
 
-        slopes[ses*(i+1)-1] = compute_slope(sub_table[delta_col_name],
-                                            sub_table[f'{sub}_svg_fd'])
+        slopes[ses*(i+1)-1] = compute_slope(np.array(sub_table[delta_col_name]),
+                                            np.array(sub_table[f'{sub}_svg_fd']))
         slope_table[f'{sub}_avg_{ftype_list[i]}'] = slopes[i*10:(i*10+10)]
 
 

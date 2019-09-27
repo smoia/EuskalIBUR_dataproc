@@ -4,10 +4,11 @@ wdr=${1:-/data}
 
 ### Main ###
 cwd=$( pwd )
-cd ${wdr}
 
 echo "Processing sheet"
 python3 sheet_preproc.py
+
+cd ${wdr}
 
 for sub in 007 003 002
 do

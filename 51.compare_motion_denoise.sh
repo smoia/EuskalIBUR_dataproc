@@ -36,3 +36,4 @@ done
 
 # add call to python!
 
+cd ${cwd}

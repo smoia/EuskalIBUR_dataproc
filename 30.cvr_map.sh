@@ -13,8 +13,7 @@ ftype=$3
 
 # ftype is optcom, echo-2 and meica
 
-wdr=/media
-# wdr=/media/nemo/ANVILData/gdrive/PJMASK
+wdr=${4:-/data}
 
 step=10
 lag=9

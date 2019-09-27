@@ -6,8 +6,7 @@
 # Date:    15.08.2019
 #########
 
-wdr=/media
-# wdr=/media/nemo/ANVILData/gdrive/PJMASK
+wdr=${1:-/data}
 
 ### Main ###
 cwd=$( pwd )

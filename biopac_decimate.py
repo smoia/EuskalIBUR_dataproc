@@ -5,7 +5,7 @@ import biopac_preproc as bio
 import matplotlib.pyplot as plt
 
 
-wdir = '/media/PHYSIO/BIDS'
+wdir = '/data/PHYSIO/BIDS'
 filename = ''  # filename
 ch = 4  # or 5
 

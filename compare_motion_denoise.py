@@ -14,9 +14,7 @@ def compute_slope(x, y):
 
 cwd = os.getcwd()
 
-os.chdir('/media')
-# os.chdir('/media/nemo/ANVILData/gdrive/PJMASK')
-
+os.chdir('/data')
 
 os.chdir('ME_Denoising')
 

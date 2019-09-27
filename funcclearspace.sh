@@ -9,11 +9,9 @@
 
 sub=$1
 ses=$2
-
+wdr=${3:-/data}
 
 flpr=sub-${sub}_ses-${ses}
-
-wdr=/scratch/smoia
 
 anat1=${flpr}_acq-uni_T1w 
 anat2=${flpr}_T2w

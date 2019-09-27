@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wdr=/media/nemo/ANVILData/gdrive/PJMASK/CVR
+wdr=${1:-/data}
 
 ### Main ###
 

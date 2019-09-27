@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wdr=/media
+wdr=${1:-/data}
 
 ### Main ###
 cwd=$( pwd )

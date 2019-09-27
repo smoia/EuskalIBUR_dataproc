@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-wdr=/media
+wdr=${1:-/data}
 
 adir=anat_preproc
 fdir=func_preproc

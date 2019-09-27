@@ -6,8 +6,7 @@
 # Date:    15.08.2${ses}9
 #########
 
-wdr=/media
-# wdr=/media/nemo/ANVILData/gdrive/PJMASK
+wdr=${1:-/data}
 
 sub=$1
 ftype=$2

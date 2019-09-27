@@ -12,7 +12,9 @@ wdr=${1:-/data}
 cwd=$( pwd )
 cd ${wdr}
 
-if [[ ! -d "ME_Denoising" ]]; then mkdir ME_Denoising; fi
+if [[ -d "ME_Denoising" ]]; then rm ME_Denoising; fi
+
+mkdir ME_Denoising
 
 cd ME_Denoising
 

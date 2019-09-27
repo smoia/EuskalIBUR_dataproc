@@ -39,7 +39,7 @@ exec 3>&1 4>&2
 
 exec 1>${wdr}/log/${flpr}_log_clear 2>&1
 
-echo $(date)
+date
 echo "************************************"
 
 # saving the current wokdir
@@ -59,7 +59,7 @@ echo "************************************"
 ./98.anat_delete.sh ${adir} ${anat1}
 ./98.anat_delete.sh ${adir} ${anat2}
 
-for f in breathhold #TASK1 TASK2 TASK3
+for f in breathhold TASK1 TASK2 TASK3
 do 
 	for d in AP PA
 	do
@@ -96,3 +96,7 @@ do
 	./96.meica_delete.sh ${fdir} ${flpr}_task-${f}_echo-1_bold_RPI_bet
 
 done
+
+# Needs RS
+
+cd ${cwd}

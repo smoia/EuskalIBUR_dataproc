@@ -1,0 +1,44 @@
+General parameters for PJMASK:
+
+Func volume:
+
+Rest tp:			400
+Task tp:			340
+
+TR:				1.5 s
+TE:				10.6 28.69 46.78 64.87 82.96 ms
+
+flip angle:		70°
+MB:				4
+GRAPPA:			2
+
+slices:			52
+FoV read:		211 mm
+vox size:		2.4x2.4x3 mm
+
+
+Anat, T2w:
+
+slices:			176
+FoV read:		256 mm
+vox size:		1x1x1 mm
+
+
+
+BreathHold task:
+
+Tot:			58 s
+Paced:			24 s
+Paced type:		4 * (3 + 3) s
+Apnea:			20 s
+Exhale:			3 s
+Recover:		11 s
+
+Pressure:		768 mmHg
+Altitude:		100 m
+Alt.corr.fact:	0.988
+Press. air:		47 mmHg
+
+Math behind it:
+CO2[mmHg] = ([pressure in Donosti]*[Lab altitude correction factor] - [Pressure of Air at body temperature])[mmHg]*(channel_trace[V]*10[V^(-1)]/100)
+CO2[mmHg] = (768*0.988-47)[mmHg]*(channel_trace*10/100) ~ 71.2 mmHg

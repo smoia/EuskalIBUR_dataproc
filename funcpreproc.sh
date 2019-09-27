@@ -21,7 +21,7 @@
 
 sub=$1
 ses=$2
-wdr=${3:-/media}
+wdr=${3:-/data}
 overwrite=${4:-overwrite}
 
 flpr=sub-${sub}_ses-${ses}

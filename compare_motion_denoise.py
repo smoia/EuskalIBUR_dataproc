@@ -17,8 +17,8 @@ os.chdir('/data')
 
 os.chdir('ME_Denoising')
 
-sub_list = ['007']  # , '003', '002']
-ftype_list = ['echo-2', 'optcom']  # , 'meica']
+sub_list = ['007', '003', '002']
+ftype_list = ['echo-2', 'optcom', 'meica']
 
 sub_table = pd.DataFrame()
 slope_table = pd.DataFrame()

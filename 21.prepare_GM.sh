@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
-wdr=${1:-/data}
+sub=$1
+ses=$2
+wdr=${3:-/data}
 
 adir=anat_preproc
 fdir=func_preproc
-
-sub=$1
-ses=$2
 
 ### Main ###
 cwd=$( pwd )

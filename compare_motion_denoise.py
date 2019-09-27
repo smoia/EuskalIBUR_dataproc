@@ -54,6 +54,7 @@ for sub in sub_list:
             sub_table[delta_col_name] = ((sub_table[col_name] -
                                          sub_table[f'{sub}_{ses:02d}_dvars_pre'])
                                          / sub_table[f'{sub}_{ses:02d}_fd'])
+            sub_table[delta_col_name][0] = 0
 
             slopes[ses*(i+1)-1] = compute_slope(sub_table[delta_col_name],
                                                 sub_table[f'{sub}_{ses:02d}_fd'])
@@ -68,6 +69,7 @@ for sub in sub_list:
         sub_table[delta_col_name] = ((sub_table[col_name] -
                                      sub_table[f'{sub}_avg_dvars_pre']) /
                                      sub_table[f'{sub}_avg_fd'])
+        sub_table[delta_col_name][0] = 0
 
         slopes[ses*(i+1)-1] = compute_slope(sub_table[delta_col_name],
                                             sub_table[f'{sub}_svg_fd'])

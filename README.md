@@ -7,8 +7,8 @@ Dataprocessing for EuskalIBUR
 
 30 - 49: Single session/subject analysis
 
-50 - 59: Group analysis
+50 - 69: Group analysis
 
-60 - 79: Visualisation
+70 - 89: Visualisation
 
 90 - 99: Cleaning and data removal

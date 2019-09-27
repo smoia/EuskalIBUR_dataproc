@@ -86,34 +86,36 @@ echo "************************************"
 echo "************************************"
 
 cd ${wdr}/sub-${sub}/ses-${ses}
-# if [[ "${overwrite}" == "overwrite" ]]
-# then
-# 	for fld in anat_preproc func_preproc fmap_preproc reg
-# 	do
-# 		if [[ -d "${fld}" ]]
-# 		then
-# 			if [[ "${fld}" == "func_preproc" ]]
-# 			then
-# 				# backup only the necessary files for meica
-# 				for bck in $( ls -d ${fld}/*_meica )
-# 				do
-# 					tar -zcvf $( date +%F_%X )_sub${b#*sub*}_bck.tar.gz ${bck}/comp_table* ${bck}/*mix*
-# 				done
-# 			fi
+if [[ "${overwrite}" == "overwrite" ]]
+then
+	for fld in anat_preproc func_preproc fmap_preproc reg
+	do
+		if [[ -d "${fld}" ]]
+		then
+			if [[ "${fld}" == "func_preproc" ]]
+			then
+				# backup only the necessary files for meica
+				for bck in ${fld}/*_meica
+				do
+					tar -zcvf $( date +%F_%X )_sub${b#*sub*}_bck.tar.gz ${bck}/comp_table* ${bck}/*mix*
+				done
+			fi
 				
-# 			rm -r ${fld}
-# 		fi
-# 		mkdir ${fld}
-# 	done
-# fi
+			rm -r ${fld}
+		fi
+		mkdir ${fld}
+	done
+fi
 
-# imcp func/* func_preproc/.
-# imcp anat/${anat1} anat_preproc/.
-# imcp anat/${anat2} anat_preproc/.
-# imcp fmap/* fmap_preproc/.
-# imcp ${stdp}/${std} reg/.
+imcp func/* func_preproc/.
+imcp anat/${anat1} anat_preproc/.
+imcp anat/${anat2} anat_preproc/.
+imcp fmap/* fmap_preproc/.
+imcp ${stdp}/${std} reg/.
 
 cd ${cwd}
+
+exit
 
 ######################################
 #########    Anat preproc    #########

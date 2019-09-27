@@ -10,7 +10,6 @@ def compute_slope(x, y):
     m = ((x*y).mean - x.mean*y.mean) / ((x**2).mean() - (x.mean())**2)
     return m
 
-
 cwd = os.getcwd()
 
 os.chdir('/data')

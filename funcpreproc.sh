@@ -21,12 +21,10 @@
 
 sub=$1
 ses=$2
-overwrite=${3:-overwrite}
-
+wdr=${3:-/media}
+overwrite=${4:-overwrite}
 
 flpr=sub-${sub}_ses-${ses}
-
-wdr=/media
 
 anat1=${flpr}_acq-uni_T1w 
 anat2=${flpr}_T2w
@@ -98,11 +96,12 @@ then
 				for bck in ${fld}/*_meica
 				do
 					[[ -e "${bck}" ]] || break
+					echo "Backing up sub${bck#*sub*}"
 					tar -zcvf $( date +%F_%H-%M-%S )_sub${bck#*sub*}_bck.tar.gz ${bck}/comp_table* ${bck}/*mix*
 				done
 			fi
 				
-			rm -r ${fld}
+			#rm -r ${fld}
 		fi
 		mkdir ${fld}
 	done
@@ -115,8 +114,6 @@ imcp fmap/* fmap_preproc/.
 imcp ${stdp}/${std} reg/.
 
 cd ${cwd}
-
-exit
 
 ######################################
 #########    Anat preproc    #########

@@ -1,42 +1,9 @@
 #!/usr/bin/env bash
 
+
 wdr=${1:-/data}
 
 ### Main ###
-cwd=$( pwd )
 
 echo "Processing sheet"
 python3 sheet_preproc.py
-
-cd ${wdr}
-
-for sub in 007 003 002
-do
-	for ses in $( seq -f %02g 1 9 )
-	do
-		echo "Denoising sub ${sub} ses ${ses}"
-		fdir=sub-${sub}/ses-${ses}/func_preproc
-		func=${fdir}/00.sub-${sub}_ses-${ses}_task-breathhold_optcom_bold_native_preprocessed
-		bold=sub-${sub}_ses-${ses}_task-breathhold_meica_bold
-
-		fsl_regfilt -i ${func} \
-		-d ${fdir}/sub-${sub}_ses-${ses}_task-breathhold_echo-1_bold_RPI_bet_meica/meica_mix.1D \
-		-f "$( cat sub-${sub}_ses-${ses}_rejected.1D )" \
-		-o ${fdir}/${bold}_bet
-		fsl_regfilt -i ${func} \
-		-d ${fdir}/sub-${sub}_ses-${ses}_task-breathhold_echo-1_bold_RPI_bet_meica/meica_mix.1D \
-		-f "$( cat sub-${sub}_ses-${ses}_vascular.1D )" \
-		-o ${fdir}/${bold}_bet_vascular
-		fsl_regfilt -i ${func} \
-		-d ${fdir}/sub-${sub}_ses-${ses}_task-breathhold_echo-1_bold_RPI_bet_meica/meica_mix.1D \
-		-f "$( cat sub-${sub}_ses-${ses}_networks.1D )" \
-		-o ${fdir}/${bold}_bet_network
-
-		./11.func_spc.sh ${bold}_bet ${fdir}
-
-		immv ${fdir}/${bold}_bet ${fdir}/00.${bold}_native_preprocessed
-		immv ${fdir}/${bold}_bet_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-	done
-done
-
-cd ${cwd}

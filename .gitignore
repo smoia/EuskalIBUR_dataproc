@@ -2,8 +2,8 @@
 sub-0*
 3dDeconvolve.err
 tmp*
-*_preproc
-reg
+*_preproc/
+reg/
 
 ### PTYHON
 # Byte-compiled / optimized / DLL files

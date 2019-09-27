@@ -105,13 +105,14 @@ then
 		fi
 		mkdir ${fld}
 	done
-fi
 
-imcp func/* func_preproc/.
-imcp anat/${anat1} anat_preproc/.
-imcp anat/${anat2} anat_preproc/.
-imcp fmap/* fmap_preproc/.
-imcp ${stdp}/${std} reg/.
+	imcp func/* func_preproc/.
+	imcp anat/${anat1} anat_preproc/.
+	imcp anat/${anat2} anat_preproc/.
+	imcp fmap/* fmap_preproc/.
+	imcp ${stdp}/${std} reg/.
+
+fi
 
 cd ${cwd}
 

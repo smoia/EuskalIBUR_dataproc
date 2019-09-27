@@ -60,12 +60,9 @@ fi
 
 # 01.3. Compute various metrics
 echo "Computing DVARS and FD for ${func}"
-fsl_motion_outliers -i ${func}_mcf -o ${func}_mcf_dvars_confounds -s ${func}_dvars.par -p ${func}_dvars \
---dvars --nomoco -m ${mref}_brain_mask
-# Momentarily
-#!# 0.3
-fsl_motion_outliers -i ${func}_cr -o ${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd \
---fd -m ${mref}_brain_mask
+fsl_motion_outliers -i ${func}_mcf -o ${func}_mcf_dvars_confounds -s ${func}_dvars_post.par -p ${func}_dvars_post --dvars --nomoco
+fsl_motion_outliers -i ${func}_cr -o ${func}_mcf_dvars_confounds -s ${func}_dvars_pre.par -p ${func}_dvars_pre --dvars --nomoco
+fsl_motion_outliers -i ${func}_cr -o ${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd --fd
 
 # 01.4. Apply mask
 echo "BETting ${func}"

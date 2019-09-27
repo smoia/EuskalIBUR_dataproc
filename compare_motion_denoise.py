@@ -29,7 +29,7 @@ for sub in sub_list:
 
         for mottype in ['dvars_pre', 'fd']:
             col_name = f'{sub}_{ses:02d}_{mottype}'
-            filename = f'sub-{sub}/{mottype}_sub-{sub}_ses-{ses}.1D'
+            filename = f'sub-{sub}/{mottype}_sub-{sub}_ses-{ses:02d}.1D'
             sub_table[col_name] = np.genfromtxt(filename)
 
             avg_col_name = f'{sub}_avg_{mottype}'
@@ -41,7 +41,7 @@ for sub in sub_list:
         # loop for ftype_list
         for i in range(3):
             col_name = f'{sub}_{ses:02d}_dvars_{ftype_list[i]}'
-            filename = f'sub-{sub}/dvars_{ftype_list[i]}_sub-{sub}_ses-{ses}.1D'
+            filename = f'sub-{sub}/dvars_{ftype_list[i]}_sub-{sub}_ses-{ses:02d}.1D'
             sub_table[col_name] = np.genfromtxt(filename)
 
             avg_col_name = f'{sub}_avg_dvars_{ftype_list[i]}'
@@ -61,7 +61,7 @@ for sub in sub_list:
         for i in range(3):
             slope_table[f'{sub}_{ses:02d}_{ftype_list[i]}'] = slopes[i*10:(i*10+10)]
 
-    slopes = np.zeroes([30])
+    slopes = np.zeros([30])
     for i in range(3):
         col_name = f'{sub}_avg_dvars_{ftype_list[i]}'
         delta_col_name = f'{sub}_avg_delta_dvars'

@@ -7,8 +7,7 @@ from numpy import savetxt
 
 cwd = os.getcwd()
 
-# os.chdir('/media')
-os.chdir('/media/nemo/ANVILData/gdrive/PJMASK')
+os.chdir('/data')
 
 sub_list = ['007', '003', '002']
 

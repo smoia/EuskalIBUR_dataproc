@@ -52,9 +52,7 @@ for sub in sub_list:
 
 plt.legend()
 plt.xlabel('FD')
-plt.xlim(-1, 5)
-plt.ylabel('DVARS') 
-plt.ylim(-80, 300)
+plt.ylabel('DVARS')
 plt.savefig(f'Allsubs_DVARS_vs_FD.png', dpi=SET_DPI)
 plt.clf()
 plt.close()

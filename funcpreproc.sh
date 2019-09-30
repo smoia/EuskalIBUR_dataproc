@@ -276,8 +276,8 @@ do
 
 			immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 			immv ${fdir}/${bold}_sm_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-			immv ${fdir}/${bold}_sm_norm ${fdir}/00.${bold}_std_preprocessed
-			immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/01.${bold}_std_SPC_preprocessed
+			immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
+			immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
 
 		done
 
@@ -309,8 +309,8 @@ do
 
 		immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 		immv ${fdir}/${bold}_sm_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-		immv ${fdir}/${bold}_sm_norm ${fdir}/00.${bold}_std_preprocessed
-		immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/01.${bold}_std_SPC_preprocessed
+		immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
+		immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
 
 	else
 		# If breathhold, skip smoothing and denoising!
@@ -335,8 +335,8 @@ do
 
 			immv ${fdir}/${bold}_bet ${fdir}/00.${bold}_native_preprocessed
 			immv ${fdir}/${bold}_bet_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-			immv ${fdir}/${bold}_bet_norm ${fdir}/00.${bold}_std_preprocessed
-			immv ${fdir}/${bold}_bet_norm_SPC ${fdir}/01.${bold}_std_SPC_preprocessed
+			immv ${fdir}/${bold}_bet_norm ${fdir}/02.${bold}_std_preprocessed
+			immv ${fdir}/${bold}_bet_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
 
 		done
 
@@ -360,8 +360,8 @@ do
 
 		immv ${fdir}/${bold}_bet ${fdir}/00.${bold}_native_preprocessed
 		immv ${fdir}/${bold}_bet_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-		immv ${fdir}/${bold}_bet_norm ${fdir}/00.${bold}_std_preprocessed
-		immv ${fdir}/${bold}_bet_norm_SPC ${fdir}/01.${bold}_std_SPC_preprocessed
+		immv ${fdir}/${bold}_bet_norm ${fdir}/02.${bold}_std_preprocessed
+		immv ${fdir}/${bold}_bet_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
 
 	fi
 
@@ -483,8 +483,8 @@ do
 
 		immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 		immv ${fdir}/${bold}_sm_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-		immv ${fdir}/${bold}_sm_norm ${fdir}/00.${bold}_std_preprocessed
-		immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/01.${bold}_std_SPC_preprocessed
+		immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
+		immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
 
 	done
 
@@ -521,8 +521,8 @@ do
 
 	immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 	immv ${fdir}/${bold}_sm_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-	immv ${fdir}/${bold}_sm_norm ${fdir}/00.${bold}_std_preprocessed
-	immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/01.${bold}_std_SPC_preprocessed
+	immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
+	immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
 
 done
 

@@ -40,10 +40,10 @@ for sub in sub_list:
             sub_table[dvars_type] = np.genfromtxt(filename)
 
             delta_dvars = f'{sub}_{ses:02d}_delta_dvars_{ftype_list[i]}'
-            dvars_fd = f'{sub}_{ses:02d}_delta_dvars_{ftype_list[i]}_over_fd'
+            dvars_norm = f'{sub}_{ses:02d}_delta_dvars_{ftype_list[i]}_normalised'
             sub_table[delta_dvars] = sub_table[dvars_pre] - sub_table[dvars_type]
-            sub_table[dvars_fd] = sub_table[delta_dvars] / sub_table[f'{sub}_{ses:02d}_fd']
-            sub_table[delta_dvars][0] = 0
+            sub_table[dvars_norm] = sub_table[delta_dvars] / sub_table[dvars_type]
+            sub_table[dvars_norm][0] = 0
 
             slopes[i*10+ses-1] = compute_slope(np.array(sub_table[delta_dvars]),
                                                np.array(sub_table[f'{sub}_{ses:02d}_fd']))

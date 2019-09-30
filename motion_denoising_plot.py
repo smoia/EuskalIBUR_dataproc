@@ -40,6 +40,25 @@ for sub in sub_list:
     plt.clf()
     plt.close()
 
+    plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+    plt.title(f'NORM DVARS vs FD sub {sub}')
+
+    for ses in range(1,10):
+        x_col=f'{sub}_{ses:02g}_fd'
+        # loop for ftype
+        for i in range(4):
+            y_col=f'{sub}_{ses:02g}_dvars_{ftype_list[i]}'
+            sns.regplot(x=data[x_col], y=data[y_col], fit_reg=True, label=ftype_list[i], color=colours[i])
+    
+    plt.legend()
+    plt.xlabel('FD')
+    plt.xlim(-1, 5)
+    plt.ylabel('DVARS')
+    plt.ylim(-80, 300)
+    plt.savefig(f'{sub}_NORM_DVARS_vs_FD.png', dpi=SET_DPI)
+    plt.clf()
+    plt.close()
+
 plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
 plt.title('DVARS vs FD allsubs')
 for sub in sub_list:
@@ -54,6 +73,23 @@ plt.legend()
 plt.xlabel('FD')
 plt.ylabel('DVARS')
 plt.savefig(f'Allsubs_DVARS_vs_FD.png', dpi=SET_DPI)
+plt.clf()
+plt.close()
+
+plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+plt.title('NORM DVARS vs FD allsubs')
+for sub in sub_list:
+    for ses in range(1,10):
+        x_col=f'{sub}_{ses:02g}_fd'
+        # loop for ftype
+        for i in range(4):
+            y_col=f'{sub}_{ses:02d}_delta_dvars_{ftype_list[i]}_normalised'
+            sns.regplot(x=data[x_col], y=data[y_col], scatter=False, fit_reg=True, label=ftype_list[i], color=colours[i])
+
+plt.legend()
+plt.xlabel('FD')
+plt.ylabel('NORM DVARS')
+plt.savefig(f'Allsubs_NORM_DVARS_vs_FD.png', dpi=SET_DPI)
 plt.clf()
 plt.close()
 

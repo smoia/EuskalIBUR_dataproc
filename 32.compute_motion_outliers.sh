@@ -22,6 +22,8 @@ cd ME_Denoising
 
 if [[ ! -d "sub-${sub}" ]]; then mkdir sub-${sub}; fi
 
+
+# 01. Get FD and DVARS
 flpr=sub-${sub}_ses-${ses}
 echo ${flpr}
 cp ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-1_bold_dvars_pre.par sub-${sub}/dvars_pre_sub-${sub}_ses-${ses}.1D
@@ -36,13 +38,19 @@ do
 	fsl_motion_outliers -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/04.${flpr}_task-breathhold_meica_echo-${e}_bold_native_preprocessed \
 	-o tmp_out -s sub-${sub}/dvars_meica_echo-${e}_sub-${sub}_ses-${ses}.1D --dvars --nomoco
 done
+for ftype in optcom meica
+do
+	echo "DVARS ${ftype}"
+	fsl_motion_outliers -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${flpr}_task-breathhold_${ftype}_bold_native_preprocessed \
+	-o tmp_out -s sub-${sub}/dvars_${ftype}_sub-${sub}_ses-${ses}.1D --dvars --nomoco
+done
 
-echo "DVARS Optcom"
-fsl_motion_outliers -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${flpr}_task-breathhold_optcom_bold_native_preprocessed \
--o tmp_out -s sub-${sub}/dvars_optcom_sub-${sub}_ses-${ses}.1D --dvars --nomoco
-echo "DVARS MEICA"
-fsl_motion_outliers -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${flpr}_task-breathhold_meica_bold_native_preprocessed \
--o tmp_out -s sub-${sub}/dvars_meica_sub-${sub}_ses-${ses}.1D --dvars --nomoco
+# 02. Get average GM response
+for ftype in echo-2 optcom meica
+do
+	fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${flpr}_task-breathhold_${ftype}_bold_native_preprocessed \
+	-m ${anat}_GM_eroded > sub-${sub}_ses-${ses}_GM_${ftype}_avg.1D
+done
 
 rm tmp*
 

@@ -32,9 +32,11 @@ cd ${wdr}/CVR
 
 fslmaths ${anat}_GM_native -kernel gauss 2.5 -ero ${anat}_GM_eroded
 
-fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_optcom_bold_native_preprocessed -m ${anat}_GM_eroded > sub-${sub}_ses-${ses}_GM_optcom_avg.1D
-fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_echo-2_bold_native_preprocessed -m ${anat}_GM_eroded > sub-${sub}_ses-${ses}_GM_echo-2_avg.1D
-fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_meica_bold_native_preprocessed -m ${anat}_GM_eroded > sub-${sub}_ses-${ses}_GM_meica_avg.1D
+for ftype in echo-2 optcom meica
+do
+	fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${func}_${ftype}_bold_native_preprocessed \
+	-m ${anat}_GM_eroded > sub-${sub}_ses-${ses}_GM_${ftype}_avg.1D
+done
 
 cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_echo-1_bold_mcf_demean.par ./sub-${sub}_ses-${ses}_demean.par
 cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_echo-1_bold_mcf_deriv1.par ./sub-${sub}_ses-${ses}_deriv1.par

@@ -8,7 +8,6 @@ import seaborn as sns
 
 SET_DPI = 100
 FIGSIZE = (18, 10)
-BH_LEN = 39  # in TRs
 
 cwd = os.getcwd()
 
@@ -103,10 +102,14 @@ ftype_list = ['pre', 'echo-2', 'optcom', 'meica']
 for sub in sub_list:
     for i in range(1, len(ftype_list)):
         bh_responses = []
+        fd_responses = []
         for ses in range(1, 10):
             avg_gm = np.genfromtxt(f'sub-{sub}_ses-{ses}_GM_{ftype_list[i]}_avg.1D')
+            fd = np.genfromtxt(f'')
             for bh in range(8):
                 bh_responses.append(avg_gm[BH_LEN*i:BH_LEN*(i+1)])
+
+        bh_responses = np.asarray(bh_responses)
 
         
 

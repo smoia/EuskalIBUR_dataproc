@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import matplotlib
 import pandas as pd
 import numpy as np
 
@@ -19,8 +18,9 @@ os.chdir('/data')
 os.chdir('ME_Denoising')
 
 sub_list = ['007', '003', '002']
-ftype_list = ['optcom', 'meica']
 
+# 01. Read and organise motion related parameters
+ftype_list = ['optcom', 'meica']
 for e in range(1, NTE):
     ftype_list.append(f'echo-{e+1}')
     ftype_list.append(f'meica_echo-{e+1}')
@@ -33,9 +33,9 @@ for sub in sub_list:
     slopes = np.zeros([len(ftype_list)*10])
     for ses in range(1, 10):
 
-        for mottype in ['dvars_pre', 'fd']:
-            col_name = f'{sub}_{ses:02d}_{mottype}'
-            filename = f'sub-{sub}/{mottype}_sub-{sub}_ses-{ses:02d}.1D'
+        for mot_type in ['dvars_pre', 'fd']:
+            col_name = f'{sub}_{ses:02d}_{mot_type}'
+            filename = f'sub-{sub}/{mot_type}_sub-{sub}_ses-{ses:02d}.1D'
             sub_table[col_name] = np.genfromtxt(filename)
 
         # loop for ftype_list

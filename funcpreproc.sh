@@ -32,7 +32,7 @@ anat2=${flpr}_T2w
 adir=${wdr}/sub-${sub}/ses-${ses}/anat_preproc
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 fmap=${wdr}/sub-${sub}/ses-${ses}/fmap_preproc
-stdp=${wdr}/pjmask_preproc
+stdp=/scripts
 
 vdsc=10
 std=MNI152_T1_1mm_brain
@@ -106,13 +106,14 @@ then
 		mkdir ${fld}
 	done
 
-	imcp func/* func_preproc/.
-	imcp anat/${anat1} anat_preproc/.
-	imcp anat/${anat2} anat_preproc/.
-	imcp fmap/* fmap_preproc/.
-	imcp ${stdp}/${std} reg/.
+	imcp func/*.nii.gz func_preproc/.
+	imcp anat/${anat1}.nii.gz anat_preproc/.
+	imcp anat/${anat2}.nii.gz anat_preproc/.
+	imcp fmap/*.nii.gz fmap_preproc/.
+	imcp ${stdp}/${std}.nii.gz reg/.
 
 fi
+
 
 cd ${cwd}
 

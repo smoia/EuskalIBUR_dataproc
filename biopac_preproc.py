@@ -15,7 +15,7 @@ import scipy.stats as sct
 # matplotlib.interactive(True)
 reject_list = np.array([])
 SET_DPI = 100
-FIGSIZE = (18,10)
+FIGSIZE = (18, 10)
 
 
 def _get_parser():

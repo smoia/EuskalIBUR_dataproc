@@ -157,11 +157,13 @@ echo "************************************"
 
 ./04.anat_normalize.sh ${anat1} ${adir} ${std} ${mmres}
 
+./funcclearspace.sh ${sub} ${ses} ${wdr} anat
+
 ######################################
 #########    Task preproc    #########
 ######################################
 
-for f in breathhold TASK1 TASK2 TASK3
+for f in breathhold  # TASK1 TASK2 TASK3
 do 
 	for d in AP PA
 	do
@@ -270,14 +272,19 @@ do
 
 			./11.func_spc.sh ${bold}_sm ${fdir}
 
-			./12.func_normalize.sh ${bold}_sm ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+			# echo "************************************"
+			# echo "*** Func normalise ${f} BOLD echo ${e}"
+			# echo "************************************"
+			# echo "************************************"
 
-			./11.func_spc.sh ${bold}_sm_norm ${fdir}
+			# ./12.func_normalize.sh ${bold}_sm ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+
+			# ./11.func_spc.sh ${bold}_sm_norm ${fdir}
 
 			immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 			immv ${fdir}/${bold}_sm_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-			immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
-			immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
+			# immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
+			# immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
 
 		done
 
@@ -303,14 +310,19 @@ do
 
 		./11.func_spc.sh ${bold}_sm ${fdir}
 
-		./12.func_normalize.sh ${bold}_sm ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+		# echo "************************************"
+		# echo "*** Func normalise ${f} BOLD optcom"
+		# echo "************************************"
+		# echo "************************************"
 
-		./11.func_spc.sh ${bold}_norm ${fdir}
+		# ./12.func_normalize.sh ${bold}_sm ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+
+		# ./11.func_spc.sh ${bold}_norm ${fdir}
 
 		immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 		immv ${fdir}/${bold}_sm_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-		immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
-		immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
+		# immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
+		# immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
 
 	else
 		# If breathhold, skip smoothing and denoising!
@@ -324,19 +336,19 @@ do
 			bold=${flpr}_task-${f}_echo-${e}_bold
 			./11.func_spc.sh ${bold}_bet ${fdir}
 
-			echo "************************************"
-			echo "*** Func normalise ${f} BOLD echo ${e}"
-			echo "************************************"
-			echo "************************************"
+			# echo "************************************"
+			# echo "*** Func normalise ${f} BOLD echo ${e}"
+			# echo "************************************"
+			# echo "************************************"
 
-			./12.func_normalize.sh ${bold}_bet ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+			# ./12.func_normalize.sh ${bold}_bet ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
 
-			./11.func_spc.sh ${bold}_bet_norm ${fdir}
+			# ./11.func_spc.sh ${bold}_bet_norm ${fdir}
 
 			immv ${fdir}/${bold}_bet ${fdir}/00.${bold}_native_preprocessed
 			immv ${fdir}/${bold}_bet_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-			immv ${fdir}/${bold}_bet_norm ${fdir}/02.${bold}_std_preprocessed
-			immv ${fdir}/${bold}_bet_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
+			# immv ${fdir}/${bold}_bet_norm ${fdir}/02.${bold}_std_preprocessed
+			# immv ${fdir}/${bold}_bet_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
 
 		done
 
@@ -349,21 +361,23 @@ do
 
 		./11.func_spc.sh ${bold}_bet ${fdir}
 
-		echo "************************************"
-		echo "*** Func normalise ${f} BOLD optcom"
-		echo "************************************"
-		echo "************************************"
+		# echo "************************************"
+		# echo "*** Func normalise ${f} BOLD optcom"
+		# echo "************************************"
+		# echo "************************************"
 
-		./12.func_normalize.sh ${bold}_bet ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+		# ./12.func_normalize.sh ${bold}_bet ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
 
-		./11.func_spc.sh ${bold}_bet_norm ${fdir}
+		# ./11.func_spc.sh ${bold}_bet_norm ${fdir}
 
 		immv ${fdir}/${bold}_bet ${fdir}/00.${bold}_native_preprocessed
 		immv ${fdir}/${bold}_bet_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-		immv ${fdir}/${bold}_bet_norm ${fdir}/02.${bold}_std_preprocessed
-		immv ${fdir}/${bold}_bet_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
+		# immv ${fdir}/${bold}_bet_norm ${fdir}/02.${bold}_std_preprocessed
+		# immv ${fdir}/${bold}_bet_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
 
 	fi
+
+./funcclearspace.sh ${sub} ${ses} ${wdr} task
 
 done
 
@@ -437,7 +451,7 @@ do
 	done
 
 	echo "************************************"
-	echo "*** Func MEICA rest BOLD"
+	echo "*** Func MEICA rest BOLD echo ${e}"
 	echo "************************************"
 	echo "************************************"
 
@@ -477,14 +491,19 @@ do
 
 		./11.func_spc.sh ${bold}_sm ${fdir}
 
-		./12.func_normalize.sh ${bold}_sm ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+		# echo "************************************"
+		# echo "*** Func normalise rest BOLD echo ${e}"
+		# echo "************************************"
+		# echo "************************************"
 
-		./11.func_spc.sh ${bold}_sm_norm ${fdir}
+		# ./12.func_normalize.sh ${bold}_sm ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+
+		# ./11.func_spc.sh ${bold}_sm_norm ${fdir}
 
 		immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 		immv ${fdir}/${bold}_sm_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-		immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
-		immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
+		# immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
+		# immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
 
 	done
 
@@ -494,7 +513,9 @@ do
 	echo "************************************"
 
 	bold=${flpr}_task-rest_run-${r}_optcom_bold
-	./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 1
+	# #!# !!! Skipping Denoising in optcom for Liu P et al 2017 Neuroimage replication!
+	./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
+	# ./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 1
 	
 	echo "************************************"
 	echo "*** Func smooth rest BOLD optcom"
@@ -510,19 +531,21 @@ do
 
 	./11.func_spc.sh ${bold}_sm ${fdir}
 
-	echo "************************************"
-	echo "*** Func normalise rest BOLD optcom"
-	echo "************************************"
-	echo "************************************"
+	# echo "************************************"
+	# echo "*** Func normalise rest BOLD optcom"
+	# echo "************************************"
+	# echo "************************************"
 
-	./12.func_normalize.sh ${bold}_sm ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
+	# ./12.func_normalize.sh ${bold}_sm ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
 
-	./11.func_spc.sh ${bold}_sm_norm ${fdir}
+	# ./11.func_spc.sh ${bold}_sm_norm ${fdir}
 
 	immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 	immv ${fdir}/${bold}_sm_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-	immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
-	immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
+	# immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
+	# immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
+
+./funcclearspace.sh ${sub} ${ses} ${wdr} rest
 
 done
 

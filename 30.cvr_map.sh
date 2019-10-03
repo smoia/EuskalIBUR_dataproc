@@ -11,7 +11,7 @@ sub=$1
 ses=$2
 ftype=$3
 
-# ftype is optcom, echo-2 and meica
+# ftype is optcom, echo-2, meica, vessels, networks
 
 wdr=${4:-/data}
 

@@ -4,6 +4,7 @@ sub-0*
 tmp*
 *_preproc/
 reg/
+*.sif
 
 ### PTYHON
 # Byte-compiled / optimized / DLL files

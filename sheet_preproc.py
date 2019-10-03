@@ -24,7 +24,7 @@ for sub in sub_list:
         net = vas + sub_table.index[sub_table[col] == 'N'].tolist()
 
         savetxt(f'sub-{sub}_{col}_rejected.1D', rej, fmt='%d', delimiter=',', newline=',')
-        savetxt(f'sub-{sub}_{col}_vascular.1D', vas, fmt='%d', delimiter=',', newline=',')
+        savetxt(f'sub-{sub}_{col}_vessels.1D', vas, fmt='%d', delimiter=',', newline=',')
         savetxt(f'sub-{sub}_{col}_networks.1D', net, fmt='%d', delimiter=',', newline=',')
 
 os.chdir(cwd)

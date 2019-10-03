@@ -10,15 +10,16 @@ os.chdir('/data')
 
 import biopac_decimate
 
-
+# # # # # # # # # # #
+#  # # # # # # # # #
+# # # # # # # # # #
 sub = '007'
 ses = '07'
 
-ftype_list = ['optcom', 'echo-2', 'meica']
-filename = 'PHYSIO/BIDS/sub-' + sub + '/ses-' + ses + '/func/sub-' + sub + '_ses-' + ses + '_task-breathhold_physio'
+filename = f'sub-{sub}/ses-{ses}/func_phys/sub-{sub}_ses-{ses}_task-breathhold_physio'
 
-co = np.genfromtxt(filename + '_co_orig.1D')
-pidx = np.genfromtxt(filename + '_autopeaks.1D').astype('int')
+co = np.genfromtxt(f'{filename}_co_orig.1D')
+pidx = np.genfromtxt(f'{filename}_autopeaks.1D').astype('int')
 
 reject_list = np.array([])
 # init def try import from
@@ -46,9 +47,14 @@ line, = ax.plot(pidx, co_y, 'm*', picker=5)
 fig.canvas.mpl_connect('pick_event', onpick_manualedit)
 
 npidx = bio.manualchange(filename, pidx, reject_list)
-# npidx = np.genfromtxt(filename + '_manualpeaks.1D').astype('int')
-# co = np.genfromtxt(filename + '_co_orig.1D')
 
+
+
+# This can be run after
+# npidx = np.genfromtxt(f'{filename}_manualpeaks.1D').astype('int')
+# co = np.genfromtxt(f'{filename}_co_orig.1D')
+
+ftype_list = ['optcom', 'echo-2', 'meica']
 for ftype in ftype_list:
-	GM_name = 'CVR/sub-' + sub + '_ses-' + ses + '_GM_' + ftype + '_avg'
+	GM_name = f'CVR/sub-{sub}_ses-{ses}_GM_{ftype}_avg'
 	bio.parttwo(co, npidx, filename, GM_name)

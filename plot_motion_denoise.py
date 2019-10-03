@@ -41,7 +41,8 @@ for sub in sub_list:
                     y_col = f'{sub}_{ses:02g}_{dvars_type}_dvars_{ftype_list[i]}'
 
                 sns.regplot(x=data[x_col], y=data[y_col], fit_reg=True,
-                            label=ftype_list[i], color=colours[i])
+                            label=ftype_list[i], color=colours[i],
+                            robust=True, ci=None)
 
         plt.legend()
         plt.xlabel('FD')
@@ -78,7 +79,8 @@ for sub in sub_list:
                 y_col = f'{sub}_{ses:02g}_{dvars_type}_dvars_{ftype_list[i]}'
 
             sns.regplot(x=data[x_col], y=data[y_col], scatter=False,
-                        fit_reg=True, label=ftype_list[i], color=colours[i])
+                        fit_reg=True, label=ftype_list[i], color=colours[i],
+                        robust=True, ci=None)
 
 plt.legend()
 plt.xlabel('FD')

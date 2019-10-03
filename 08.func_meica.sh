@@ -13,6 +13,8 @@ func=$1
 fdir=$2
 # echo times
 TEs="$3"
+# backup?
+bck=${4:-None}
 ######################################
 ######### Script starts here #########
 ######################################
@@ -32,22 +34,34 @@ fslmerge -z ${func}_concat $( ls ${eprfx}* | grep ${esffx}.nii.gz )
 
 mkdir ${func}_meica
 
-echo "Running tedana"
-tedana -d ${func}_concat.nii.gz -e ${TEs} --tedpca kundu-stabilize --png --out-dir ${func}_meica
+# 01.2. Run tedana only if there's no previous backup
+if [[ "${bck}" != "None" ]] && ls ../*${func}_meica_bck.tar.gz
+then
+	echo "Unpacking backup"
+	tar -xzvf ../*${func}_meica_bck.tar.gz -C ..
+	echo "Running tedana to revert to backed up state"
+	tedana -d ${func}_concat.nii.gz -e ${TEs} \
+	--tedpca kundu-stabilize --png --out-dir ${func}_meica \
+	--mix ${func}_meica/meica_mix.1D --ctab ${func}_meica/comp_table_ica.txt
+else
+	echo "No backup file specified or found!"
+	echo "Running tedana"
+	tedana -d ${func}_concat.nii.gz -e ${TEs} --tedpca kundu-stabilize --png --out-dir ${func}_meica
+fi
 
 cd ${func}_meica
-gzip *.nii
+gzip ./*.nii
 
 #tedana -d ${func}_concat.nii.gz -e ${TEs} --verbose --tedort --png --out-dir ${func}_meica
 # Old tedana
 # ${cwd}/meica.libs/tedana.py -d ${func}_concat.nii.gz -e ${TEs} --fout --denoiseTEs --label=${func}_meica
 
-# 01.2. Ortogonalising good and bad components
+# 01.3. Ortogonalising good and bad components
 
 echo "Ortogonalising good and bad components in ${func}"
 
-cat comp_table_ica.txt | grep accepted | awk '{print $1}' | csvtool transpose - > accepted.txt
-cat comp_table_ica.txt | grep rejected | awk '{print $1}' | csvtool transpose - > rejected.txt
+grep accepted < comp_table_ica.txt | awk '{print $1}' | csvtool transpose - > accepted.txt
+grep rejected < comp_table_ica.txt | awk '{print $1}' | csvtool transpose - > rejected.txt
 
 nacc=$( cat accepted.txt )
 nrej=$( cat rejected.txt )

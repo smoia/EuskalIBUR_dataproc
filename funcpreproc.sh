@@ -101,7 +101,7 @@ then
 				done
 			fi
 				
-			#rm -r ${fld}
+			rm -r ${fld}
 		fi
 		mkdir ${fld}
 	done

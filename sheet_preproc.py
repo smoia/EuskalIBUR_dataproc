@@ -11,7 +11,7 @@ os.chdir('/data')
 
 sub_list = ['007', '003', '002']
 
-xl = pd.ExcelFile('MEICA_Stefano.xlsx')
+xl = pd.ExcelFile('MEICA.xlsx')
 
 for sub in sub_list:
     sub_table = pd.read_excel(xl, sub)

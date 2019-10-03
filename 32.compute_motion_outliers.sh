@@ -48,6 +48,7 @@ done
 # 02. Get average GM response
 for ftype in echo-2 optcom meica
 do
+	echo "Extracting GM in ${ftype}"
 	fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${flpr}_task-breathhold_${ftype}_bold_native_preprocessed \
 	-m ${wdr}/sub-${sub}/ses-${ses}/anat_preproc/sub-${sub}_ses-${ses}_acq-uni_T1w_GM_native.nii.gz > sub-${sub}/avg_GM_${ftype}_sub-${sub}_ses-${ses}.1D
 done

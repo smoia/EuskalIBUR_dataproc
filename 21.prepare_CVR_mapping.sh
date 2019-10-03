@@ -41,7 +41,12 @@ done
 cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_echo-1_bold_mcf_demean.par ./sub-${sub}_ses-${ses}_demean.par
 cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_echo-1_bold_mcf_deriv1.par ./sub-${sub}_ses-${ses}_deriv1.par
 
-# Here should go the decomposition extraction
 
+if [ ! -d sub-${sub}/ses-${ses}/func_phys ]
+then
+	mkdir sub-${sub}/ses-${ses}/func_phys
+fi
+
+cp sub-${sub}/ses-${ses}/func/*physio.tsv.gz sub-${sub}/ses-${ses}/func_phys/.
 
 cd ${cwd}

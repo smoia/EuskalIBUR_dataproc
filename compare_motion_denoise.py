@@ -6,6 +6,7 @@ import numpy as np
 
 NTE = 5
 
+
 def compute_slope(x, y):
     m = ((x*y).mean() - x.mean()*y.mean()) / ((x**2).mean() - (x.mean())**2)
     return m

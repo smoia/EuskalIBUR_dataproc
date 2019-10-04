@@ -26,29 +26,29 @@ if [[ ! -d "sub-${sub}" ]]; then mkdir sub-${sub}; fi
 # 01. Get FD and DVARS
 flpr=sub-${sub}_ses-${ses}
 echo ${flpr}
-cp ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-1_bold_dvars_pre.par sub-${sub}/dvars_pre_sub-${sub}_ses-${ses}.1D
-cp ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-1_bold_fd.par sub-${sub}/fd_sub-${sub}_ses-${ses}.1D
+cp ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-1_bold_dvars_pre.par sub-${sub}/dvars_pre_${flpr}.1D
+cp ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-1_bold_fd.par sub-${sub}/fd_${flpr}.1D
 
 for e in $( seq 1 ${nTE} )
 do
 	echo "DVARS Single Echo ${e}"
 	fsl_motion_outliers -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${flpr}_task-breathhold_echo-${e}_bold_native_preprocessed \
-	-o tmp_out -s sub-${sub}/dvars_echo-${e}_sub-${sub}_ses-${ses}.1D --dvars --nomoco
+	-o tmp_out -s sub-${sub}/dvars_echo-${e}_${flpr}.1D --dvars --nomoco
 	echo "DVARS MEICA Echo ${e}"
 	fsl_motion_outliers -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/04.${flpr}_task-breathhold_meica_echo-${e}_bold_native_preprocessed \
-	-o tmp_out -s sub-${sub}/dvars_meica_echo-${e}_sub-${sub}_ses-${ses}.1D --dvars --nomoco
+	-o tmp_out -s sub-${sub}/dvars_meica_echo-${e}_${flpr}.1D --dvars --nomoco
 done
 for ftype in optcom meica
 do
 	echo "DVARS ${ftype}"
 	fsl_motion_outliers -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${flpr}_task-breathhold_${ftype}_bold_native_preprocessed \
-	-o tmp_out -s sub-${sub}/dvars_${ftype}_sub-${sub}_ses-${ses}.1D --dvars --nomoco
+	-o tmp_out -s sub-${sub}/dvars_${ftype}_${flpr}.1D --dvars --nomoco
 done
 
 # 02.1. Register GM to MREF
-anat=sub-${sub}_ses-${ses}_acq-uni_T1w
-mref=sub-${sub}_ses-${ses}_task-breathhold_rec-magnitude_echo-1_sbref_cr
-aref=sub-${sub}_ses-${ses}_T2w
+anat=${flpr}_acq-uni_T1w
+mref=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
+aref=${flpr}_T2w
 
 antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-${ses}/anat_preproc/${anat}_GM.nii.gz \
 -r ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${mref}.nii.gz \
@@ -61,7 +61,7 @@ for ftype in echo-2 optcom meica
 do
 	echo "Extracting GM in ${ftype}"
 	fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${flpr}_task-breathhold_${ftype}_bold_native_preprocessed \
-	-m ${wdr}/ME_Denoising/sub-${sub}/GM_ses-${ses} > sub-${sub}/avg_GM_${ftype}_sub-${sub}_ses-${ses}.1D
+	-m ${wdr}/ME_Denoising/sub-${sub}/GM_ses-${ses} > sub-${sub}/avg_GM_${ftype}_${flpr}.1D
 done
 
 rm tmp*

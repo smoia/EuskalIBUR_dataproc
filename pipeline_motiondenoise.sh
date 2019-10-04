@@ -18,4 +18,4 @@ done
 
 ./51.compare_motion_denoise.sh
 
-.71.plot_motion_denoise.sh
+./71.plot_motion_denoise.sh

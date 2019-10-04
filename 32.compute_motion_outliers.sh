@@ -45,12 +45,23 @@ do
 	-o tmp_out -s sub-${sub}/dvars_${ftype}_sub-${sub}_ses-${ses}.1D --dvars --nomoco
 done
 
+# 02.1. Register GM to MREF
+anat=sub-${sub}_ses-${ses}_acq-uni_T1w
+mref=sub-${sub}_ses-${ses}_task-breathhold_rec-magnitude_echo-1_sbref_cr
+aref=sub-${sub}_ses-${ses}_T2w
+
+antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-${ses}/anat_preproc/${anat}_GM.nii.gz \
+-r ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${mref}.nii.gz \
+-o ${wdr}/ME_Denoising/sub-${sub}/GM_ses-${ses}.nii.gz -n MultiLabel \
+-t [${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${anat}0GenericAffine.mat,1] \
+-t ${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${mref}0GenericAffine.mat
+
 # 02. Get average GM response
 for ftype in echo-2 optcom meica
 do
 	echo "Extracting GM in ${ftype}"
 	fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${flpr}_task-breathhold_${ftype}_bold_native_preprocessed \
-	-m ${wdr}/sub-${sub}/ses-${ses}/anat_preproc/sub-${sub}_ses-${ses}_acq-uni_T1w_GM_native.nii.gz > sub-${sub}/avg_GM_${ftype}_sub-${sub}_ses-${ses}.1D
+	-m ${wdr}/ME_Denoising/sub-${sub}/GM_ses-${ses} > sub-${sub}/avg_GM_${ftype}_sub-${sub}_ses-${ses}.1D
 done
 
 rm tmp*

@@ -462,7 +462,7 @@ do
 		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} 0 0 0 1
 	done
 
-	./08.func_meica.sh ${fmat}_RPI_bet ${fdir} "${TEs}"
+	./08.func_meica.sh ${fmat}_RPI_bet ${fdir} "${TEs}" bck
 
 	./08.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}"
 

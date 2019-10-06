@@ -62,9 +62,9 @@ if [[ -e "${wdr}/log/${flpr}_log" ]]; then rm ${wdr}/log/${flpr}_log; fi
 
 echo "************************************" >> ${wdr}/log/${flpr}_log
 
-exec 3>&1 4>&2
+# exec 3>&1 4>&2
 
-exec 1>${wdr}/log/${flpr}_log 2>&1
+# exec 1>${wdr}/log/${flpr}_log 2>&1
 
 echo $(date)
 echo "************************************"
@@ -86,7 +86,7 @@ echo "************************************"
 cd ${wdr}/sub-${sub}/ses-${ses}
 if [[ "${overwrite}" == "overwrite" ]]
 then
-	for fld in anat_preproc func_preproc fmap_preproc reg
+	for fld in func_preproc fmap_preproc reg  # anat_preproc
 	do
 		if [[ -d "${fld}" ]]
 		then
@@ -239,7 +239,7 @@ do
 		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} 0 0 0 1
 	done
 
-	./08.func_meica.sh ${fmat}_RPI_bet ${fdir} "${TEs}"
+	./08.func_meica.sh ${fmat}_RPI_bet ${fdir} "${TEs}" bck
 	# ./08.func_meica_melodic.sh ${fmat}_RPI_bet ${fdir} "${TEs}"
 
 	./08.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}"
@@ -387,7 +387,7 @@ done
 #########    Rest preproc    #########
 ######################################
 
-for r in $( seq -f %02g 1 4 )
+for r in 01 # $( seq -f %02g 1 4 )
 do 
 	for d in AP PA
 	do

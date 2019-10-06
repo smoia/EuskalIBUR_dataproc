@@ -35,10 +35,11 @@ fslmerge -z ${func}_concat $( ls ${eprfx}* | grep ${esffx}.nii.gz )
 mkdir ${func}_meica
 
 # 01.2. Run tedana only if there's no previous backup
-if [[ "${bck}" != "None" ]] && ls ../*${func}_meica_bck.tar.gz
+bcklist=( $( ls ../*${func}_meica_bck.tar.gz ) )
+if [[ "${bck}" != "None" ]] && [[ ${bcklist[-1]} ]]
 then
 	echo "Unpacking backup"
-	tar -xzvf ../*${func}_meica_bck.tar.gz -C ..
+	tar -xzvf ${bcklist[-1]} -C ..
 	echo "Running tedana to revert to backed up state"
 	tedana -d ${func}_concat.nii.gz -e ${TEs} \
 	--tedpca kundu-stabilize --png --out-dir ${func}_meica \

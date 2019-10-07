@@ -27,14 +27,31 @@ cd ${fdir}
 eprfx=${func%_echo-*}_echo-
 esffx=${func#*_echo-?}
 
+func_optcom=${func%_echo-*}_optcom${esffx}
+
 echo "Merging ${func} for MEICA"
-fslmerge -z ${func}_concat $( ls ${eprfx}* | grep ${esffx}.nii.gz )
+if [[ ! -e ${func}_concat.nii.gz ]];
+then
+	fslmerge -z ${func}_concat $( ls ${eprfx}* | grep ${esffx}.nii.gz )
+fi
 
 echo "Running t2smap"
 t2smap -d ${func}_concat.nii.gz -e ${TEs}
 
 echo "Housekeeping"
-fslmaths TED.${func}_concat/ts_OC.nii ${func%_echo-*}_optcom${esffx} -odt float
+fslmaths TED.${func}_concat/ts_OC.nii ${func_optcom} -odt float
+
+# 01.3. Compute outlier fraction if there's more than one TR
+nTR=$(fslval ${func_optcom} dim4)
+
+if [[ "${nTR}" -gt "1" ]]
+then
+	echo "Computing outlier fraction in ${func}"
+	fslmaths ${func_optcom} -Tmean ${func_optcom}_avg
+	bet ${func_optcom}_avg ${func_optcom}_brain -R -f 0.5 -g 0 -n -m
+	3dToutcount -mask ${func_optcom}_brain_mask.nii.gz -fraction -polort 5 -legendre ${func_optcom}.nii.gz > ${func_optcom}_outcount.1D
+	imrm ${func_optcom}_avg ${func_optcom}_brain ${func_optcom}_brain_mask
+fi
 
 rm -rf *.${func}_concat
 

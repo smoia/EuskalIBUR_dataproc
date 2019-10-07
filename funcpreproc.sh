@@ -95,7 +95,7 @@ then
 				# backup only the necessary files for meica
 				for bck in ${fld}/*_meica
 				do
-					[[ -e "${bck}" ]] || break
+					[[ -e "${bck}" && -e "${bck/meica_mix.1D}" ]] || break
 					echo "Backing up sub${bck#*sub*}"
 					tar -zcvf $( date +%F_%H-%M-%S )_sub${bck#*sub*}_bck.tar.gz ${bck}/comp_table* ${bck}/*mix*
 				done

@@ -62,9 +62,9 @@ if [[ -e "${wdr}/log/${flpr}_log" ]]; then rm ${wdr}/log/${flpr}_log; fi
 
 echo "************************************" >> ${wdr}/log/${flpr}_log
 
-# exec 3>&1 4>&2
+exec 3>&1 4>&2
 
-# exec 1>${wdr}/log/${flpr}_log 2>&1
+exec 1>${wdr}/log/${flpr}_log 2>&1
 
 echo $(date)
 echo "************************************"

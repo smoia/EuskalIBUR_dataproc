@@ -64,6 +64,10 @@ do
 	-m ${wdr}/ME_Denoising/sub-${sub}/GM_ses-${ses} > sub-${sub}/avg_GM_${ftype}_${flpr}.1D
 done
 
+echo "Extracting GM pre-preproc"
+fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${flpr}_task-breathhold_echo-2_bold_bet \
+-m ${wdr}/ME_Denoising/sub-${sub}/GM_ses-${ses} > sub-${sub}/avg_GM_pre_${flpr}.1D
+
 rm tmp*
 
 cd ${cwd}

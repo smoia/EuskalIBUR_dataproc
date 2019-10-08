@@ -13,10 +13,10 @@ import biopac_decimate
 # # # # # # # # # # #
 #  # # # # # # # # #
 # # # # # # # # # #
-sub = '007'
-ses = '07'
+sub = '002'
+ses = 1
 
-filename = f'sub-{sub}/ses-{ses}/func_phys/sub-{sub}_ses-{ses}_task-breathhold_physio'
+filename = f'sub-{sub}/ses-{ses:02g}/func_phys/sub-{sub}_ses-{ses:02g}_task-breathhold_physio'
 
 co = np.genfromtxt(f'{filename}_co_orig.1D')
 pidx = np.genfromtxt(f'{filename}_autopeaks.1D').astype('int')
@@ -47,7 +47,7 @@ line, = ax.plot(pidx, co_y, 'm*', picker=5)
 fig.canvas.mpl_connect('pick_event', onpick_manualedit)
 
 npidx = bio.manualchange(filename, pidx, reject_list)
-
+ses += 1
 
 
 # This can be run after

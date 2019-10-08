@@ -32,7 +32,7 @@ cd ${wdr}/CVR
 
 fslmaths ${anat}_GM_native -kernel gauss 2.5 -ero ${anat}_GM_eroded
 
-for ftype in echo-2 optcom meica
+for ftype in echo-2 optcom meica vessels networks
 do
 	fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${func}_${ftype}_bold_native_preprocessed \
 	-m ${anat}_GM_eroded > sub-${sub}_ses-${ses}_GM_${ftype}_avg.1D
@@ -40,13 +40,5 @@ done
 
 cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_echo-1_bold_mcf_demean.par ./sub-${sub}_ses-${ses}_demean.par
 cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_echo-1_bold_mcf_deriv1.par ./sub-${sub}_ses-${ses}_deriv1.par
-
-
-if [ ! -d sub-${sub}/ses-${ses}/func_phys ]
-then
-	mkdir sub-${sub}/ses-${ses}/func_phys
-fi
-
-cp sub-${sub}/ses-${ses}/func/*physio.tsv.gz sub-${sub}/ses-${ses}/func_phys/.
 
 cd ${cwd}

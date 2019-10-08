@@ -86,7 +86,7 @@ echo "************************************"
 cd ${wdr}/sub-${sub}/ses-${ses}
 if [[ "${overwrite}" == "overwrite" ]]
 then
-	for fld in func_preproc fmap_preproc reg  # anat_preproc
+	for fld in func_preproc fmap_preproc reg anat_preproc
 	do
 		if [[ -d "${fld}" ]]
 		then

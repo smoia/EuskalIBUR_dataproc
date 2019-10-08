@@ -10,7 +10,7 @@ wdir = '/bcbl/home/public/PJMASK_2/PHYSIO/BIDS_BH'
 SET_DPI = 100
 
 for sub in ['002', '003', '007']:
-    for ses in range(1, 11):
+    for ses in range(1, 11):  # range(1, 11):
         if ses >= 7:
             ch = 5
         else:
@@ -29,8 +29,8 @@ for sub in ['002', '003', '007']:
         print(f'Decimating {filename}')
         co, pidx = bio.partone(filename, ch)
 
-        plt.figure(figsize=(18, 10), dpi=SET_DPI)
-        plt.plot(co)
-        plt.title(f'sub {sub} ses {ses:02g}')
-        plt.savefig(f'{filename}.png', dpi=SET_DPI)
-        plt.close()
+        # plt.figure(figsize=(18, 10), dpi=SET_DPI)
+        # plt.plot(co)
+        # plt.title(f'sub {sub} ses {ses:02g}')
+        # plt.savefig(f'{filename}.png', dpi=SET_DPI)
+        plt.close('all')

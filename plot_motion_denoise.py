@@ -21,7 +21,7 @@ ftype_list = ['pre', 'echo-2', 'optcom', 'meica']
 sub_list = ['007', '003', '002']
 dvars_list = ['norm', 'simple']
 
-# # 01. Make scatterplots of DVARS vs FD
+# 01. Make scatterplots of DVARS vs FD
 for sub in sub_list:
     for dvars_type in dvars_list:
         plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
@@ -166,7 +166,7 @@ for sub in sub_list:
 
     bh_delta_responses = np.empty((72, BH_LEN, len(ftype_list)))
     for i in range(len(ftype_list)):
-        bh_delta_responses[:, :, i] = bh_responses[:, :, i] - bh_responses[:, :, 1]
+        bh_delta_responses[:, :, i] = bh_responses[:, :, i] - bh_responses[:, :, 0]
 
     for tps in range(BH_LEN):
         plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
@@ -176,8 +176,8 @@ for sub in sub_list:
                      label=f'{ftype_list[i]}', color=colours[i])
 
         plt.legend()
-        plt.xlabel('FD')
-        plt.ylabel('BOLD pre - BOLD post')
+        plt.ylabel('FD')
+        plt.xlabel('BOLD pre - BOLD post')
         plt.savefig(f'{sub}_BOLD_vs_FD_tps_{tps:02g}', dpi=SET_DPI)
         plt.clf()
         plt.close()

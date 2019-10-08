@@ -387,7 +387,7 @@ done
 #########    Rest preproc    #########
 ######################################
 
-for r in 01 # $( seq -f %02g 1 4 )
+for r in $( seq -f %02g 1 4 )
 do 
 	for d in AP PA
 	do

@@ -106,14 +106,16 @@ plt.close()
 
 # 02. Make timeseries plots
 
+time = np.asarray(range(BH_LEN))
+
 for sub in sub_list:
     bh_timeplot = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
     bh_scatterplot = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
     bh_timeplot.suptitle(f'BreathHold (BH) response, subject {sub}')
     bh_scatterplot.suptitle(f'BOLD vs FD, subject {sub}')
 
-    gs = bh_timeplot.add_gridspec(ncols=1, nrows=2, height_ratios=[3, 1])
-    bh_timesubplot = bh_timeplot.add_subplot(gs[1, 0])
+    gs = bh_timeplot.add_gridspec(ncols=1, nrows=3, height_ratios=[2, 2, 1])
+    bh_timesubplot = bh_timeplot.add_subplot(gs[2, 0])
     fd_responses = np.empty((72, BH_LEN))
     for ses in range(1, 10):
         fd = np.genfromtxt(f'sub-{sub}/fd_sub-{sub}_ses-{ses:02g}.1D')
@@ -125,6 +127,24 @@ for sub in sub_list:
     bh_timesubplot.set_ylabel('avg FD')
     bh_timesubplot.set_xlabel('TPs')
 
+    bh_timesubplot = bh_timeplot.add_subplot(gs[1, 0])
+
+    for i in range(len(ftype_list)):
+        dvars_responses = np.empty((72, BH_LEN))
+        for ses in range(1, 10):
+            dvars = np.genfromtxt(f'sub-{sub}/dvars_{ftype_list[i]}_sub-{sub}_ses-{ses:02d}.1D')
+            for bh in range(8):
+                dvars_responses[(8*(ses-1)+bh), :] = dvars[BH_LEN*bh:BH_LEN*(bh+1)]
+
+        avg = dvars_responses.mean(axis=0)
+        std = dvars_responses.std(axis=0)
+        bh_timesubplot.plot(time, avg,
+                            label=f'{ftype_list[i]}', color=colours[i])
+        bh_timesubplot.fill_between(time, avg - std, avg + std,
+                                    color=colours[i], alpha=0.2)
+
+    bh_timesubplot.set_ylabel('avg DVARS')
+
     bh_timesubplot = bh_timeplot.add_subplot(gs[0, 0])
     bh_scattersubplot = bh_scatterplot.add_subplot(1, 1, 1)
 
@@ -135,13 +155,17 @@ for sub in sub_list:
             for bh in range(8):
                 bh_responses[(8*(ses-1)+bh), :] = avg_gm[BH_LEN*bh:BH_LEN*(bh+1)]
 
-        bh_timesubplot.plot(bh_responses.std(axis=0),
+        avg = bh_responses.mean(axis=0)
+        std = bh_responses.std(axis=0)
+        bh_timesubplot.plot(time, avg,
                             label=f'{ftype_list[i]}', color=colours[i])
+        bh_timesubplot.fill_between(time, avg - std, avg + std,
+                                    color=colours[i], alpha=0.2)
         bh_scattersubplot.plot(bh_responses.std(axis=0), fd_responses.mean(axis=0),
                                'o', label=f'{ftype_list[i]}', color=colours[i])
 
     bh_timeplot.legend()
-    bh_timesubplot.set_ylabel('stdev of BOLD')
+    bh_timesubplot.set_ylabel('avg BOLD')
     bh_timeplot.savefig(f'{sub}_BOLD_time.png', dpi=SET_DPI)
 
     bh_scatterplot.legend()
@@ -166,18 +190,26 @@ for sub in sub_list:
 
     bh_delta_responses = np.empty((72, BH_LEN, len(ftype_list)))
     for i in range(len(ftype_list)):
-        bh_delta_responses[:, :, i] = bh_responses[:, :, i] - bh_responses[:, :, 0]
+        bh_delta_responses[:, :, i] = ((bh_responses[:, :, i] -
+                                        bh_responses[:, :, 0]) /
+                                       bh_responses[:, :, 0])
 
     for tps in range(BH_LEN):
         plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
         plt.title(f'BOLD_vs_FD, sub {sub}, tp {tps:02g}')
         for i in range(1, len(ftype_list)):
-            plt.plot(bh_delta_responses[:, tps, i], fd_responses[:, tps], 'o',
-                     label=f'{ftype_list[i]}', color=colours[i])
+            # plt.plot(bh_delta_responses[:, tps, i], fd_responses[:, tps],
+            #          'o', label=f'{ftype_list[i]}', color=colours[i])
+            sns.regplot(x=bh_delta_responses[:, tps, i],
+                        y=fd_responses[:, tps], fit_reg=True,
+                        label=ftype_list[i], color=colours[i],
+                        robust=False, ci=None)
 
         plt.legend()
         plt.ylabel('FD')
-        plt.xlabel('BOLD pre - BOLD post')
+        plt.ylim(0, 0.7)
+        plt.xlabel('(BOLD post - BOLD pre) / BOLD pre')
+        plt.xlim(-260, 200)
         plt.savefig(f'{sub}_BOLD_vs_FD_tps_{tps:02g}', dpi=SET_DPI)
         plt.clf()
         plt.close()

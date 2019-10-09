@@ -39,6 +39,7 @@ std=MNI152_T1_1mm_brain
 mmres=2.5
 fwhm=6
 
+# -> Answer to the Ultimate Question of Life, the Universe, and Everything.
 TEs="10.6 28.69 46.78 64.87 82.96"
 nTE=5
 

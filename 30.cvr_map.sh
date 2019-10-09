@@ -39,6 +39,7 @@ flpr=sub-${sub}_ses-${ses}
 
 shiftdir=${flpr}_GM_${ftype}_avg_regr_shift
 
+# Are you sure it's the right answer?
 cd ${wdr}/CVR
 
 
@@ -195,6 +196,6 @@ cd ..
 # done
 
 
-#rm -rf tmp.*
+rm -rf tmp.*
 
 cd ${cwd}

@@ -6,11 +6,15 @@ import matplotlib.pyplot as plt
 
 from shutil import copyfile
 
-wdir = '/bcbl/home/public/PJMASK_2/PHYSIO/BIDS_BH'
+wdir = '/data'
 SET_DPI = 100
 
+cwd = os.getcwd()
+
+os.chdir(wdir)
+
 for sub in ['002', '003', '007']:
-    for ses in range(1, 11):  # range(1, 11):
+    for ses in range(1, 11):
         if ses >= 7:
             ch = 5
         else:
@@ -34,3 +38,5 @@ for sub in ['002', '003', '007']:
         # plt.title(f'sub {sub} ses {ses:02g}')
         # plt.savefig(f'{filename}.png', dpi=SET_DPI)
         plt.close('all')
+
+os.chdir(cwd)

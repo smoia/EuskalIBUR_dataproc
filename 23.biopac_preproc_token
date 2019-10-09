@@ -4,12 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-# run once
-
-os.chdir('/data')
-
-import biopac_decimate
-
 # # # # # # # # # # #
 #  # # # # # # # # #
 # # # # # # # # # #
@@ -49,15 +43,3 @@ fig.canvas.mpl_connect('pick_event', onpick_manualedit)
 npidx = bio.manualchange(filename, pidx, reject_list)
 ses += 1
 
-
-# This can be run after
-for sub in ['002', '003', '007']:
-    for ses in range(1, 11):
-        filename = f'sub-{sub}/ses-{ses:02g}/func_phys/sub-{sub}_ses-{ses:02g}_task-breathhold_physio'
-        npidx = np.genfromtxt(f'{filename}_manualpeaks.1D').astype('int')
-        co = np.genfromtxt(f'{filename}_co_orig.1D')
-
-        ftype_list = ['optcom', 'echo-2', 'meica', 'vessels', 'networks']
-        for ftype in ftype_list:
-            GM_name = f'CVR/sub-{sub}_ses-{ses}_GM_{ftype}_avg'
-            bio.parttwo(co, npidx, filename, GM_name)

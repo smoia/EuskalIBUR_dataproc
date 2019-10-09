@@ -153,7 +153,8 @@ for sub in sub_list:
         for ses in range(1, 10):
             avg_gm = np.genfromtxt(f'sub-{sub}/avg_GM_{ftype_list[i]}_sub-{sub}_ses-{ses:02g}.1D')
             for bh in range(8):
-                bh_responses[(8*(ses-1)+bh), :] = avg_gm[BH_LEN*bh:BH_LEN*(bh+1)]
+                bh_responses[(8*(ses-1)+bh), :] = ( avg_gm[BH_LEN*bh:BH_LEN*(bh+1)] -
+                                                   avg_gm[BH_LEN*bh:BH_LEN*(bh+1)].mean() )
 
         avg = bh_responses.mean(axis=0)
         std = bh_responses.std(axis=0)
@@ -161,7 +162,7 @@ for sub in sub_list:
                             label=f'{ftype_list[i]}', color=colours[i])
         bh_timesubplot.fill_between(time, avg - std, avg + std,
                                     color=colours[i], alpha=0.2)
-        bh_scattersubplot.plot(bh_responses.std(axis=0), fd_responses.mean(axis=0),
+        bh_scattersubplot.plot(bh_responses.mean(axis=0), fd_responses.mean(axis=0),
                                'o', label=f'{ftype_list[i]}', color=colours[i])
 
     bh_timeplot.legend()
@@ -169,8 +170,8 @@ for sub in sub_list:
     bh_timeplot.savefig(f'{sub}_BOLD_time.png', dpi=SET_DPI)
 
     bh_scatterplot.legend()
-    bh_scattersubplot.set_ylabel('stdev of BOLD')
-    bh_scattersubplot.set_xlabel('FD')
+    bh_scattersubplot.set_xlabel('avg BOLD')
+    bh_scattersubplot.set_ylabel('FD')
     bh_scatterplot.savefig(f'{sub}_BOLD_vs_FD.png', dpi=SET_DPI)
 
 # 03. Make DBOLD vs FD plot
@@ -190,9 +191,8 @@ for sub in sub_list:
 
     bh_delta_responses = np.empty((72, BH_LEN, len(ftype_list)))
     for i in range(len(ftype_list)):
-        bh_delta_responses[:, :, i] = ((bh_responses[:, :, i] -
-                                        bh_responses[:, :, 0]) /
-                                       bh_responses[:, :, 0])
+        bh_delta_responses[:, :, i] = (bh_responses[:, :, i] -
+                                        bh_responses[:, :, 0])
 
     for tps in range(BH_LEN):
         plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
@@ -208,8 +208,8 @@ for sub in sub_list:
         plt.legend()
         plt.ylabel('FD')
         plt.ylim(0, 0.7)
-        plt.xlabel('(BOLD post - BOLD pre) / BOLD pre')
-        plt.xlim(-260, 200)
+        plt.xlabel('BOLD post - BOLD pre')
+        plt.xlim(-3000, 0)
         plt.savefig(f'{sub}_BOLD_vs_FD_tps_{tps:02g}', dpi=SET_DPI)
         plt.clf()
         plt.close()

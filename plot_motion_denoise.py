@@ -241,10 +241,10 @@ if __name__ == '__main__':
 
     data = pd.read_csv('sub_table.csv')
 
-    # plot_DVARS_vs_FD(data)
+    plot_DVARS_vs_FD(data)
     plot_timeseries_and_BOLD_vs_FD()
-    # os.makedirs('tps')
-    # os.chdir('tps')
-    # plot_tps_BOLD_vs_FD()
+    os.makedirs('tps')
+    os.chdir('tps')
+    plot_tps_BOLD_vs_FD()
 
     os.chdir(cwd)

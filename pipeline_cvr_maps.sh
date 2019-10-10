@@ -2,7 +2,7 @@
 
 wdr=${1:-/data}
 
-logname=pipeline_motion_denoise_log
+logname=pipeline_cvr_maps_log
 
 ######################################
 ######### Script starts here #########

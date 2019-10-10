@@ -22,15 +22,15 @@ bnet=sub-${sub}_ses-${ses}_task-breathhold_networks_bold
 
 fsl_regfilt -i ${func} \
 -d ${fdir}/sub-${sub}_ses-${ses}_task-breathhold_echo-1_bold_RPI_bet_meica/meica_mix.1D \
--f "$( cat sub-${sub}_ses-${ses}_rejected.1D )" \
+-f "$( cat decomp/sub-${sub}_ses-${ses}_rejected.1D )" \
 -o ${fdir}/${bold}_bet
 fsl_regfilt -i ${func} \
 -d ${fdir}/sub-${sub}_ses-${ses}_task-breathhold_echo-1_bold_RPI_bet_meica/meica_mix.1D \
--f "$( cat sub-${sub}_ses-${ses}_vessels.1D )" \
+-f "$( cat decomp/sub-${sub}_ses-${ses}_vessels.1D )" \
 -o ${fdir}/${bves}_bet
 fsl_regfilt -i ${func} \
 -d ${fdir}/sub-${sub}_ses-${ses}_task-breathhold_echo-1_bold_RPI_bet_meica/meica_mix.1D \
--f "$( cat sub-${sub}_ses-${ses}_networks.1D )" \
+-f "$( cat decomp/sub-${sub}_ses-${ses}_networks.1D )" \
 -o ${fdir}/${bnet}_bet
 
 ${cwd}/11.func_spc.sh ${bold}_bet ${fdir}
@@ -53,15 +53,15 @@ do
 
 	fsl_regfilt -i ${func} \
 	-d ${fdir}/sub-${sub}_ses-${ses}_task-breathhold_echo-1_bold_RPI_bet_meica/meica_mix.1D \
-	-f "$( cat sub-${sub}_ses-${ses}_rejected.1D )" \
+	-f "$( cat decomp/sub-${sub}_ses-${ses}_rejected.1D )" \
 	-o ${fdir}/${bold}_bet
 	# fsl_regfilt -i ${func} \
 	# -d ${fdir}/sub-${sub}_ses-${ses}_task-breathhold_echo-1_bold_RPI_bet_meica/meica_mix.1D \
-	# -f "$( cat sub-${sub}_ses-${ses}_vascular.1D )" \
+	# -f "$( cat decomp/sub-${sub}_ses-${ses}_vascular.1D )" \
 	# -o ${fdir}/${bold}_bet
 	# fsl_regfilt -i ${func} \
 	# -d ${fdir}/sub-${sub}_ses-${ses}_task-breathhold_echo-1_bold_RPI_bet_meica/meica_mix.1D \
-	# -f "$( cat sub-${sub}_ses-${ses}_networks.1D )" \
+	# -f "$( cat decomp/sub-${sub}_ses-${ses}_networks.1D )" \
 	# -o ${fdir}/${bold}_bet
 
 	${cwd}/11.func_spc.sh ${bold}_bet ${fdir}

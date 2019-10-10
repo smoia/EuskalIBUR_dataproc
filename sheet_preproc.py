@@ -13,6 +13,11 @@ sub_list = ['007', '003', '002']
 
 xl = pd.ExcelFile('MEICA.xlsx')
 
+if not os.path.exists('decomp'):
+    os.mkdir('decomp')
+
+os.chdir('decomp')
+
 for sub in sub_list:
     sub_table = pd.read_excel(xl, sub)
     sub_table.index += 1
@@ -23,8 +28,9 @@ for sub in sub_list:
         vas = rej + sub_table.index[sub_table[col] == 'V'].tolist()
         net = vas + sub_table.index[sub_table[col] == 'N'].tolist()
 
-        savetxt(f'sub-{sub}_{col}_rejected.1D', rej, fmt='%d', delimiter=',', newline=',')
-        savetxt(f'sub-{sub}_{col}_vessels.1D', vas, fmt='%d', delimiter=',', newline=',')
-        savetxt(f'sub-{sub}_{col}_networks.1D', net, fmt='%d', delimiter=',', newline=',')
+        px = f'sub-{sub}_ses-{ses:02d}'
+        savetxt(f'{px}_rejected.1D', rej, fmt='%d', delimiter=',', newline=',')
+        savetxt(f'{px}_vessels.1D', vas, fmt='%d', delimiter=',', newline=',')
+        savetxt(f'{px}_networks.1D', net, fmt='%d', delimiter=',', newline=',')
 
 os.chdir(cwd)

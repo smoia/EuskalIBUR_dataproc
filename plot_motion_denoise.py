@@ -110,20 +110,22 @@ def plot_timeseries_and_BOLD_vs_FD():
         bh_timeplot.suptitle(f'BreathHold (BH) response, subject {sub}')
         bh_scatterplot.suptitle(f'BOLD vs FD, subject {sub}')
 
-        gs = bh_timeplot.add_gridspec(ncols=1, nrows=3, height_ratios=[2, 2, 1])
-        bh_timesubplot = bh_timeplot.add_subplot(gs[2, 0])
-        fd_responses = np.empty((72, BH_LEN))
-        for ses in range(1, 10):
-            fd = np.genfromtxt(f'sub-{sub}/fd_sub-{sub}_ses-{ses:02g}.1D')
-            for bh in range(8):
-                fd_responses[(8*(ses-1)+bh), :] = fd[BH_LEN*bh:BH_LEN*(bh+1)]
+        gs = bh_timeplot.add_gridspec(ncols=2, nrows=5)
+        for col in range(2):
+            bh_timesubplot = bh_timeplot.add_subplot(gs[4, col])
+            fd_responses = np.empty((72, BH_LEN))
+            for ses in range(1, 10):
+                fd = np.genfromtxt(f'sub-{sub}/fd_sub-{sub}_ses-{ses:02g}.1D')
+                for bh in range(8):
+                    fd_responses[(8*(ses-1)+bh), :] = fd[BH_LEN*bh:BH_LEN*(bh+1)]
 
-        bh_timesubplot.plot(fd_responses.mean(axis=0))
+            bh_timesubplot.plot(fd_responses.mean(axis=0))
 
-        bh_timesubplot.set_ylabel('avg FD')
-        bh_timesubplot.set_xlabel('TPs')
+            bh_timesubplot.set_ylabel('avg FD')
+            bh_timesubplot.set_xlabel('TPs')
 
-        bh_timesubplot = bh_timeplot.add_subplot(gs[1, 0])
+        avg = np.empty((len(FTYPE_LIST), BH_LEN))
+        std = np.empty((len(FTYPE_LIST), BH_LEN))
 
         for i in range(len(FTYPE_LIST)):
             dvars_responses = np.empty((72, BH_LEN))
@@ -132,17 +134,24 @@ def plot_timeseries_and_BOLD_vs_FD():
                 for bh in range(8):
                     dvars_responses[(8*(ses-1)+bh), :] = dvars[BH_LEN*bh:BH_LEN*(bh+1)]
 
-            avg = dvars_responses.mean(axis=0)
-            std = dvars_responses.std(axis=0)
-            bh_timesubplot.plot(TIME, avg,
+            avg[i, :] = dvars_responses.mean(axis=0)
+            std[i, :] = dvars_responses.std(axis=0)
+
+        for i in range(len(FTYPE_LIST)):
+            bh_timesubplot = bh_timeplot.add_subplot(gs[i, 0])
+            bh_timesubplot.plot(TIME, avg[i, :],
                                 label=f'{FTYPE_LIST[i]}', color=COLOURS[i])
-            bh_timesubplot.fill_between(TIME, avg - std, avg + std,
+            bh_timesubplot.fill_between(TIME, avg[i, :] - std[i, :],
+                                        avg[i, :] + std[i, :],
                                         color=COLOURS[i], alpha=0.2)
 
-        bh_timesubplot.set_ylabel('avg DVARS')
+            bh_timesubplot.set_ylim(0, (avg + std).max()+10)
+            bh_timesubplot.set_ylabel('avg DVARS')
 
-        bh_timesubplot = bh_timeplot.add_subplot(gs[0, 0])
         bh_scattersubplot = bh_scatterplot.add_subplot(1, 1, 1)
+
+        avg = np.empty((len(FTYPE_LIST), BH_LEN))
+        std = np.empty((len(FTYPE_LIST), BH_LEN))
 
         for i in range(len(FTYPE_LIST)):
             bh_responses = np.empty((72, BH_LEN))
@@ -152,17 +161,23 @@ def plot_timeseries_and_BOLD_vs_FD():
                     bh_responses[(8*(ses-1)+bh), :] = (avg_gm[BH_LEN*bh:BH_LEN*(bh+1)] -
                                                        avg_gm[BH_LEN*bh:BH_LEN*(bh+1)].mean())
 
-            avg = bh_responses.mean(axis=0)
-            std = bh_responses.std(axis=0)
-            bh_timesubplot.plot(TIME, avg,
+            avg[i, :] = bh_responses.mean(axis=0)
+            std[i, :] = bh_responses.std(axis=0)
+
+        for i in range(len(FTYPE_LIST)):
+            bh_timesubplot = bh_timeplot.add_subplot(gs[i, 1])
+            bh_timesubplot.plot(TIME, avg[i, :],
                                 label=f'{FTYPE_LIST[i]}', color=COLOURS[i])
-            bh_timesubplot.fill_between(TIME, avg - std, avg + std,
+            bh_timesubplot.fill_between(TIME, avg[i, :] - std[i, :],
+                                        avg[i, :] + std[i, :],
                                         color=COLOURS[i], alpha=0.2)
-            bh_scattersubplot.plot(bh_responses.mean(axis=0), fd_responses.mean(axis=0),
-                                   'o', label=f'{FTYPE_LIST[i]}', color=COLOURS[i])
+            bh_scattersubplot.plot(avg[i, :], fd_responses.mean(axis=0), 'o',
+                                   label=f'{FTYPE_LIST[i]}', color=COLOURS[i])
+
+            bh_timesubplot.set_ylim((avg - std).min()-10, (avg + std).max()+10)
+            bh_timesubplot.set_ylabel('avg BOLD')
 
         bh_timeplot.legend()
-        bh_timesubplot.set_ylabel('avg BOLD')
         bh_timeplot.savefig(f'{sub}_BOLD_time.png', dpi=SET_DPI)
 
         bh_scatterplot.legend()
@@ -220,7 +235,7 @@ if __name__ == '__main__':
 
     data = pd.read_csv('sub_table.csv')
 
-    plot_DVARS_vs_FD(data)
+    # plot_DVARS_vs_FD(data)
     plot_timeseries_and_BOLD_vs_FD()
     # os.makedirs('tps')
     # os.chdir('tps')

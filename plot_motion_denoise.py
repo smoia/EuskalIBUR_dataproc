@@ -152,17 +152,22 @@ def plot_timeseries_and_BOLD_vs_FD():
 
         avg = np.empty((len(FTYPE_LIST), BH_LEN))
         std = np.empty((len(FTYPE_LIST), BH_LEN))
+        max_delta_y = 0  # This is for visualisation purposes
 
         for i in range(len(FTYPE_LIST)):
             bh_responses = np.empty((72, BH_LEN))
             for ses in range(1, 10):
                 avg_gm = np.genfromtxt(f'sub-{sub}/avg_GM_{FTYPE_LIST[i]}_sub-{sub}_ses-{ses:02g}.1D')
                 for bh in range(8):
-                    bh_responses[(8*(ses-1)+bh), :] = (avg_gm[BH_LEN*bh:BH_LEN*(bh+1)] -
-                                                       avg_gm[BH_LEN*bh:BH_LEN*(bh+1)].mean())
+                    bh_responses[(8*(ses-1)+bh), :] = (avg_gm[BH_LEN*bh:BH_LEN*(bh+1)])
+                                                     # - avg_gm[BH_LEN*bh:BH_LEN*(bh+1)].mean())
 
             avg[i, :] = bh_responses.mean(axis=0)
             std[i, :] = bh_responses.std(axis=0)
+
+            delta_y = (avg + std)[i, :].max() - (avg - std)[i, :].min() + 200
+            if delta_y > max_delta_y:
+                max_delta_y = delta_y
 
         for i in range(len(FTYPE_LIST)):
             bh_timesubplot = bh_timeplot.add_subplot(gs[i, 1])
@@ -174,7 +179,8 @@ def plot_timeseries_and_BOLD_vs_FD():
             bh_scattersubplot.plot(avg[i, :], fd_responses.mean(axis=0), 'o',
                                    label=f'{FTYPE_LIST[i]}', color=COLOURS[i])
 
-            bh_timesubplot.set_ylim((avg - std).min()-10, (avg + std).max()+10)
+            min_y = (avg - std)[i, :].min() - 100
+            bh_timesubplot.set_ylim(min_y, min_y+max_delta_y)
             bh_timesubplot.set_ylabel('avg BOLD')
 
         bh_timeplot.legend()

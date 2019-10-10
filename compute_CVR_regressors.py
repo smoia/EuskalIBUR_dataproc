@@ -18,7 +18,7 @@ for sub in ['002', '003', '007']:
 
         ftype_list = ['optcom', 'echo-2', 'meica', 'vessels', 'networks']
         for ftype in ftype_list:
-            GM_name = f'CVR/sub-{sub}_ses-{ses}_GM_{ftype}_avg'
+            GM_name = f'CVR/sub-{sub}_ses-{ses:02g}_GM_{ftype}_avg'
             bio.parttwo(co, npidx, filename, GM_name)
 
 os.chdir(cwd)

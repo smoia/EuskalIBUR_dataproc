@@ -181,7 +181,7 @@ def plot_timeseries_and_BOLD_vs_FD():
 
             min_y = (avg - std)[i, :].min() - 0.002
             bh_timesubplot.set_ylim(min_y, min_y+max_delta_y)
-            bh_timesubplot.set_ylabel('avg BOLD')
+            bh_timesubplot.set_ylabel('avg % BOLD')
 
         bh_timeplot.legend()
         bh_timeplot.savefig(f'{sub}_BOLD_time.png', dpi=SET_DPI)

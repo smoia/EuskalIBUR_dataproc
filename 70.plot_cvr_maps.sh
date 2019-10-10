@@ -14,12 +14,12 @@ do
 	do
 		for ftype in echo-2 optcom meica vessels networks
 		do
-			if [[ "${ftype}" == "meica" ]]
-			then
-				tval=2.7
-			else
-				tval=2.6
-			fi
+			case "${ftype}" in
+				meica | vessels | networks ) tscore=2.7	;;
+				optcom | echo-2 ) tscore=2.6 ;;
+				* ) echo "There's a major screw-up here"; exit ;;
+			esac
+
 			echo "sub ${sub} ses ${ses} ftype ${ftype}"
 			echo "cvr"
 			fsleyes render -of sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr --size 1400 500 --scene lightbox --sliceSpacing 18 --zrange 21 131 \

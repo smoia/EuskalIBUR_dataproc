@@ -5,5 +5,5 @@ wdr=${1:-/data}
 
 ### Main ###
 
-echo "Processing sheet"
+echo "Compute CVR regressors"
 python3 compute_CVR_regressors.py

@@ -19,8 +19,6 @@ step=10
 lag=9
 freq=40
 tr=1.5
-tscore=2.6
-
 
 case "${ftype}" in
 	meica | vessels | networks ) tscore=2.7	;;

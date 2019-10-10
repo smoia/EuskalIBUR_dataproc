@@ -21,10 +21,12 @@ freq=40
 tr=1.5
 tscore=2.6
 
-if [[ ${ftype} == 'meica' ]]
-then
-	tscore=2.7
-fi
+
+case "${ftype}" in
+	meica | vessels | networks ) tscore=2.7	;;
+	optcom | echo-2 ) tscore=2.6 ;;
+	* ) echo "Wrong ftype: ${ftype}"; exit ;;
+esac
 
 
 ### Main ###
@@ -43,14 +45,15 @@ shiftdir=${flpr}_GM_${ftype}_avg_regr_shift
 cd ${wdr}/CVR
 
 
-func=${flpr}_task-breathhold_${ftype}_bold_bet
-mask=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain_mask
-
-3dTproject -polort 3 -input ${fdir}/${func}.nii.gz -mask ${fdir}/${mask}.nii.gz -prefix ${flpr}_${ftype}_pp.nii.gz -overwrite
+func=00.${flpr}_task-breathhold_${ftype}_bold_native_preprocessed
+mask=${flpr}_${ftype}_mask
 
 fslmaths ${fdir}/${func} -Tmean ${flpr}_${ftype}_mean
+fslmaths ${flpr}_${ftype}_mean -bin ${mask}
+
+3dTproject -polort 3 -input ${fdir}/${func}.nii.gz -mask ${mask}.nii.gz -prefix ${flpr}_${ftype}_pp.nii.gz -overwrite
+
 fslmaths ${flpr}_${ftype}_pp -div ${flpr}_${ftype}_mean ${flpr}_${ftype}_SPC
-imcp ${fdir}/${mask} ${flpr}_mask
 
 if [ -d tmp.${flpr}_${ftype}_res ]
 then
@@ -69,7 +72,7 @@ do
 		then
 			3dDeconvolve -input ${flpr}_${ftype}_SPC.nii.gz -jobs 6 \
 			-float -num_stimts 1 \
-			-mask ${flpr}_mask.nii.gz \
+			-mask ${mask}.nii.gz \
 			-stim_file 1 ${shiftdir}/shift_${i}_pp.1D \
 			-x1D ${shiftdir}/mat.1D \
 			-xjpeg ${shiftdir}/mat.jpg \
@@ -79,7 +82,7 @@ do
 		else
 			3dDeconvolve -input ${flpr}_${ftype}_SPC.nii.gz -jobs 6 \
 			-float -num_stimts 1 \
-			-mask ${flpr}_mask.nii.gz \
+			-mask ${mask}.nii.gz \
 			-ortvec ${flpr}_demean.par motdemean \
 			-ortvec ${flpr}_deriv1.par motderiv1 \
 			-stim_file 1 ${shiftdir}/shift_${i}_pp.1D \
@@ -96,7 +99,7 @@ do
 
 		# 3dREMLfit -matrix ${shiftdir}/${i}_uncensored_mat.1D \
 		# -input ${flpr}_${ftype}_SPC.nii.gz -nobout \
-		# -mask ${flpr}_mask.nii.gz \
+		# -mask ${mask}.nii.gz \
 		# -Rbuck tmp.${flpr}_${ftype}_res_reml/stats_REML_${i}.nii.gz \
 		# -Rfitts tmp.${flpr}_${ftype}_res_reml/fitts_REML_${i}.nii.gz \
 		# -verb -overwrite
@@ -166,9 +169,9 @@ fslmaths ${flpr}_${ftype}_tmap_abs -bin ${flpr}_${ftype}_tmap_abs_mask
 fslmaths ${flpr}_${ftype}_cvr_idx -mul ${step} -thr 5 -uthr 705 -bin ${flpr}_${ftype}_cvr_idx_physio_constrained
 
 fslmaths ${flpr}_${ftype}_cvr_idx_physio_constrained -mas ${flpr}_${ftype}_tmap_abs_mask -bin ${flpr}_${ftype}_cvr_idx_mask
-fslmaths ../${flpr}_mask -sub ${flpr}_${ftype}_cvr_idx_mask ${flpr}_${ftype}_cvr_idx_bad_vxs
+fslmaths ../${mask} -sub ${flpr}_${ftype}_cvr_idx_mask ${flpr}_${ftype}_cvr_idx_bad_vxs
 
-fslmaths ${flpr}_${ftype}_cvr_idx -sub 36 -mas ${flpr}_${ftype}_cvr_idx_mask -add 36 -mas ../${flpr}_mask ${flpr}_${ftype}_cvr_idx_corrected
+fslmaths ${flpr}_${ftype}_cvr_idx -sub 36 -mas ${flpr}_${ftype}_cvr_idx_mask -add 36 -mas ../${mask} ${flpr}_${ftype}_cvr_idx_corrected
 fslmaths ${flpr}_${ftype}_cvr_idx_corrected -mul ${step} -sub ${poslag} -mul 0.025 ${flpr}_${ftype}_cvr_lag_corrected
 
 fslmaths ${flpr}_${ftype}_cvr -mas ${flpr}_${ftype}_cvr_idx_mask ${flpr}_${ftype}_cvr_masked

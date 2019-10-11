@@ -11,7 +11,7 @@ cwd = os.getcwd()
 
 os.chdir(wdir)
 for sub in ['007', '003', '002']:
-    lastses = 9
+    lastses = 10
 
     for ses in range(1, lastses):
         filename = f'sub-{sub}/ses-{ses:02g}/func_phys/sub-{sub}_ses-{ses:02g}_task-breathhold_physio'

@@ -6,10 +6,10 @@
 # Date:    15.08.2${ses}9
 #########
 
-wdr=${1:-/data}
 
 sub=$1
 ftype=$2
+wdr=${3:-/data}
 
 ### Main ###
 cwd=$( pwd )

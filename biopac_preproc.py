@@ -319,6 +319,7 @@ def parttwo(co, pidx, filename, GM_name, tr=1.5, newfreq=40, BH_len=58, nBH=8):
     # co_conv = np.genfromtxt('regr/' + filename + '_co_conv.1D')
     #!#
     get_regr(GM_name, co_conv, tr, newfreq, BH_len, nBH)
+    plt.close('all')
 
 
 def _main(argv=None):

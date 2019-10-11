@@ -13,7 +13,7 @@ os.chdir(wdir)
 for sub in ['007', '003', '002']:
     lastses = 9
 
-    for ses in range(1, 11):
+    for ses in range(1, lastses):
         filename = f'sub-{sub}/ses-{ses:02g}/func_phys/sub-{sub}_ses-{ses:02g}_task-breathhold_physio'
         npidx = np.genfromtxt(f'{filename}_manualpeaks.1D').astype('int')
         co = np.genfromtxt(f'{filename}_co_orig.1D')

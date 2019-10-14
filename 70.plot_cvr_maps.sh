@@ -48,7 +48,7 @@ do
 			--colourBarLabelSide top-left --colourBarSize 50 --labelSize 11 \
 			--performance 3 ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap.nii.gz \
 			--name "tmap" --overlayType volume --alpha 100.0 --cmap red-yellow --negativeCmap blue-lightblue --useNegativeCmap \
-			--displayRange ${tval} 50.0 --clippingRange ${tval} 100.0 --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 \
+			--displayRange ${tscore} 50.0 --clippingRange ${tscore} 100.0 --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 \
 			--smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
 			echo "lag"
 			fsleyes render -of ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag --size 1400 500 --scene lightbox --sliceSpacing 18 --zrange 21 131 \

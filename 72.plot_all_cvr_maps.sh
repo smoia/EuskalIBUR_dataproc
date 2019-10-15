@@ -22,8 +22,6 @@ do
 	convert -append tmp.${sub}_echo-2.png tmp.${sub}_optcom.png tmp.${sub}_meica.png tmp.${sub}_vessels.png tmp.${sub}_networks.png sub-${sub}_alltypes.png
 done
 
-
 rm tmp.*.png
-
 
 cd ${cwd} || exit

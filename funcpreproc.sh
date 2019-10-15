@@ -379,9 +379,9 @@ do
 
 	fi
 
-./funcclearspace.sh ${sub} ${ses} ${wdr} task
-
 done
+
+./funcclearspace.sh ${sub} ${ses} ${wdr} task
 
 
 ######################################
@@ -547,9 +547,9 @@ do
 	# immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
 	# immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
 
-./funcclearspace.sh ${sub} ${ses} ${wdr} rest
-
 done
+
+./funcclearspace.sh ${sub} ${ses} ${wdr} rest
 
 echo $(date)
 echo "************************************"

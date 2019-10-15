@@ -28,7 +28,7 @@ othr=${10:-0.05}
 
 cwd=$(pwd)
 
-cd ${fdir}
+cd ${fdir} || exit
 
 
 #!# Maybe this can go in a separate file

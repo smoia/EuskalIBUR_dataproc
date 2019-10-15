@@ -19,7 +19,7 @@ anat=$2
 
 cwd=$(pwd)
 
-cd ${adir}
+cd ${adir} || exit
 
 imrm ${anat} ${anat}_bfc ${anat}_RPI ${anat}_trunc ${anat}_CSF* ${anat}_WM_eroded
 imrm rm.* tmp.*

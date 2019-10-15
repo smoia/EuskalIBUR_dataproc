@@ -10,7 +10,7 @@ nTE=${4:-5}
 ### Main ###
 cwd=$( pwd )
 
-cd ${wdr}
+cd ${wdr} || exit
 
 echo "Denoising sub ${sub} ses ${ses} optcom"
 fdir=sub-${sub}/ses-${ses}/func_preproc

@@ -14,7 +14,7 @@ nTE=${4:-5}
 
 ### Main ###
 cwd=$( pwd )
-cd ${wdr}
+cd ${wdr} || exit
 
 if [[ ! -d "ME_Denoising" ]]; then mkdir ME_Denoising; fi
 

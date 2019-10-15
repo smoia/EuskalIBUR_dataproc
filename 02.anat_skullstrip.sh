@@ -24,7 +24,7 @@ c3dsrc=${5:-none}
 
 cwd=$(pwd)
 
-cd ${adir}
+cd ${adir} || exit
 
 if [[ "${mask}" == "none" ]]
 then

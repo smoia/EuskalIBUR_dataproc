@@ -19,7 +19,7 @@ func=$2
 
 cwd=$(pwd)
 
-cd ${fdir}
+cd ${fdir} || exit
 
 imrm ${func} ${func}_dsd ${func}_mcf ${func}_bet_concat \
 ${func}_mean ${func}_avg ${func}_prj ${func}_RPI_bet_concat \

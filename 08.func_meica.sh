@@ -21,7 +21,7 @@ bck=${4:-None}
 
 cwd=$(pwd)
 
-cd ${fdir}
+cd ${fdir} || exit
 
 ## 01. MEICA
 # 01.1. concat in space

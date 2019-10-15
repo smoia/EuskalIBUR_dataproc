@@ -13,7 +13,7 @@ wdr=${3:-/data}
 
 ### Main ###
 cwd=$( pwd )
-cd ${wdr}
+cd ${wdr} || exit
 
 echo "Creating folders"
 if [ ! -d CVR/00.Reliability ]

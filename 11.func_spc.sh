@@ -18,7 +18,7 @@ fdir=$2
 
 cwd=$(pwd)
 
-cd ${fdir}
+cd ${fdir} || exit
 
 echo "Computing SPC of ${func} ( [X-avg(X)]/avg(X) )"
 

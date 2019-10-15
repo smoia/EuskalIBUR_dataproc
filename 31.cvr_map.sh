@@ -40,7 +40,7 @@ flpr=sub-${sub}_ses-${ses}
 shiftdir=${flpr}_GM_${ftype}_avg_regr_shift
 
 # Are you sure it's the right answer?
-cd ${wdr}/CVR
+cd ${wdr}/CVR || exit
 
 
 func=00.${flpr}_task-breathhold_${ftype}_bold_native_preprocessed

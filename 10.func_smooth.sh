@@ -22,7 +22,7 @@ mask=$4
 
 cwd=$(pwd)
 
-cd ${fdir}
+cd ${fdir} || exit
 
 ## 01. Smooth
 if [ -e "${func}_den.nii.gz" ]

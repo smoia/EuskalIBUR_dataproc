@@ -18,7 +18,7 @@ adir=$2
    #uiuhu
 cwd=$(pwd)
 
-cd ${adir}
+cd ${adir} || exit
 
 ## 01. Atropos (segmentation)
 # 01.1. Run Atropos

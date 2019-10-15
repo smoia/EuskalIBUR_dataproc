@@ -24,7 +24,7 @@ anat2=${6:-none}
 
 cwd=$(pwd)
 
-cd ${fdir}
+cd ${fdir} || exit
 
 echo "Normalising ${func}"
 antsApplyTransforms -d 3 -i ${func}.nii.gz \

@@ -21,7 +21,7 @@ aref=${3:-none}
 
 cwd=$(pwd)
 
-cd ${adir}
+cd ${adir} || exit
 
 # 01. Deoblique & resample
 echo "Resample ${anat}"

@@ -21,7 +21,7 @@ mmres=$4
 
 cwd=$(pwd)
 
-cd ${adir}
+cd ${adir} || exit
 
 ## 01. Normalization
 
@@ -56,7 +56,7 @@ antsRegistration -d 3 -r [../reg/${std}.nii.gz,${anat}_brain.nii.gz,1] \
 ## 02. Registration to downsampled MNI
 
 #!#
-cd ../reg
+cd ../reg || exit
 
 if [ ! -e ${std}_resamp_${mmres}mm.nii.gz ]
 then

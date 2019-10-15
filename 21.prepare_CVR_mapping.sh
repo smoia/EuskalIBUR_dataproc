@@ -9,7 +9,7 @@ fdir=func_preproc
 
 ### Main ###
 cwd=$( pwd )
-cd ${wdr}
+cd ${wdr} || exit
 
 if [ ! -d CVR ]
 then

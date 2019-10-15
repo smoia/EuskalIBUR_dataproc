@@ -19,7 +19,7 @@ func=$2
 
 cwd=$(pwd)
 
-cd ${fdir}
+cd ${fdir} || exit
 
 imrm ${func}
 imrm rm.* tmp.*

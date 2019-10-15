@@ -6,7 +6,7 @@ wdr=${1:-/data}
 
 cwd=$( pwd )
 
-cd ${wdr}/CVR
+cd ${wdr}/CVR || exit
 
 for sub in 007 003 002
 do
@@ -21,6 +21,9 @@ do
 	done
 	convert -append tmp.${sub}_echo-2.png tmp.${sub}_optcom.png tmp.${sub}_meica.png tmp.${sub}_vessels.png tmp.${sub}_networks.png sub-${sub}_alltypes.png
 done
+
+
 rm tmp.*.png
 
-cd ${cwd}
+
+cd ${cwd} || exit

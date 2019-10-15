@@ -27,7 +27,7 @@ jstr=${6:-0}
 
 cwd=$(pwd)
 
-cd ${fdir}
+cd ${fdir} || exit
 
 nTR=$(fslval ${func} dim4)
 let nTR=nTR-${vdsc}-1

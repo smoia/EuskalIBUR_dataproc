@@ -28,7 +28,7 @@ fted=${8:-0}
 
 cwd=$(pwd)
 
-cd ${fdir}
+cd ${fdir} || exit
 
 nTR=$(fslval ${func} dim4)
 TR=$(fslval ${func} pixdim4)

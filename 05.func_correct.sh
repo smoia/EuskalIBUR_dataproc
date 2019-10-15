@@ -29,7 +29,7 @@ siot=${8:-none}
 
 cwd=$(pwd)
 
-cd ${fdir}
+cd ${fdir} || exit
 
 nTR=$(fslval ${func} dim4)
 

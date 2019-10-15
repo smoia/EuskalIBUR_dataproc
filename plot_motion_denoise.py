@@ -10,9 +10,9 @@ SET_DPI = 100
 FIGSIZE = (18, 10)
 BH_LEN = 39
 
-COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff', '#d62728ff']
-FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica']
 SUB_LIST = ['007', '003', '002']
+FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica']
+COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff', '#d62728ff']
 DVARS_LIST = ['norm', 'simple']
 TIME = np.asarray(range(BH_LEN))
 
@@ -103,14 +103,14 @@ def plot_DVARS_vs_FD(data):
 
 
 # 02. Make timeseries plots
-def plot_timeseries_and_BOLD_vs_FD():
+def plot_timeseries_and_BOLD_vs_FD(ftypes=FTYPE_LIST):
     for sub in SUB_LIST:
         bh_timeplot = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
         bh_scatterplot = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
         bh_timeplot.suptitle(f'BreathHold (BH) response, subject {sub}')
         bh_scatterplot.suptitle(f'BOLD vs FD, subject {sub}')
 
-        gs = bh_timeplot.add_gridspec(ncols=2, nrows=5)
+        gs = bh_timeplot.add_gridspec(nrows=5, ncols=2)
         for col in range(2):
             bh_timesubplot = bh_timeplot.add_subplot(gs[4, col])
             fd_responses = np.empty((72, BH_LEN))
@@ -124,23 +124,23 @@ def plot_timeseries_and_BOLD_vs_FD():
             bh_timesubplot.set_ylabel('avg FD')
             bh_timesubplot.set_xlabel('TPs')
 
-        avg = np.empty((len(FTYPE_LIST), BH_LEN))
-        std = np.empty((len(FTYPE_LIST), BH_LEN))
+        avg = np.empty((len(ftypes), BH_LEN))
+        std = np.empty((len(ftypes), BH_LEN))
 
-        for i in range(len(FTYPE_LIST)):
+        for i in range(len(ftypes)):
             dvars_responses = np.empty((72, BH_LEN))
             for ses in range(1, 10):
-                dvars = np.genfromtxt(f'sub-{sub}/dvars_{FTYPE_LIST[i]}_sub-{sub}_ses-{ses:02d}.1D')
+                dvars = np.genfromtxt(f'sub-{sub}/dvars_{ftypes[i]}_sub-{sub}_ses-{ses:02d}.1D')
                 for bh in range(8):
                     dvars_responses[(8*(ses-1)+bh), :] = dvars[BH_LEN*bh:BH_LEN*(bh+1)]
 
             avg[i, :] = dvars_responses.mean(axis=0)
             std[i, :] = dvars_responses.std(axis=0)
 
-        for i in range(len(FTYPE_LIST)):
+        for i in range(len(ftypes)):
             bh_timesubplot = bh_timeplot.add_subplot(gs[i, 0])
             bh_timesubplot.plot(TIME, avg[i, :],
-                                label=f'{FTYPE_LIST[i]}', color=COLOURS[i])
+                                label=f'{ftypes[i]}', color=COLOURS[i])
             bh_timesubplot.fill_between(TIME, avg[i, :] - std[i, :],
                                         avg[i, :] + std[i, :],
                                         color=COLOURS[i], alpha=0.2)
@@ -150,14 +150,14 @@ def plot_timeseries_and_BOLD_vs_FD():
 
         bh_scattersubplot = bh_scatterplot.add_subplot(1, 1, 1)
 
-        avg = np.empty((len(FTYPE_LIST), BH_LEN))
-        std = np.empty((len(FTYPE_LIST), BH_LEN))
+        avg = np.empty((len(ftypes), BH_LEN))
+        std = np.empty((len(ftypes), BH_LEN))
         max_delta_y = 0  # This is for visualisation purposes
 
-        for i in range(len(FTYPE_LIST)):
+        for i in range(len(ftypes)):
             bh_responses = np.empty((72, BH_LEN))
             for ses in range(1, 10):
-                avg_gm = np.genfromtxt(f'sub-{sub}/avg_GM_{FTYPE_LIST[i]}_sub-{sub}_ses-{ses:02g}.1D')
+                avg_gm = np.genfromtxt(f'sub-{sub}/avg_GM_{ftypes[i]}_sub-{sub}_ses-{ses:02g}.1D')
                 for bh in range(8):
                     bh_trial = avg_gm[BH_LEN*bh:BH_LEN*(bh+1)]
                     bh_responses[(8*(ses-1)+bh), :] = (bh_trial - bh_trial.mean()) / bh_trial.mean()
@@ -169,15 +169,15 @@ def plot_timeseries_and_BOLD_vs_FD():
             if delta_y > max_delta_y:
                 max_delta_y = delta_y
 
-        for i in range(len(FTYPE_LIST)):
+        for i in range(len(ftypes)):
             bh_timesubplot = bh_timeplot.add_subplot(gs[i, 1])
             bh_timesubplot.plot(TIME, avg[i, :],
-                                label=f'{FTYPE_LIST[i]}', color=COLOURS[i])
+                                label=f'{ftypes[i]}', color=COLOURS[i])
             bh_timesubplot.fill_between(TIME, avg[i, :] - std[i, :],
                                         avg[i, :] + std[i, :],
                                         color=COLOURS[i], alpha=0.2)
             bh_scattersubplot.plot(avg[i, :], fd_responses.mean(axis=0), 'o',
-                                   label=f'{FTYPE_LIST[i]}', color=COLOURS[i])
+                                   label=f'{ftypes[i]}', color=COLOURS[i])
 
             min_y = (avg - std)[i, :].min() - 0.002
             bh_timesubplot.set_ylim(min_y, min_y+max_delta_y)

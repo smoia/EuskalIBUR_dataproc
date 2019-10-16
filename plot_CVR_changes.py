@@ -3,7 +3,7 @@
 import os
 import numpy as np
 import pandas as pd
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import seaborn as sns
 
 SET_DPI = 100
@@ -24,7 +24,7 @@ def vx_vs_ses(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
                 data = pd.read_csv(f'{fname}.csv')
                 data.sort_values(by=['ses-01'])
                 plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
-                sns.lineplot(data=data, palette="ch:r=-.2,d=.3_r", markers='o')
+                plt.plot(data=data)  #, palette="ch:r=-.2,d=.3_r", markers='o')
                 plt.title(f'sub {sub} {ftype} {val}')
                 plt.savefig(f'{fname}_vox_by_session.png', dpi=SET_DPI)
                 plt.clf()
@@ -44,11 +44,11 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
 
             nrows = len(ftypes)
             ncols = len(data[ftypes[0]])
-            plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+            fig = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
             plt.title(f'sub {sub} {val}')
-            gs = plt.add_gridspec(nrows=nrows, ncols=ncols)
-            for i in nrows:
-                for j in ncols:
+            gs = fig.add_gridspec(nrows=nrows, ncols=ncols)
+            for i in range(nrows):
+                for j in range(ncols):
                     plt.subplot(gs[i, j])
                     sns.kdeplot(data=data[ftypes[i], f'ses-{(j+1):02g}'],
                                 shade=True, color=COLOURS[i])

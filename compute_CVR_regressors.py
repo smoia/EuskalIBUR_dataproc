@@ -18,7 +18,7 @@ for sub in ['007', '003', '002']:
         npidx = np.genfromtxt(f'{filename}_manualpeaks.1D').astype('int')
         co = np.genfromtxt(f'{filename}_co_orig.1D')
 
-        ftype_list = ['optcom', 'echo-2', 'meica', 'vessels', 'networks']
+        ftype_list = ['optcom', 'echo-2', 'meica', 'vessels']  #, 'networks']
         for ftype in ftype_list:
             GM_name = f'CVR/sub-{sub}_ses-{ses:02g}_GM_{ftype}_avg'
             bio.parttwo(co, npidx, filename, GM_name)

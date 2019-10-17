@@ -32,7 +32,7 @@ cd ${wdr}/CVR
 
 fslmaths ${anat}_GM_native -kernel gauss 2.5 -ero ${anat}_GM_eroded
 
-for ftype in echo-2 optcom meica vessels networks
+for ftype in echo-2 optcom meica vessels  # networks
 do
 	fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${func}_${ftype}_bold_native_preprocessed \
 	-m ${anat}_GM_eroded > sub-${sub}_ses-${ses}_GM_${ftype}_avg.1D

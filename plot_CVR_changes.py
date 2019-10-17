@@ -10,9 +10,9 @@ SET_DPI = 100
 FIGSIZE = (18, 10)
 
 SUB_LIST = ['002', '003', '007']
-FTYPE_LIST = ['echo-2', 'optcom', 'meica', 'vessels', 'networks']
+FTYPE_LIST = ['echo-2', 'optcom', 'meica', 'vessels']  #, 'networks']
 VALUE_LIST = ['cvrvals', 'lagvals']
-COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff', '#d62728ff', '#ac45a8ff']
+COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff', '#d62728ff']  #, '#ac45a8ff']
 
 
 # voxels in session

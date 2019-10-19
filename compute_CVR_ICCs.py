@@ -5,7 +5,7 @@ import ICC
 import pandas as pd
 import numpy as np
 
-ftype = ['echo-2', 'optcom', 'meica', 'vessels', 'networks']
+ftype = ['echo-2', 'optcom', 'meica', 'vessels']  #, 'networks']
 val = ['cvrvals', 'lagvals']
 
 cwd = os.getcwd()

@@ -26,11 +26,11 @@ for sub in sub_list:
         col = f'ses-{ses:02d}'
         rej = sub_table.index[sub_table[col] == 'R'].tolist()
         vas = rej + sub_table.index[sub_table[col] == 'V'].tolist()
-        net = vas + sub_table.index[sub_table[col] == 'N'].tolist()
+        # net = vas + sub_table.index[sub_table[col] == 'N'].tolist()
 
         px = f'sub-{sub}_ses-{ses:02d}'
         savetxt(f'{px}_rejected.1D', rej, fmt='%d', delimiter=',', newline=',')
         savetxt(f'{px}_vessels.1D', vas, fmt='%d', delimiter=',', newline=',')
-        savetxt(f'{px}_networks.1D', net, fmt='%d', delimiter=',', newline=',')
+        # savetxt(f'{px}_networks.1D', net, fmt='%d', delimiter=',', newline=',')
 
 os.chdir(cwd)

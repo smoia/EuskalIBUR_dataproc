@@ -117,7 +117,7 @@ def plot_timeseries_and_BOLD_vs_FD(ftypes=FTYPE_LIST):
             for ses in range(1, 10):
                 fd = np.genfromtxt(f'sub-{sub}/fd_sub-{sub}_ses-{ses:02g}.1D')
                 for bh in range(8):
-                    fd_responses[(8*(ses-1)+bh), :] = fd[BH_LEN*bh:BH_LEN*(bh+1)]
+                    fd_responses[(8*(ses-1)+bh), :] = fd[12+BH_LEN*bh:12+BH_LEN*(bh+1)]
 
             bh_timesubplot.plot(fd_responses.mean(axis=0))
 
@@ -132,7 +132,7 @@ def plot_timeseries_and_BOLD_vs_FD(ftypes=FTYPE_LIST):
             for ses in range(1, 10):
                 dvars = np.genfromtxt(f'sub-{sub}/dvars_{ftypes[i]}_sub-{sub}_ses-{ses:02d}.1D')
                 for bh in range(8):
-                    dvars_responses[(8*(ses-1)+bh), :] = dvars[BH_LEN*bh:BH_LEN*(bh+1)]
+                    dvars_responses[(8*(ses-1)+bh), :] = dvars[12+BH_LEN*bh:12+BH_LEN*(bh+1)]
 
             avg[i, :] = dvars_responses.mean(axis=0)
             std[i, :] = dvars_responses.std(axis=0)
@@ -159,7 +159,7 @@ def plot_timeseries_and_BOLD_vs_FD(ftypes=FTYPE_LIST):
             for ses in range(1, 10):
                 avg_gm = np.genfromtxt(f'sub-{sub}/avg_GM_{ftypes[i]}_sub-{sub}_ses-{ses:02g}.1D')
                 for bh in range(8):
-                    bh_trial = avg_gm[BH_LEN*bh:BH_LEN*(bh+1)]
+                    bh_trial = avg_gm[12+BH_LEN*bh:12+BH_LEN*(bh+1)]
                     bh_responses[(8*(ses-1)+bh), :] = (bh_trial - bh_trial.mean()) / bh_trial.mean()
 
             avg[i, :] = bh_responses.mean(axis=0)
@@ -241,10 +241,10 @@ if __name__ == '__main__':
 
     data = pd.read_csv('sub_table.csv')
 
-    plot_DVARS_vs_FD(data)
+    # plot_DVARS_vs_FD(data)
     plot_timeseries_and_BOLD_vs_FD()
-    os.makedirs('tps')
-    os.chdir('tps')
-    plot_tps_BOLD_vs_FD()
+    # os.makedirs('tps')
+    # os.chdir('tps')
+    # plot_tps_BOLD_vs_FD()
 
     os.chdir(cwd)

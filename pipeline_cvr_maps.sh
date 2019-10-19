@@ -66,7 +66,7 @@ echo "************************************"
 
 for sub in 007 003 002
 do
-	for ftype in echo-2 optcom meica vessels networks
+	for ftype in echo-2 optcom meica vessels  # networks
 	do
 		for ses in $( seq -f %02g 1 9 )
 		do

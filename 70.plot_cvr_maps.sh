@@ -91,7 +91,7 @@ do
 		appending="${appending} tmp.${sub}_${ftype}.png"
 	done
 	appending="${appending} sub-${sub}_alltypes.png"
-	exec "${apepnding}"
+	exec "${appending}"
 done
 
 cd ${cwd}

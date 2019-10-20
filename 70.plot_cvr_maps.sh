@@ -77,6 +77,19 @@ do
 			rm tmp.${sub}_${ses}_${ftype}_?.png
 		done
 	done
+
+	# Creating full sessions maps
+	for ftype in echo-2 optcom meica vessels
+	do
+		for ses in $( seq -f %02g 1 9 )
+		do
+			echo "sub ${sub} ses ${ses} ftype ${ftype}"
+			convert sub-${sub}_ses-${ses}_${ftype}.png -crop 234x265+466+642 tmp.${sub}_${ses}_${ftype}.png
+		done
+		convert +append tmp.${sub}_??_${ftype}.png +repage tmp.${sub}_${ftype}.png
+	done
+	convert -append tmp.${sub}_echo-2.png tmp.${sub}_optcom.png tmp.${sub}_meica.png tmp.${sub}_vessels.png sub-${sub}_alltypes.png
+
 done
 
 cd ${cwd}

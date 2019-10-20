@@ -12,7 +12,7 @@ for sub in 007 003 002
 do
 	for ses in $( seq -f %02g 1 9 )
 	do
-		for ftype in echo-2 optcom meica vessels networks
+		for ftype in echo-2 optcom meica vessels  # networks
 		do
 			case "${ftype}" in
 				meica | vessels | networks ) tscore=2.7	;;

@@ -23,7 +23,18 @@ cd ME_Denoising
 if [[ ! -d "sub-${sub}" ]]; then mkdir sub-${sub}; fi
 
 
-# 01. Get FD and DVARS
+# 01. Register GM to MREF
+anat=${flpr}_acq-uni_T1w
+mref=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
+aref=${flpr}_T2w
+
+antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-${ses}/anat_preproc/${anat}_GM.nii.gz \
+-r ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${mref}.nii.gz \
+-o ${wdr}/ME_Denoising/sub-${sub}/GM_ses-${ses}.nii.gz -n MultiLabel \
+-t [${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${anat}0GenericAffine.mat,1] \
+-t ${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${mref}0GenericAffine.mat
+
+# 02. Get FD and DVARS
 flpr=sub-${sub}_ses-${ses}
 echo ${flpr}
 cp ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-1_bold_dvars_pre.par sub-${sub}/dvars_pre_${flpr}.1D
@@ -45,18 +56,7 @@ do
 	-o tmp_out -s sub-${sub}/dvars_${ftype}_${flpr}.1D --dvars --nomoco
 done
 
-# 02.1. Register GM to MREF
-anat=${flpr}_acq-uni_T1w
-mref=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
-aref=${flpr}_T2w
-
-antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-${ses}/anat_preproc/${anat}_GM.nii.gz \
--r ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${mref}.nii.gz \
--o ${wdr}/ME_Denoising/sub-${sub}/GM_ses-${ses}.nii.gz -n MultiLabel \
--t [${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${anat}0GenericAffine.mat,1] \
--t ${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${mref}0GenericAffine.mat
-
-# 02. Get average GM response
+# 03. Get average GM response
 for ftype in echo-2 optcom meica
 do
 	echo "Extracting GM in ${ftype}"

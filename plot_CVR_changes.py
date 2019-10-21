@@ -44,7 +44,7 @@ def vx_vs_ses(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
 
 
 # histograms
-def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
+def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST):
     for sub in subs:
         for val in vals:
             data_dic = {}
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     # os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
     os.chdir('/data/CVR/00.Reliability')
 
-    vx_vs_ses()
+    # vx_vs_ses()
     ftype_histograms()
 
     plt.close('all')

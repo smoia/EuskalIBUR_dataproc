@@ -42,30 +42,46 @@ def vx_vs_ses(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
 
 
 # histograms
-def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
+def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST):
     for sub in subs:
-        for val in vals:
-            data_dic = {}
-            for ftype in ftypes:
-                fname = f'sub-{sub}_{ftype}_{val}.csv'
-                data_dic[ftype] = pd.read_csv(fname)
+        val = 'cvrvals'
+        data_dic = {}
+        for ftype in ftypes:
+            fname = f'sub-{sub}_{ftype}_{val}.csv'
+            data_dic[ftype] = pd.read_csv(fname)
 
-            data = pd.concat(data_dic.values(), axis=1, keys=data_dic.keys())
+        data = pd.concat(data_dic.values(), axis=1, keys=data_dic.keys())
 
-            nrows = len(ftypes)
-            ncols = len(data[ftypes[0]])
-            fig = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
-            plt.title(f'sub {sub} {val}')
-            gs = fig.add_gridspec(nrows=nrows, ncols=ncols)
-            for i in range(nrows):
-                for j in range(ncols):
-                    plt.subplot(gs[i, j])
-                    sns.kdeplot(data=data[ftypes[i], f'ses-{(j+1):02g}'],
-                                shade=True, color=COLOURS[i])
+        nrows = len(ftypes)
+        ncols = len(data[ftypes[0]].columns)
+        fig = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+        plt.title(f'sub {sub} {val}')
+        gs = fig.add_gridspec(nrows=nrows, ncols=ncols)
 
-            plt.savefig(f'sub-{sub}_{val}_histograms.png', dpi=SET_DPI)
-            plt.clf()
-            plt.close()
+        max_y = 0
+        max_x = 0
+        min_x = -1
+        ax = [[0 for j in range(ncols)] for i in range(nrows)]
+        for i in range(nrows):
+            for j in range(ncols):
+                plt.subplot(gs[i, j])
+                ax[i][j] = sns.kdeplot(data=data[ftypes[i], f'ses-{(j+1):02g}'],
+                                       shade=True, color=COLOURS[i])
+                if ax[i][j].get_ylim()[1] > max_y:
+                    max_y = ax[i][j].get_ylim()[1]
+
+                if ax[i][j].get_xlim()[1] > max_x:
+                    max_x = ax[i][j].get_xlim()[1]
+
+        for i in range(nrows):
+            for j in range(ncols):
+                plt.subplot(gs[i, j])
+                plt.ylim((0, max_y))
+                plt.xlim((min_x, max_x/10))
+
+        plt.savefig(f'sub-{sub}_{val}_histograms.png', dpi=SET_DPI)
+        plt.clf()
+        plt.close()
 
 
 # avg and std
@@ -89,10 +105,11 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
 if __name__ == '__main__':
     cwd = os.getcwd()
 
-    os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
+    os.chdir('/bcbl/home/public/PJMASK_2/preproc/CVR/00.Reliability')
+    # os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
     # os.chdir('/data/CVR/00.Reliability')
 
-    vx_vs_ses()
+    # vx_vs_ses()
     ftype_histograms()
 
     plt.close('all')

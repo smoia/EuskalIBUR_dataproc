@@ -24,6 +24,7 @@ if [[ ! -d "sub-${sub}" ]]; then mkdir sub-${sub}; fi
 
 
 # 01. Register GM to MREF
+flpr=sub-${sub}_ses-${ses}
 anat=${flpr}_acq-uni_T1w
 mref=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
 aref=${flpr}_T2w
@@ -35,7 +36,6 @@ antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-${ses}/anat_preproc/${anat}_GM
 -t ${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${mref}0GenericAffine.mat
 
 # 02. Get FD and DVARS
-flpr=sub-${sub}_ses-${ses}
 echo ${flpr}
 # cp ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-1_bold_dvars_pre.par sub-${sub}/dvars_pre_${flpr}.1D
 cp ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-1_bold_fd.par sub-${sub}/fd_${flpr}.1D

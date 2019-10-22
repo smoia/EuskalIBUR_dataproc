@@ -45,7 +45,7 @@ immv ${fdir}/${bves}_bet_SPC ${fdir}/01.${bves}_native_SPC_preprocessed
 # immv ${fdir}/${bnet}_bet_SPC ${fdir}/01.${bnet}_native_SPC_preprocessed
 
 
-for e in $( seq 1 ${nTE} )
+for e in 2  # $( seq 1 ${nTE} )
 do
 	echo "Denoising sub ${sub} ses ${ses} echo ${e}"
 	func=${fdir}/00.sub-${sub}_ses-${ses}_task-breathhold_echo-${e}_bold_native_preprocessed

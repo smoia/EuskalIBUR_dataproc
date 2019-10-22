@@ -6,6 +6,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from scipy.stats import kurtosis, iqr
+
 SET_DPI = 100
 FIGSIZE = (18, 10)
 
@@ -54,6 +56,17 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
 
             nrows = len(ftypes)
             ncols = len(data[ftypes[0]])
+            kurt_df = pd.DataFrame()
+            kurt_df['type'] = [x for x in ftypes for _ in range(ncols)]
+            kurt_df['k'] = kurtosis(data)
+            fig = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+            plt.title(f'sub {sub} {val} kurtosis')
+            sns.boxplot(x='type', y='k', data=kurt_df,
+                        palette=COLOURS, hue='type')
+            plt.savefig(f'sub-{sub}_{val}_kurtosis.png', dpi=SET_DPI)
+            plt.clf()
+            plt.close()
+
             fig = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
             plt.title(f'sub {sub} {val}')
             gs = fig.add_gridspec(nrows=nrows, ncols=ncols)
@@ -61,29 +74,11 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
                 for j in range(ncols):
                     plt.subplot(gs[i, j])
                     sns.kdeplot(data=data[ftypes[i], f'ses-{(j+1):02g}'],
-                                shade=True, color=COLOURS[i])
+                                shade=True, color=COLOURS[i]).legend_.remove()
 
             plt.savefig(f'sub-{sub}_{val}_histograms.png', dpi=SET_DPI)
             plt.clf()
             plt.close()
-
-
-# avg and std
-# def avg_std_box(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
-#     for sub in subs:
-#         for val in vals:
-#             avg = pd.DataFrame(columns=ftypes)
-#             stdev = pd.DataFrame(columns=ftypes)
-#             for ftype in ftypes:
-#                 fname = f'sub-{sub}_{ftype}_{val}.csv'
-#                 data = pd.read_csv(fname)
-#                 avg[ftype] = data.mean(axis=1)
-#                 stdev[ftype] = data.std(axis=1)
-
-#             plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
-#             plt.title(f'sub {sub} {val}')
-#             for ses in range(1, 10):
-#                 plt.subplot(1, 2, i+1)
 
 
 if __name__ == '__main__':

@@ -44,7 +44,7 @@ def vx_vs_ses(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
 
 
 # histograms
-def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST):
+def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
     for sub in subs:
         for val in vals:
             data_dic = {}

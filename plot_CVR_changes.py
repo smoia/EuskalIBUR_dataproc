@@ -26,17 +26,17 @@ def vx_vs_ses(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
                 data = pd.read_csv(fname)
                 data = data.sort_values(by=['ses-01'])
                 decimated_data = data.iloc[::100, :]
-                formatted_data = pd.melt(decimated_data, var_name="ses",
-                                         value_name="cvr")
+                formatted_data = pd.melt(decimated_data, var_name='ses',
+                                         value_name='cvr')
                 formatted_data['vox'] = np.tile(np.array(range(decimated_data.shape[0])), 9)
-                cmap = sns.color_palette("coolwarm", decimated_data.shape[0])
+                cmap = sns.color_palette('coolwarm', decimated_data.shape[0])
                 plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
-                sns.lineplot(x="ses", y="cvr", hue="vox",
+                sns.lineplot(x='ses', y='cvr', hue='vox',
                              data=formatted_data,
-                             palette=cmap, alpha=.1)
-                sns.scatterplot(x="ses", y="cvr", hue="vox",
+                             palette=cmap, alpha=.1).legend_.remove()
+                sns.scatterplot(x='ses', y='cvr', hue='vox',
                                 data=formatted_data,
-                                palette=cmap, marker='.', edgecolor=None)
+                                palette=cmap, marker='.', edgecolor=None).legend_.remove()
                 plt.title(f'sub {sub} {ftype} {val}')
                 plt.savefig(f'{fname}_vox_by_session.png', dpi=SET_DPI)
                 plt.clf()

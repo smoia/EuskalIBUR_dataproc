@@ -49,7 +49,9 @@ do
 	done
 done
 
-python3 compute_CVR_ICCs.py
-python3 plot_CVR_changes.py
+cd ${cwd}
+
+python3 ./compute_CVR_ICCs.py
+python3 ./plot_CVR_changes.py
 
 cd ${cwd}

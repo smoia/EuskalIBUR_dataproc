@@ -5,22 +5,22 @@ import ICC
 import pandas as pd
 import numpy as np
 
-ftype = ['echo-2', 'optcom', 'meica', 'vessels']  #, 'networks']
-val = ['cvrvals', 'lagvals']
+FTYPE_LIST = ['echo-2', 'optcom', 'meica', 'vessels']  #, 'networks']
+VALUE_LIST = ['cvrvals', 'lagvals']
 
 cwd = os.getcwd()
 
 os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
 # os.chdir('/data/CVR/00.Reliability')
 
-for j in val:
+for val in VALUE_LIST:
     iccs = np.empty((4, 5))
-    for i in range(len(ftype)):
-        print(f'\n\n {ftype[i]} {j}: ')
-        iccs[0, i], iccs[1:, i] = ICC.compute_ICC_1(f'{ftype[i]}_{j}')
+    for i in range(len(FTYPE_LIST)):
+        print(f'\n\n {FTYPE_LIST[i]} {val}: ')
+        fname = f'{FTYPE_LIST}_{val}_alltypes_mask'
+        iccs[0, i], iccs[1:, i] = ICC.compute_spatial_ICC_1(f'{FTYPE_LIST[i]}_{val}')
 
-    df = pd.DataFrame(iccs, columns=ftype)
-    df.to_csv(f'ICC_table_{j}')
-
+    df = pd.DataFrame(iccs, columns=FTYPE_LIST)
+    df.to_csv(f'ICC_table_{val}')
 
 os.chdir(cwd)

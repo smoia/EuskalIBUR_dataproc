@@ -10,7 +10,8 @@ VALUE_LIST = ['cvrvals', 'lagvals']
 
 cwd = os.getcwd()
 
-os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
+os.chdir('/bcbl/home/public/PJMASK_2/preproc/CVR/00.Reliability')
+# os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
 # os.chdir('/data/CVR/00.Reliability')
 
 for val in VALUE_LIST:

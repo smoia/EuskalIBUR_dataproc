@@ -36,10 +36,10 @@ for val in VALUE_LIST:
     df_tidy['sub'] = np.tile(np.array(range(len(SUB_LIST))), 4)
 
     plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
-    sns.lineplot(x="ses", y="cvr", hue="vox",
+    sns.lineplot(x='type', y='ICC', hue='sub',
                  data=df_tidy,
                  palette=COLOURS, alpha=.3).legend_.remove()
-    sns.scatterplot(x="ses", y="cvr", hue="vox",
+    sns.scatterplot(x='type', y='ICC', hue='sub',
                     data=df_tidy,
                     palette=COLOURS, marker='.', edgecolor=None).legend_.remove()
     plt.title(f'Spatial ICC, {val}')

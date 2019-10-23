@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 FTYPE_LIST = ['echo-2', 'optcom', 'meica', 'vessels']  #, 'networks']
 VALUE_LIST = ['cvrvals', 'lagvals']
 SUB_LIST = ['002', '003', '007']
-COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff', '#d62728ff', '#ac45a8ff']
+COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff']  #, '#d62728ff', '#ac45a8ff']
 
 SET_DPI = 100
 FIGSIZE = (18, 10)
@@ -18,9 +18,9 @@ FIGSIZE = (18, 10)
 
 cwd = os.getcwd()
 
-os.chdir('/bcbl/home/public/PJMASK_2/preproc/CVR/00.Reliability')
+# os.chdir('/bcbl/home/public/PJMASK_2/preproc/CVR/00.Reliability')
 # os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
-# os.chdir('/data/CVR/00.Reliability')
+os.chdir('/data/CVR/00.Reliability')
 
 for val in VALUE_LIST:
     iccs = np.empty((4, 4))
@@ -36,12 +36,8 @@ for val in VALUE_LIST:
     df_tidy['sub'] = np.tile(np.array(range(len(SUB_LIST))), 4)
 
     plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
-    sns.lineplot(x='type', y='ICC', hue='sub',
-                 data=df_tidy,
-                 palette=COLOURS, alpha=.3).legend_.remove()
-    sns.scatterplot(x='type', y='ICC', hue='sub',
-                    data=df_tidy,
-                    palette=COLOURS, marker='.', edgecolor=None).legend_.remove()
+    sns.pointplot(x='type', y='ICC', hue='sub', data=df_tidy,
+                  palette=COLOURS, ci=None).legend_.remove()
     plt.title(f'Spatial ICC, {val}')
     plt.savefig(f'Spatial_ICC_plot_{val}.png', dpi=SET_DPI)
     plt.clf()

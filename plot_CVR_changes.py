@@ -84,9 +84,9 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
 if __name__ == '__main__':
     cwd = os.getcwd()
 
-    os.chdir('/bcbl/home/public/PJMASK_2/preproc/CVR/00.Reliability')
+    # os.chdir('/bcbl/home/public/PJMASK_2/preproc/CVR/00.Reliability')
     # os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
-    # os.chdir('/data/CVR/00.Reliability')
+    os.chdir('/data/CVR/00.Reliability')
 
     vx_vs_ses()
     ftype_histograms()

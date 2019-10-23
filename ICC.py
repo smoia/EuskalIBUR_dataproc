@@ -8,7 +8,7 @@ SET_DPI = 100
 FIGSIZE = (18, 10)
 
 
-def compute_spatial_ICC_1(table):
+def compute_ICC_1(table):
     """
     Computes standard ICC(1,1)
     """
@@ -22,7 +22,7 @@ def compute_spatial_ICC_1(table):
     return spatial_ICC_1
 
 
-def compute_ICC_1(val, sub_list=['002', '003', '007'], n_sess=9, spatial_ICC=True):
+def compute_spatial_ICC_1(val, sub_list=['002', '003', '007'], n_sess=9, spatial_ICC=True):
     """
     Computes standard ICC(1,1) for the average of a table,
     and a spatial ICC(1,1) for each subject
@@ -30,7 +30,7 @@ def compute_ICC_1(val, sub_list=['002', '003', '007'], n_sess=9, spatial_ICC=Tru
     tables = []
 
     for sub in sub_list:
-        tables.append(np.genfromtxt('sub-' + sub + '_' + val + '.csv',
+        tables.append(np.genfromtxt(f'sub-{sub}_{val}.csv',
                                     delimiter=',', skip_header=1))
 
     n_subs = len(sub_list)
@@ -48,7 +48,7 @@ def compute_ICC_1(val, sub_list=['002', '003', '007'], n_sess=9, spatial_ICC=Tru
         plt.plot(meanvals[sub, :])
 
         if spatial_ICC:
-            sub_s_ICC = compute_spatial_ICC_1(tables[sub])
+            sub_s_ICC = compute_ICC_1(tables[sub])
             s_ICC.append(sub_s_ICC)
         else:
             sub_s_ICC = ''
@@ -57,7 +57,7 @@ def compute_ICC_1(val, sub_list=['002', '003', '007'], n_sess=9, spatial_ICC=Tru
 
     legtext.append('')
     plt.legend(tuple(legtext))
-    ICC_1 = compute_spatial_ICC_1(meanvals)
+    ICC_1 = compute_ICC_1(meanvals)
     plt.title(f'ICC = {ICC_1}')
 
     plt.savefig(val + '_ICC.png', dpi=SET_DPI)

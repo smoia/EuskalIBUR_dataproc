@@ -22,8 +22,8 @@ def vx_vs_ses(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
     for sub in subs:
         for val in vals:
             for ftype in ftypes:
-                fname = f'sub-{sub}_{ftype}_{val}'
-                data = pd.read_csv(f'{fname}.csv')
+                fname = f'sub-{sub}_{ftype}_{val}_alltypes_mask.csv'
+                data = pd.read_csv(fname)
                 data = data.sort_values(by=['ses-01'])
                 decimated_data = data.iloc[::100, :]
                 formatted_data = pd.melt(decimated_data, var_name="ses",
@@ -49,13 +49,13 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
         for val in vals:
             data_dic = {}
             for ftype in ftypes:
-                fname = f'sub-{sub}_{ftype}_{val}.csv'
+                fname = f'sub-{sub}_{ftype}_{val}_alltypes_mask.csv'
                 data_dic[ftype] = pd.read_csv(fname)
 
             data = pd.concat(data_dic.values(), axis=1, keys=data_dic.keys())
 
             nrows = len(ftypes)
-            ncols = len(data[ftypes[0]])
+            ncols = len(data[ftypes[0]].columns)
             kurt_df = pd.DataFrame()
             kurt_df['type'] = [x for x in ftypes for _ in range(ncols)]
             kurt_df['k'] = kurtosis(data)
@@ -84,7 +84,7 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
 if __name__ == '__main__':
     cwd = os.getcwd()
 
-    os.chdir('/bcbl/home/public/PJMASK_2/preproc')
+    os.chdir('/bcbl/home/public/PJMASK_2/preproc/CVR/00.Reliability')
     # os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
     # os.chdir('/data/CVR/00.Reliability')
 

@@ -11,10 +11,7 @@ sub=$1
 ses=$2
 wdr=${3:-/data}
 
-flpr=sub-${sub}_ses-${ses}
-
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
-fmap=${wdr}/sub-${sub}/ses-${ses}/fmap_preproc
 
 ####################
 
@@ -25,11 +22,11 @@ fmap=${wdr}/sub-${sub}/ses-${ses}/fmap_preproc
 cd ${fdir}
 
 echo "************************************"
-echo "*** Coping SBREF ${f} "
+echo "*** Coping SBREF "
 echo "************************************"
 echo "************************************"
 
-for img in *_task-breathhold_rec-magnitude_echo-1_sbref_cr*
+for img in *_echo-1_sbref_cr*
 do
 	immv ${img} 99.${img}
 done
@@ -46,7 +43,7 @@ done
 
 rm -rf sub*.nii.gz
 
-for img in *_task-breathhold_rec-magnitude_echo-1_sbref_cr*
+for img in *_echo-1_sbref_cr*
 do
 	imcp ${img} ${img:3}
 done

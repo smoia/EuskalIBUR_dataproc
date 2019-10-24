@@ -20,6 +20,7 @@ anat2=${flpr}_T2w
 
 adir=${wdr}/sub-${sub}/ses-${ses}/anat_preproc
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
+pdir=${wdr}/sub-${sub}/ses-${ses}/func_phys
 fmap=${wdr}/sub-${sub}/ses-${ses}/fmap_preproc
 stdp=/scripts
 
@@ -67,10 +68,21 @@ then
 	./98.anat_delete.sh ${adir} ${anat2}
 fi
 
+if [[ ${part} == "phys" || ${part} == "all" ]]
+then
+
+	echo "************************************"
+	echo "*** Physio clean"
+	echo "************************************"
+	echo "************************************"
+
+	./95.physio_delete.sh ${pdir}
+fi
+
 if [[ ${part} == "task" || ${part} == "all" ]]
 then
 
-	for f in breathhold  # TASK1 TASK2 TASK3
+	for f in breathhold TASK1 TASK2 TASK3
 	do 
 		for d in AP PA
 		do
@@ -144,8 +156,8 @@ then
 			echo "************************************"
 			echo "************************************"
 
-			sbrf=${flpr}_task-rest_rec-magnitude_run-${run}_echo-${e}_sbref
-			bold=${flpr}_task-rest_run-${run}_echo-${e}_bold
+			sbrf=${flpr}_task-rest_rec-magnitude_run-${r}_echo-${e}_sbref
+			bold=${flpr}_task-rest_run-${r}_echo-${e}_bold
 			./97.func_delete.sh ${fdir} ${sbrf}
 			./97.func_delete.sh ${fdir} ${bold}
 
@@ -156,7 +168,7 @@ then
 		echo "************************************"
 		echo "************************************"
 
-		./96.meica_delete.sh ${fdir} ${flpr}_task-rest_run-${run}_echo-1_bold_RPI_bet
+		./96.meica_delete.sh ${fdir} ${flpr}_task-rest_run-${r}_echo-1_bold_RPI_bet
 
 	done
 

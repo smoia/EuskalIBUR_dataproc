@@ -22,7 +22,7 @@ fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 cd ${fdir}
 
 echo "************************************"
-echo "*** Coping SBREF "
+echo "*** Coping SBREF sub $sub ses $ses "
 echo "************************************"
 echo "************************************"
 
@@ -45,7 +45,7 @@ rm -rf sub*.nii.gz
 
 for img in *_echo-1_sbref_cr*
 do
-	imcp ${img} ${img:3}
+	immv ${img} ${img:3}
 done
 
 for fld in *_meica

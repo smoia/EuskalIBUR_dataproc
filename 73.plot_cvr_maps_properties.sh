@@ -22,11 +22,12 @@ do
 
 echo "Initialising csv files"
 
-	for fname in cvrvals lagvals
+	for fname in cvrvals lagvals tvals
 	do
 		if [[ -e sub-${sub}_${ftype}_${fname}_alltypes_mask.csv ]]; then rm -f sub-${sub}_${ftype}_${fname}_alltypes_mask.csv; fi
 
 		case ${fname} in
+			tvals ) fvol=tmap ;;
 			cvrvals ) fvol=cvr ;;
 			lagvals ) fvol=cvr_lag ;;
 		esac

@@ -8,7 +8,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 FTYPE_LIST = ['echo-2', 'optcom', 'meica', 'vessels']  #, 'networks']
-VALUE_LIST = ['cvrvals', 'lagvals']
+VALUE_LIST = ['cvrvals', 'lagvals', 'tvals']
 SUB_LIST = ['002', '003', '007']
 COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff']  #, '#d62728ff', '#ac45a8ff']
 

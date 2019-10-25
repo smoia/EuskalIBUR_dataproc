@@ -36,10 +36,18 @@ echo "Initialising csv files"
 		do
 			for ses in $( seq -f %02g 1 ${lastses} )
 			do
+				case ${fname} in
+					tvals ) val=0 ;;
+					cvrvals ) val=0 ;;
+					lagvals ) val=$( awk -F',' '{printf("%g",$1 )}' ${wdr}/CVR/sub-${sub}_ses-${ses}_GM_${ftype}_avg_optshift.1D ); echo "Adding ${val} to lag" ;;
+				esac
+
 				echo "Extracting voxel informations in session ${ses} for ${fname}"
 				echo "ses-${ses}" > tmp.sub-${sub}_${ses}_${ftype}_${fname}.csv
 				fslmeants -i sub-${sub}/sub-${sub}_ses-${ses}_${ftype}_${fvol} -m sub-${sub}_alltypes_allses_mask --showall --transpose \
-				| csvtool -t SPACE col 4 - >> tmp.sub-${sub}_${ses}_${ftype}_${fname}.csv
+				| csvtool -t SPACE col 4 - \
+				| awk -v val=${val} -F',' '{printf("%g\n",$1+val )}' - >> tmp.sub-${sub}_${ses}_${ftype}_${fname}.csv
+
 			done
 
 		echo "Paste and Trim"

@@ -19,12 +19,12 @@ COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff', '#d62728ff']  #, '#ac45a8ff']
 
 
 # voxels in session
-def vx_vs_ses(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
+def vx_vs_ses(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST, mask='_alltypes_mask'):
     for sub in subs:
         for val in vals:
             for ftype in ftypes:
-                fname = f'sub-{sub}_{ftype}_{val}_alltypes_mask.csv'
-                data = pd.read_csv(fname)
+                fname = f'sub-{sub}_{ftype}_{val}{mask}'
+                data = pd.read_csv(f'{fname}.csv')
                 data = data.sort_values(by=['ses-01'])
                 decimated_data = data.iloc[::100, :]
                 formatted_data = pd.melt(decimated_data, var_name='ses',
@@ -45,13 +45,13 @@ def vx_vs_ses(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
 
 
 # histograms
-def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
+def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST, mask='_alltypes_mask'):
     for sub in subs:
         for val in vals:
             data_dic = {}
             for ftype in ftypes:
-                fname = f'sub-{sub}_{ftype}_{val}_alltypes_mask.csv'
-                data_dic[ftype] = pd.read_csv(fname)
+                fname = f'sub-{sub}_{ftype}_{val}{mask}'
+                data_dic[ftype] = pd.read_csv(f'{fname}.csv')
 
             data = pd.concat(data_dic.values(), axis=1, keys=data_dic.keys())
 
@@ -94,7 +94,11 @@ if __name__ == '__main__':
     # os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
     os.chdir('/data/CVR/00.Reliability')
 
-    # vx_vs_ses()
+    vx_vs_ses(mask='')
+    ftype_histograms(mask='')
+    vx_vs_ses(mask='_GM_mask')
+    ftype_histograms(mask='_GM_mask')
+    vx_vs_ses()
     ftype_histograms()
 
     plt.close('all')

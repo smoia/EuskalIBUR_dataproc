@@ -22,7 +22,6 @@ adir=${wdr}/sub-${sub}/ses-${ses}/anat_preproc
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 pdir=${wdr}/sub-${sub}/ses-${ses}/func_phys
 fmap=${wdr}/sub-${sub}/ses-${ses}/fmap_preproc
-stdp=/scripts
 
 nTE=5
 

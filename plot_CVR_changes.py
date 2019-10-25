@@ -88,7 +88,7 @@ if __name__ == '__main__':
     # os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
     os.chdir('/data/CVR/00.Reliability')
 
-    vx_vs_ses()
+    # vx_vs_ses()
     ftype_histograms()
 
     plt.close('all')

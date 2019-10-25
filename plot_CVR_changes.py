@@ -6,14 +6,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from scipy.stats import kurtosis, iqr
+from scipy.stats import kurtosis
 
 SET_DPI = 100
 FIGSIZE = (18, 10)
 
 SUB_LIST = ['002', '003', '007']
 FTYPE_LIST = ['echo-2', 'optcom', 'meica', 'vessels']  #, 'networks']
-VALUE_LIST = ['cvrvals', 'lagvals']
+VALUE_LIST = ['cvrvals', 'lagvals', 'tvals']
 COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff', '#d62728ff']  #, '#ac45a8ff']
 
 

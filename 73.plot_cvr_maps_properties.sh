@@ -55,6 +55,30 @@ echo "Initialising csv files"
 
 		rm -f tmp.sub*.csv
 		done
+
+		for ftype in echo-2 optcom meica vessels
+		do
+			for ses in $( seq -f %02g 1 ${lastses} )
+			do
+				case ${fname} in
+					tvals ) val=0 ;;
+					cvrvals ) val=0 ;;
+					lagvals ) val=$( awk -F',' '{printf("%g",$1 )}' ${wdr}/CVR/sub-${sub}_ses-${ses}_GM_${ftype}_avg_optshift.1D ); echo "Adding ${val} to lag" ;;
+				esac
+
+				echo "Extracting voxel informations in session ${ses} for ${fname}"
+				echo "ses-${ses}" > tmp.sub-${sub}_${ses}_${ftype}_${fname}.csv
+				fslmeants -i sub-${sub}/sub-${sub}_ses-${ses}_${ftype}_${fvol} -m ../sub-${sub}_ses-${ses}_acq-uni_T1w_GM_native --showall --transpose \
+				| csvtool -t SPACE col 4 - \
+				| awk -v val=${val} -F',' '{printf("%g\n",$1+val )}' - >> tmp.sub-${sub}_${ses}_${ftype}_${fname}.csv
+
+			done
+
+		echo "Paste and Trim"
+		paste tmp.sub-${sub}_??_${ftype}_${fname}.csv -d , | csvtool trim b - > sub-${sub}_${ftype}_${fname}_GM_mask.csv
+
+		rm -f tmp.sub*.csv
+		done
 	done
 done
 

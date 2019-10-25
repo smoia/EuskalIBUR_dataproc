@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from math import ceil
 from scipy.stats import kurtosis
 
 SET_DPI = 100
@@ -54,12 +55,13 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
 
             data = pd.concat(data_dic.values(), axis=1, keys=data_dic.keys())
 
-            nrows = len(ftypes)
-            ncols = len(data[ftypes[0]].columns)
+            ntypes = len(ftypes)
+            nrows = 3
+            ncols = ceil(len(data[ftypes[0]].columns) / nrows)
             kurt_df = pd.DataFrame()
-            kurt_df['type'] = [x for x in ftypes for _ in range(ncols)]
+            kurt_df['type'] = [x for x in ftypes for _ in range(ncols*nrows)]
             kurt_df['k'] = kurtosis(data)
-            fig = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+            plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
             plt.title(f'sub {sub} {val} kurtosis')
             sns.boxplot(x='type', y='k', data=kurt_df,
                         palette=COLOURS, hue='type')
@@ -67,14 +69,18 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
             plt.clf()
             plt.close()
 
-            fig = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+            plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
             plt.title(f'sub {sub} {val}')
-            gs = fig.add_gridspec(nrows=nrows, ncols=ncols)
             for i in range(nrows):
                 for j in range(ncols):
-                    plt.subplot(gs[i, j])
-                    sns.kdeplot(data=data[ftypes[i], f'ses-{(j+1):02g}'],
-                                shade=True, color=COLOURS[i]).legend_.remove()
+                    plt.subplot(ncols, nrows, (1+j+i*3))
+                    for k in range(ntypes):
+                        sns.kdeplot(data=data[ftypes[k], f'ses-{(j+1):02g}'],
+                                    color=COLOURS[k]).legend_.remove()
+                        if val == 'cvrvals':
+                            plt.xlim(-2, 3)
+                        elif val == 'tvals':
+                            plt.xlim(-10, 40)
 
             plt.savefig(f'sub-{sub}_{val}_histograms.png', dpi=SET_DPI)
             plt.clf()

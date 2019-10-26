@@ -65,7 +65,7 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST, mask='_a
             plt.title(f'sub {sub} {val} kurtosis')
             sns.boxplot(x='type', y='k', data=kurt_df,
                         palette=COLOURS, hue='type')
-            plt.savefig(f'sub-{sub}_{val}_kurtosis.png', dpi=SET_DPI)
+            plt.savefig(f'{fname}_kurtosis.png', dpi=SET_DPI)
             plt.clf()
             plt.close()
 
@@ -82,7 +82,7 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST, mask='_a
                         elif val == 'tvals':
                             plt.xlim(-10, 40)
 
-            plt.savefig(f'sub-{sub}_{val}_histograms.png', dpi=SET_DPI)
+            plt.savefig(f'{fname}_histograms.png', dpi=SET_DPI)
             plt.clf()
             plt.close()
 

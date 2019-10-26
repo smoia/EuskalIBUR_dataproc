@@ -43,10 +43,10 @@ imcp CVR/00.Reliability/sub-${sub}/sub-${sub}_ses-01_${ftype}_cvr_idx_mask CVR/0
 
 lastses=9
 
+reffile=sub-${sub}/ses-01/func_preproc/sub-${sub}_ses-01_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain
 for ses in $( seq -f %02g 2 ${lastses} )
 do
 	infile=sub-${sub}/ses-${ses}/func_preproc/sub-${sub}_ses-${ses}_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain
-	reffile=sub-${sub}/ses-01/func_preproc/sub-${sub}_ses-01_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain
 	outfile=sub-${sub}/ses-${ses}/reg/sub-${sub}_ses-${ses}_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain2ses-01
 
 	echo "Flirting session ${ses} to session 01"

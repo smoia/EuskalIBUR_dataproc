@@ -13,12 +13,21 @@ cd ${wdr}/CVR/00.Reliability
 for sub in 007 003 002
 do
 	imcp sub-${sub}_echo-2_allses_mask sub-${sub}_alltypes_allses_mask
-
 	for ftype in optcom meica vessels
 	do
 		fslmaths sub-${sub}_alltypes_allses_mask -mas sub-${sub}_${ftype}_allses_mask \
 		sub-${sub}_alltypes_allses_mask
 	done
+
+	echo "Preparing GM"
+	imcp ../sub-${sub}_ses-01_acq-uni_T1w_GM_native sub-${sub}_alltypes_GM_mask
+	for ses in $( seq -f %02g 1 ${lastses} )
+	do
+		fslmaths sub-${sub}_alltypes_GM_mask -mul sub-${sub}/sub-${sub}_ses-${ses}_optcom_cvrvals \
+		-mul sub-${sub}/sub-${sub}_ses-${ses}_optcom_cvrvals sub-${sub}_alltypes_GM_mask
+	done
+
+	fslmaths sub-${sub}_alltypes_GM_mask -abs -bin -mas sub-${sub}_alltypes_GM_mask
 
 echo "Initialising csv files"
 
@@ -27,21 +36,15 @@ echo "Initialising csv files"
 		if [[ -e sub-${sub}_${ftype}_${fname}_alltypes_mask.csv ]]; then rm -f sub-${sub}_${ftype}_${fname}_alltypes_mask.csv; fi
 
 		case ${fname} in
-			tvals ) fvol=tmap ;;
-			cvrvals ) fvol=cvr ;;
-			lagvals ) fvol=cvr_lag ;;
+			tvals ) fvol=tmap; val=0 ;;
+			cvrvals ) fvol=cvr; val=0 ;;
+			lagvals ) fvol=cvr_lag; val=$( awk -F',' '{printf("%g",$1 )}' ${wdr}/CVR/sub-${sub}_ses-${ses}_GM_${ftype}_avg_optshift.1D ); echo "Adding ${val} to lag" ;;
 		esac
 
 		for ftype in echo-2 optcom meica vessels
 		do
 			for ses in $( seq -f %02g 1 ${lastses} )
 			do
-				case ${fname} in
-					tvals ) val=0 ;;
-					cvrvals ) val=0 ;;
-					lagvals ) val=$( awk -F',' '{printf("%g",$1 )}' ${wdr}/CVR/sub-${sub}_ses-${ses}_GM_${ftype}_avg_optshift.1D ); echo "Adding ${val} to lag" ;;
-				esac
-
 				echo "Extracting voxel informations in session ${ses} for ${fname}"
 				echo "ses-${ses}" > tmp.sub-${sub}_${ses}_${ftype}_${fname}.csv
 				fslmeants -i sub-${sub}/sub-${sub}_ses-${ses}_${ftype}_${fvol} -m sub-${sub}_alltypes_allses_mask --showall --transpose \
@@ -60,15 +63,9 @@ echo "Initialising csv files"
 		do
 			for ses in $( seq -f %02g 1 ${lastses} )
 			do
-				case ${fname} in
-					tvals ) val=0 ;;
-					cvrvals ) val=0 ;;
-					lagvals ) val=$( awk -F',' '{printf("%g",$1 )}' ${wdr}/CVR/sub-${sub}_ses-${ses}_GM_${ftype}_avg_optshift.1D ); echo "Adding ${val} to lag" ;;
-				esac
-
 				echo "Extracting voxel informations in session ${ses} for ${fname}"
 				echo "ses-${ses}" > tmp.sub-${sub}_${ses}_${ftype}_${fname}.csv
-				fslmeants -i sub-${sub}/sub-${sub}_ses-${ses}_${ftype}_${fvol} -m ../sub-${sub}_ses-${ses}_acq-uni_T1w_GM_native --showall --transpose \
+				fslmeants -i sub-${sub}/sub-${sub}_ses-${ses}_${ftype}_${fvol} -m sub-${sub}_alltypes_GM_mask --showall --transpose \
 				| csvtool -t SPACE col 4 - \
 				| awk -v val=${val} -F',' '{printf("%g\n",$1+val )}' - >> tmp.sub-${sub}_${ses}_${ftype}_${fname}.csv
 

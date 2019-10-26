@@ -30,7 +30,7 @@ imcp sub-${sub}/ses-01/func_preproc/00.sub-${sub}_ses-01_task-rest_run-01_optcom
 
 lastses=9
 
-reffile=sub-${sub}/ses-01/func_preproc/00.sub-${sub}_ses-01_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain
+reffile=sub-${sub}/ses-01/func_preproc/sub-${sub}_ses-01_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain
 
 imcp ${wdr}/${reffile}_mask DMN/sub-${sub}/mask_${ftype}
 
@@ -47,12 +47,12 @@ do
 	fslmaths DMN/sub-${sub}/ses-${ses}_rest_run-01_${ftype} -Tmean -add DMN/sub-${sub}/mask_${ftype} -bin DMN/sub-${sub}/mask_${ftype}
 done
 
-cd ${wdr}/DMN
+cd ${wdr}/DMN/sub-${sub}
 
-ls ses-*.nii.gz > ses_list
+# ls ses-*.nii.gz > ses_list
 
 echo "Running Melodic"
 
-melodic -in ses_list -m mask_${ftype} -o ses-${ses}_rest_run-01_${ftype}_melodic -d 25
+melodic -i ses-01_rest_run-01_optcom.nii.gz,ses-02_rest_run-01_optcom.nii.gz,ses-03_rest_run-01_optcom.nii.gz,ses-04_rest_run-01_optcom.nii.gz,ses-05_rest_run-01_optcom.nii.gz,ses-06_rest_run-01_optcom.nii.gz,ses-07_rest_run-01_optcom.nii.gz,ses-08_rest_run-01_optcom.nii.gz,ses-09_rest_run-01_optcom.nii.gz -m mask_${ftype} -o ses-${ses}_rest_run-01_${ftype}_melodic -d 25
 
 cd ${cwd}

@@ -71,7 +71,7 @@ for val in VALUE_LIST:
     iccs = np.empty((n_subs+1, n_ftypes))
     for i in range(n_ftypes):
         print(f'\n\n {FTYPE_LIST[i]} {val}: ')
-        fname = f'{FTYPE_LIST}_{val}'
+        fname = f'{FTYPE_LIST[i]}_{val}'
         iccs[0, i], iccs[1:, i] = ICC.compute_spatial_ICC_1(fname)
 
     df = pd.DataFrame(iccs, columns=FTYPE_LIST)

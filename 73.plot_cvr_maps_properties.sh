@@ -23,11 +23,11 @@ do
 	imcp ../sub-${sub}_ses-01_acq-uni_T1w_GM_native sub-${sub}_alltypes_GM_mask
 	for ses in $( seq -f %02g 1 ${lastses} )
 	do
-		fslmaths sub-${sub}_alltypes_GM_mask -mul sub-${sub}/sub-${sub}_ses-${ses}_optcom_cvrvals \
-		-mul sub-${sub}/sub-${sub}_ses-${ses}_optcom_cvrvals sub-${sub}_alltypes_GM_mask
+		fslmaths sub-${sub}_alltypes_GM_mask -mul sub-${sub}/sub-${sub}_ses-${ses}_optcom_cvr \
+		-mul sub-${sub}/sub-${sub}_ses-${ses}_optcom_cvr sub-${sub}_alltypes_GM_mask
 	done
 
-	fslmaths sub-${sub}_alltypes_GM_mask -abs -bin -mas sub-${sub}_alltypes_GM_mask
+	fslmaths sub-${sub}_alltypes_GM_mask -abs -bin sub-${sub}_alltypes_GM_mask
 
 echo "Initialising csv files"
 

@@ -75,7 +75,7 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST, mask='_a
                 for j in range(ncols):
                     plt.subplot(ncols, nrows, (1+j+i*3))
                     for k in range(ntypes):
-                        sns.kdeplot(data=data[ftypes[k], f'ses-{(j+1):02g}'],
+                        sns.kdeplot(data=data[ftypes[k], f'ses-{(1+j+i*3):02g}'],
                                     color=COLOURS[k]).legend_.remove()
                         if val == 'cvrvals':
                             plt.xlim(-2, 3)

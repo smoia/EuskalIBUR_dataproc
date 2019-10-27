@@ -20,8 +20,8 @@ then
 fi
 
 echo "Copying motpar files"
-cp sub-???/ses-??/func_preproc/*mcf.par motpar/par/orig/.
-cp sub-???/ses-??/func_preproc/*mcf_deriv1.par motpar/deriv1/orig/.
+cp sub-???/ses-??/func_preproc/*rest*mcf.par motpar/par/orig/.
+cp sub-???/ses-??/func_preproc/*rest*mcf_deriv1.par motpar/deriv1/orig/.
 
 cd motpar/par
 

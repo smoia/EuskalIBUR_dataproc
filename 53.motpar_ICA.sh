@@ -14,10 +14,11 @@ cwd=$( pwd )
 cd ${wdr} || exit
 
 echo "Creating folders"
-if [ ! -d motpar ]
+if [ -d motpar ]
 then
-	mkdir motpar motpar/deriv1 motpar/par motpar/deriv1/orig motpar/par/orig
+	rm -rf motpar
 fi
+mkdir motpar motpar/deriv1 motpar/par motpar/deriv1/orig motpar/par/orig
 
 echo "Copying motpar files"
 cp sub-???/ses-??/func_preproc/*rest*mcf.par motpar/par/orig/.

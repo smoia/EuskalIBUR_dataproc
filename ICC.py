@@ -17,10 +17,41 @@ def compute_ICC_1(table):
     MS_r = np.var(table.mean(0), ddof=1) * n_sess
     MS_w = np.sum(table.var(0, ddof=1)) / n_vxs
 
-    spatial_ICC_1 = (MS_r - MS_w) / (MS_r + (n_sess - 1) * MS_w)
+    ICC_1 = (MS_r - MS_w) / (MS_r + (n_sess - 1) * MS_w)
 
-    return spatial_ICC_1
+    return ICC_1
 
+
+def compute_ICC_C_1(table):
+    """
+    Computes standard ICC(2,1)
+    """
+    n_vxs, n_sess = table.shape
+
+    MS_r = np.var(table.mean(0), ddof=1) * n_sess
+    MS_e = (table.var(ddof=1)*(n_vxs*n_sess - 1) - MS_r*(n_vxs-1)
+            - np.var(table.mean(0), ddof=1)*n_vxs*(n_sess-1)) / (
+            (n_vxs-1)*(n_sess-1));
+
+    ICC_C_1 = (MS_r - MS_e) / (MS_r + (n_sess - 1) * MS_e)
+
+    return ICC_C_1
+
+def compute_ICC_A_1(table):
+    """
+    Computes standard ICC(3,1)
+    """
+    n_vxs, n_sess = table.shape
+
+    MS_r = np.var(table.mean(0), ddof=1) * n_sess
+    MS_e = (table.var(ddof=1)*(n_vxs*n_sess - 1) - MS_r*(n_vxs-1)
+            - np.var(table.mean(0), ddof=1)*n_vxs*(n_sess-1)) / (
+            (n_vxs-1)*(n_sess-1));
+
+    ICC_A_1 = (MS_r - MS_e) / (MS_r + (n_sess - 1) * MS_e
+               + n_sess*(np.var(table.mean(0), ddof=1)*n_vxs - MS_e)/n)
+
+    return ICC_A_1
 
 def compute_spatial_ICC_1(val, sub_list=['002', '003', '007'], n_sess=9, spatial_ICC=True):
     """

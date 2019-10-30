@@ -192,6 +192,56 @@ def plot_timeseries_and_BOLD_vs_FD(ftypes=FTYPE_LIST):
         bh_scattersubplot.set_xlabel('avg BOLD')
         bh_scattersubplot.set_ylabel('FD')
         bh_scatterplot.savefig(f'{sub}_BOLD_vs_FD.png', dpi=SET_DPI)
+        plt.close('all')
+
+        for ses in range(1, 10):
+            bh_timesesplot = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+            bh_timesesplot.suptitle(f'BreathHold (BH) response, subject {sub},'
+                                    f'session {ses:02g}')
+            gs = bh_timesesplot.add_gridspec(nrows=5, ncols=2)
+            for col in range(2):
+                bh_timesubplot = bh_timesesplot.add_subplot(gs[4, col])
+                bh_timesubplot.plot(fd_responses[8*(ses-1):8*ses, :].mean(axis=0))
+                bh_timesubplot.set_ylabel('avg FD')
+                bh_timesubplot.set_xlabel('TPs')
+
+            avg = np.empty((len(ftypes), BH_LEN))
+            std = np.empty((len(ftypes), BH_LEN))
+
+            for i in range(len(ftypes)):
+                avg[i, :] = dvars_responses[8*(ses-1):8*ses, :].mean(axis=0)
+                std[i, :] = dvars_responses[8*(ses-1):8*ses, :].std(axis=0)
+
+            for i in range(len(ftypes)):
+                bh_timesubplot = bh_timesesplot.add_subplot(gs[i, 0])
+                bh_timesubplot.plot(TIME, avg[i, :],
+                                    label=f'{ftypes[i]}', color=COLOURS[i])
+                bh_timesubplot.fill_between(TIME, avg[i, :] - std[i, :],
+                                            avg[i, :] + std[i, :],
+                                            color=COLOURS[i], alpha=0.2)
+
+                bh_timesubplot.set_ylim(0, (avg + std).max()+((avg + std).max()/10))
+                bh_timesubplot.set_ylabel('avg DVARS')
+
+            for i in range(len(ftypes)):
+                avg[i, :] = bh_responses[8*(ses-1):8*ses, :].mean(axis=0)
+                std[i, :] = bh_responses[8*(ses-1):8*ses, :].std(axis=0)
+
+            for i in range(len(ftypes)):
+                bh_timesubplot = bh_timesesplot.add_subplot(gs[i, 1])
+                bh_timesubplot.plot(TIME, avg[i, :],
+                                    label=f'{ftypes[i]}', color=COLOURS[i])
+                bh_timesubplot.fill_between(TIME, avg[i, :] - std[i, :],
+                                            avg[i, :] + std[i, :],
+                                            color=COLOURS[i], alpha=0.2)
+
+                min_y = (avg - std)[i, :].min() - 0.002
+                bh_timesubplot.set_ylim(min_y, min_y+max_delta_y)
+                bh_timesubplot.set_ylabel('avg % BOLD')
+                bh_timesubplot.legend()
+
+            bh_timesesplot.savefig(f'{sub}_BOLD_time_ses_{ses:02g}.png',
+                                   dpi=SET_DPI)
 
 
 # 03. Make DBOLD vs FD plot
@@ -243,7 +293,7 @@ if __name__ == '__main__':
 
     data = pd.read_csv('sub_table.csv')
 
-    # plot_DVARS_vs_FD(data)
+    plot_DVARS_vs_FD(data)
     plot_timeseries_and_BOLD_vs_FD()
     # os.makedirs('tps')
     # os.chdir('tps')

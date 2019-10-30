@@ -45,7 +45,7 @@ def vx_vs_ses(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST, mask='_alltypes
 
 
 # histograms
-def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST, mask='_alltypes_mask'):
+def ftype_histograms(ftypes=FTYPE_LIST[:3], subs=SUB_LIST, vals=VALUE_LIST, mask='_alltypes_mask'):
     for sub in subs:
         for val in vals:
             data_dic = {}
@@ -64,7 +64,7 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST, mask='_a
             plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
             plt.title(f'sub {sub} {val} kurtosis')
             sns.boxplot(x='type', y='k', data=kurt_df,
-                        palette=COLOURS, hue='type')
+                        palette=COLOURS[1:], hue='type')
             plt.savefig(f'{fname}_kurtosis.png', dpi=SET_DPI)
             plt.clf()
             plt.close()
@@ -76,7 +76,7 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST, mask='_a
                     plt.subplot(ncols, nrows, (1+j+i*3))
                     for k in range(ntypes):
                         sns.kdeplot(data=data[ftypes[k], f'ses-{(1+j+i*3):02g}'],
-                                    color=COLOURS[k]).legend_.remove()
+                                    color=COLOURS[k+1]).legend_.remove()
                         if val == 'cvrvals':
                             plt.xlim(-2, 3)
                         elif val == 'tvals':
@@ -94,11 +94,11 @@ if __name__ == '__main__':
     # os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
     os.chdir('/data/CVR/00.Reliability')
 
-    vx_vs_ses(mask='')
+    # vx_vs_ses(mask='')
     ftype_histograms(mask='')
-    vx_vs_ses(mask='_GM_mask')
+    # vx_vs_ses(mask='_GM_mask')
     ftype_histograms(mask='_GM_mask')
-    vx_vs_ses()
+    # vx_vs_ses()
     ftype_histograms()
 
     plt.close('all')

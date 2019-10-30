@@ -47,7 +47,9 @@ def plot_DVARS_vs_FD(data):
                                 label=FTYPE_LIST[i], color=COLOURS[i],
                                 robust=True, ci=None)
 
-            plt.legend()
+                if ses == 1:
+                    plt.legend()
+
             plt.xlabel('FD')
             plt.xlim(-1, 5)
             plot_ylabel = 'DVARS'
@@ -182,8 +184,8 @@ def plot_timeseries_and_BOLD_vs_FD(ftypes=FTYPE_LIST):
             min_y = (avg - std)[i, :].min() - 0.002
             bh_timesubplot.set_ylim(min_y, min_y+max_delta_y)
             bh_timesubplot.set_ylabel('avg % BOLD')
+            bh_timesubplot.legend()
 
-        bh_timeplot.legend()
         bh_timeplot.savefig(f'{sub}_BOLD_time.png', dpi=SET_DPI)
 
         bh_scatterplot.legend()

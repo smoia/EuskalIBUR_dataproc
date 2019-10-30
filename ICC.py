@@ -44,8 +44,8 @@ def compute_ICC_A_1(table):
     Computes standard ICC(3,1)
     """
     n, k, MS_r, MS_w, MS_c, MS_e = compute_MS(table)
-    ICC_A_1 = (MS_r - MS_e) / ((MS_r + (k - 1) * MS_e
-                               + k * (MS_c - MS_e) - MS_e) / n)
+    ICC_A_1 = (MS_r - MS_e) / (MS_r + (k - 1) * MS_e
+                               + k * (MS_c - MS_e) / n)
 
     return ICC_A_1
 

@@ -31,7 +31,7 @@ for sub in 007 003 002
 do
 	for ses in $( seq -f %02g 1 9 )
 	do
-		./30.reg_manual_meica.sh ${sub} ${ses}
+		# ./30.reg_manual_meica.sh ${sub} ${ses}
 		./32.compute_motion_outliers.sh ${sub} ${ses}
 	done
 done

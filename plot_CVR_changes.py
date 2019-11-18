@@ -8,6 +8,7 @@ import seaborn as sns
 
 from scipy.stats import kurtosis
 
+
 SET_DPI = 100
 FIGSIZE = (18, 10)
 
@@ -56,6 +57,7 @@ def ftype_histograms(ftypes=FTYPE_LIST, subs=SUB_LIST, vals=VALUE_LIST):
 
             nrows = len(ftypes)
             ncols = len(data[ftypes[0]].columns)
+
             kurt_df = pd.DataFrame()
             kurt_df['type'] = [x for x in ftypes for _ in range(ncols)]
             kurt_df['k'] = kurtosis(data)

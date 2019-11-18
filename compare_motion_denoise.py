@@ -21,10 +21,11 @@ os.chdir('ME_Denoising')
 sub_list = ['007', '003', '002']
 
 # 01. Read and organise motion related parameters
-ftype_list = ['optcom', 'meica']
-for e in range(1, NTE):
-    ftype_list.append(f'echo-{e+1}')
-    ftype_list.append(f'meica_echo-{e+1}')
+ftype_list = ['optcom', 'meica', 'echo-2']
+# ftype_list = ['optcom', 'meica']
+# for e in range(NTE):
+#     ftype_list.append(f'echo-{e+1}')
+#     ftype_list.append(f'meica_echo-{e+1}')
 
 
 sub_table = pd.DataFrame()

@@ -37,23 +37,26 @@ antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-${ses}/anat_preproc/${anat}_GM
 
 # 02. Get FD and DVARS
 echo ${flpr}
-cp ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-1_bold_dvars_pre.par sub-${sub}/dvars_pre_${flpr}.1D
+# cp ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-1_bold_dvars_pre.par sub-${sub}/dvars_pre_${flpr}.1D
 cp ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-1_bold_fd.par sub-${sub}/fd_${flpr}.1D
 
-for e in $( seq 1 ${nTE} )
+for e in 2 # $( seq 1 ${nTE} )
 do
+	echo "DVARS Pre motcor ${e}"
+	fsl_motion_outliers -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-2_bold_cr \
+	-o tmp_out -s sub-${sub}/dvars_pre_${flpr}.1D -m ${wdr}/ME_Denoising/sub-${sub}/GM_ses-${ses} --dvars --nomoco
 	echo "DVARS Single Echo ${e}"
 	fsl_motion_outliers -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${flpr}_task-breathhold_echo-${e}_bold_native_preprocessed \
-	-o tmp_out -s sub-${sub}/dvars_echo-${e}_${flpr}.1D --dvars --nomoco
+	-o tmp_out -s sub-${sub}/dvars_echo-${e}_${flpr}.1D -m ${wdr}/ME_Denoising/sub-${sub}/GM_ses-${ses} --dvars --nomoco
 	echo "DVARS MEICA Echo ${e}"
 	fsl_motion_outliers -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/04.${flpr}_task-breathhold_meica_echo-${e}_bold_native_preprocessed \
-	-o tmp_out -s sub-${sub}/dvars_meica_echo-${e}_${flpr}.1D --dvars --nomoco
+	-o tmp_out -s sub-${sub}/dvars_meica_echo-${e}_${flpr}.1D -m ${wdr}/ME_Denoising/sub-${sub}/GM_ses-${ses} --dvars --nomoco
 done
 for ftype in optcom meica
 do
 	echo "DVARS ${ftype}"
 	fsl_motion_outliers -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${flpr}_task-breathhold_${ftype}_bold_native_preprocessed \
-	-o tmp_out -s sub-${sub}/dvars_${ftype}_${flpr}.1D --dvars --nomoco
+	-o tmp_out -s sub-${sub}/dvars_${ftype}_${flpr}.1D -m ${wdr}/ME_Denoising/sub-${sub}/GM_ses-${ses} --dvars --nomoco
 done
 
 # 03. Get average GM response

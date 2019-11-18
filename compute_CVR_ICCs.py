@@ -22,25 +22,70 @@ cwd = os.getcwd()
 # os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
 os.chdir('/data/CVR/00.Reliability')
 
-for val in VALUE_LIST:
-    iccs = np.empty((4, 4))
-    for i in range(len(FTYPE_LIST)):
-        print(f'\n\n {FTYPE_LIST[i]} {val}: ')
-        fname = f'{FTYPE_LIST}_{val}_alltypes_mask'
-        iccs[0, i], iccs[1:, i] = ICC.compute_spatial_ICC_1(f'{FTYPE_LIST[i]}_{val}')
+n_ftypes = 3 #len(FTYPE_LIST)
+n_subs = len(SUB_LIST)
 
-    df = pd.DataFrame(iccs, columns=FTYPE_LIST)
-    df.to_csv(f'ICC_table_{val}')
+# for val in VALUE_LIST:
+#     iccs = np.empty((n_subs+1, n_ftypes))
+#     for i in range(n_ftypes):
+#         print(f'\n\n {FTYPE_LIST[i]} {val}: ')
+#         fname = f'{FTYPE_LIST[i]}_{val}_alltypes_mask'
+#         iccs[0, i], iccs[1:, i] = ICC.compute_spatial_ICC_1(fname)
+
+#     df = pd.DataFrame(iccs, columns=FTYPE_LIST)
+#     df.to_csv(f'ICC_table_{val}_alltypes_mask')
+
+#     df_tidy = pd.melt(df[1:], var_name='type', value_name='ICC')
+#     df_tidy['sub'] = np.tile(np.array(range(n_subs)), 4)
+
+#     plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+#     sns.pointplot(x='type', y='ICC', hue='sub', data=df_tidy,
+#                   palette=COLOURS, ci=None).legend_.remove()
+#     plt.title(f'Spatial ICC, {val}')
+#     plt.savefig(f'Spatial_ICC_plot_{val}_alltypes_mask.png', dpi=SET_DPI)
+#     plt.clf()
+#     plt.close()
+
+for val in VALUE_LIST:
+    iccs = np.empty((n_subs+1, n_ftypes))
+    for i in range(n_ftypes):
+        print(f'\n\n {FTYPE_LIST[i]} {val}: ')
+        fname = f'{FTYPE_LIST[i]}_{val}_GM_mask'
+        iccs[0, i], iccs[1:, i] = ICC.compute_spatial_ICC_1(fname)
+
+    df = pd.DataFrame(iccs, columns=FTYPE_LIST[:n_ftypes])
+    df.to_csv(f'ICC_table_{val}_GM_mask')
 
     df_tidy = pd.melt(df[1:], var_name='type', value_name='ICC')
-    df_tidy['sub'] = np.tile(np.array(range(len(SUB_LIST))), 4)
+    df_tidy['sub'] = np.tile(np.array(range(n_subs)), n_ftypes)
 
     plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
     sns.pointplot(x='type', y='ICC', hue='sub', data=df_tidy,
                   palette=COLOURS, ci=None).legend_.remove()
-    plt.title(f'Spatial ICC, {val}')
-    plt.savefig(f'Spatial_ICC_plot_{val}.png', dpi=SET_DPI)
+    plt.title(f'Spatial ICC, {val}, comparison in GM')
+    plt.savefig(f'Spatial_ICC_plot_{val}_GM_mask.png', dpi=SET_DPI)
     plt.clf()
     plt.close()
+
+# for val in VALUE_LIST:
+#     iccs = np.empty((n_subs+1, n_ftypes))
+#     for i in range(n_ftypes):
+#         print(f'\n\n {FTYPE_LIST[i]} {val}: ')
+#         fname = f'{FTYPE_LIST[i]}_{val}'
+#         iccs[0, i], iccs[1:, i] = ICC.compute_spatial_ICC_1(fname)
+
+#     df = pd.DataFrame(iccs, columns=FTYPE_LIST)
+#     df.to_csv(f'ICC_table_{val}')
+
+#     df_tidy = pd.melt(df[1:], var_name='type', value_name='ICC')
+#     df_tidy['sub'] = np.tile(np.array(range(n_subs)), 4)
+
+#     plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+#     sns.pointplot(x='type', y='ICC', hue='sub', data=df_tidy,
+#                   palette=COLOURS, ci=None).legend_.remove()
+#     plt.title(f'Spatial ICC, {val}, comparison in all significant voxels')
+#     plt.savefig(f'Spatial_ICC_plot_{val}.png', dpi=SET_DPI)
+#     plt.clf()
+#     plt.close()
 
 os.chdir(cwd)

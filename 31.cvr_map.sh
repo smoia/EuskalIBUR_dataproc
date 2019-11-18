@@ -197,6 +197,6 @@ cd ..
 # done
 
 
-rm -rf tmp.*
+rm -rf tmp.${flpr}*
 
 cd ${cwd}

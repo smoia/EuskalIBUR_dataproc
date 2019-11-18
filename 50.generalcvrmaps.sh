@@ -93,7 +93,7 @@ do
 	echo "Paste and Trim"
 	paste tmp.sub-${sub}_??_${ftype}_${fname}.csv -d , | csvtool trim b - > sub-${sub}_${ftype}_${fname}.csv
 
-	rm -f tmp.sub*.csv
+	rm -f tmp.sub-${sub}*${ftype}*.csv
 done
 
 cd ${cwd}

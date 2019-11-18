@@ -8,24 +8,27 @@
 
 ## Variables
 # anat
-anat=$1
+anat_in=$1
 # folders
 adir=$2
 
 ######################################
 ######### Script starts here #########
 ######################################
-   #uiuhu
+
 cwd=$(pwd)
 
 cd ${adir} || exit
 
+#Read and process input
+anat=${anat_in%_*}
+
 ## 01. Atropos (segmentation)
 # 01.1. Run Atropos
 echo "Segmenting ${anat}"
-Atropos -d 3 -a ${anat}_brain.nii.gz \
+Atropos -d 3 -a ${anat_in}.nii.gz \
 -o ${anat}_seg.nii.gz \
--x ${anat}_brain_mask.nii.gz -i kmeans[3] \
+-x ${anat_in}_mask.nii.gz -i kmeans[3] \
 --use-partial-volume-likelihoods \
 -s 1x2 -s 2x3 \
 -v 1
@@ -42,7 +45,7 @@ diwm=-4
 3dmask_tool -input ${anat}_CSF.nii.gz -prefix ${anat}_CSF_eroded.nii.gz -dilate_input ${dicsf} -overwrite
 3dmask_tool -input ${anat}_WM.nii.gz -prefix ${anat}_WM_eroded.nii.gz -fill_holes -dilate_input ${diwm} -overwrite
 3dmask_tool -input ${anat}_GM.nii.gz -prefix ${anat}_GM_dilated.nii.gz -dilate_input 2 -overwrite
-fslmaths ${anat}_GM_dilated -mas ${anat}_brain_mask ${anat}_GM_dilated
+fslmaths ${anat}_GM_dilated -mas ${anat_in}_mask ${anat}_GM_dilated
 
 #!# Further release: Check number voxels > compcorr components
 until [ "$(fslstats ${anat}_CSF_eroded -p 100)" != "0" -o "${dicsf}" == "0" ]

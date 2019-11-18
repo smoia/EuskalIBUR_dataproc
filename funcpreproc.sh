@@ -141,28 +141,28 @@ echo "*** Anat skullstrip ${anat2}"
 echo "************************************"
 echo "************************************"
 
-./02.anat_skullstrip.sh ${anat2} ${adir} none ${anat1} none
+./02.anat_skullstrip.sh ${anat2}_bfc ${adir} none ${anat1} none
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat1}"
 echo "************************************"
 echo "************************************"
 
-./02.anat_skullstrip.sh ${anat1} ${adir} ${anat1}_brain_mask none ${anat2}
+./02.anat_skullstrip.sh ${anat1}_bfc ${adir} ${anat1}_brain_mask none ${anat2}
 
 echo "************************************"
 echo "*** Anat segment"
 echo "************************************"
 echo "************************************"
 
-./03.anat_segment.sh ${anat1} ${adir}
+./03.anat_segment.sh ${anat1}_brain ${adir}
 
 echo "************************************"
 echo "*** Anat normalise"
 echo "************************************"
 echo "************************************"
 
-./04.anat_normalize.sh ${anat1} ${adir} ${std} ${mmres}
+./04.anat_normalize.sh ${anat1}_brain ${adir} ${std} ${mmres}
 
 echo "************************************"
 echo "*** Clearspace"
@@ -186,7 +186,7 @@ do
 		echo "************************************"
 
 		func=${flpr}_acq-${f}_dir-${d}_epi
-		./05.func_correct.sh ${func} ${fmap} 0 0 none none none ${siot}
+		./05.func_correct.sh ${func} ${fmap} 0 none none none none ${siot}
 	done
 
 	bfor=${fmap}/${flpr}_acq-${f}_dir-PA_epi

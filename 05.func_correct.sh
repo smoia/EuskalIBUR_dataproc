@@ -15,7 +15,7 @@ fdir=$2
 vdsc=$3
 ## Optional
 # Despiking
-dspk=${4:-0}
+dspk=${4:-none}
 # PEpolar
 pepl=${5:-none}
 brev=${6:-none}
@@ -62,15 +62,14 @@ then
 fi
 
 # 01.4. Despike if asked
-if [[ "${dspk}" -gt "0" ]]
+if [[ "${dspk}" != "none" ]]
 then
 	echo "Despike ${func}"
 	3dDespike -prefix ${func}_dsk.nii.gz ${func}_RPI.nii.gz
 	funcsource=${func}_dsk
 fi
 
-## 02. Slice Interpolation
-
+## 02. Slice Interpolation if asked
 if [[ "${siot}" != "none" ]]
 then
 	echo "Slice Interpolation of ${func}"
@@ -80,11 +79,10 @@ then
 	funcsource=${func}_si
 fi
 
-
 ## 03. PEpolar
-
 if [[ "${brev}" != "none" && "${bfor}" != "none" || "${pepl}" != "none" ]]
 then
+	# If there isn't an estimated field, make it.
 	if [[ "${pepl}" == "none" ]]
 	then
 		pepl=${func}_topup
@@ -100,7 +98,8 @@ then
 
 	# 03.2. Applying the warping to the functional volume
 	echo "Applying PEPOLAR map on ${func}"
-	applytopup --imain=${funcsource} --datain=${cwd}/acqparam.txt --inindex=1 --topup=${pepl}/outtp --out=${func}_tpp --verbose --method=jac
+	applytopup --imain=${funcsource} --datain=${cwd}/acqparam.txt --inindex=1 \
+	--topup=${pepl}/outtp --out=${func}_tpp --verbose --method=jac
 	funcsource=${func}_tpp
 fi
 

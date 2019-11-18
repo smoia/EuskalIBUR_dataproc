@@ -9,6 +9,7 @@ import seaborn as sns
 from math import ceil
 from scipy.stats import kurtosis
 
+
 SET_DPI = 100
 FIGSIZE = (18, 10)
 
@@ -58,6 +59,7 @@ def ftype_histograms(ftypes=FTYPE_LIST[:3], subs=SUB_LIST, vals=VALUE_LIST, mask
             ntypes = len(ftypes)
             nrows = 3
             ncols = ceil(len(data[ftypes[0]].columns) / nrows)
+
             kurt_df = pd.DataFrame()
             kurt_df['type'] = [x for x in ftypes for _ in range(ncols*nrows)]
             kurt_df['k'] = kurtosis(data)
@@ -94,7 +96,7 @@ if __name__ == '__main__':
     # os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
     os.chdir('/data/CVR/00.Reliability')
 
-    # vx_vs_ses(mask='')
+    # vx_vs_ses(mask='')w
     ftype_histograms(mask='')
     # vx_vs_ses(mask='_GM_mask')
     ftype_histograms(mask='_GM_mask')

@@ -12,16 +12,12 @@ func=$1
 # folders
 fdir=$2
 # discard
-vdsc=$3
+vdsc=${3:-0}
 ## Optional
 # Despiking
 dspk=${4:-none}
-# PEpolar
-pepl=${5:-none}
-brev=${6:-none}
-bfor=${7:-none}
 # Slicetiming
-siot=${8:-none}
+siot=${5:-none}
 
 ######################################
 ######### Script starts here #########
@@ -79,31 +75,7 @@ then
 	funcsource=${func}_si
 fi
 
-## 03. PEpolar
-if [[ "${brev}" != "none" && "${bfor}" != "none" || "${pepl}" != "none" ]]
-then
-	# If there isn't an estimated field, make it.
-	if [[ "${pepl}" == "none" ]]
-	then
-		pepl=${func}_topup
-
-		mkdir ${pepl}
-		fslmerge -t ${pepl}/mgdmap ${brev} ${bfor}
-
-		cd ${pepl}
-		echo "Computing PEPOLAR map for ${func}"
-		topup --imain=mgdmap --datain=${cwd}/acqparam.txt --out=outtp --verbose
-		cd ..
-	fi
-
-	# 03.2. Applying the warping to the functional volume
-	echo "Applying PEPOLAR map on ${func}"
-	applytopup --imain=${funcsource} --datain=${cwd}/acqparam.txt --inindex=1 \
-	--topup=${pepl}/outtp --out=${func}_tpp --verbose --method=jac
-	funcsource=${func}_tpp
-fi
-
-## 04. Change name to script output
+## 03. Change name to script output
 immv ${funcsource} ${func}_cr
 
 cd ${cwd}

@@ -8,7 +8,7 @@
 
 ## Variables
 # functional
-func=$1
+func_in=$1
 # folders
 fdir=$2
 # discard
@@ -29,7 +29,10 @@ cwd=$(pwd)
 
 cd ${fdir} || exit
 
-nTR=$(fslval ${func} dim4)
+#Read and process input
+func=${func_in%_*}
+
+nTR=$(fslval ${func_in} dim4)
 let nTR=nTR-${vdsc}-1
 
 ## 01. Motion Computation

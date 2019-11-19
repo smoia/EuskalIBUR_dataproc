@@ -47,8 +47,9 @@ nTE=5
 siot=none
 # siot=${wdr}/sliceorder.txt
 
-dspk=0
-jstr=0
+# Despiking
+dspk=none
+
 moio=0
 
 ####################
@@ -175,45 +176,55 @@ echo "************************************"
 #########    Task preproc    #########
 ######################################
 
-for f in breathhold  # TASK1 TASK2 TASK3
-do 
+# Start funcpreproc by preparing the sbref.
+# But only if ses=1
+
+if [[ ${ses} -eq 1 ]]
+then
 	for d in AP PA
 	do
+		echo "************************************"
+		echo "*** Func correct breathhold PE ${d}"
+		echo "************************************"
+		echo "************************************"
 
-		echo "************************************"
-		echo "*** Func correct ${f} PE ${d}"
-		echo "************************************"
-		echo "************************************"
-
-		func=${flpr}_acq-${f}_dir-${d}_epi
-		./05.func_correct.sh ${func} ${fmap} 0 none none none none ${siot}
+		func=${flpr}_acq-breathhold_dir-${d}_epi
+		./05.func_correct.sh ${func} ${fmap}
 	done
 
-	bfor=${fmap}/${flpr}_acq-${f}_dir-PA_epi
-	brev=${fmap}/${flpr}_acq-${f}_dir-AP_epi
+	bfor=${fmap}/${flpr}_acq-breathhold_dir-PA_epi_cr
+	brev=${fmap}/${flpr}_acq-breathhold_dir-AP_epi_cr
 
-	for e in $( seq 1 ${nTE} )
+	echo "************************************"
+	echo "*** Func correct breathhold SBREF echo 1"
+	echo "************************************"
+	echo "************************************"
+
+	sbrf=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref
+	if [[ ! -e ${sbrf}_cr.nii.gz ]]
+	then
+		./05.func_correct.sh ${sbrf} ${fdir}
+	fi
+
+	echo "************************************"
+	echo "*** Func pepolar breathhold SBREF echo 1"
+	echo "************************************"
+	echo "************************************"
+
+	./06.func_pepolar.sh ${sbref}_cr none ${brev} ${bfor}
+fi
+
+for f in breathhold  # TASK1 TASK2 TASK3
+do 
+	for e in  $( seq 1 ${nTE} )
 	do
-
-		echo "************************************"
-		echo "*** Func correct ${f} SBREF echo ${e}"
-		echo "************************************"
-		echo "************************************"
-
-		sbrf=${flpr}_task-${f}_rec-magnitude_echo-${e}_sbref
-		if [[ ! -e ${sbrf}_cr.nii.gz ]]
-		then
-			./05.func_correct.sh ${sbrf} ${fdir} 0 0 none ${brev} ${bfor} ${siot}
-		fi
-
 		echo "************************************"
 		echo "*** Func correct ${f} BOLD echo ${e}"
 		echo "************************************"
 		echo "************************************"
 
 		bold=${flpr}_task-${f}_echo-${e}_bold
-		pepl=${flpr}_task-${f}_rec-magnitude_echo-${e}_sbref_topup
-		./05.func_correct.sh ${bold} ${fdir} ${vdsc} 0 ${pepl} ${brev} ${bfor} ${siot}
+		./05.func_correct.sh ${bold} ${fdir} ${vdsc} ${dspk} ${siot}
 	done
 
 	echo "************************************"

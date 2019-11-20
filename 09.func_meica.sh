@@ -8,13 +8,13 @@
 
 ## Variables
 # functional
-func=$1
+func_in=$1
 # folders
 fdir=$2
 # echo times
 TEs="$3"
 # backup?
-bck=${4:-None}
+bck=${4:-none}
 ######################################
 ######### Script starts here #########
 ######################################
@@ -23,34 +23,39 @@ cwd=$(pwd)
 
 cd ${fdir} || exit
 
+#Read and process input
+eprfx=${func_in%_echo-*}_echo-
+esffx=${func_in#*_echo-?}
+func=${func_in%_echo-*}_concat${esffx}
+
 ## 01. MEICA
 # 01.1. concat in space
 
-eprfx=${func%_echo-*}_echo-
-esffx=${func#*_echo-?}
-
 echo "Merging ${func} for MEICA"
-fslmerge -z ${func}_concat $( ls ${eprfx}* | grep ${esffx}.nii.gz )
+fslmerge -z ${func} $( ls ${eprfx}* | grep ${esffx}.nii.gz )
 
 mkdir ${func}_meica
 
-# 01.2. Run tedana only if there's no previous backup
+# Check if there's one or more backups
 bcklist=( $( ls ../*${func}_meica_bck.tar.gz ) )
-if [[ "${bck}" != "None" ]] && [[ ${bcklist[-1]} ]]
+# 01.2. Run tedana only if there's no previous backup
+if [[ "${bck}" != "none" ]] && [[ ${bcklist[-1]} ]]
 then
+	# If there's a backup, unpack the earnest!
 	echo "Unpacking backup"
 	tar -xzvf ${bcklist[-1]} -C ..
 	echo "Running tedana to revert to backed up state"
-	tedana -d ${func}_concat.nii.gz -e ${TEs} \
+	tedana -d ${func}.nii.gz -e ${TEs} \
 	--tedpca kundu-stabilize --png --out-dir ${func}_meica \
 	--mix ${func}_meica/meica_mix.1D --ctab ${func}_meica/comp_table_ica.txt
 else
 	echo "No backup file specified or found!"
 	echo "Running tedana"
-	tedana -d ${func}_concat.nii.gz -e ${TEs} --tedpca kundu-stabilize --png --out-dir ${func}_meica
+	tedana -d ${func}.nii.gz -e ${TEs} --tedpca kundu-stabilize --png --out-dir ${func}_meica
 fi
 
 cd ${func}_meica
+# This shouldn't be necessary, but it doesn't harm having it just in case.
 gzip ./*.nii
 
 #tedana -d ${func}_concat.nii.gz -e ${TEs} --verbose --tedort --png --out-dir ${func}_meica

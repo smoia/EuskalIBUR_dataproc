@@ -16,7 +16,7 @@ adir=$2
 # mask
 mask=${3:-none}
 aref=${4:-none}
-c3dsrc=${5:-none}
+c3dsrc=${5:-yes}
 
 ######################################
 ######### Script starts here #########

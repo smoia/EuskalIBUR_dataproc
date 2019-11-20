@@ -19,7 +19,7 @@ anat=${4:-none}
 # Motion reference file
 mref=${5:-none}
 # Joint transform Flag
-jstr=${6:-0}
+jstr=${6:-none}
 
 ######################################
 ######### Script starts here #########
@@ -42,12 +42,12 @@ if [[ "${mref}" == "none" ]]
 then
 	echo "Creating a reference for ${func}"
 	mref=${func}_avgref
-	fslmaths ${func}_cr -Tmean ${mref}
+	fslmaths ${func_in} -Tmean ${mref}
 fi
 
 echo "McFlirting ${func}"
 if [[ -d ${func}_mcf.mat ]]; then rm -r ${func}_mcf.mat; fi
-mcflirt -in ${func}_cr -r ${mref} -out ${func}_mcf -stats -mats -plots
+mcflirt -in ${func_in} -r ${mref} -out ${func}_mcf -stats -mats -plots
 
 # 01.2. Demean motion parameters
 echo "Demean and derivate ${func} motion parameters"
@@ -64,8 +64,8 @@ fi
 # 01.3. Compute various metrics
 echo "Computing DVARS and FD for ${func}"
 fsl_motion_outliers -i ${func}_mcf -o ${func}_mcf_dvars_confounds -s ${func}_dvars_post.par -p ${func}_dvars_post --dvars --nomoco
-fsl_motion_outliers -i ${func}_cr -o ${func}_mcf_dvars_confounds -s ${func}_dvars_pre.par -p ${func}_dvars_pre --dvars --nomoco
-fsl_motion_outliers -i ${func}_cr -o ${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd --fd
+fsl_motion_outliers -i ${func_in} -o ${func}_mcf_dvars_confounds -s ${func}_dvars_pre.par -p ${func}_dvars_pre --dvars --nomoco
+fsl_motion_outliers -i ${func_in} -o ${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd --fd
 
 # 01.4. Apply mask
 echo "BETting ${func}"
@@ -85,12 +85,12 @@ then
 fi
 
 ## 03. Split and affine to ANTs if required
-if [[ "${jstr}" -gt 0 ]]
+if [[ "${jstr}" != "none" ]]
 then
 	echo "Splitting ${func}"
 	if [[ ! -d "${func}_split" ]]; then mkdir ${func}_split; fi
 	if [[ ! -d "../reg/${func}_mcf_ants_mat" ]]; then mkdir ../reg/${func}_mcf_ants_mat; fi
-	fslsplit ${func}_cr ${func}_split/vol_ -t
+	fslsplit ${func_in} ${func}_split/vol_ -t
 
 	for i in $( seq -f %04g 0 ${nTR} )
 	do

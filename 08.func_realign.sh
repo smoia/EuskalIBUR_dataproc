@@ -8,19 +8,17 @@
 
 ## Variables
 # functionals
-func=$1
+func_in=$1
 fmat=$2
 mask=$3
 # folders
 fdir=$4
 # discard
-vdsc=$5
+# vdsc=$5
 # Motion reference file
-mref=$6
+mref=$5
 # Motion Outlier Images Output
-moio=${7:-1}
-# For tedana
-fted=${8:-0}
+moio=${6:-none}
 
 ######################################
 ######### Script starts here #########
@@ -30,29 +28,13 @@ cwd=$(pwd)
 
 cd ${fdir} || exit
 
-nTR=$(fslval ${func} dim4)
-TR=$(fslval ${func} pixdim4)
-let nTR=nTR-${vdsc}-1
+#Read and process input
+func=${func_in%_*}
 
-# If this script is called for meica, skip Motion Outliers
-# Also, change the script input from func_cr to input,
-# and run BET on it.
-if [[ "${fted}" -gt 0 ]]
-then
-	moio=0
-	funcsource=${func}
-	# func=tmp.${func}
-	mref=tmp.avgref
-	if [[ ! -e ${mref}_brain_mask.nii.gz ]]
-	then
-		fslmaths ${func} -Tmean ${mref}
-		bet ${mref} ${mref}_brain -R -f 0.5 -g 0 -n -m
-	fi
-	mask=${mref}_brain_mask
-else
-	funcsource=${func}_cr
-fi
-
+nTR=$(fslval ${func_in} dim4)
+TR=$(fslval ${func_in} pixdim4)
+# The next line was necessary before - shouldn't be now.
+# let nTR=nTR-${vdsc}-1
 
 ## 01. Motion Realignment
 
@@ -61,7 +43,7 @@ echo "Applying McFlirt in ${func}"
 
 if [[ ! -d "${func}_split" ]]; then mkdir ${func}_split; fi
 if [[ ! -d "${func}_merge" ]]; then mkdir ${func}_merge; fi
-fslsplit ${funcsource} ${func}_split/vol_ -t
+fslsplit ${func_in} ${func}_split/vol_ -t
 
 for i in $( seq -f %04g 0 ${nTR} )
 do
@@ -81,7 +63,7 @@ fslmaths ${func}_mcf -mas ${mask} ${func}_bet
 
 rm -r ${func}_merge
 
-if [[ "${moio}" -gt 0 ]]
+if [[ "${moio}" != "none" ]]
 then
 	echo "Computing DVARS and FD for ${func}"
 	# 01.3. Compute various metrics

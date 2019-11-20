@@ -50,7 +50,7 @@ siot=none
 # Despiking
 dspk=none
 
-moio=0
+moio=none
 
 ####################
 
@@ -173,11 +173,13 @@ echo "************************************"
 ./funcclearspace.sh ${sub} ${ses} ${wdr} anat
 
 ######################################
-#########    Task preproc    #########
+#########    SBRef preproc   #########
 ######################################
 
+# Assign sbref to the first breathhold's sbref
+uni_sbref=${wdr}/sub-${sub}/ses-01/func_preproc/sub-${sub}_ses-01_task-breathhold_rec-magnitude_echo-1_sbref_tpp.nii.gz
 # Start funcpreproc by preparing the sbref.
-# But only if ses=1
+# But only if ses=01
 
 if [[ ${ses} -eq 1 ]]
 then
@@ -211,8 +213,30 @@ then
 	echo "************************************"
 	echo "************************************"
 
-	./06.func_pepolar.sh ${sbref}_cr none ${brev} ${bfor}
+	./06.func_pepolar.sh ${sbrf}_cr ${fdir} none ${brev} ${bfor}
+
+	# Copy this sbref to reg folder
+	imcp ${fdir}/${sbrf}_tpp ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
+
+elif [[ ${ses} -gt 1 && ! -e ${uni_sbref} ]]
+then
+	echo "ERROR: the universal sbref,"
+	echo "   ${uni_sbref}"
+	echo "doesn't exist. For the moment, this means the program quits"
+	echo "Please run the first session of each subject first"
+	exit
+elif [[ ${ses} -gt 1 && -e ${uni_sbref} ]]
+then
+	imcp ${uni_sbref} ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
 fi
+
+# This is the absolute sbref. Don't change it.
+sbrf=${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
+mask=${sbrf}_brain_mask
+
+######################################
+#########    Task preproc    #########
+######################################
 
 for f in breathhold  # TASK1 TASK2 TASK3
 do 
@@ -234,9 +258,7 @@ do
 
 	fmat=${flpr}_task-${f}_echo-1_bold
 
-	./06.func_spacecomp.sh ${fmat} ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr 0
-	
-	mask=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain_mask
+	./07.func_spacecomp.sh ${fmat}_cr ${fdir} ${vdsc} ${adir}/${anat2} ${sbrf}
 
 	for e in $( seq 1 ${nTE} )
 	do
@@ -245,9 +267,8 @@ do
 		echo "************************************"
 		echo "************************************"
 
-		sbrf=${flpr}_task-breathhold_rec-magnitude_echo-${e}_sbref_cr
-		bold=${flpr}_task-${f}_echo-${e}_bold
-		./07.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
+		bold=${flpr}_task-${f}_echo-${e}_bold_cr
+		./08.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf}
 	done
 
 	echo "************************************"
@@ -255,22 +276,20 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	for e in $( seq 1 ${nTE} )
-	do
-		bold=${flpr}_task-${f}_echo-${e}_bold_RPI
-		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} 0 0 0 1
-	done
+	./09.func_meica.sh ${fmat}_bet ${fdir} "${TEs}" bck
 
-	./08.func_meica.sh ${fmat}_RPI_bet ${fdir} "${TEs}" bck
-	# ./08.func_meica_melodic.sh ${fmat}_RPI_bet ${fdir} "${TEs}"
-
-	./08.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}"
-
-	sbrf=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
+	./10.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}"
 	
+#####
+####   Applytopup here!
+##
+
+
+
+
 	if [[ ${f} != "breathhold" ]]
 	then
-		# If not breathhold, apply smoothing and denoising.
+		# If not breathhold, apply smoothing and compute denoising.
 		for e in $( seq 1 ${nTE} )
 		do
 			echo "************************************"
@@ -279,35 +298,25 @@ do
 			echo "************************************"
 
 			bold=${flpr}_task-${f}_echo-${e}_bold
-			./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
+			./11.func_nuiscomp.sh ${bold}_bet ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} none
 			
 			echo "************************************"
 			echo "*** Func smooth ${f} BOLD echo ${e}"
 			echo "************************************"
 			echo "************************************"
 
-			./10.func_smooth.sh ${bold} ${fdir} ${fwhm} ${mask}
+			./12.func_smooth.sh ${bold}_bet ${fdir} ${fwhm} ${mask}
 			
 			echo "************************************"
 			echo "*** Func SPC ${f} BOLD echo ${e}"
 			echo "************************************"
 			echo "************************************"
 
-			./11.func_spc.sh ${bold}_sm ${fdir}
+			./13.func_spc.sh ${bold}_sm ${fdir}
 
-			# echo "************************************"
-			# echo "*** Func normalise ${f} BOLD echo ${e}"
-			# echo "************************************"
-			# echo "************************************"
-
-			# ./12.func_normalize.sh ${bold}_sm ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
-
-			# ./11.func_spc.sh ${bold}_sm_norm ${fdir}
-
+			# First two outputs
 			immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
-			immv ${fdir}/${bold}_sm_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-			# immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
-			# immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
+			immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
 		done
 
@@ -317,35 +326,25 @@ do
 		echo "************************************"
 
 		bold=${flpr}_task-${f}_optcom_bold
-		./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
+		./11.func_nuiscomp.sh ${bold}_bet ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
 		
 		echo "************************************"
 		echo "*** Func smooth ${f} BOLD optcom"
 		echo "************************************"
 		echo "************************************"
 
-		./10.func_smooth.sh ${bold} ${fdir} ${fwhm} ${mask}
+		./12.func_smooth.sh ${bold}_bet ${fdir} ${fwhm} ${mask}
 		
 		echo "************************************"
 		echo "*** Func SPC ${f} BOLD optcom"
 		echo "************************************"
 		echo "************************************"
 
-		./11.func_spc.sh ${bold}_sm ${fdir}
+		./13.func_spc.sh ${bold}_sm ${fdir}
 
-		# echo "************************************"
-		# echo "*** Func normalise ${f} BOLD optcom"
-		# echo "************************************"
-		# echo "************************************"
-
-		# ./12.func_normalize.sh ${bold}_sm ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
-
-		# ./11.func_spc.sh ${bold}_norm ${fdir}
-
+		# First two outputs
 		immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
-		immv ${fdir}/${bold}_sm_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-		# immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
-		# immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
+		immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
 	else
 		# If breathhold, skip smoothing and denoising!
@@ -357,21 +356,11 @@ do
 			echo "************************************"
 
 			bold=${flpr}_task-${f}_echo-${e}_bold
-			./11.func_spc.sh ${bold}_bet ${fdir}
+			./13.func_spc.sh ${bold}_bet ${fdir}
 
-			# echo "************************************"
-			# echo "*** Func normalise ${f} BOLD echo ${e}"
-			# echo "************************************"
-			# echo "************************************"
-
-			# ./12.func_normalize.sh ${bold}_bet ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
-
-			# ./11.func_spc.sh ${bold}_bet_norm ${fdir}
-
-			immv ${fdir}/${bold}_bet ${fdir}/00.${bold}_native_preprocessed
-			immv ${fdir}/${bold}_bet_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-			# immv ${fdir}/${bold}_bet_norm ${fdir}/02.${bold}_std_preprocessed
-			# immv ${fdir}/${bold}_bet_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
+			# First two outputs
+			immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
+			immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
 		done
 
@@ -382,195 +371,16 @@ do
 		echo "************************************"
 		echo "************************************"
 
-		./11.func_spc.sh ${bold}_bet ${fdir}
+		./13.func_spc.sh ${bold}_bet ${fdir}
 
-		# echo "************************************"
-		# echo "*** Func normalise ${f} BOLD optcom"
-		# echo "************************************"
-		# echo "************************************"
-
-		# ./12.func_normalize.sh ${bold}_bet ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
-
-		# ./11.func_spc.sh ${bold}_bet_norm ${fdir}
-
-		immv ${fdir}/${bold}_bet ${fdir}/00.${bold}_native_preprocessed
-		immv ${fdir}/${bold}_bet_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-		# immv ${fdir}/${bold}_bet_norm ${fdir}/02.${bold}_std_preprocessed
-		# immv ${fdir}/${bold}_bet_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
+		# First two outputs
+		immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
+		immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
 	fi
-
 done
 
 ./funcclearspace.sh ${sub} ${ses} ${wdr} task
-
-
-######################################
-#########    Rest preproc    #########
-######################################
-
-for r in $( seq -f %02g 1 4 )
-do 
-	for d in AP PA
-	do
-
-		echo "************************************"
-		echo "*** Func correct rest PE ${d}"
-		echo "************************************"
-		echo "************************************"
-
-		func=${flpr}_acq-rest_dir-${d}_run-${r}_epi
-		./05.func_correct.sh ${func} ${fmap} 0 0 none none none ${siot}
-	done
-
-	bfor=${fmap}/${flpr}_acq-rest_dir-PA_run-${r}_epi
-	brev=${fmap}/${flpr}_acq-rest_dir-AP_run-${r}_epi
-
-	for e in $( seq 1 ${nTE} )
-	do
-
-		echo "************************************"
-		echo "*** Func correct rest SBREF echo ${e}"
-		echo "************************************"
-		echo "************************************"
-
-		sbrf=${flpr}_task-rest_rec-magnitude_run-${r}_echo-${e}_sbref
-		if [[ ! -e ${sbrf}_cr.nii.gz ]]
-		then
-			./05.func_correct.sh ${sbrf} ${fdir} 0 0 none ${brev} ${bfor} ${siot}
-		fi
-
-		echo "************************************"
-		echo "*** Func correct rest BOLD echo ${e}"
-		echo "************************************"
-		echo "************************************"
-
-		bold=${flpr}_task-rest_run-${r}_echo-${e}_bold
-		pepl=${flpr}_task-rest_rec-magnitude_run-${r}_echo-${e}_sbref_topup
-		./05.func_correct.sh ${bold} ${fdir} ${vdsc} 0 ${pepl} ${brev} ${bfor} ${siot}
-	done
-
-	echo "************************************"
-	echo "*** Func spacecomp rest echo 1"
-	echo "************************************"
-	echo "************************************"
-
-	fmat=${flpr}_task-rest_run-${r}_echo-1_bold
-
-	./06.func_spacecomp.sh ${fmat} ${fdir} ${vdsc} ${adir}/${anat2} ${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr 0
-	
-	mask=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr_brain_mask
-
-	for e in $( seq 1 ${nTE} )
-	do
-		echo "************************************"
-		echo "*** Func realign rest BOLD echo ${e}"
-		echo "************************************"
-		echo "************************************"
-
-		sbrf=${flpr}_task-breathhold_rec-magnitude_echo-${e}_sbref_cr
-		bold=${flpr}_task-rest_run-${r}_echo-${e}_bold
-		./07.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${vdsc} ${sbrf} ${moio}
-	done
-
-	echo "************************************"
-	echo "*** Func MEICA rest BOLD echo ${e}"
-	echo "************************************"
-	echo "************************************"
-
-	for e in $( seq 1 ${nTE} )
-	do
-		bold=${flpr}_task-rest_run-${r}_echo-${e}_bold_RPI
-		./07.func_realign.sh ${bold} ${fmat} 0 ${fdir} 0 0 0 1
-	done
-
-	./08.func_meica.sh ${fmat}_RPI_bet ${fdir} "${TEs}" bck
-
-	./08.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}"
-
-	sbrf=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
-	
-	for e in $( seq 1 ${nTE} )
-	do
-		echo "************************************"
-		echo "*** Func nuiscomp rest BOLD echo ${e}"
-		echo "************************************"
-		echo "************************************"
-
-		bold=${flpr}_task-rest_run-${r}_echo-${e}_bold
-		./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 1
-		
-		echo "************************************"
-		echo "*** Func smooth rest BOLD echo ${e}"
-		echo "************************************"
-		echo "************************************"
-
-		./10.func_smooth.sh ${bold} ${fdir} ${fwhm} ${mask}
-		
-		echo "************************************"
-		echo "*** Func SPC rest BOLD echo ${e}"
-		echo "************************************"
-		echo "************************************"
-
-		./11.func_spc.sh ${bold}_sm ${fdir}
-
-		# echo "************************************"
-		# echo "*** Func normalise rest BOLD echo ${e}"
-		# echo "************************************"
-		# echo "************************************"
-
-		# ./12.func_normalize.sh ${bold}_sm ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
-
-		# ./11.func_spc.sh ${bold}_sm_norm ${fdir}
-
-		immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
-		immv ${fdir}/${bold}_sm_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-		# immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
-		# immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
-
-	done
-
-	echo "************************************"
-	echo "*** Func nuiscomp rest BOLD optcom"
-	echo "************************************"
-	echo "************************************"
-
-	bold=${flpr}_task-rest_run-${r}_optcom_bold
-	# #!# !!! Skipping Denoising in optcom for Liu P et al 2017 Neuroimage replication!
-	./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 0
-	# ./09.func_nuiscomp.sh ${bold} ${fmat} ${anat1} ${anat2} ${sbrf} ${fdir} ${adir} 1
-	
-	echo "************************************"
-	echo "*** Func smooth rest BOLD optcom"
-	echo "************************************"
-	echo "************************************"
-
-	./10.func_smooth.sh ${bold} ${fdir} ${fwhm} ${mask}
-	
-	echo "************************************"
-	echo "*** Func SPC rest BOLD optcom"
-	echo "************************************"
-	echo "************************************"
-
-	./11.func_spc.sh ${bold}_sm ${fdir}
-
-	# echo "************************************"
-	# echo "*** Func normalise rest BOLD optcom"
-	# echo "************************************"
-	# echo "************************************"
-
-	# ./12.func_normalize.sh ${bold}_sm ${anat} ${sbrf} ${std} ${fdir} ${mmres} ${anat2}
-
-	# ./11.func_spc.sh ${bold}_sm_norm ${fdir}
-
-	immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
-	immv ${fdir}/${bold}_sm_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-	# immv ${fdir}/${bold}_sm_norm ${fdir}/02.${bold}_std_preprocessed
-	# immv ${fdir}/${bold}_sm_norm_SPC ${fdir}/03.${bold}_std_SPC_preprocessed
-
-done
-
-./funcclearspace.sh ${sub} ${ses} ${wdr} rest
 
 echo $(date)
 echo "************************************"

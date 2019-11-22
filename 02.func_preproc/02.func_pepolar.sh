@@ -12,9 +12,9 @@ func_in=$1
 # folders
 fdir=$2
 # PEpolar
-pepl=${5:-none}
-brev=${6:-none}
-bfor=${7:-none}
+pepl=${3:-none}
+brev=${4:-none}
+bfor=${5:-none}
 
 ######################################
 ######### Script starts here #########

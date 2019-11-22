@@ -20,7 +20,7 @@ fdir=$7
 
 vdsc=$8
 
-TEs=$9
+TEs="$9"
 nTE=${10}
 
 siot=${11}

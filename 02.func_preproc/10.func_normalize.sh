@@ -13,10 +13,10 @@ anat=$2
 mref=$3
 std=$4
 # folders
-fdir=$4
+fdir=$5
 # other
-mmres=$5
-anat2=${6:-none}
+mmres=$6
+anat2=${7:-none}
 
 ######################################
 ######### Script starts here #########

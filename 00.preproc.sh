@@ -49,7 +49,7 @@ dspk=none
 
 first_ses_path=${wdr}/sub-${sub}/ses-01
 
-uni_sbref=${first_ses_path}/func_preproc/sub-${sub}_ses-01_task-breathhold_rec-magnitude_echo-1_sbref_tpp.nii.gz
+uni_sbref=${first_ses_path}/func_preproc/sub-${sub}_ses-01_task-breathhold_rec-magnitude_echo-1_sbref
 uni_adir=${first_ses_path}/anat_preproc
 
 
@@ -131,18 +131,20 @@ then
 	# If asked & it's ses 01, run sbref
 	./sbref_preproc.sh ${sub} ${ses} ${wdr} ${flpr} ${fdir} ${fmap}
 
-elif [[ ${ses} -gt 1 && ! -e ${uni_sbref} ]]
+elif [[ ${ses} -gt 1 && ! -e ${uni_sbref}_tpp.nii.gz ]]
 then
 	# If it isn't ses 01 but that ses wasn't run, exit.
 	echo "ERROR: the universal sbref,"
-	echo "   ${uni_sbref}"
+	echo "   ${uni_sbref}_tpp.nii.gz"
 	echo "doesn't exist. For the moment, this means the program quits"
 	echo "Please run the first session of each subject first"
 	exit
-elif [[ ${ses} -gt 1 && -e ${uni_sbref} ]]
+elif [[ ${ses} -gt 1 && -e ${uni_sbref}_tpp.nii.gz ]]
 then
 	# If it isn't ses 01, and that ses was run, copy relevant files.
-	imcp ${uni_sbref} ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
+	imcp ${uni_sbref}_tpp.nii.gz ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
+	mkdir ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_topup
+	cp -R ${uni_sbref}_topup/* ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_topup/.
 fi
 
 

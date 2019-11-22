@@ -12,12 +12,12 @@ ses=$2
 wdr=$3
 overwrite=$4
 
-anat1=$6
-anat2=$7
+anat1=$5
+anat2=$6
 
-stdp=$8
+stdp=$7
 
-std=$9
+std=$8
 
 ######################################
 ######### Script starts here #########

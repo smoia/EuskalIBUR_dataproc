@@ -84,7 +84,7 @@ echo ""
 #########   Prepare folders  #########
 ######################################
 
-.prepare_folder.sh ${sub} ${ses} ${wdr} ${overwrite} \
+./prepare_folder.sh ${sub} ${ses} ${wdr} ${overwrite} \
 				   ${anat1} ${anat2} ${stdp} ${std}
 
 if [[ "${overwrite}" == "overwrite" ]]

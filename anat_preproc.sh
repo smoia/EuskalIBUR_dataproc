@@ -19,6 +19,9 @@ adir=$6
 std=$7
 mmres=$8
 
+### print input
+printline=$( basename -- $0 )
+echo "${printline}" "$@"
 ######################################
 #########    Anat preproc    #########
 ######################################
@@ -28,42 +31,42 @@ echo "*** Anat correction ${anat1}"
 echo "************************************"
 echo "************************************"
 
-anat_preproc/01.anat_correct.sh ${anat1} ${adir}
+./01.anat_preproc/01.anat_correct.sh ${anat1} ${adir}
 
 echo "************************************"
 echo "*** Anat correction ${anat2}"
 echo "************************************"
 echo "************************************"
 
-anat_preproc/01.anat_correct.sh ${anat2} ${adir} ${anat1}
+./01.anat_preproc/01.anat_correct.sh ${anat2} ${adir} ${anat1}
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat2}"
 echo "************************************"
 echo "************************************"
 
-anat_preproc/02.anat_skullstrip.sh ${anat2}_bfc ${adir} none ${anat1} none
+./01.anat_preproc/02.anat_skullstrip.sh ${anat2}_bfc ${adir} none ${anat1} none
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat1}"
 echo "************************************"
 echo "************************************"
 
-anat_preproc/02.anat_skullstrip.sh ${anat1}_bfc ${adir} ${anat1}_brain_mask none ${anat2}
+./01.anat_preproc/02.anat_skullstrip.sh ${anat1}_bfc ${adir} ${anat1}_brain_mask none ${anat2}
 
 echo "************************************"
 echo "*** Anat segment"
 echo "************************************"
 echo "************************************"
 
-anat_preproc/03.anat_segment.sh ${anat1}_brain ${adir}
+./01.anat_preproc/03.anat_segment.sh ${anat1}_brain ${adir}
 
 echo "************************************"
 echo "*** Anat normalise"
 echo "************************************"
 echo "************************************"
 
-anat_preproc/04.anat_normalize.sh ${anat1}_brain ${adir} ${std} ${mmres}
+./01.anat_preproc/04.anat_normalize.sh ${anat1}_brain ${adir} ${std} ${mmres}
 
 echo "************************************"
 echo "*** Clearspace"

@@ -16,6 +16,9 @@ flpr=$4
 fdir=$5
 fmap=$6
 
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 #########    SBRef preproc   #########
 ######################################
@@ -29,7 +32,7 @@ do
 	echo "************************************"
 
 	func=${flpr}_acq-breathhold_dir-${d}_epi
-	func_preproc/01.func_correct.sh ${func} ${fmap}
+	./02.func_preproc/01.func_correct.sh ${func} ${fmap}
 done
 
 bfor=${fmap}/${flpr}_acq-breathhold_dir-PA_epi_cr
@@ -43,7 +46,7 @@ echo "************************************"
 sbrf=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref
 if [[ ! -e ${sbrf}_cr.nii.gz ]]
 then
-	func_preproc/01.func_correct.sh ${sbrf} ${fdir}
+	./02.func_preproc/01.func_correct.sh ${sbrf} ${fdir}
 fi
 
 echo "************************************"
@@ -51,7 +54,7 @@ echo "*** Func pepolar breathhold SBREF echo 1"
 echo "************************************"
 echo "************************************"
 
-func_preproc/02.func_pepolar.sh ${sbrf}_cr ${fdir} none ${brev} ${bfor}
+./02.func_preproc/02.func_pepolar.sh ${sbrf}_cr ${fdir} none ${brev} ${bfor}
 
 # Copy this sbref to reg folder
 imcp ${fdir}/${sbrf}_tpp ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref

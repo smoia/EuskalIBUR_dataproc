@@ -31,6 +31,9 @@ dspk=${12}
 sbrf=${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
 mask=${sbrf}_brain_mask
 
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 #########    Task preproc    #########
 ######################################
@@ -43,7 +46,7 @@ do
 	echo "************************************"
 
 	bold=${flpr}_task-breathhold_echo-${e}_bold
-	func_preproc/01.func_correct.sh ${bold} ${fdir} ${vdsc} ${dspk} ${siot}
+	./02.func_preproc/01.func_correct.sh ${bold} ${fdir} ${vdsc} ${dspk} ${siot}
 done
 
 echo "************************************"
@@ -53,7 +56,7 @@ echo "************************************"
 
 fmat=${flpr}_task-breathhold_echo-1_bold
 
-func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} ${vdsc} ${adir}/${anat2} ${sbrf}
+./02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} ${vdsc} ${adir}/${anat2} ${sbrf}
 
 for e in $( seq 1 ${nTE} )
 do
@@ -63,7 +66,7 @@ do
 	echo "************************************"
 
 	bold=${flpr}_task-breathhold_echo-${e}_bold_cr
-	func_preproc/04.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf}
+	./02.func_preproc/04.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf}
 done
 
 echo "************************************"
@@ -71,9 +74,9 @@ echo "*** Func MEICA breathhold BOLD"
 echo "************************************"
 echo "************************************"
 
-func_preproc/05.func_meica.sh ${fmat}_bet ${fdir} "${TEs}" bck
+./02.func_preproc/05.func_meica.sh ${fmat}_bet ${fdir} "${TEs}" bck
 
-func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}"
+./02.func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}"
 	
 
 # As it's breathhold, skip smoothing and denoising!
@@ -86,14 +89,14 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	func_preproc/02.func_pepolar.sh ${bold}_bet ${fdir}
+	./02.func_preproc/02.func_pepolar.sh ${bold}_bet ${fdir}
 
 	echo "************************************"
 	echo "*** Func SPC breathhold BOLD echo ${e}"
 	echo "************************************"
 	echo "************************************"
 
-	func_preproc/09.func_spc.sh ${bold}_tpp ${fdir}
+	./02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir}
 
 	# First two outputs
 	immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
@@ -108,14 +111,14 @@ echo "*** Func Pepolar breathhold BOLD echo ${e}"
 echo "************************************"
 echo "************************************"
 
-func_preproc/02.func_pepolar.sh ${bold}_bet ${fdir} ${sbrf}_topup
+./02.func_preproc/02.func_pepolar.sh ${bold}_bet ${fdir} ${sbrf}_topup
 
 echo "************************************"
 echo "*** Func SPC breathhold BOLD optcom"
 echo "************************************"
 echo "************************************"
 
-func_preproc/09.func_spc.sh ${bold}_bet ${fdir}
+./02.func_preproc/09.func_spc.sh ${bold}_bet ${fdir}
 
 # First two outputs
 immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed

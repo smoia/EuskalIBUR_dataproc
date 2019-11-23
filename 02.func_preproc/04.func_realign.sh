@@ -33,8 +33,7 @@ func=${func_in%_*}
 
 nTR=$(fslval ${func_in} dim4)
 TR=$(fslval ${func_in} pixdim4)
-# The next line was necessary before - shouldn't be now.
-# let nTR=nTR-${vdsc}-1
+let nTR--
 
 ## 01. Motion Realignment
 

@@ -12,14 +12,14 @@ func_in=$1
 # folders
 fdir=$2
 # discard
-vdsc=$3
+# vdsc=$3
 ## Optional
 # Anat reference
-anat=${4:-none}
+anat=${3:-none}
 # Motion reference file
-mref=${5:-none}
+mref=${4:-none}
 # Joint transform Flag
-jstr=${6:-none}
+jstr=${5:-none}
 
 ######################################
 ######### Script starts here #########
@@ -33,39 +33,41 @@ cd ${fdir} || exit
 func=${func_in%_*}
 
 nTR=$(fslval ${func_in} dim4)
-let nTR=nTR-${vdsc}-1
+let nTR--
 
-## 01. Motion Computation
+## 01. Motion Computation, if more than 1 volume
 
-# 01.1. Mcflirt
-if [[ "${mref}" == "none" ]]
+if [[ nTR -gt 1 ]]
 then
-	echo "Creating a reference for ${func}"
-	mref=${func}_avgref
-	fslmaths ${func_in} -Tmean ${mref}
+	# 01.1. Mcflirt
+	if [[ "${mref}" == "none" ]]
+	then
+		echo "Creating a reference for ${func}"
+		mref=${func}_avgref
+		fslmaths ${func_in} -Tmean ${mref}
+	fi
+
+	echo "McFlirting ${func}"
+	if [[ -d ${func}_mcf.mat ]]; then rm -r ${func}_mcf.mat; fi
+	mcflirt -in ${func_in} -r ${mref} -out ${func}_mcf -stats -mats -plots
+
+	# 01.2. Demean motion parameters
+	echo "Demean and derivate ${func} motion parameters"
+	1d_tool.py -infile ${func}_mcf.par -demean -write ${func}_mcf_demean.par -overwrite
+	1d_tool.py -infile ${func}_mcf_demean.par -derivative -write ${func}_mcf_deriv1.par -overwrite
+
+	# 01.3. Compute various metrics
+	echo "Computing DVARS and FD for ${func}"
+	fsl_motion_outliers -i ${func}_mcf -o ${func}_mcf_dvars_confounds -s ${func}_dvars_post.par -p ${func}_dvars_post --dvars --nomoco
+	fsl_motion_outliers -i ${func_in} -o ${func}_mcf_dvars_confounds -s ${func}_dvars_pre.par -p ${func}_dvars_pre --dvars --nomoco
+	fsl_motion_outliers -i ${func_in} -o ${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd --fd
 fi
 
-echo "McFlirting ${func}"
-if [[ -d ${func}_mcf.mat ]]; then rm -r ${func}_mcf.mat; fi
-mcflirt -in ${func_in} -r ${mref} -out ${func}_mcf -stats -mats -plots
-
-# 01.2. Demean motion parameters
-echo "Demean and derivate ${func} motion parameters"
-1d_tool.py -infile ${func}_mcf.par -demean -write ${func}_mcf_demean.par -overwrite
-1d_tool.py -infile ${func}_mcf_demean.par -derivative -write ${func}_mcf_deriv1.par -overwrite
-
-
-if [[ ! -e "${mref}_brain_mask" ]]
+if [[ ! -e "${mref}_brain_mask" && "${mref}" != "none" ]]
 then
 	echo "BETting reference ${mref}"
 	bet ${mref} ${mref}_brain -R -f 0.5 -g 0 -n -m
 fi
-
-# 01.3. Compute various metrics
-echo "Computing DVARS and FD for ${func}"
-fsl_motion_outliers -i ${func}_mcf -o ${func}_mcf_dvars_confounds -s ${func}_dvars_post.par -p ${func}_dvars_post --dvars --nomoco
-fsl_motion_outliers -i ${func_in} -o ${func}_mcf_dvars_confounds -s ${func}_dvars_pre.par -p ${func}_dvars_pre --dvars --nomoco
-fsl_motion_outliers -i ${func_in} -o ${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd --fd
 
 # 01.4. Apply mask
 echo "BETting ${func}"

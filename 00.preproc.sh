@@ -49,7 +49,7 @@ dspk=none
 
 first_ses_path=${wdr}/sub-${sub}/ses-01
 
-uni_sbref=${first_ses_path}/func_preproc/sub-${sub}_ses-01_task-breathhold_rec-magnitude_echo-1_sbref
+uni_sbref=${first_ses_path}/reg/sub-${sub}_sbref
 uni_adir=${first_ses_path}/anat_preproc
 
 
@@ -129,22 +129,31 @@ fi
 if [[ "${run_sbref}" == "true" && ${ses} -eq 1 ]]
 then
 	# If asked & it's ses 01, run sbref
-	./sbref_preproc.sh ${sub} ${ses} ${wdr} ${flpr} ${fdir} ${fmap}
+	./sbref_preproc.sh ${sub} ${ses} ${wdr} ${flpr} ${fdir} ${fmap} ${anat2} ${adir}
 
-elif [[ ${ses} -gt 1 && ! -e ${uni_sbref}_tpp.nii.gz ]]
+elif [[ ${ses} -gt 1 && ! -e ${uni_sbref}.nii.gz ]]
 then
 	# If it isn't ses 01 but that ses wasn't run, exit.
 	echo "ERROR: the universal sbref,"
-	echo "   ${uni_sbref}_tpp.nii.gz"
+	echo "   ${uni_sbref}.nii.gz"
 	echo "doesn't exist. For the moment, this means the program quits"
 	echo "Please run the first session of each subject first"
 	exit
-elif [[ ${ses} -gt 1 && -e ${uni_sbref}_tpp.nii.gz ]]
+elif [[ ${ses} -gt 1 && -e ${uni_sbref}.nii.gz ]]
 then
 	# If it isn't ses 01, and that ses was run, copy relevant files.
-	imcp ${uni_sbref}_tpp.nii.gz ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
+	imcp ${uni_sbref} ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
+	imcp ${uni_sbref}_brain ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_brain
+	imcp ${uni_sbref}_brain_mask ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_brain_mask
+	imcp ${wdr}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref ${wdr}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref
+
 	mkdir ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_topup
 	cp -R ${uni_sbref}_topup/* ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_topup/.
+
+	cp ${wdr}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref_fsl.mat \
+	   ${wdr}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref_fsl.mat
+	cp ${wdr}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref0GenericAffine.mat \
+	   ${wdr}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref0GenericAffine.mat
 fi
 
 
@@ -153,9 +162,8 @@ fi
 ######################################
 
 ./breathhold_preproc.sh ${sub} ${ses} ${wdr} ${flpr} \
-						${anat2} ${adir} ${fdir} \
-						${vdsc} "${TEs}" ${nTE} \
-						${siot} ${dspk}
+						${fdir} ${vdsc} "${TEs}" \
+						${nTE} ${siot} ${dspk}
 
 date
 echo "************************************"

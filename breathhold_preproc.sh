@@ -13,19 +13,16 @@ wdr=$3
 
 flpr=$4
 
-anat2=$5
+fdir=$5
 
-adir=$6
-fdir=$7
+vdsc=$6
 
-vdsc=$8
+TEs="$7"
+nTE=$8
 
-TEs="$9"
-nTE=${10}
+siot=$9
 
-siot=${11}
-
-dspk=${12}
+dspk=${10}
 
 # This is the absolute sbref. Don't change it.
 sbrf=${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
@@ -56,7 +53,7 @@ echo "************************************"
 
 fmat=${flpr}_task-breathhold_echo-1_bold
 
-./02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} ${vdsc} ${adir}/${anat2} ${sbrf}
+./02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} none ${sbrf}
 
 for e in $( seq 1 ${nTE} )
 do
@@ -89,7 +86,7 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	./02.func_preproc/02.func_pepolar.sh ${bold}_bet ${fdir}
+	./02.func_preproc/02.func_pepolar.sh ${bold}_bet ${fdir} ${sbrf}_topup
 
 	echo "************************************"
 	echo "*** Func SPC breathhold BOLD echo ${e}"
@@ -107,7 +104,7 @@ done
 bold=${flpr}_task-breathhold_optcom_bold
 
 echo "************************************"
-echo "*** Func Pepolar breathhold BOLD echo ${e}"
+echo "*** Func Pepolar breathhold BOLD optcom"
 echo "************************************"
 echo "************************************"
 
@@ -125,11 +122,4 @@ immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
 
-./clearspace.sh ${sub} ${ses} ${wdr} task
-
-echo $(date)
-echo "************************************"
-echo "************************************"
-echo "***      Preproc COMPLETE!       ***"
-echo "************************************"
-echo "************************************"
+#./clearspace.sh ${sub} ${ses} ${wdr} task

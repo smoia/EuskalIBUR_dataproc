@@ -25,22 +25,24 @@ cd ${fdir} || exit
 eprfx=${func_in%_echo-*}_echo-
 esffx=${func_in#*_echo-?}
 func=${func_in%_echo-*}_concat${esffx}
-func_optcom=${func%_echo-*}_optcom${esffx}
+func_optcom=${func_in%_echo-*}_optcom${esffx}
 
 ## 01. MEICA
 # 01.1. concat in space
 
-echo "Merging ${func} for MEICA"
 if [[ ! -e ${func}.nii.gz ]];
 then
+	echo "Merging ${func} for MEICA"
 	fslmerge -z ${func} $( ls ${eprfx}* | grep ${esffx}.nii.gz )
+else
+	echo "Merged ${func} found!"
 fi
 
 echo "Running t2smap"
 t2smap -d ${func}.nii.gz -e ${TEs}
 
 echo "Housekeeping"
-fslmaths TED.${func}_concat/ts_OC.nii ${func_optcom} -odt float
+fslmaths TED.${func}/ts_OC.nii ${func_optcom} -odt float
 
 # 01.3. Compute outlier fraction if there's more than one TR
 nTR=$(fslval ${func_optcom} dim4)

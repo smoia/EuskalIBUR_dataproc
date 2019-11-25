@@ -8,7 +8,7 @@
 
 ## Variables
 # functional
-func=$1
+func_in=$1
 # folders
 fdir=$2
 # FWHM
@@ -24,16 +24,13 @@ cwd=$(pwd)
 
 cd ${fdir} || exit
 
+#Read and process input
+func=${func_in%_*}
+
 ## 01. Smooth
-if [ -e "${func}_den.nii.gz" ]
-then
-	in=${func}_den.nii.gz
-else
-	in=${func}_bet.nii.gz
-fi
 
 echo "Smoothing ${func}"
-3dBlurInMask -input ${in} -prefix ${func}_sm.nii.gz -mask ${mask}.nii.gz \
+3dBlurInMask -input ${func_in} -prefix ${func}_sm.nii.gz -mask ${mask}.nii.gz \
 -preserve -FWHM ${fwhm} -overwrite
 
 cd ${cwd}

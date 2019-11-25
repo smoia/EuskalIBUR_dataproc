@@ -12,16 +12,12 @@ func=$1
 # folders
 fdir=$2
 # discard
-vdsc=$3
+vdsc=${3:-0}
 ## Optional
 # Despiking
-dspk=${4:-0}
-# PEpolar
-pepl=${5:-none}
-brev=${6:-none}
-bfor=${7:-none}
+dspk=${4:-none}
 # Slicetiming
-siot=${8:-none}
+siot=${5:-none}
 
 ######################################
 ######### Script starts here #########
@@ -62,15 +58,14 @@ then
 fi
 
 # 01.4. Despike if asked
-if [[ "${dspk}" -gt "0" ]]
+if [[ "${dspk}" != "none" ]]
 then
 	echo "Despike ${func}"
 	3dDespike -prefix ${func}_dsk.nii.gz ${func}_RPI.nii.gz
 	funcsource=${func}_dsk
 fi
 
-## 02. Slice Interpolation
-
+## 02. Slice Interpolation if asked
 if [[ "${siot}" != "none" ]]
 then
 	echo "Slice Interpolation of ${func}"
@@ -80,31 +75,7 @@ then
 	funcsource=${func}_si
 fi
 
-
-## 03. PEpolar
-
-if [[ "${brev}" != "none" && "${bfor}" != "none" || "${pepl}" != "none" ]]
-then
-	if [[ "${pepl}" == "none" ]]
-	then
-		pepl=${func}_topup
-
-		mkdir ${pepl}
-		fslmerge -t ${pepl}/mgdmap ${brev} ${bfor}
-
-		cd ${pepl}
-		echo "Computing PEPOLAR map for ${func}"
-		topup --imain=mgdmap --datain=${cwd}/acqparam.txt --out=outtp --verbose
-		cd ..
-	fi
-
-	# 03.2. Applying the warping to the functional volume
-	echo "Applying PEPOLAR map on ${func}"
-	applytopup --imain=${funcsource} --datain=${cwd}/acqparam.txt --inindex=1 --topup=${pepl}/outtp --out=${func}_tpp --verbose --method=jac
-	funcsource=${func}_tpp
-fi
-
-## 04. Change name to script output
+## 03. Change name to script output
 immv ${funcsource} ${func}_cr
 
 cd ${cwd}

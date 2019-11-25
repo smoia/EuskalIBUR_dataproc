@@ -8,15 +8,15 @@
 
 ## Variables
 # file
-func=$1
+func_in=$1
 anat=$2
 mref=$3
 std=$4
 # folders
-fdir=$4
+fdir=$5
 # other
-mmres=$5
-anat2=${6:-none}
+mmres=$6
+anat2=${7:-none}
 
 ######################################
 ######### Script starts here #########
@@ -26,19 +26,15 @@ cwd=$(pwd)
 
 cd ${fdir} || exit
 
+#Read and process input
+func=${func_in%_*}
+
 echo "Normalising ${func}"
-antsApplyTransforms -d 3 -i ${func}.nii.gz \
+antsApplyTransforms -d 3 -i ${func_in}.nii.gz \
 -r ../reg/${std}_resamp_${mmres}mm.nii.gz -o ${func}_std.nii.gz \
 -n Linear -t [../reg/${anat2}2${mref}0GenericAffine.mat,1] \
 -t ../reg/${anat2}2${anat}0GenericAffine.mat \
 -t ../reg/${anat}2std0GenericAffine.mat \
 -t ../reg/${anat}2std1Warp.nii.gz
-
-# WarpImageMultiTransform 3 ${func}_sm.nii.gz ${func}_std.nii.gz \
-# -R ../reg/${std}_resamp_${mmres}mm.nii.gz \
-# ../reg/${anat}2std1Warp.nii.gz \
-# ../reg/${anat}2std0GenericAffine.mat \
-# ../reg/${anat2}2${anat}0GenericAffine.mat \
-# -i ../reg/${anat2}2${mref}0GenericAffine.mat
 
 cd ${cwd}

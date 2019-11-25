@@ -2,7 +2,10 @@
 sub-0*
 3dDeconvolve.err
 tmp*
-*_preproc/
+anat_preproc/
+fmap_preproc/
+func_preproc/
+phys_preproc/
 reg/
 *.sif
 

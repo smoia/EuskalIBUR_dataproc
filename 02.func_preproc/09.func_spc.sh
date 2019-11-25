@@ -8,7 +8,7 @@
 
 ## Variables
 # file
-func=$1
+func_in=$1
 # folders
 fdir=$2
 
@@ -20,9 +20,12 @@ cwd=$(pwd)
 
 cd ${fdir} || exit
 
+#Read and process input
+func=${func_in%_*}
+
 echo "Computing SPC of ${func} ( [X-avg(X)]/avg(X) )"
 
-fslmaths ${func} -Tmean ${func}_mean
-fslmaths ${func} -sub ${func}_mean -div ${func}_mean ${func}_SPC
+fslmaths ${func_in} -Tmean ${func}_mean
+fslmaths ${func_in} -sub ${func}_mean -div ${func}_mean ${func}_SPC
 
 cd ${cwd}

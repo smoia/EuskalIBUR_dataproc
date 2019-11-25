@@ -39,7 +39,8 @@ N4BiasFieldCorrection -d 3 -i ${anat}_trunc.nii.gz -o ${anat}_bfc.nii.gz
 if [[ "${aref}" != "none" ]]
 then
 	echo "Flirting ${anat} on ${aref}"
-	flirt -in ${anat} -ref ${aref} -cost normmi -searchcost normmi -omat ../reg/${anat}2${aref}_fsl.mat
+	flirt -in ${anat} -ref ${aref} -cost normmi -searchcost normmi \
+	-omat ../reg/${anat}2${aref}_fsl.mat -o ../reg/${anat}2${aref}_fsl.nii.gz
 fi
 
 cd ${cwd}

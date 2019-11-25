@@ -96,7 +96,7 @@ do
 	./02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir}
 
 	# First two outputs
-	immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
+	immv ${fdir}/${bold}_tpp ${fdir}/00.${bold}_native_preprocessed
 	immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
 done
@@ -118,7 +118,7 @@ echo "************************************"
 ./02.func_preproc/09.func_spc.sh ${bold}_bet ${fdir}
 
 # First two outputs
-immv ${fdir}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
+immv ${fdir}/${bold}_tpp ${fdir}/00.${bold}_native_preprocessed
 immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
 

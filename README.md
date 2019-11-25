@@ -1,5 +1,5 @@
 Data processing for EuskalIBUR
-=============================
+==============================
 
 This library is meant to run the data processing on the dataset *EuskalIBUR* (currently available on request).
 
@@ -68,11 +68,19 @@ A series of python scripts are included:
 - `plot_CVR_changes.py`: 
 
 
+Singularity container
+---------------------
+To run this scripts in a reproducible manner, a Singularity container has been created. It can be obtained on request. For the moment, it has to be placed in the same folder as the scripts.
+
 
 Preprocessing for BreathHold data
 ---------------------------------
-
 `00.preproc.sh` has to be run on each subject and each session. Session 01 has to be run first.
+
+To run it in the associated singularity container, e.g. for subject 003, first run session 01:
+`singularity exec -B /path/to/data:/data -B /path/to/scripts:/scripts euskalibur.sif 00.preproc.sh 003 01`
+Then, the other sessions can be run in parallel.
+
 
 ### Anatomical preprocessing
 For each subject, the T2w and the mp2rage volumes of the first session are preprocessed (`anat_preproc.sh`). The results are copied and used for all the other sessions.
@@ -81,12 +89,14 @@ The T2w and the mp2rage are de-obliqued and reoriented in RPI. Then, a Bias Fiel
 The T2w is skull-stripped (`3dSkullStrip`), and the brain mask is used on the mp2rage after registration ().
 The mp2rage is segmented (`Atropos`), and WM and CSF masks are slightly eroded.
 
+
 ### SBRef preprocessing
 For each subject, the SBRef volume of the first session is preprocessed (`sbref_preproc.sh`). The results are copied and used for all the other sessions; the SBRef of the BreathHold of the first session is used as the reference for all the sessions for a subject.
 
 The breathholds AP - PA acquisitions and the SBRef are de-obliqued and reoriented in RPI.
 The PEPolar correction field is computed (`topup`) using the AP-PA volumes, and applied on the SBRef.
 The SBRef is brain-masked (`bet`), then co-registered to the T2w of the first session (`flirt`). 
+
 
 ### BOLD preprocessing
 For each subject and each session, the five echo volumes are preprocessed (`breathhold_preproc.sh`), and an optimally combined volume is obtained. All the volumes are registered to the first session breathhold SBRef.
@@ -100,8 +110,11 @@ The five echoes are also fed to `t2smap` to obtain an optimally combined volume.
 The PEPolar correction field is applied on the five echoes and on the optimally combined volume (`topup`).
 The Signal Percentage Change of all the volumes is computed.
 
+
 ### PetCO2 traces preprocessing
 
+
 ### CVR maps computation
+
 
 ### Comparison of different denoising pipelines

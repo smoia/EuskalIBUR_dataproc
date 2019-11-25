@@ -62,9 +62,9 @@ gzip ./*.nii
 # Old tedana
 # ${cwd}/meica.libs/tedana.py -d ${func}_concat.nii.gz -e ${TEs} --fout --denoiseTEs --label=${func}_meica
 
-# 01.3. Ortogonalising good and bad components
+# 01.3. Orthogonalising good and bad components
 
-echo "Ortogonalising good and bad components in ${func}"
+echo "Orthogonalising good and bad components in ${func}"
 
 grep accepted < comp_table_ica.txt | awk '{print $1}' | csvtool transpose - > accepted.txt
 grep rejected < comp_table_ica.txt | awk '{print $1}' | csvtool transpose - > rejected.txt

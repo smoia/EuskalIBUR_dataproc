@@ -45,13 +45,13 @@ then
 	echo "Unpacking backup"
 	tar -xzvf ${bcklist[-1]} -C ..
 	echo "Running tedana to revert to backed up state"
-	tedana -d ${func}.nii.gz -e ${TEs} \
-	--tedpca kundu-stabilize --png --out-dir ${func}_meica \
+	tedana -d ${func}.nii.gz -e $"{TEs}" \
+	--tedpca mdl --out-dir ${func}_meica \
 	--mix ${func}_meica/meica_mix.1D --ctab ${func}_meica/comp_table_ica.txt
 else
 	echo "No backup file specified or found!"
 	echo "Running tedana"
-	tedana -d ${func}.nii.gz -e ${TEs} --tedpca kundu-stabilize --png --out-dir ${func}_meica
+	tedana -d ${func}.nii.gz -e ${TEs} --tedpca mdl --out-dir ${func}_meica
 fi
 
 cd ${func}_meica

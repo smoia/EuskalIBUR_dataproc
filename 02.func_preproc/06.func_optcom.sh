@@ -39,7 +39,7 @@ else
 fi
 
 echo "Running t2smap"
-t2smap -d ${func}.nii.gz -e "${TEs}"
+t2smap -d ${func}.nii.gz -e ${TEs}
 
 echo "Housekeeping"
 fslmaths TED.${func}/ts_OC.nii ${func_optcom} -odt float

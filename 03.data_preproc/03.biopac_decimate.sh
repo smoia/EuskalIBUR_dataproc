@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 
-
 wdr=${1:-/data}
 
 ### Main ###
 
-echo "Processing sheet"
-python3 biopac_decimate.py
+cwd=$( pwd )
+
+cd ${wdr} || exit
+
+echo "Decimating biopac traces"
+
+python3 ${cwd}/20.python_scripts/biopac_decimate.py
+
+cd ${cwd}

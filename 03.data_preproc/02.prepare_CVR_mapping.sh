@@ -16,14 +16,12 @@ then
 	mkdir CVR
 fi
 
-flpr=sub-${sub}_ses-${ses}
+anat=sub-${sub}_ses-01_acq-uni_T1w
+func=sub-${sub}_ses-${ses}_task-breathhold
+mref=sub-${sub}_sbref
+aref=sub-${sub}_ses-01_T2w
 
-anat=${flpr}_acq-uni_T1w
-func=${flpr}_task-breathhold
-mref=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
-aref=${flpr}_T2w
-
-antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-${ses}/${adir}/${anat}_GM.nii.gz -r ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${mref}.nii.gz \
+antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-${ses}/${adir}/${anat}_GM.nii.gz -r ${wdr}/sub-${sub}/ses-${ses}/reg/${mref}.nii.gz \
 -o ${wdr}/CVR/${anat}_GM_native.nii.gz -n MultiLabel \
 -t [${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${anat}0GenericAffine.mat,1] \
 -t ${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${mref}0GenericAffine.mat

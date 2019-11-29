@@ -38,11 +38,14 @@ else
 	echo "Merged ${func} found!"
 fi
 
-echo "Running t2smap"
-t2smap -d ${func}.nii.gz -e ${TEs}
+if [[ ! -e ${func_optcom} ]]
+then
+	echo "Running t2smap"
+	t2smap -d ${func}.nii.gz -e ${TEs}
 
-echo "Housekeeping"
-fslmaths TED.${func}/ts_OC.nii ${func_optcom} -odt float
+	echo "Housekeeping"
+	fslmaths TED.${func}/ts_OC.nii.gz ${func_optcom} -odt float
+fi
 
 # 01.3. Compute outlier fraction if there's more than one TR
 nTR=$(fslval ${func_optcom} dim4)

@@ -27,6 +27,7 @@ cd ${fdir} || exit
 eprfx=${func_in%_echo-*}_echo-
 esffx=${func_in#*_echo-?}
 func=${func_in%_echo-*}_concat${esffx}
+func_optcom=${func_in%_echo-*}_optcom${esffx}
 
 ## 01. MEICA
 # 01.1. concat in space
@@ -47,7 +48,7 @@ then
 	echo "Running tedana to revert to backed up state"
 	tedana -d ${func}.nii.gz -e ${TEs} \
 	--tedpca mdl --out-dir ${func}_meica \
-	--mix ${func}_meica/meica_mix.1D --ctab ${func}_meica/comp_table_ica.txt
+	--mix ${func}_meica/ica_mixing.tsv --ctab ${func}_meica/ica_decomposition.json
 else
 	echo "No backup file specified or found!"
 	echo "Running tedana"
@@ -55,28 +56,24 @@ else
 fi
 
 cd ${func}_meica
-# This shouldn't be necessary, but it doesn't harm having it just in case.
-gzip ./*.nii
 
-#tedana -d ${func}_concat.nii.gz -e ${TEs} --verbose --tedort --png --out-dir ${func}_meica
-# Old tedana
-# ${cwd}/meica.libs/tedana.py -d ${func}_concat.nii.gz -e ${TEs} --fout --denoiseTEs --label=${func}_meica
+# 01.3. Moving optcom in parent folder
+fslmaths ts_OC.nii.gz ${func_optcom} -odt float
 
-# 01.3. Orthogonalising good and bad components
+# 01.4. Orthogonalising good and bad components
+
+echo "Extracting good and bad copmonents"
+python3 ${cwd}/20.python_scripts/00.process_tedana_output.py ${fdir}/${func}_meica
 
 echo "Orthogonalising good and bad components in ${func}"
+nacc=$( cat accepted.1D )
+nrej=$( cat rejected.1D )
 
-grep accepted < comp_table_ica.txt | awk '{print $1}' | csvtool transpose - > accepted.txt
-grep rejected < comp_table_ica.txt | awk '{print $1}' | csvtool transpose - > rejected.txt
+1dcat ica_mixing.tsv"[$nacc]" > accepted.1D
+1dcat ica_mixing.tsv"[$nrej]" > tmp.rej.tr.1D
+1dtranspose tmp.rej.tr.1D > rejected.1D
 
-nacc=$( cat accepted.txt )
-nrej=$( cat rejected.txt )
-
-1dcat meica_mix.1D"[$nacc]" > meica_good.1D
-1dcat meica_mix.1D"[$nrej]" > tmp.rej.tr.1D
-1dtranspose tmp.rej.tr.1D > meica_rej.1D
-
-3dTproject -ort meica_good.1D -polort -1 -prefix tmp.tr.1D -input meica_rej.1D -overwrite
+3dTproject -ort accepted.1D -polort -1 -prefix tmp.tr.1D -input rejected.1D -overwrite
 1dtranspose tmp.tr.1D > ../${func}_rej_ort.1D
 
 rm tmp.*

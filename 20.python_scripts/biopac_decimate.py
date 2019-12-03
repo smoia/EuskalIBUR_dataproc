@@ -23,12 +23,12 @@ for sub in range(1, 11):
         os.chdir(wdir)
         path = f'sub-{sub:03g}/ses-{ses:02g}/func'
         filename = f'sub-{sub:03g}_ses-{ses:02g}_task-breathhold_physio'
-        os.chdir(path)
-        if not os.path.exists('../func_phys'):
-            os.mkdir('../func_phys')
-
-        os.chdir('../func_phys')
         try:
+            os.chdir(path)
+            if not os.path.exists('../func_phys'):
+                os.mkdir('../func_phys')
+
+            os.chdir('../func_phys')
             print(f'Copying file {filename}')
             copyfile(f'../func/{filename}.tsv.gz', f'./{filename}.tsv.gz')
             print(f'Decimating {filename}')

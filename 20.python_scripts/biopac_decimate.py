@@ -13,7 +13,7 @@ cwd = os.getcwd()
 
 os.chdir(wdir)
 
-for sub in ['002', '003', '007']:
+for sub in range(1, 11):
     for ses in range(1, 11):
         if ses >= 7:
             ch = 5
@@ -21,8 +21,8 @@ for sub in ['002', '003', '007']:
             ch = 4
 
         os.chdir(wdir)
-        path = f'sub-{sub}/ses-{ses:02g}/func'
-        filename = f'sub-{sub}_ses-{ses:02g}_task-breathhold_physio'
+        path = f'sub-{sub:03g}/ses-{ses:02g}/func'
+        filename = f'sub-{sub:03g}_ses-{ses:02g}_task-breathhold_physio'
         os.chdir(path)
         if not os.path.exists('../func_phys'):
             os.mkdir('../func_phys')
@@ -33,10 +33,10 @@ for sub in ['002', '003', '007']:
         print(f'Decimating {filename}')
         co, pidx = bio.partone(filename, ch)
 
-        # plt.figure(figsize=(18, 10), dpi=SET_DPI)
-        # plt.plot(co)
-        # plt.title(f'sub {sub} ses {ses:02g}')
-        # plt.savefig(f'{filename}.png', dpi=SET_DPI)
+        plt.figure(figsize=(18, 10), dpi=SET_DPI)
+        plt.plot(co)
+        plt.title(f'sub {sub:03g} ses {ses:02g}')
+        plt.savefig(f'{filename}.png', dpi=SET_DPI)
         plt.close('all')
 
 os.chdir(cwd)

@@ -22,7 +22,6 @@ cwd=$(pwd)
 cd ${fdir}/${func}_meica || exit
 
 imrm t2sv s0v lowk_* midk_* hik_* betas_hik_* t2ss s0vs mepca_OC_*
-if [ -e __meica_mix.txt ]; then rm __meica_mix.txt; fi
 
 imrm tmp.* rm.*
 

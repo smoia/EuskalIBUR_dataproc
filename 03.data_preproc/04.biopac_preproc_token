@@ -7,10 +7,11 @@ import numpy as np
 # # # # # # # # # # #
 #  # # # # # # # # #
 # # # # # # # # # #
-sub = '002'
+sub = 1
 ses = 1
 
-filename = f'sub-{sub}/ses-{ses:02g}/func_phys/sub-{sub}_ses-{ses:02g}_task-breathhold_physio'
+print(f'{sub:03g} {ses:02g}')
+filename = f'sub-{sub:03g}/ses-{ses:02g}/func_phys/sub-{sub:03g}_ses-{ses:02g}_task-breathhold_physio'
 
 co = np.genfromtxt(f'{filename}_co_orig.1D')
 pidx = np.genfromtxt(f'{filename}_autopeaks.1D').astype('int')
@@ -41,5 +42,9 @@ line, = ax.plot(pidx, co_y, 'm*', picker=5)
 fig.canvas.mpl_connect('pick_event', onpick_manualedit)
 
 npidx = bio.manualchange(filename, pidx, reject_list)
-ses += 1
+if ses < 10:
+	ses +=1
+else:
+	ses = 1
+	sub += 1
 

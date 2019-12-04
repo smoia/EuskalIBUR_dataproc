@@ -23,22 +23,47 @@ cd ME_Denoising
 if [[ ! -d "sub-${sub}" ]]; then mkdir sub-${sub}; fi
 
 
-# 01. Register GM to MREF
-flpr=sub-${sub}_ses-${ses}
-anat=${flpr}_acq-uni_T1w
-mref=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref_cr
-aref=${flpr}_T2w
+# 01. Register GM to MREF if necessary
+if [[ ! -e sub-${sub}_GM.nii.gz ]]
+then
+	echo "Registering GM to functional space"
+	flpr=sub-${sub}_ses-${ses}
+	anat=sub-${sub}_ses-01_acq-uni_T1w
+	mref=sub-${sub}_sbref_brain
+	aref=sub-${sub}_ses-01_T2w
 
-antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-${ses}/anat_preproc/${anat}_GM.nii.gz \
--r ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${mref}.nii.gz \
--o ${wdr}/ME_Denoising/sub-${sub}/GM_ses-${ses}.nii.gz -n MultiLabel \
--t [${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${anat}0GenericAffine.mat,1] \
--t ${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${mref}0GenericAffine.mat
+	antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-01/anat_preproc/${anat}_GM.nii.gz \
+	-r ${wdr}/sub-${sub}/ses-01/reg/${mref}.nii.gz \
+	-o ${wdr}/ME_Denoising/sub-${sub}_GM.nii.gz -n MultiLabel \
+	-t [${wdr}/sub-${sub}/ses-01/reg/${aref}2${anat}0GenericAffine.mat,1] \
+	-t ${wdr}/sub-${sub}/ses-01/reg/${aref}2${mref}0GenericAffine.mat
+fi
 
-# 02. Get FD and DVARS
+# 02. Quick denoise for OC, E2, 4D denoise?
 echo ${flpr}
-# cp ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-1_bold_dvars_pre.par sub-${sub}/dvars_pre_${flpr}.1D
-cp ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-1_bold_fd.par sub-${sub}/fd_${flpr}.1D
+
+# for optcom echo-2 meica ...
+# 3dDeconvolve -input ${func_in}.nii.gz \
+# -polort 5 -float \
+# -num_stimts  2 \
+# -stim_file 1 ${func}_avg_tissue.1D'[0]' -stim_base 1 -stim_label 1 CSF \
+# -stim_file 2 ${func}_avg_tissue.1D'[2]' -stim_base 2 -stim_label 2 WM \
+# -ortvec ${fmat}_mcf_demean.par motdemean \
+# -ortvec ${fmat}_mcf_deriv1.par motderiv1 \
+# -ortvec ${fmat}_rej_ort.1D meica \
+# -censor ${func}_censors.1D \
+# -x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
+# -x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
+# -x1D_stop
+# fslmaths ${func_in} -Tmean ${func}_avg
+# 3dTproject -polort 0 -input ${func_in}.nii.gz  -mask ${mref}_brain_mask.nii.gz \
+# -ort ${func}_nuisreg_uncensored_mat.1D -prefix ${func}_prj.nii.gz \
+# -overwrite
+# fslmaths ${func}_prj -add ${func}_avg ${func}_den.nii.gz
+
+
+
+
 
 for e in 2 # $( seq 1 ${nTE} )
 do

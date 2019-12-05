@@ -2,6 +2,7 @@
 
 import os
 import sys
+import pandas as pd
 
 from json import load
 
@@ -16,6 +17,7 @@ with open('ica_decomposition.json', 'r') as f:
 
 del(comp['Method'])
 
+# Prepare list of components for projections
 acc = ''
 rej = ''
 ign = ''
@@ -41,5 +43,46 @@ with open('accepted_list.1D', 'w+') as f:
 
 with open('ignored_list.1D', 'w+') as f:
     f.write(ign[:-1])
+
+# Prepare same list for 4D denoise
+comp_data = []
+
+for ic in comp:
+    comp_data.append([comp[ic]['normalized variance explained'],
+                     comp[ic]['classification']])
+
+dt = pd.DataFrame(comp_data, columns=['var', 'class'])
+
+dt = dt.sort_values('var', ascending=False)
+dt = dt.reset_index(drop=False)
+
+acc = ''
+rej = ''
+ign = ''
+
+for n in range(len(dt)):
+    if dt['class'][n] == 'rejected':
+        print(f'{n} rej')
+        rej += f'{n},'
+
+    if dt['class'][n] == 'accepted':
+        print(f'{n} acc')
+        acc += f'{n},'
+
+    if dt['class'][n] == 'ignored':
+        print(f'{n}')
+        ign += f'{n},'
+
+with open('rejected_list_by_variance.1D', 'w+') as f:
+    f.write(rej[:-1])
+
+with open('accepted_list_by_variance.1D', 'w+') as f:
+    f.write(acc[:-1])
+
+with open('ignored_list_by_variance.1D', 'w+') as f:
+    f.write(ign[:-1])
+
+idx = dt.drop(['var', 'class', 'k'], axis=1)
+idx.to_csv('idx_map.csv', sep='\t', header=False)
 
 os.chdir(cwd)

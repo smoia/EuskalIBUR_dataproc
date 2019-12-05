@@ -98,27 +98,31 @@ fi
 #########    Anat preproc    #########
 ######################################
 
-if [[ "${run_anat}" == "true" && ${ses} -eq 1 ]]
+if [[ "${run_anat}" == "true" ]]
 then
-	# If asked & it's ses 01, run anat
-	./anat_preproc.sh ${sub} ${ses} ${wdr} ${anat1} ${anat2} \
-					  ${adir} ${std} ${mmres}
-
-elif [[ ${ses} -gt 1 && ! -d ${uni_adir} ]]
-then
-	# If it isn't ses 01 but that ses wasn't run, exit.
-	echo "ERROR: the universal anat_preproc folder,"
-	echo "   ${uni_adir}"
-	echo "doesn't exist. For the moment, this means the program quits"
-	echo "Please run the first session of each subject first"
-	exit
-elif [[ ${ses} -gt 1 && -d ${uni_adir} ]]
-then
-	# If it isn't ses 01, and that ses was run, copy relevant files.
-	cp -R ${uni_adir}/* ${adir}/.
-	# Then be sure that the anatomical files reference is right.
-	anat1=sub-${sub}_ses-01_acq-uni_T1w 
-	anat2=sub-${sub}_ses-01_T2w
+	if [ ${ses} -eq 1 ]
+	then
+		# If asked & it's ses 01, run anat
+		./anat_preproc.sh ${sub} ${ses} ${wdr} ${anat1} ${anat2} \
+						  ${adir} ${std} ${mmres}
+	elif [ ${ses} -gt 1 ] && [ ! -d ${uni_adir} ]
+	then
+		# If it isn't ses 01 but that ses wasn't run, exit.
+		echo "ERROR: the universal anat_preproc folder,"
+		echo "   ${uni_adir}"
+		echo "doesn't exist. For the moment, this means the program quits"
+		echo "Please run the first session of each subject first"
+		exit
+	elif [ ${ses} -gt 1 ] && [ -d ${uni_adir} ]
+	then
+		# If it isn't ses 01, and that ses was run, copy relevant files.
+		cp -R ${uni_adir}/* ${adir}/.
+		# Then be sure that the anatomical files reference is right.
+		anat1=sub-${sub}_ses-01_acq-uni_T1w 
+		anat2=sub-${sub}_ses-01_T2w
+		cp ${uni_adir}/../reg/*${anat1}* ${adir}/../reg/.
+		cp ${uni_adir}/../reg/*${anat2}* ${adir}/../reg/.
+	fi
 fi
 
 
@@ -126,34 +130,36 @@ fi
 #########    SBRef preproc   #########
 ######################################
 
-if [[ "${run_sbref}" == "true" && ${ses} -eq 1 ]]
+if [[ "${run_sbref}" == "true" ]]
 then
-	# If asked & it's ses 01, run sbref
-	./sbref_preproc.sh ${sub} ${ses} ${wdr} ${flpr} ${fdir} ${fmap} ${anat2} ${adir}
+	if [ ${ses} -eq 1 ]
+	then
+		# If asked & it's ses 01, run sbref
+		./sbref_preproc.sh ${sub} ${ses} ${wdr} ${flpr} ${fdir} ${fmap} ${anat2} ${adir}
+	elif [ ${ses} -gt 1 ] && [ ! -d ${uni_adir} ]
+	then
+		# If it isn't ses 01 but that ses wasn't run, exit.
+		echo "ERROR: the universal sbref,"
+		echo "   ${uni_sbref}.nii.gz"
+		echo "doesn't exist. For the moment, this means the program quits"
+		echo "Please run the first session of each subject first"
+		exit
+	elif [ ${ses} -gt 1 ] && [ -d ${uni_adir} ]
+	then
+		# If it isn't ses 01, and that ses was run, copy relevant files.
+		imcp ${uni_sbref} ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
+		imcp ${uni_sbref}_brain ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_brain
+		imcp ${uni_sbref}_brain_mask ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_brain_mask
+		imcp ${wdr}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref ${wdr}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref
 
-elif [[ ${ses} -gt 1 && ! -e ${uni_sbref}.nii.gz ]]
-then
-	# If it isn't ses 01 but that ses wasn't run, exit.
-	echo "ERROR: the universal sbref,"
-	echo "   ${uni_sbref}.nii.gz"
-	echo "doesn't exist. For the moment, this means the program quits"
-	echo "Please run the first session of each subject first"
-	exit
-elif [[ ${ses} -gt 1 && -e ${uni_sbref}.nii.gz ]]
-then
-	# If it isn't ses 01, and that ses was run, copy relevant files.
-	imcp ${uni_sbref} ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
-	imcp ${uni_sbref}_brain ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_brain
-	imcp ${uni_sbref}_brain_mask ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_brain_mask
-	imcp ${wdr}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref ${wdr}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref
+		mkdir ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_topup
+		cp -R ${uni_sbref}_topup/* ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_topup/.
 
-	mkdir ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_topup
-	cp -R ${uni_sbref}_topup/* ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_topup/.
-
-	cp ${wdr}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref_fsl.mat \
-	   ${wdr}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref_fsl.mat
-	cp ${wdr}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref0GenericAffine.mat \
-	   ${wdr}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref0GenericAffine.mat
+		cp ${wdr}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref_fsl.mat \
+		   ${wdr}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref_fsl.mat
+		cp ${wdr}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref0GenericAffine.mat \
+		   ${wdr}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref0GenericAffine.mat
+	fi
 fi
 
 

@@ -20,19 +20,18 @@ then
 fi
 
 echo "Denoising sub ${sub} ses ${ses} optcom"
-fdir=sub-${sub}/ses-${ses}/func_preproc
+fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 flpr=sub-${sub}_ses-${ses}
-meica_mix=${wdr}/${fdir}/${flpr}_task-breathhold_concat_bold_bet_meica/ica_mixing.tsv
+meica_fldr=${fdir}/${flpr}_task-breathhold_concat_bold_bet_meica
+meica_mix=${meica_fldr}/ica_mixing.tsv
 
 sbrf=sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
 func=${fdir}/${flpr}_task-breathhold_optcom_bold_bet
-bold=${flpr}_task-breathhold_meica
-bves=${flpr}_task-breathhold_vessels
-bnet=${flpr}_task-breathhold_networks
+bold=${flpr}_task-breathhold
 
-cd decomp
+cd decomp || exit
 
-# 01.1. Removing component by orthogonalisation
+# 01.1. Processing list of classified components
 acc=$( cat ${flpr}_accepted_list.1D )
 rej=$( cat ${flpr}_rejected_list.1D )
 ves=$( cat ${flpr}_vessels_list.1D )
@@ -65,74 +64,85 @@ net=$( cat ${flpr}_networks_list.1D )
 3dTproject -ort tmp.${flpr}_meica_good.1D -polort -1 -prefix tmp.${flpr}_tr.1D -input tmp.${flpr}_meica_rej.1D -overwrite
 1dtranspose tmp.${flpr}_tr.1D > ${flpr}_networks_ort.1D
 
-rm tmp.${flpr}*
+# 01.8. Preparing lists for fsl_regfilt 
+# 01.8.1. Start with dropping the first line of the tsv output.
+csvtool -t TAB -u TAB drop 1 ${meica_mix} > tmp.${flpr}_mmix
 
-cd ..
+# 01.8.2. Add 1 to the indexes to use with fsl_regfilt - which means:
+# transpose, add one, transpose, paste different solutions together.
+for type in rejected vessels networks
+do
+	csvtool transpose ${flpr}_${type}_list.1D > tmp.${flpr}_${type}_transpose.1D
+	1deval -a tmp.${flpr}_${type}_transpose.1D -expr 'a+1' > tmp.${flpr}_${type}.fsl.1D
+	csvtool transpose tmp.${flpr}_${type}.fsl.1D > tmp.${flpr}_${type}.1D
+done
+
+cat tmp.${flpr}_rejected.1D > ${flpr}_rejected_fsl_list.1D
+paste ${flpr}_rejected_fsl_list.1D tmp.${flpr}_vessels.1D -d , > ${flpr}_vessels_fsl_list.1D
+paste ${flpr}_vessels_fsl_list.1D tmp.${flpr}_networks.1D -d , > ${flpr}_networks_fsl_list.1D
+
+# 01.9. Run 4D denoise
+# 01.9.1. Transforming kappa based idx into var based idx
+for type in rejected vessels networks
+do
+	touch tmp.${flpr}_${type}_var_list.1D
+	for i in $( cat tmp.${flpr}_${type}_transpose.1D )
+	do
+		grep ,${i} < ${meica_fldr}/idx_map.csv | awk -F',' '{print $1}' >> tmp.${flpr}_${type}_var_list.1D
+	done
+	csvtool -u SPACE transpose tmp.${flpr}_${type}_var_list.1D > ${flpr}_${type}_var_list.1D
+done
+
 
 # 02. Running different kinds of denoise: aggressive, orthogonalised, partial regression, multivariate
 
-# 02.1. Running aggressive
-for icaset in ${bold} ${bves} ${bnet}
+# 02.1. Running aggressive, orthogonalised, and partial regression
+for type in rejected vessels networks
 do
 	3dTproject -input ${func}.nii.gz \
-	-ort decomp/${flpr}_rejected.1D \
-	-polort -1 -prefix ${fdir}/${icaset}-aggr_bold_bet.nii.gz
-done
-
-# 02.2. Running orthogonalised
-for icaset in ${bold} ${bves} ${bnet}
-do
+	-ort ${flpr}_${type}.1D \
+	-polort -1 -prefix ${fdir}/${bold}_${type}-aggr_bold_bet.nii.gz
 	3dTproject -input ${func}.nii.gz \
-	-ort decomp/${flpr}_rejected_ort.1D \
-	-polort -1 -prefix ${fdir}/${icaset}-orth_bold_bet.nii.gz
-done
-
-# 02.3. Running partial regression
-# 02.3.1. Start with dropping the first line of the tsv output.
-csvtool -t TAB -u TAB drop 1 ${meica_mix} > tmp.mmix
-
-# 02.3.2. Add 1 to the indexes to use with fsl_regfilt - which means:
-# transpose, add one, transpose, paste different solutions together.
-csvtool transpose ${flpr}_rejected_list.1D > tmp.rej.1D
-csvtool transpose ${flpr}_vessels_list.1D > tmp.ves.1D
-csvtool transpose ${flpr}_networks_list.1D > tmp.net.1D
-
-for type in rej ves net
-do
-	1deval -a tmp.${type}.1D -expr 'a+1' > tmp.${type}.fsl.1D
-	csvtool transpose tmp.${type}.fsl.1D > tmp.${type}.1D
-done
-
-cat tmp.rej.1D > tmp.rej.fsl.1D
-paste tmp.rej.fsl.1D tmp.ves.1D -d , > tmp.ves.fsl.1D
-paste tmp.ves.fsl.1D tmp.net.1D -d , > tmp.net.fsl.1D
-
-# 02.3.3. Finally run fsl_regfilt
-for icaset in ${bold} ${bves} ${bnet}
-do
+	-ort ${flpr}_${type}_ort.1D \
+	-polort -1 -prefix ${fdir}/${bold}_${type}-orth_bold_bet.nii.gz
 	fsl_regfilt -i ${func} \
-	-d tmp.mmix \
-	-f "$( cat tmp.rej.fsl.1D )" \
-	-o ${fdir}/${icaset}-preg_bold_bet
+	-d tmp.${flpr}_mmix \
+	-f "$( cat ${flpr}_${type}_fsl.1D )" \
+	-o ${fdir}/${bold}_${type}-preg_bold_bet
 done
 
-rm tmp.*
+# 02.2. Run 4D denoise (multivariate): recreates a matrix of noise post-ICA, then substract it from original data.
+for type in rejected vessels networks
+do
+	3dSynthesize -cbucket ${meica_fldr}/ica_components_orig.nii.gz \
+				 -matrix ${meica_fldr}/ica_mixing_orig.tsv \
+				 -select "$( cat ${flpr}_${type}_var_list.1D )" \
+				 -prefix tmp.${flpr}_${type}_volume.nii.gz
+done
 
-# Run 4D denoise - implement later.
+fslmaths ${func} -sub tmp.${flpr}_rejected_volume ${fdir}/${bold}_meica-mvar_bold_bet
+fslmaths ${fdir}/${bold}_meica-mvar_bold_bet -sub tmp.${flpr}_vessels_volume \
+		 ${fdir}/${bold}_vessels-mvar_bold_bet
+fslmaths ${fdir}/${bold}_vessels-mvar_bold_bet -sub tmp.${flpr}_networks_volume \
+		 ${fdir}/${bold}_networks-mvar_bold_bet
 
+rm tmp.${flpr}_*
 
-#ica_components_orig.nii.gz
-#ica_mixing_orig.tsv
+# 03. Change all the "rejected" names into "meica"
+for den in aggr orth preg
+do
+	immv ${fdir}/${bold}_rejected-${den}_bold_bet ${fdir}/${bold}_meica-${den}_bold_bet
+done
 
 # Topup everything!
-for icaset in ${bold} ${bves} ${bnet}
+for type in meica vessels networks
 do
-	for den in aggr orth preg # mvar
+	for den in aggr orth preg mvar
 	do
-		${cwd}/02.func_preproc/02.func_pepolar.sh ${icaset}-${den}_bold_bet ${fdir} ${sbrf}_topup
-		${cwd}/02.func_preproc/09.func_spc.sh ${icaset}-${den}_bold_tpp ${fdir}
-		immv ${fdir}/${icaset}-${den}_bold_tpp ${fdir}/00.${icaset}-${den}_bold_native_preprocessed
-		immv ${fdir}/${icaset}-${den}_bold_SPC ${fdir}/01.${icaset}-${den}_bold_native_SPC_preprocessed
+		${cwd}/02.func_preproc/02.func_pepolar.sh ${bold}_${type}-${den}_bold_bet ${fdir} ${sbrf}_topup
+		${cwd}/02.func_preproc/09.func_spc.sh ${bold}_${type}-${den}_bold_tpp ${fdir}
+		immv ${fdir}/${bold}_${type}-${den}_bold_tpp ${fdir}/00.${bold}_${type}-${den}_bold_native_preprocessed
+		immv ${fdir}/${bold}_${type}-${den}_bold_SPC ${fdir}/01.${bold}_${type}-${den}_bold_native_SPC_preprocessed
 	done
 done
 

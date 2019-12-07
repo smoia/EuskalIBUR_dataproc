@@ -82,7 +82,7 @@ with open('accepted_list_by_variance.1D', 'w+') as f:
 with open('ignored_list_by_variance.1D', 'w+') as f:
     f.write(ign[:-1])
 
-idx = dt.drop(['var', 'class', 'k'], axis=1)
+idx = dt.drop(['var', 'class'], axis=1)
 idx.to_csv('idx_map.csv', header=False)
 
 os.chdir(cwd)

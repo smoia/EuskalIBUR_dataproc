@@ -32,7 +32,7 @@ melodic -i sub-${sub}_ses-${ses}_trials-8 -o sub-${sub}_ses-${ses}_trials-8 --re
 echo "Run melodic on RS for sub ${sub} ses ${ses}"
 melodic -i sub-${sub}_ses-${ses}_rest -o sub-${sub}_ses-${ses}_rest --report
 
-for trial in $( seq 2 7 )
+for trial in 1 2 3 5
 do
 	let cut=step*trial
 	echo "Prepare ${trial} trials of BH"

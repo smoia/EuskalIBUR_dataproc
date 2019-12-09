@@ -3,7 +3,8 @@
 
 sub=$1
 ses=$2
-wdr=${3:-/data}
+TR=${3:-1.5}
+wdr=${4:-/data}
 
 # Can't parralelise this one!
 
@@ -66,7 +67,7 @@ net=$( cat ${flpr}_networks_list.1D )
 
 # 01.8. Preparing lists for fsl_regfilt 
 # 01.8.1. Start with dropping the first line of the tsv output.
-csvtool -t TAB -u TAB drop 1 ${meica_mix} > tmp.${flpr}_mmix
+csvtool -t TAB -u TAB drop 1 ${meica_mix} > tmp.${flpr}_mmix.tsv
 
 # 01.8.2. Add 1 to the indexes to use with fsl_regfilt - which means:
 # transpose, add one, transpose, paste different solutions together.
@@ -106,7 +107,7 @@ do
 	-ort ${flpr}_${type}_ort.1D \
 	-polort -1 -prefix ${fdir}/${bold}_${type}-orth_bold_bet.nii.gz
 	fsl_regfilt -i ${func} \
-	-d tmp.${flpr}_mmix \
+	-d tmp.${flpr}_mmix.tsv \
 	-f "$( cat ${flpr}_${type}_fsl.1D )" \
 	-o ${fdir}/${bold}_${type}-preg_bold_bet
 done
@@ -115,7 +116,7 @@ done
 for type in rejected vessels networks
 do
 	3dSynthesize -cbucket ${meica_fldr}/ica_components_orig.nii.gz \
-				 -matrix ${meica_fldr}/ica_mixing_orig.tsv \
+				 -matrix tmp.${flpr}_mmix.tsv -TR ${TR} \
 				 -select "$( cat ${flpr}_${type}_var_list.1D )" \
 				 -prefix tmp.${flpr}_${type}_volume.nii.gz
 done

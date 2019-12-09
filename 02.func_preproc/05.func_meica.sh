@@ -58,7 +58,7 @@ fi
 cd ${func}_meica
 
 # 01.3. Moving optcom in parent folder
-fslmaths ts_OC.nii.gz ${func_optcom} -odt float
+fslmaths ts_OC.nii.gz ../${func_optcom} -odt float
 
 # 01.4. Orthogonalising good and bad components
 

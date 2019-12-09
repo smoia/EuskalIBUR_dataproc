@@ -39,9 +39,9 @@ fi
 cd BHT_decomp
 
 echo "Run melodic on 8 trials of BH for sub ${sub} ses ${ses}"
-melodic -i sub-${sub}_ses-${ses}_trials-8 -o sub-${sub}_ses-${ses}_trials-8 -m sub-${sub}_mask --report
+melodic -i sub-${sub}_ses-${ses}_trials-8 -o sub-${sub}_ses-${ses}_trials-8 -m sub-${sub}_mask --update_mask --report
 echo "Run melodic on RS for sub ${sub} ses ${ses}"
-melodic -i sub-${sub}_ses-${ses}_rest -o sub-${sub}_ses-${ses}_rest -m sub-${sub}_mask --report
+melodic -i sub-${sub}_ses-${ses}_rest -o sub-${sub}_ses-${ses}_rest -m sub-${sub}_mask --update_mask --report
 
 for trial in 1 2 3 5
 do
@@ -55,7 +55,7 @@ do
 	if [ ! -d sub-${sub}_ses-${ses}_trials-${trial} ] || [[ ${overwrite} == "overwrite" ]]
 	then
 		echo "Run melodic on ${trial} trials of BH for sub ${sub} ses ${ses}"
-		melodic -i sub-${sub}_ses-${ses}_trials-${trial} -o sub-${sub}_ses-${ses}_trials-${trial} -m sub-${sub}_mask --report
+		melodic -i sub-${sub}_ses-${ses}_trials-${trial} -o sub-${sub}_ses-${ses}_trials-${trial} -m sub-${sub}_mask --update_mask --report
 	fi
 done
 

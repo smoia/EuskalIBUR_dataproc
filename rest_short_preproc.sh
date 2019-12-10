@@ -116,7 +116,7 @@ echo "*** Func SPC rest_run-${run} BOLD optcom"
 echo "************************************"
 echo "************************************"
 
-./02.func_preproc/09.func_spc.sh ${bold}_bet ${fdir}
+./02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir}
 
 # First two outputs
 immv ${fdir}/${bold}_tpp ${fdir}/00.${bold}_native_preprocessed

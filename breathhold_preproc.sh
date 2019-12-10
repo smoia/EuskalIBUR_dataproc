@@ -108,14 +108,14 @@ echo "*** Func Pepolar breathhold BOLD optcom"
 echo "************************************"
 echo "************************************"
 
-./02.func_preproc/02.func_pepolar.sh ${bold}_tpp ${fdir} ${sbrf}_topup
+./02.func_preproc/02.func_pepolar.sh ${bold}_bet ${fdir} ${sbrf}_topup
 
 echo "************************************"
 echo "*** Func SPC breathhold BOLD optcom"
 echo "************************************"
 echo "************************************"
 
-./02.func_preproc/09.func_spc.sh ${bold}_bet ${fdir}
+./02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir}
 
 # First two outputs
 immv ${fdir}/${bold}_tpp ${fdir}/00.${bold}_native_preprocessed

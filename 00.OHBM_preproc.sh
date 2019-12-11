@@ -175,9 +175,9 @@ fi
 #########    Rest preproc    #########
 ######################################
 
-./rest_short_preproc.sh ${sub} ${ses} 01 ${wdr} ${flpr} \
-						${fdir} ${vdsc} "${TEs}" \
-						${nTE} ${siot} ${dspk}
+#./rest_short_preproc.sh ${sub} ${ses} 01 ${wdr} ${flpr} \
+#						${fdir} ${vdsc} "${TEs}" \
+#						${nTE} ${siot} ${dspk}
 
 date
 echo "************************************"

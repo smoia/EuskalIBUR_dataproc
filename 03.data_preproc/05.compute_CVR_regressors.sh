@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-wdr=${1:-/data}
+# sub     > $1
+# ses     > $2
+# ftype   > $3
+# ftype can be any meica denoising, optcom or echo-2
+
+wdr=${4:-/data}
 
 ### Main ###
 
@@ -10,6 +15,6 @@ cd ${wdr} || exit
 
 echo "Compute CVR regressors"
 
-python3 ${cwd}/20.python_scripts/compute_CVR_regressors.py
+python3 ${cwd}/20.python_scripts/compute_CVR_regressors.py $1 $2 $3
 
 cd ${cwd}

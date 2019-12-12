@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 
+import sys
 import os
 import biopac_preproc as bio
 import numpy as np
+
+sub = sys.argv[1]
+ses = sys.argv[2]
+ftype = sys.argv[3]
 
 wdir = '/data'
 SET_DPI = 100
@@ -10,17 +15,12 @@ SET_DPI = 100
 cwd = os.getcwd()
 
 os.chdir(wdir)
-for sub in ['007', '003', '002']:
-    lastses = 10
 
-    for ses in range(1, lastses):
-        filename = f'sub-{sub}/ses-{ses:02g}/func_phys/sub-{sub}_ses-{ses:02g}_task-breathhold_physio'
-        npidx = np.genfromtxt(f'{filename}_manualpeaks.1D').astype('int')
-        co = np.genfromtxt(f'{filename}_co_orig.1D')
+filename = f'sub-{sub}/ses-{ses:02g}/func_phys/sub-{sub}_ses-{ses:02g}_task-breathhold_physio'
+npidx = np.genfromtxt(f'{filename}_manualpeaks.1D').astype('int')
+co = np.genfromtxt(f'{filename}_co_orig.1D')
 
-        ftype_list = ['optcom', 'echo-2', 'meica', 'vessels']  #, 'networks']
-        for ftype in ftype_list:
-            GM_name = f'CVR/sub-{sub}_ses-{ses:02g}_GM_{ftype}_avg'
-            bio.parttwo(co, npidx, filename, GM_name)
+GM_name = f'CVR/sub-{sub}_ses-{ses:02g}_GM_{ftype}_avg'
+bio.parttwo(co, npidx, filename, GM_name)
 
 os.chdir(cwd)

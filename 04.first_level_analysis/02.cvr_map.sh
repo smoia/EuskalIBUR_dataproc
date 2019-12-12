@@ -11,7 +11,7 @@ sub=$1
 ses=$2
 ftype=$3
 
-# ftype is optcom, echo-2, meica, vessels, networks
+# ftype is optcom, echo-2, or any denoising of meica, vessels, and networks
 
 wdr=${4:-/data}
 
@@ -21,7 +21,7 @@ freq=40
 tr=1.5
 
 case "${ftype}" in
-	meica | vessels | networks ) tscore=2.7	;;
+	meica* | vessels* | networks* ) tscore=2.7	;;
 	optcom | echo-2 ) tscore=2.6 ;;
 	* ) echo "Wrong ftype: ${ftype}"; exit ;;
 esac
@@ -42,16 +42,8 @@ shiftdir=${flpr}_GM_${ftype}_avg_regr_shift
 # Are you sure it's the right answer?
 cd ${wdr}/CVR || exit
 
-
-func=00.${flpr}_task-breathhold_${ftype}_bold_native_preprocessed
-mask=${flpr}_${ftype}_mask
-
-fslmaths ${fdir}/${func} -Tmean ${flpr}_${ftype}_mean
-fslmaths ${flpr}_${ftype}_mean -bin ${mask}
-
-3dTproject -polort 3 -input ${fdir}/${func}.nii.gz -mask ${mask}.nii.gz -prefix ${flpr}_${ftype}_pp.nii.gz -overwrite
-
-fslmaths ${flpr}_${ftype}_pp -div ${flpr}_${ftype}_mean ${flpr}_${ftype}_SPC
+func=${fdir}/01.${flpr}_task-breathhold_${ftype}_bold_native_SPC_preprocessed
+mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
 
 if [ -d tmp.${flpr}_${ftype}_res ]
 then
@@ -64,13 +56,14 @@ for i in $( seq -f %04g 0 ${step} ${miter} )
 do
 	if [ -e ${shiftdir}/shift_${i}.1D ]
 	then
-		3dDetrend -prefix - -polort 3 ${shiftdir}/shift_${i}.1D\' > ${shiftdir}/shift_${i}_pp.1D
-
-		if [[ ${ftype} == 'meica' ]]
+		if [[ ${ftype} == 'optcom' || ${ftype} == 'echo-2' ]]
 		then
-			3dDeconvolve -input ${flpr}_${ftype}_SPC.nii.gz -jobs 6 \
+			3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 			-float -num_stimts 1 \
 			-mask ${mask}.nii.gz \
+			-polort 3 \
+			-ortvec ${flpr}_demean.par motdemean \
+			-ortvec ${flpr}_deriv1.par motderiv1 \
 			-stim_file 1 ${shiftdir}/shift_${i}_pp.1D \
 			-x1D ${shiftdir}/mat.1D \
 			-xjpeg ${shiftdir}/mat.jpg \
@@ -78,11 +71,10 @@ do
 			-rout -tout \
 			-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz
 		else
-			3dDeconvolve -input ${flpr}_${ftype}_SPC.nii.gz -jobs 6 \
+			3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 			-float -num_stimts 1 \
 			-mask ${mask}.nii.gz \
-			-ortvec ${flpr}_demean.par motdemean \
-			-ortvec ${flpr}_deriv1.par motderiv1 \
+			-polort 3 \
 			-stim_file 1 ${shiftdir}/shift_${i}_pp.1D \
 			-x1D ${shiftdir}/mat.1D \
 			-xjpeg ${shiftdir}/mat.jpg \
@@ -111,7 +103,6 @@ done
 fslmerge -tr ${flpr}_${ftype}_r2_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_r2_* ${tr}
 fslmerge -tr ${flpr}_${ftype}_betas_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_* ${tr}
 fslmerge -tr ${flpr}_${ftype}_tstat_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_tstat_* ${tr}
-# fslmerge -t ${flpr}_${ftype}_betas_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_*
 
 fslmaths ${flpr}_${ftype}_r2_time -Tmaxn ${flpr}_${ftype}_cvr_idx
 fslmaths ${flpr}_${ftype}_cvr_idx -mul ${step} -sub ${poslag} -mul 0.025 ${flpr}_${ftype}_cvr_lag

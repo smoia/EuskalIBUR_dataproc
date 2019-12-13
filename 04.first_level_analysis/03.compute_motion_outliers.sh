@@ -53,7 +53,7 @@ do
 				 -x1D tmp.${flpr}_nuisreg_mat.1D \
 				 -x1D_stop
 	fslmaths ${func} -Tmean tmp.${flpr}_avg
-	3dTproject -polort 0 -input ${func}.nii.gz -mask ${wdr}/sub-${sub}/ses-${ses}/reg/${mref}_mask.nii.gz \
+	3dTproject -polort 0 -input ${func}.nii.gz -mask ${wdr}/sub-${sub}/ses-${ses}/reg/${mref}_brain_mask.nii.gz \
 			   -ort tmp.${flpr}_nuisreg_mat.1D -prefix tmp.${flpr}_prj.nii.gz \
 			   -overwrite
 	fslmaths tmp.${flpr}_prj -add tmp.${flpr}_avg tmp.${flpr}_den

@@ -64,8 +64,8 @@ do
 done
 
 echo "Collecting DVARS Pre-motcor and FD"
-cp ${fdir}/${func}_dvars_pre.par sub-${sub}/dvars_pre_${flpr}.1D
-cp ${fdir}/${func}_dvars_fd.par sub-${sub}/fc_${flpr}.1D
+cp ${fdir}//${flpr}_task-breathhold_echo-1_bold_dvars_pre.par sub-${sub}/dvars_pre_${flpr}.1D
+cp ${fdir}//${flpr}_task-breathhold_echo-1_bold_fd.par sub-${sub}/fd_${flpr}.1D
 
 for type in meica #vessels networks
 do

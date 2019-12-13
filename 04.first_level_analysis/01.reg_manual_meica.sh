@@ -83,7 +83,10 @@ paste ${flpr}_rejected_fsl_list.1D tmp.${flpr}_vessels.1D -d , > ${flpr}_vessels
 paste ${flpr}_vessels_fsl_list.1D tmp.${flpr}_networks.1D -d , > ${flpr}_networks_fsl_list.1D
 
 # 01.9. Run 4D denoise
-# 01.9.1. Transforming kappa based idx into var based idx
+# 01.9.1. Start with dropping the first line of the tsv output.
+csvtool -t TAB -u TAB drop 1 ${meica_fldr}/ica_mixing_orig.tsv > tmp.${flpr}_mmix_orig.tsv
+
+# 01.9.2. Transforming kappa based idx into var based idx
 for type in rejected vessels networks
 do
 	touch tmp.${flpr}_${type}_var_list.1D
@@ -93,7 +96,6 @@ do
 	done
 	csvtool -u SPACE transpose tmp.${flpr}_${type}_var_list.1D > ${flpr}_${type}_var_list.1D
 done
-
 
 # 02. Running different kinds of denoise: aggressive, orthogonalised, partial regression, multivariate
 
@@ -116,7 +118,7 @@ done
 for type in rejected vessels networks
 do
 	3dSynthesize -cbucket ${meica_fldr}/ica_components_orig.nii.gz \
-				 -matrix tmp.${flpr}_mmix.tsv -TR ${TR} \
+				 -matrix tmp.${flpr}_mmix_orig.tsv -TR ${TR} \
 				 -select $( cat ${flpr}_${type}_var_list.1D ) \
 				 -prefix tmp.${flpr}_${type}_volume.nii.gz \
 				 -overwrite
@@ -128,7 +130,7 @@ fslmaths ${fdir}/${bold}_meica-mvar_bold_bet -sub tmp.${flpr}_vessels_volume \
 fslmaths ${fdir}/${bold}_vessels-mvar_bold_bet -sub tmp.${flpr}_networks_volume \
 		 ${fdir}/${bold}_networks-mvar_bold_bet
 
-rm tmp.${flpr}_*
+# rm tmp.${flpr}_*
 
 cd ${cwd}
 

@@ -23,7 +23,7 @@ cd ME_Denoising
 if [[ ! -d "sub-${sub}" ]]; then mkdir sub-${sub}; fi
 
 flpr=sub-${sub}_ses-${ses}
-mref=${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_brain
+mref=sub-${sub}_sbref
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 
 # 01. Register GM to MREF if necessary
@@ -34,7 +34,7 @@ then
 	aref=sub-${sub}_ses-01_T2w
 
 	antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-${ses}/anat_preproc/${anat}_GM.nii.gz \
-						-r ${mref}.nii.gz \
+						-r ${wdr}/sub-${sub}/ses-${ses}/reg/${mref}_brain.nii.gz \
 						-o sub-${sub}_GM.nii.gz -n MultiLabel \
 						-t [${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${anat}0GenericAffine.mat,1] \
 						-t ${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${mref}0GenericAffine.mat
@@ -53,7 +53,7 @@ do
 				 -x1D tmp.${flpr}_nuisreg_mat.1D \
 				 -x1D_stop
 	fslmaths ${func} -Tmean tmp.${flpr}_avg
-	3dTproject -polort 0 -input ${func}.nii.gz -mask ${mref}_mask.nii.gz \
+	3dTproject -polort 0 -input ${func}.nii.gz -mask ${wdr}/sub-${sub}/ses-${ses}/reg/${mref}_mask.nii.gz \
 			   -ort tmp.${flpr}_nuisreg_mat.1D -prefix tmp.${flpr}_prj.nii.gz \
 			   -overwrite
 	fslmaths tmp.${flpr}_prj -add tmp.${flpr}_avg tmp.${flpr}_den

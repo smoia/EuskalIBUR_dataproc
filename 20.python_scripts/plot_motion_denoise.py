@@ -9,14 +9,17 @@ import seaborn as sns
 
 
 sub = sys.argv[1]
+SUB_LIST = ['007']
+
 
 SET_DPI = 100
 FIGSIZE = (18, 10)
 BH_LEN = 39
 
-SUB_LIST = ['007', '003', '002']
-FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica']
-COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff', '#d62728ff']
+FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',
+              'meica-preg', 'meica-mvar']
+COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff', '#d62728ff', '#ff33ccff',
+           '#663300ff', '#003300ff']
 DVARS_LIST = ['norm', 'simple']
 TIME = np.asarray(range(BH_LEN))
 

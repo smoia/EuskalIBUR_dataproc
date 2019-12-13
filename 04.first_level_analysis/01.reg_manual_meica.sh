@@ -26,7 +26,7 @@ flpr=sub-${sub}_ses-${ses}
 meica_fldr=${fdir}/${flpr}_task-breathhold_concat_bold_bet_meica
 meica_mix=${meica_fldr}/ica_mixing.tsv
 
-sbrf=sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
+sbrf=${wdr}/sub-${sub}/ses-01/func_preproc/sub-${sub}_ses-01_task-breathhold_rec-magnitude_echo-1_sbref
 func=${fdir}/${flpr}_task-breathhold_optcom_bold_bet
 bold=${flpr}_task-breathhold
 
@@ -101,14 +101,14 @@ done
 for type in rejected vessels networks
 do
 	3dTproject -input ${func}.nii.gz \
-	-ort ${flpr}_${type}.1D \
+	-ort ${flpr}_${type}.1D  -overwrite \
 	-polort -1 -prefix ${fdir}/${bold}_${type}-aggr_bold_bet.nii.gz
 	3dTproject -input ${func}.nii.gz \
-	-ort ${flpr}_${type}_ort.1D \
+	-ort ${flpr}_${type}_ort.1D  -overwrite \
 	-polort -1 -prefix ${fdir}/${bold}_${type}-orth_bold_bet.nii.gz
 	fsl_regfilt -i ${func} \
 	-d tmp.${flpr}_mmix.tsv \
-	-f "$( cat ${flpr}_${type}_fsl.1D )" \
+	-f "$( cat ${flpr}_${type}_fsl_list.1D )" \
 	-o ${fdir}/${bold}_${type}-preg_bold_bet
 done
 
@@ -117,8 +117,9 @@ for type in rejected vessels networks
 do
 	3dSynthesize -cbucket ${meica_fldr}/ica_components_orig.nii.gz \
 				 -matrix tmp.${flpr}_mmix.tsv -TR ${TR} \
-				 -select "$( cat ${flpr}_${type}_var_list.1D )" \
-				 -prefix tmp.${flpr}_${type}_volume.nii.gz
+				 -select $( cat ${flpr}_${type}_var_list.1D ) \
+				 -prefix tmp.${flpr}_${type}_volume.nii.gz \
+				 -overwrite
 done
 
 fslmaths ${func} -sub tmp.${flpr}_rejected_volume ${fdir}/${bold}_meica-mvar_bold_bet
@@ -128,6 +129,8 @@ fslmaths ${fdir}/${bold}_vessels-mvar_bold_bet -sub tmp.${flpr}_networks_volume 
 		 ${fdir}/${bold}_networks-mvar_bold_bet
 
 rm tmp.${flpr}_*
+
+cd ${cwd}
 
 # 03. Change all the "rejected" names into "meica"
 for den in aggr orth preg
@@ -146,6 +149,3 @@ do
 		immv ${fdir}/${bold}_${type}-${den}_bold_SPC ${fdir}/01.${bold}_${type}-${den}_bold_native_SPC_preprocessed
 	done
 done
-
-
-cd ${cwd}

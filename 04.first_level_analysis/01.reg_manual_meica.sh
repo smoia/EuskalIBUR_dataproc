@@ -83,10 +83,7 @@ paste ${flpr}_rejected_fsl_list.1D tmp.${flpr}_vessels.1D -d , > ${flpr}_vessels
 paste ${flpr}_vessels_fsl_list.1D tmp.${flpr}_networks.1D -d , > ${flpr}_networks_fsl_list.1D
 
 # 01.9. Run 4D denoise
-# 01.9.1. Start with dropping the first line of the tsv output.
-csvtool -t TAB -u TAB drop 1 ${meica_fldr}/ica_mixing_orig.tsv > tmp.${flpr}_mmix_orig.tsv
-
-# 01.9.2. Transforming kappa based idx into var based idx
+# 01.9.1. Transforming kappa based idx into var based idx
 for type in rejected vessels networks
 do
 	touch tmp.${flpr}_${type}_var_list.1D
@@ -96,6 +93,8 @@ do
 	done
 	csvtool -u SPACE transpose tmp.${flpr}_${type}_var_list.1D > ${flpr}_${type}_var_list.1D
 done
+# 01.9.2. Add a blank line at the beginning probably due to "feature" of 3dSynthesize version Dec 5 2019
+echo "   " | cat - ${meica_fldr}/ica_mixing_orig.tsv > tmp.${flpr}_orig_mix
 
 # 02. Running different kinds of denoise: aggressive, orthogonalised, partial regression, multivariate
 
@@ -118,19 +117,25 @@ done
 for type in rejected vessels networks
 do
 	3dSynthesize -cbucket ${meica_fldr}/ica_components_orig.nii.gz \
-				 -matrix tmp.${flpr}_mmix_orig.tsv -TR ${TR} \
+				 -matrix tmp.${flpr}_orig_mix -TR ${TR} \
 				 -select $( cat ${flpr}_${type}_var_list.1D ) \
 				 -prefix tmp.${flpr}_${type}_volume.nii.gz \
 				 -overwrite
 done
 
-fslmaths ${func} -sub tmp.${flpr}_rejected_volume ${fdir}/${bold}_meica-mvar_bold_bet
-fslmaths ${fdir}/${bold}_meica-mvar_bold_bet -sub tmp.${flpr}_vessels_volume \
-		 ${fdir}/${bold}_vessels-mvar_bold_bet
-fslmaths ${fdir}/${bold}_vessels-mvar_bold_bet -sub tmp.${flpr}_networks_volume \
-		 ${fdir}/${bold}_networks-mvar_bold_bet
+# 02.3. Computing voxelwise std of the original volume,
+#       multiplying the results of 3dSynthesize to scale them to the original data,
+#	    substracting
+fslmaths ${func} -Tstd tmp.${flpr}_std
 
-# rm tmp.${flpr}_*
+fslmaths tmp.${flpr}_rejected_volume -mul tmp.${flpr}_std -sub ${func} \
+		 -mul -1 ${fdir}/${bold}_meica-mvar_bold_bet
+fslmaths tmp.${flpr}_vessels_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_meica-mvar_bold_bet \
+		 -mul -1 ${fdir}/${bold}_vessels-mvar_bold_bet
+fslmaths tmp.${flpr}_networks_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_vessels-mvar_bold_bet \
+		 -mul -1 ${fdir}/${bold}_networks-mvar_bold_bet
+
+rm tmp.${flpr}_*
 
 cd ${cwd}
 

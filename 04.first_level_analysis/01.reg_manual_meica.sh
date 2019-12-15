@@ -134,8 +134,8 @@ fslmaths tmp.${flpr}_vessels_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_me
 		 -mul -1 ${fdir}/${bold}_vessels-mvar_bold_bet
 fslmaths tmp.${flpr}_networks_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_vessels-mvar_bold_bet \
 		 -mul -1 ${fdir}/${bold}_networks-mvar_bold_bet
-exit
-# rm tmp.${flpr}_*
+
+rm tmp.${flpr}_*
 
 cd ${cwd}
 

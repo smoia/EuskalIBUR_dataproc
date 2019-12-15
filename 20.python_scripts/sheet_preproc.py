@@ -12,8 +12,6 @@ cwd = os.getcwd()
 
 os.chdir('/data')
 
-sub_list = ['007', '003', '002']
-
 xl = pd.ExcelFile('MEICA.xlsx')
 
 if not os.path.exists('decomp'):

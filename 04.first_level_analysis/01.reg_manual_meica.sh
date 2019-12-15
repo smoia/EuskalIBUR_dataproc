@@ -16,7 +16,7 @@ cd ${wdr} || exit
 if [[ ! -d "decomp" ]]
 then
 	cd ${cwd}
-	03.data_preproc/01.sheet_preproc.sh
+	03.data_preproc/01.sheet_preproc.sh ${sub}
 	cd ${wdr}
 fi
 
@@ -71,7 +71,7 @@ csvtool -t TAB -u TAB drop 1 ${meica_mix} > tmp.${flpr}_mmix.tsv
 
 # 01.8.2. Add 1 to the indexes to use with fsl_regfilt - which means:
 # transpose, add one, transpose, paste different solutions together.
-for type in rejected vessels networks
+for type in rejected  # vessels networks
 do
 	csvtool transpose ${flpr}_${type}_list.1D > tmp.${flpr}_${type}_transpose.1D
 	1deval -a tmp.${flpr}_${type}_transpose.1D -expr 'a+1' > tmp.${flpr}_${type}.fsl.1D
@@ -84,7 +84,7 @@ paste ${flpr}_vessels_fsl_list.1D tmp.${flpr}_networks.1D -d , > ${flpr}_network
 
 # 01.9. Run 4D denoise
 # 01.9.1. Transforming kappa based idx into var based idx
-for type in rejected vessels networks
+for type in rejected  # vessels networks
 do
 	touch tmp.${flpr}_${type}_var_list.1D
 	for i in $( cat tmp.${flpr}_${type}_transpose.1D )
@@ -99,7 +99,7 @@ echo "   " | cat - ${meica_fldr}/ica_mixing_orig.tsv > tmp.${flpr}_orig_mix
 # 02. Running different kinds of denoise: aggressive, orthogonalised, partial regression, multivariate
 
 # 02.1. Running aggressive, orthogonalised, and partial regression
-for type in rejected vessels networks
+for type in rejected  # vessels networks
 do
 	3dTproject -input ${func}.nii.gz \
 	-ort ${flpr}_${type}.1D  -overwrite \
@@ -114,7 +114,7 @@ do
 done
 
 # 02.2. Run 4D denoise (multivariate): recreates a matrix of noise post-ICA, then substract it from original data.
-for type in rejected vessels networks
+for type in rejected  # vessels networks
 do
 	3dSynthesize -cbucket ${meica_fldr}/ica_components_orig.nii.gz \
 				 -matrix tmp.${flpr}_orig_mix -TR ${TR} \
@@ -130,10 +130,10 @@ fslmaths ${func} -Tstd tmp.${flpr}_std
 
 fslmaths tmp.${flpr}_rejected_volume -mul tmp.${flpr}_std -sub ${func} \
 		 -mul -1 ${fdir}/${bold}_meica-mvar_bold_bet
-fslmaths tmp.${flpr}_vessels_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_meica-mvar_bold_bet \
-		 -mul -1 ${fdir}/${bold}_vessels-mvar_bold_bet
-fslmaths tmp.${flpr}_networks_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_vessels-mvar_bold_bet \
-		 -mul -1 ${fdir}/${bold}_networks-mvar_bold_bet
+# fslmaths tmp.${flpr}_vessels_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_meica-mvar_bold_bet \
+# 		 -mul -1 ${fdir}/${bold}_vessels-mvar_bold_bet
+# fslmaths tmp.${flpr}_networks_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_vessels-mvar_bold_bet \
+# 		 -mul -1 ${fdir}/${bold}_networks-mvar_bold_bet
 
 rm tmp.${flpr}_*
 
@@ -146,7 +146,7 @@ do
 done
 
 # Topup everything!
-for type in meica vessels networks
+for type in meica  # vessels networks
 do
 	for den in aggr orth preg mvar
 	do

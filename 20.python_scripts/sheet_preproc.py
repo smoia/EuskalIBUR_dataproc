@@ -7,6 +7,7 @@ import pandas as pd
 from numpy import savetxt
 
 sub = sys.argv[1]
+LAST_SES = 5
 
 cwd = os.getcwd()
 
@@ -23,7 +24,8 @@ sub_table = pd.read_excel(xl, sub)
 # Uncomment this for fsl_regfilt
 # sub_table.index += 1
 
-for ses in range(1, 11):
+LAST_SES += 1
+for ses in range(1, LAST_SES):
     col = f'ses-{ses:02d}'
     net = sub_table.index[sub_table[col] == 'N'].tolist()
     vas = sub_table.index[sub_table[col] == 'V'].tolist()

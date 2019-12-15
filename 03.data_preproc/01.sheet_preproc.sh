@@ -12,7 +12,7 @@ cd ${wdr} || exit
 
 echo "Processing sheet"
 
-if [[ -d "decomp" ]]; then rm -rf decomp; fi
+if [[ ! -d "decomp" ]]; then mkdir decomp; fi
 
 python3 ${cwd}/20.python_scripts/sheet_preproc.py $1
 

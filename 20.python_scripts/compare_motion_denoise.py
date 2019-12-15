@@ -5,7 +5,9 @@ import pandas as pd
 import numpy as np
 
 NTE = 5
-LAST_SES = 1
+LAST_SES = 5
+SUB_LIST = ['001', '002', '003', '004', '007']
+
 
 def compute_slope(x, y):
     m = ((x*y).mean() - x.mean()*y.mean()) / ((x**2).mean() - (x.mean())**2)
@@ -18,18 +20,17 @@ os.chdir('/data')
 
 os.chdir('ME_Denoising')
 
-sub_list = ['007']
 
 # 01. Read and organise motion related parameters
-ftype_list = ['optcom', 'meica-aggr', 'meica-orth', 'meica-preg',
-              'meica-mvar', 'echo-2']
+ftype_list = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-preg',
+              'meica-mvar']
 
 LAST_SES += 1
 
 sub_table = pd.DataFrame()
 slope_table = pd.DataFrame()
 
-for sub in sub_list:
+for sub in SUB_LIST:
     slopes = np.zeros([len(ftype_list) * LAST_SES])
     for ses in range(1, LAST_SES):
         for mot_type in ['dvars_pre', 'fd']:

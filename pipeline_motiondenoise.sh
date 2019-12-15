@@ -25,20 +25,19 @@ echo "************************************"
 # saving the current wokdir
 cwd=$(pwd)
 
-./20.sheet_preproc.sh
-
-for sub in 007 003 002
+for sub in 001 002 003 004 007
 do
+	./03.data_preproc/01.sheet_preproc.sh ${sub}
 	for ses in $( seq -f %02g 1 9 )
 	do
-		# ./30.reg_manual_meica.sh ${sub} ${ses}
-		./32.compute_motion_outliers.sh ${sub} ${ses}
+		./04.first_level_analysis/01.reg_manual_meica.sh ${sub} ${ses}
+		./04.first_level_analysis/03.compute_motion_outliers.sh ${sub} ${ses}
 	done
 done
 
-./51.compare_motion_denoise.sh
+./05.second_level_analysis/02.compare_motion_denoise.sh
 
-./71.plot_motion_denoise.sh
+./10.visualisation/02.plot_motion_denoise.sh
 
 echo ""
 echo ""

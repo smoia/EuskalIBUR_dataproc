@@ -25,8 +25,8 @@ if [ ! -e ${wdr}/CVR/sub-${sub}_GM_native.nii.gz ]
 then
 	antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-${ses}/${adir}/${anat}_GM.nii.gz -r ${wdr}/sub-${sub}/ses-${ses}/reg/${mref}.nii.gz \
 						-o ${wdr}/CVR/sub-${sub}_GM_native.nii.gz -n MultiLabel \
-						-t [${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${anat}0GenericAffine.mat,1] \
-						-t ${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${mref}0GenericAffine.mat
+						-t ${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${mref}0GenericAffine.mat \
+						-t [${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${anat}0GenericAffine.mat,1]
 fi
 
 cd ${wdr}/CVR
@@ -42,7 +42,7 @@ do
 			  -m sub-${sub}_GM_eroded > sub-${sub}_ses-${ses}_GM_${ftype}_avg.1D
 done
 
-for ftype in meica vessels networks
+for ftype in meica  # vessels networks
 do
 	for den in aggr orth preg mvar
 	do

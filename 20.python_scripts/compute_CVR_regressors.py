@@ -16,11 +16,11 @@ cwd = os.getcwd()
 
 os.chdir(wdir)
 
-filename = f'sub-{sub}/ses-{ses:02g}/func_phys/sub-{sub}_ses-{ses:02g}_task-breathhold_physio'
+filename = f'sub-{sub}/ses-{ses}/func_phys/sub-{sub}_ses-{ses}_task-breathhold_physio'
 npidx = np.genfromtxt(f'{filename}_manualpeaks.1D').astype('int')
 co = np.genfromtxt(f'{filename}_co_orig.1D')
 
-GM_name = f'CVR/sub-{sub}_ses-{ses:02g}_GM_{ftype}_avg'
+GM_name = f'CVR/sub-{sub}_ses-{ses}_GM_{ftype}_avg'
 bio.parttwo(co, npidx, filename, GM_name)
 
 os.chdir(cwd)

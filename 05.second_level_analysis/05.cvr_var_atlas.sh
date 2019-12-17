@@ -20,28 +20,13 @@ do
 	rdir=${wdr}/sub-${sub}/ses-01/reg
 	aparc=${adir}/sub-${sub}_ses-01_aparc2009
 
-	atlas=${cwd}/Schaefer2018_400Parcels_17Networks_order_FSLMNI152_1mm
+	atlas=${cwd}/Schaefer2018_400Parcels_7Networks_order_FSLMNI152_1mm
 	mref=${rdir}/sub-${sub}_sbref_brain
 
 	if [ ! -e sub-${sub}_atlas.nii.gz ]
 	then
-		echo -e "Create mask of grey matter cerebellum"
-		3dcalc -overwrite -a ${aparc}.nii.gz -datum byte -prefix tmp.sub-${sub}_cerebellum_mask.nii.gz -expr 'amongst(a,8,47)'
-		echo -e "Create mask of subcortical structures"
-		3dcalc -overwrite -a ${aparc}.nii.gz -datum byte -prefix tmp.sub-${sub}_subcortical_mask.nii.gz -expr 'amongst(a,9,10,11,12,13,17,18,19,20,26,27,28,48,49,50,51,52,53,54,55,56,58,59,60)'
-
 		antsApplyTransforms -d 3 -i ${adir}_preproc/sub-${sub}_ses-01_acq-uni_T1w_GM.nii.gz -r ${mref}.nii.gz \
 							-o sub-${sub}_GM_mask.nii.gz -n MultiLabel \
-							-t ${rdir}/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat \
-							-t [${rdir}/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat,1]
-
-		antsApplyTransforms -d 3 -i tmp.sub-${sub}_cerebellum_mask.nii.gz -r ${mref}.nii.gz \
-							-o sub-${sub}_cerebellum_mask.nii.gz -n MultiLabel \
-							-t ${rdir}/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat \
-							-t [${rdir}/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat,1]
-
-		antsApplyTransforms -d 3 -i tmp.sub-${sub}_subcortical_mask.nii.gz -r ${mref}.nii.gz \
-							-o sub-${sub}_subcortical_mask.nii.gz -n MultiLabel \
 							-t ${rdir}/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat \
 							-t [${rdir}/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat,1]
 
@@ -57,12 +42,16 @@ do
 							-t [${rdir}/sub-${sub}_ses-01_acq-uni_T1w2std0GenericAffine.mat,1] \
 							-t ${rdir}/sub-${sub}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz
 
-		3dcalc -overwrite -a sub-${sub}_atlas.nii.gz -b sub-${sub}_GM_mask.nii.gz \
-			   -c sub-${sub}_aparc.nii.gz -d sub-${sub}_subcortical_mask.nii.gz \
-			   -e ${mref}_mask.nii.gz \
-			   -expr "(a+(c+400-a*b)*d)*e" -prefix sub-${sub}_atlas.nii.gz
-	fi
+		echo -e "Create mask of subcortical structures and GM cerebellum"
+		3dcalc -overwrite -a sub-${sub}_aparc.nii.gz -b sub-${sub}_atlas.nii.gz -prefix tmp.sub-${sub}_subcortical.nii.gz \
+			   -expr 'posval(a*amongst(a,8,9,10,11,12,13,17,18,19,20,26,27,28,47,48,49,50,51,52,53,54,55,56,58,59,60)-b)'
 
+		3dcalc -a tmp.sub-${sub}_subcortical.nii.gz -prefix tmp.sub-${sub}_atlas_subcortical.nii.gz -overwrite \
+			   -expr '(a-7)*within(a,8,13)+(a-10)*within(a,17,20)+(a-15)*within(a,26,28)+(a-33)*within(a,47,56)+(a-34)*within(a,58,60)+400'
+
+		fslmaths tmp.sub-${sub}_atlas_subcortical -mas tmp.sub-${sub}_subcortical.nii.gz -add sub-${sub}_atlas -mas ${mref}_mask.nii.gz sub-${sub}_atlas.nii.gz
+	fi
+ 
 	echo "Making hypervolume for CoV"
 
 	for cvr_type in cvr cvr_simple cvr_lag tmap

@@ -80,9 +80,7 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST):
 def plot_timeseries_and_BOLD_vs_FD(ftypes=FTYPE_LIST):
     for sub in SUB_LIST:
         bh_timeplot = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
-        bh_scatterplot = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
         bh_timeplot.suptitle(f'BreathHold (BH) response, subject {sub}')
-        bh_scatterplot.suptitle(f'BOLD vs FD, subject {sub}')
 
         gs = bh_timeplot.add_gridspec(nrows=len(ftypes), ncols=2)
         for col in range(2):
@@ -122,8 +120,6 @@ def plot_timeseries_and_BOLD_vs_FD(ftypes=FTYPE_LIST):
             bh_timesubplot.set_ylim(0, (avg + std).max()+((avg + std).max()/10))
             bh_timesubplot.set_ylabel('avg DVARS')
 
-        bh_scattersubplot = bh_scatterplot.add_subplot(1, 1, 1)
-
         avg = np.empty((len(ftypes), BH_LEN))
         std = np.empty((len(ftypes), BH_LEN))
         max_delta_y = 0  # This is for visualisation purposes
@@ -150,8 +146,6 @@ def plot_timeseries_and_BOLD_vs_FD(ftypes=FTYPE_LIST):
             bh_timesubplot.fill_between(TIME, avg[i, :] - std[i, :],
                                         avg[i, :] + std[i, :],
                                         color=COLOURS[i], alpha=0.2)
-            bh_scattersubplot.plot(avg[i, :], fd_responses.mean(axis=0), 'o',
-                                   label=f'{ftype}', color=COLOURS[i])
 
             min_y = (avg - std)[i, :].min() - 0.002
             bh_timesubplot.set_ylim(min_y, min_y+max_delta_y)
@@ -160,10 +154,6 @@ def plot_timeseries_and_BOLD_vs_FD(ftypes=FTYPE_LIST):
 
         bh_timeplot.savefig(f'{sub}_BOLD_time.png', dpi=SET_DPI)
 
-        bh_scatterplot.legend()
-        bh_scattersubplot.set_xlabel('avg BOLD')
-        bh_scattersubplot.set_ylabel('FD')
-        bh_scatterplot.savefig(f'{sub}_BOLD_vs_FD.png', dpi=SET_DPI)
         plt.close('all')
 
         for ses in range(1, LAST_SES):

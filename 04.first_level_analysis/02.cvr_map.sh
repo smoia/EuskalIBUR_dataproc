@@ -62,9 +62,9 @@ do
 			-float -num_stimts 1 \
 			-mask ${mask}.nii.gz \
 			-polort 3 \
-			-ortvec ${flpr}_demean.par motdemean \
-			-ortvec ${flpr}_deriv1.par motderiv1 \
-			-stim_file 1 ${shiftdir}/shift_${i}_pp.1D \
+			-ortvec ${flpr}_motpar_demean.par motdemean \
+			-ortvec ${flpr}_motpar_deriv1.par motderiv1 \
+			-stim_file 1 ${shiftdir}/shift_${i}.1D \
 			-x1D ${shiftdir}/mat.1D \
 			-xjpeg ${shiftdir}/mat.jpg \
 			-x1D_uncensored ${shiftdir}/${i}_uncensored_mat.1D \
@@ -75,7 +75,7 @@ do
 			-float -num_stimts 1 \
 			-mask ${mask}.nii.gz \
 			-polort 3 \
-			-stim_file 1 ${shiftdir}/shift_${i}_pp.1D \
+			-stim_file 1 ${shiftdir}/shift_${i}.1D \
 			-x1D ${shiftdir}/mat.1D \
 			-xjpeg ${shiftdir}/mat.jpg \
 			-x1D_uncensored ${shiftdir}/${i}_uncensored_mat.1D \
@@ -123,11 +123,13 @@ do
 	-expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_tmap.nii.gz -overwrite
 done
 
+# Obtain first CVR maps
 # the factor 71.2 is to take into account the pressure in mmHg:
 # CO2[mmHg] = ([pressure in Donosti]*[Lab altitude] - [Air expiration at body temperature])[mmHg]*(channel_trace[V]*10[V^(-1)]/100)
 # CO2[mmHg] = (768*0.988-47)[mmHg]*(channel_trace*10/100) ~ 71.2 mmHg
 # multiply by 100 cause it's not BOLD % yet!
 fslmaths ${flpr}_${ftype}_spc_over_V.nii.gz -div 71.2 -mul 100 ${flpr}_${ftype}_cvr.nii.gz
+fslmaths tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_0350 -div 71.2 -mul 100 ${flpr}_${ftype}_cvr_simple
 
 if [ ! -d ${flpr}_${ftype}_map_cvr ]
 then
@@ -138,34 +140,39 @@ mv ${flpr}_${ftype}_cvr* ${flpr}_${ftype}_map_cvr/.
 mv ${flpr}_${ftype}_spc* ${flpr}_${ftype}_map_cvr/.
 mv ${flpr}_${ftype}_tmap* ${flpr}_${ftype}_map_cvr/.
 
-# done
-
-##### ------------------ #
-####				    ##
-###   Getting T maps   ###
-##				      ####
-# ------------------ #####
+##### -------------------------- #
+####				            ##
+###   Getting T and CVR maps   ###
+##				              ####
+# -------------------------- #####
 
 cd ${flpr}_${ftype}_map_cvr
 
+# Applying threshold on positive and inverted negative t scores, then adding them together to have absolute tscores.
 fslmaths ${flpr}_${ftype}_tmap -thr ${tscore} ${flpr}_${ftype}_tmap_pos
-fslmaths ${flpr}_${ftype}_tmap_pos -bin ${flpr}_${ftype}_tmap_pos_mask
 fslmaths ${flpr}_${ftype}_tmap -mul -1 -thr ${tscore} ${flpr}_${ftype}_tmap_neg
-fslmaths ${flpr}_${ftype}_tmap_neg -bin ${flpr}_${ftype}_tmap_neg_mask
 fslmaths ${flpr}_${ftype}_tmap_neg -add ${flpr}_${ftype}_tmap_pos ${flpr}_${ftype}_tmap_abs
+# Binarising all the above to obtain masks.
+fslmaths ${flpr}_${ftype}_tmap_pos -bin ${flpr}_${ftype}_tmap_pos_mask
+fslmaths ${flpr}_${ftype}_tmap_neg -bin ${flpr}_${ftype}_tmap_neg_mask
 fslmaths ${flpr}_${ftype}_tmap_abs -bin ${flpr}_${ftype}_tmap_abs_mask
 
+# Apply constriction by physiology (if a voxel didn't peak in range, might never peak)
 fslmaths ${flpr}_${ftype}_cvr_idx -mul ${step} -thr 5 -uthr 705 -bin ${flpr}_${ftype}_cvr_idx_physio_constrained
 
+# Obtaining the mask of good and the mask of bad voxels.
 fslmaths ${flpr}_${ftype}_cvr_idx_physio_constrained -mas ${flpr}_${ftype}_tmap_abs_mask -bin ${flpr}_${ftype}_cvr_idx_mask
-fslmaths ../${mask} -sub ${flpr}_${ftype}_cvr_idx_mask ${flpr}_${ftype}_cvr_idx_bad_vxs
+fslmaths ${mask} -sub ${flpr}_${ftype}_cvr_idx_mask ${flpr}_${ftype}_cvr_idx_bad_vxs
 
-fslmaths ${flpr}_${ftype}_cvr_idx -sub 36 -mas ${flpr}_${ftype}_cvr_idx_mask -add 36 -mas ../${mask} ${flpr}_${ftype}_cvr_idx_corrected
+# Obtaining lag map (but check next line)
+fslmaths ${flpr}_${ftype}_cvr_idx -sub 36 -mas ${flpr}_${ftype}_cvr_idx_mask -add 36 -mas ${mask} ${flpr}_${ftype}_cvr_idx_corrected
 fslmaths ${flpr}_${ftype}_cvr_idx_corrected -mul ${step} -sub ${poslag} -mul 0.025 ${flpr}_${ftype}_cvr_lag_corrected
 
+# Mask Good CVR map
 fslmaths ${flpr}_${ftype}_cvr -mas ${flpr}_${ftype}_cvr_idx_mask ${flpr}_${ftype}_cvr_masked
 
-fslmaths ${flpr}_${ftype}_cvr_idx_bad_vxs -mul ../tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_0360 -div 71.2 -mul 100 -add ${flpr}_${ftype}_cvr_masked ${flpr}_${ftype}_cvr_corrected
+# Assign the value of the "simple" CVR map to the bad voxels to have a complete brain.
+fslmaths ${flpr}_${ftype}_cvr_idx_bad_vxs -mul ${flpr}_${ftype}_cvr_simple -add ${flpr}_${ftype}_cvr_masked ${flpr}_${ftype}_cvr_corrected
 
 cd ..
 

@@ -41,12 +41,12 @@ then
 		echo "Coregistering segmentations to ${func}"
 		antsApplyTransforms -d 3 -i ${adir}/${anat}_seg_eroded.nii.gz -r ${mref}.nii.gz \
 		-o ${adir}/${anat}_seg_native.nii.gz -n MultiLabel \
-		-t [../reg/${aref}2${anat}0GenericAffine.mat,1] \
-		-t ../reg/${aref}2${mref}0GenericAffine.mat
+		-t ../reg/${aref}2${mref}0GenericAffine.mat \
+		-t [../reg/${aref}2${anat}0GenericAffine.mat,1]
 		antsApplyTransforms -d 3 -i ${adir}/${anat}_GM_dilated.nii.gz -r ${mref}.nii.gz \
 		-o ${adir}/${anat}_GM_native.nii.gz -n MultiLabel \
-		-t [../reg/${aref}2${anat}0GenericAffine.mat,1] \
-		-t ../reg/${aref}2${mref}0GenericAffine.mat
+		-t ../reg/${aref}2${mref}0GenericAffine.mat \
+		-t [../reg/${aref}2${anat}0GenericAffine.mat,1]
 	fi
 	echo "Extracting average WM and CSF in ${func}"
 	3dDetrend -polort 5 -prefix ${func}_dtd.nii.gz ${func_in}.nii.gz -overwrite

@@ -20,11 +20,12 @@ do
 	rdir=${wdr}/sub-${sub}/ses-01/reg
 	aparc=${adir}/sub-${sub}_ses-01_aparc2009
 
-	atlas=${cwd}/Schaefer2018_400Parcels_7Networks_order_FSLMNI152_1mm
+	atlas=${cwd}/Schaefer2018_100Parcels_7Networks_order_FSLMNI152_1mm
 	mref=${rdir}/sub-${sub}_sbref_brain
 
 	if [ ! -e sub-${sub}_atlas.nii.gz ]
 	then
+		echo "Making atlas"
 		antsApplyTransforms -d 3 -i ${adir}_preproc/sub-${sub}_ses-01_acq-uni_T1w_GM.nii.gz -r ${mref}.nii.gz \
 							-o sub-${sub}_GM_mask.nii.gz -n MultiLabel \
 							-t ${rdir}/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat \
@@ -44,31 +45,47 @@ do
 
 		echo -e "Create mask of subcortical structures and GM cerebellum"
 		3dcalc -overwrite -a sub-${sub}_aparc.nii.gz -b sub-${sub}_atlas.nii.gz -prefix tmp.sub-${sub}_subcortical.nii.gz \
-			   -expr 'posval(a*amongst(a,8,9,10,11,12,13,17,18,19,20,26,27,28,47,48,49,50,51,52,53,54,55,56,58,59,60)-b)'
+			   -expr 'posval(a*amongst(a,8,9,10,11,12,13,17,18,19,20,26,27,28,47,48,49,50,51,52,53,54,55,56,58,59,60)-b*1000)'
 
 		3dcalc -a tmp.sub-${sub}_subcortical.nii.gz -prefix tmp.sub-${sub}_atlas_subcortical.nii.gz -overwrite \
-			   -expr '(a-7)*within(a,8,13)+(a-10)*within(a,17,20)+(a-15)*within(a,26,28)+(a-33)*within(a,47,56)+(a-34)*within(a,58,60)+400'
+			   -expr '(a-7)*within(a,8,13)+(a-10)*within(a,17,20)+(a-15)*within(a,26,28)+(a-33)*within(a,47,56)+(a-34)*within(a,58,60)+100'
 
 		fslmaths tmp.sub-${sub}_atlas_subcortical -mas tmp.sub-${sub}_subcortical.nii.gz -add sub-${sub}_atlas -mas ${mref}_mask.nii.gz sub-${sub}_atlas.nii.gz
 	fi
- 
-	echo "Making hypervolume for CoV"
 
-	for cvr_type in cvr cvr_simple cvr_lag tmap
+	echo "Extracting timeseries"
+
+	for cvr_type in cvr  # cvr_simple cvr_lag tmap
 	do
 		for ses in $( seq -f %02g 1 ${lastses} )
 		do
-			imcp ../sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_${cvr_type} \
-				 tmp.sub-${sub}_${ftype}_${cvr_type}_ses-${ses}
+			fslmeants -i ../sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_${cvr_type} \
+					  -o sub-${sub}_ses-${ses}_${ftype}_${cvr_type}_atlas.1D \
+					  --label=sub-${sub}_atlas.nii.gz --transpose
 		done
 
-		fslmerge -t tmp.sub-${sub}_${ftype}_${cvr_type} tmp.sub-${sub}_${ftype}_${cvr_type}_*
-		fslmaths tmp.sub-${sub}_${ftype}_${cvr_type} -Tmean tmp.sub-${sub}_${ftype}_${cvr_type}_mean
-		fslmaths tmp.sub-${sub}_${ftype}_${cvr_type} -Tstd \
-				 -div tmp.sub-${sub}_${ftype}_${cvr_type}_mean sub-${sub}_${ftype}_${cvr_type}_CoV
-		fslmeants -i sub-${sub}_${ftype}_${cvr_type}_CoV \
-				  -o sub-${sub}_${ftype}_${cvr_type}_CoV_atlas.1D \
-				  --label=sub-${sub}_atlas.nii.gz
+		paste sub-${sub}_ses-??_${ftype}_${cvr_type}_atlas.1D > 00.sub-${sub}_${ftype}_${cvr_type}_atlas.1D
+		# This is for std and CoV
+		# for ses in $( seq -f %02g 1 ${lastses} )
+		# do
+		# 	imcp ../sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_${cvr_type} \
+		# 		 tmp.sub-${sub}_${ftype}_${cvr_type}_ses-${ses}
+		# done
+
+		# This is for std
+		# fslmerge -t tmp.sub-${sub}_${ftype}_${cvr_type} tmp.sub-${sub}_${ftype}_${cvr_type}_*
+		# fslmaths tmp.sub-${sub}_${ftype}_${cvr_type} -Tstd sub-${sub}_${ftype}_${cvr_type}_std
+		# fslmeants -i sub-${sub}_${ftype}_${cvr_type}_std \
+		# 		  -o sub-${sub}_${ftype}_${cvr_type}_std_atlas.1D \
+		# 		  --label=sub-${sub}_atlas.nii.gz
+
+		# This is for CoV
+		# fslmaths tmp.sub-${sub}_${ftype}_${cvr_type} -Tmean tmp.sub-${sub}_${ftype}_${cvr_type}_mean
+		# fslmaths tmp.sub-${sub}_${ftype}_${cvr_type} -Tstd \
+		# 		 -div tmp.sub-${sub}_${ftype}_${cvr_type}_mean sub-${sub}_${ftype}_${cvr_type}_CoV
+		# fslmeants -i sub-${sub}_${ftype}_${cvr_type}_CoV \
+		# 		  -o sub-${sub}_${ftype}_${cvr_type}_CoV_atlas.1D \
+		# 		  --label=sub-${sub}_atlas.nii.gz
 	done
 
 	# The following is for 3dICC
@@ -104,6 +121,16 @@ do
 	# 				 ${sub}_${ses}_${ftype}_tmap.nii.gz
 	# done
 done
+
+rm tmp.sub-*
+
+cd ${cwd}
+
+# cat sub-*_optcom_cvr_std_atlas.1D > tmp.sub-all_optcom_cvr
+
+# echo "sub-001,sub-002,sub-003,sub-004,sub-007" > allsubs_optcom_cvr
+
+# csvtool -t SPACE transpose tmp.sub-all_optcom_cvr >> allsubs_optcom_cvr
 
 # 3dICC -prefix ${ftype}_ICC_cvr.nii.gz -jobs 6                                    \
 #       -model '1+(1|Subj)+(1|session)'                                            \
@@ -197,7 +224,3 @@ done
 #       # 007    03        007_03_${ftype}_cvr_lag.nii.gz    007_03_${ftype}_tmap.nii.gz \
 #       # 007    04        007_04_${ftype}_cvr_lag.nii.gz    007_04_${ftype}_tmap.nii.gz \
 #       # 007    05        007_05_${ftype}_cvr_lag.nii.gz    007_05_${ftype}_tmap.nii.gz
-
-rm tmp.sub-*
-
-cd ${cwd}

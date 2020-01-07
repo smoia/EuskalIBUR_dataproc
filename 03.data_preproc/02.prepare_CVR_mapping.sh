@@ -42,9 +42,9 @@ do
 			  -m sub-${sub}_GM_eroded > sub-${sub}_ses-${ses}_GM_${ftype}_avg.1D
 done
 
-for ftype in meica  # vessels networks
+for ftype in meica vessels networks
 do
-	for den in aggr orth preg mvar
+	for den in recn aggr orth preg mvar
 	do
 		fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${func}_${ftype}-${den}_bold_native_preprocessed \
 				  -m sub-${sub}_GM_eroded > sub-${sub}_ses-${ses}_GM_${ftype}-${den}_avg.1D

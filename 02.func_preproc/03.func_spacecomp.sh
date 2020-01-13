@@ -54,7 +54,7 @@ then
 	# 01.2. Demean motion parameters
 	echo "Demean and derivate ${func} motion parameters"
 	1d_tool.py -infile ${func}_mcf.par -demean -write ${func}_mcf_demean.par -overwrite
-	1d_tool.py -infile ${func}_mcf_demean.par -derivative -write ${func}_mcf_deriv1.par -overwrite
+	1d_tool.py -infile ${func}_mcf_demean.par -derivative -demean -write ${func}_mcf_deriv1.par -overwrite
 
 	# 01.3. Compute various metrics
 	echo "Computing DVARS and FD for ${func}"

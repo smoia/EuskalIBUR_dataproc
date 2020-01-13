@@ -15,7 +15,7 @@ ftype=$3
 
 wdr=${4:-/data}
 
-step=10
+step=12
 lag=9
 freq=40
 tr=1.5

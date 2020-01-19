@@ -36,7 +36,7 @@ then
 	fslmaths sub-${sub}_GM_native -kernel gauss 2.5 -ero sub-${sub}_GM_eroded
 fi
 
-for ftype in optcom  # echo-2 optcom
+for ftype in echo-2 optcom
 do
 	fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${func}_${ftype}_bold_native_preprocessed \
 			  -m sub-${sub}_GM_eroded > sub-${sub}_ses-${ses}_GM_${ftype}_avg.1D

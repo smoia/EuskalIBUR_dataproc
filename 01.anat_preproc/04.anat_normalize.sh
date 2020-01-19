@@ -68,7 +68,7 @@ fi
 echo "Registering ${anat} to resampled standard"
 antsApplyTransforms -d 3 -i ${adir}/${anat_in}.nii.gz \
 					-r ${std}_resamp_${mmres}mm.nii.gz -o ${anat}2std_resamp_${mmres}mm.nii.gz \
-					-n Linear -t ${anat}2std0GenericAffine.mat -t ${anat}2std1Warp.nii.gz
+					-n Linear -t ${anat}2std1Warp.nii.gz -t ${anat}2std0GenericAffine.mat
 
 
 cd ${cwd}

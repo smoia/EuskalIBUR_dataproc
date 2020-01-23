@@ -81,7 +81,7 @@ paste ${flpr}_rejected_fsl_list.1D tmp.${flpr}_vessels.1D -d , > ${flpr}_vessels
 paste ${flpr}_vessels_fsl_list.1D tmp.${flpr}_networks.1D -d , > ${flpr}_networks_fsl_list.1D
 
 # 01.9. Run 4D denoise
-# 01.9.1. Transforming kappa based idx into var based idx
+# 01.9.1. Transforming kappa based idx into var based idx for each type !!! independently !!!
 for type in accepted rejected vessels networks
 do
 	touch tmp.${flpr}_${type}_var_list.1D
@@ -135,12 +135,20 @@ done
 fslmaths ${func} -Tstd tmp.${flpr}_std
 fslmaths ${func} -Tmean tmp.${flpr}_mean
 
+## O: original		A: accepted only	R: rejected only	N: networks only	V: vessels only
+## PCA: O = (Y + E) * std(O) + avg(O)						E: noise
+## ICA: Y = T*S = A+R+V+N 									T: time decomp		S: space decomp
+
+# Reconstructing "good" data:   (A+V+N)*std(O)+avg(O)
 fslmaths tmp.${flpr}_accepted_volume -add tmp.${flpr}_vessels_volume -add tmp.${flpr}_networks_volume \
 		 -mul tmp.${flpr}_std -add tmp.${flpr}_mean ${fdir}/${bold}_meica-recn_bold_bet
+# Removing rejected:			[R*std(O)-O]*(-1) = R_0
 fslmaths tmp.${flpr}_rejected_volume -mul tmp.${flpr}_std -sub ${func} \
 		 -mul -1 ${fdir}/${bold}_meica-mvar_bold_bet
+# Removing vessels:			[(R*std(O)-R_0]*(-1) = V_0
 fslmaths tmp.${flpr}_vessels_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_meica-mvar_bold_bet \
 		 -mul -1 ${fdir}/${bold}_vessels-mvar_bold_bet
+# Removing networks:		[R*std(O)-V_0]*(-1)
 fslmaths tmp.${flpr}_networks_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_vessels-mvar_bold_bet \
 		 -mul -1 ${fdir}/${bold}_networks-mvar_bold_bet
 

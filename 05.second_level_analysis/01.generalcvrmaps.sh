@@ -10,7 +10,7 @@
 sub=$1
 ftype=$2
 lastses=${3:-5}
-wdr=${3:-/data}
+wdr=${4:-/data}
 
 ### Main ###
 cwd=$( pwd )

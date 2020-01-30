@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 ftype=${1:-optcom}
-lastses=${2:-10}
 wdr=${3:-/data}
 
 ### Main ###

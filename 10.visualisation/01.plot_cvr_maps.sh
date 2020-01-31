@@ -8,15 +8,15 @@ cwd=$( pwd )
 
 cd ${wdr}/CVR
 
-for sub in 007 003 002
+for sub in 001 002 003 004 007 008 009
 do
-	for ses in $( seq -f %02g 1 9 )
+	for ses in $( seq -f %02g 1 10 )
 	do
-		for ftype in echo-2 optcom meica vessels  # networks
+		for ftype in optcom echo-2 meica-aggr meica-orth meica-preg meica-mvar meica-recn vessels-preg
 		do
 			case "${ftype}" in
-				meica | vessels | networks ) tscore=2.7	;;
-				optcom | echo-2 ) tscore=2.6 ;;
+				meica* | vessels* | networks* ) tscore=3.367	;;
+				optcom | echo-2 ) tscore=1.968 ;;
 				* ) echo "There's a major screw-up here"; exit ;;
 			esac
 

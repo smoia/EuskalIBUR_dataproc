@@ -42,14 +42,14 @@ do
 			  -m sub-${sub}_GM_eroded > sub-${sub}_ses-${ses}_GM_${ftype}_avg.1D
 done
 
-# for ftype in meica vessels networks
-# do
-# 	for den in recn aggr orth preg mvar
-# 	do
-# 		fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${func}_${ftype}-${den}_bold_native_preprocessed \
-# 				  -m sub-${sub}_GM_eroded > sub-${sub}_ses-${ses}_GM_${ftype}-${den}_avg.1D
-# 	done
-# done
+for ftype in meica vessels networks
+do
+	for den in recn aggr orth preg mvar
+	do
+		fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/00.${func}_${ftype}-${den}_bold_native_preprocessed \
+				  -m sub-${sub}_GM_eroded > sub-${sub}_ses-${ses}_GM_${ftype}-${den}_avg.1D
+	done
+done
 
 cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_echo-1_bold_mcf_demean.par ./sub-${sub}_ses-${ses}_motpar_demean.par
 cp ${wdr}/sub-${sub}/ses-${ses}/${fdir}/${func}_echo-1_bold_mcf_deriv1.par ./sub-${sub}_ses-${ses}_motpar_deriv1.par

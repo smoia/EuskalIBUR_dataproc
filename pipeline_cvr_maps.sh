@@ -30,60 +30,58 @@ echo "************************************"
 echo "************************************"
 echo ""
 echo ""
-echo "************************************"
-echo "*** Processing xslx sheet"
-echo "************************************"
-echo "************************************"
 
-./20.sheet_preproc.sh
 
-for sub in 007 003 002
+for sub in 001 002 003 004 007 008 009
 do
-	for ses in $( seq -f %02g 1 9 )
+	echo "************************************"
+	echo "*** Processing xslx sheet"
+	echo "************************************"
+	echo "************************************"
+	./03.data_preproc/01.sheet_preproc.sh
+
+	for ses in $( seq -f %02g 1 10 )
 	do
 
 		echo "************************************"
 		echo "*** Denoising sub ${sub} ses ${ses}"
 		echo "************************************"
 		echo "************************************"
-		./30.reg_manual_meica.sh ${sub} ${ses}
+		./04.first_level_analysis/01.reg_manual_meica.sh ${sub} ${ses}
 
 		echo "************************************"
 		echo "*** Preparing CVR sub ${sub} ses ${ses}"
 		echo "************************************"
 		echo "************************************"
-		./21.prepare_CVR_mapping.sh ${sub} ${ses}
+		./03.data_preproc/02.prepare_CVR_mapping.sh ${sub} ${ses}
+
+		for ftype in optcom echo-2 meica-aggr meica-orth meica-preg meica-mvar meica-recn vessels-preg
+		do
+			echo "************************************"
+			echo "*** Compute CVR regressors"
+			echo "************************************"
+			echo "************************************"
+			./03.data_preproc/05.compute_CVR_regressors.sh ${sub} ${ses} ${ftype}
+
+			echo "************************************"
+			echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
+			echo "************************************"
+			echo "************************************"
+			./04.first_level_analysis/02.cvr_map.sh ${sub} ${ses} ${ftype} 
+		done
 	done
 done
 
-echo "************************************"
-echo "*** Compute CVR regressors"
-echo "************************************"
-echo "************************************"
-
-
-./24.compute_CVR_regressors.sh
-
-for sub in 007 003 002
+for sub in 001 002 003 004 007 008 009
 do
-	for ftype in echo-2 optcom meica vessels  # networks
+	for ftype in optcom echo-2 meica-aggr meica-orth meica-preg meica-mvar meica-recn vessels-preg
 	do
-		for ses in $( seq -f %02g 1 9 )
-		do
-					echo "************************************"
-					echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
-					echo "************************************"
-					echo "************************************"
-
-			./31.cvr_map.sh ${sub} ${ses} ${ftype} 
-		done
-
 		echo "************************************"
 		echo "*** General CVR sub ${sub} ${ftype}"
 		echo "************************************"
 		echo "************************************"
 
-		./50.generalcvrmaps.sh ${sub} ${ftype}
+		./05.second_level_analysis/01.generalcvrmaps.sh ${sub} ${ftype}
 	done
 done
 
@@ -92,7 +90,7 @@ echo "*** Plot CVRs"
 echo "************************************"
 echo "************************************"
 
-./70.plot_cvr_maps.sh
+./10.visualisation/01.plot_cvr_maps.sh
 
 echo ""
 echo ""

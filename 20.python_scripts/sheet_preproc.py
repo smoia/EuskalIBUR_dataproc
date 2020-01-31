@@ -7,7 +7,7 @@ import pandas as pd
 from numpy import savetxt
 
 sub = sys.argv[1]
-LAST_SES = 5
+LAST_SES = 10
 
 cwd = os.getcwd()
 

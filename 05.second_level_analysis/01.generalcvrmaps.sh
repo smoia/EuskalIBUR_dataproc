@@ -9,7 +9,7 @@
 
 sub=$1
 ftype=$2
-lastses=${3:-5}
+lastses=${3:-10}
 wdr=${4:-/data}
 
 ### Main ###

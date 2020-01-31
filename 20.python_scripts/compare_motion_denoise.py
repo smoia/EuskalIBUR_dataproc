@@ -5,8 +5,8 @@ import pandas as pd
 import numpy as np
 
 NTE = 5
-LAST_SES = 5
-SUB_LIST = ['001', '002', '003', '004', '007']
+LAST_SES = 10
+SUB_LIST = ['001', '002', '003', '004', '007', '008', '009']
 
 
 def compute_slope(x, y):

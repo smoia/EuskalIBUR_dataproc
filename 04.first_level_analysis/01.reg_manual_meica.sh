@@ -174,7 +174,9 @@ do
 	for den in recn aggr orth preg mvar
 	do
 		${cwd}/02.func_preproc/02.func_pepolar.sh ${bold}_${type}-${den}_bold_bet ${fdir} ${sbrf}_topup
+		imrm ${bold}_${type}-${den}_bold_bet.nii.gz
 		${cwd}/02.func_preproc/09.func_spc.sh ${bold}_${type}-${den}_bold_tpp ${fdir}
+		imrm ${bold}_${type}-${den}_bold_mean.nii.gz
 		immv ${fdir}/${bold}_${type}-${den}_bold_tpp ${fdir}/00.${bold}_${type}-${den}_bold_native_preprocessed
 		immv ${fdir}/${bold}_${type}-${den}_bold_SPC ${fdir}/01.${bold}_${type}-${den}_bold_native_SPC_preprocessed
 	done

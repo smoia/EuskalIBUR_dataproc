@@ -25,7 +25,7 @@ echo "************************************"
 # saving the current wokdir
 cwd=$(pwd)
 
-for sub in 001 002 003 004 007 008 009
+for sub in 003 004 007 008 009  # 001 002
 do
 	./03.data_preproc/01.sheet_preproc.sh ${sub}
 	for ses in $( seq -f %02g 1 10 )

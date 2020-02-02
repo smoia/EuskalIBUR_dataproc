@@ -97,7 +97,7 @@ echo "   " | cat - ${meica_fldr}/ica_mixing_orig.tsv > tmp.${flpr}_orig_mix
 # 02. Running different kinds of denoise: aggressive, orthogonalised, partial regression, multivariate
 
 # 02.1. Running aggressive, orthogonalised, and partial regression
-for type in rejected vessels networks
+for type in rejected vessels   # networks
 do
 	3dTproject -input ${func}.nii.gz \
 	-ort ${flpr}_${type}.1D  -overwrite \
@@ -112,7 +112,7 @@ do
 done
 
 # 02.2. Run 4D denoise (multivariate): recreates a matrix of noise post-ICA, then substract it from original data.
-for type in rejected vessels networks
+for type in rejected vessels  # networks
 do
 	3dSynthesize -cbucket ${meica_fldr}/ica_components_orig.nii.gz \
 				 -matrix tmp.${flpr}_orig_mix -TR ${TR} \
@@ -142,15 +142,21 @@ fslmaths ${func} -Tmean tmp.${flpr}_mean
 # Reconstructing "good" data:   (A+V+N)*std(O)+avg(O)
 fslmaths tmp.${flpr}_accepted_volume -add tmp.${flpr}_vessels_volume -add tmp.${flpr}_networks_volume \
 		 -mul tmp.${flpr}_std -add tmp.${flpr}_mean ${fdir}/${bold}_meica-recn_bold_bet
+# Reconstructing "vessel" data:   (A+N)*std(O)+avg(O)
+fslmaths tmp.${flpr}_accepted_volume -add tmp.${flpr}_networks_volume \
+		 -mul tmp.${flpr}_std -add tmp.${flpr}_mean ${fdir}/${bold}_meica-recn_bold_bet
+# # Reconstructing "network" data:   (A)*std(O)+avg(O)
+# fslmaths tmp.${flpr}_accepted_volume \
+# 		 -mul tmp.${flpr}_std -add tmp.${flpr}_mean ${fdir}/${bold}_meica-recn_bold_bet
 # Removing rejected:			[R*std(O)-O]*(-1) = R_0
 fslmaths tmp.${flpr}_rejected_volume -mul tmp.${flpr}_std -sub ${func} \
 		 -mul -1 ${fdir}/${bold}_meica-mvar_bold_bet
 # Removing vessels:			[(R*std(O)-R_0]*(-1) = V_0
 fslmaths tmp.${flpr}_vessels_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_meica-mvar_bold_bet \
 		 -mul -1 ${fdir}/${bold}_vessels-mvar_bold_bet
-# Removing networks:		[R*std(O)-V_0]*(-1)
-fslmaths tmp.${flpr}_networks_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_vessels-mvar_bold_bet \
-		 -mul -1 ${fdir}/${bold}_networks-mvar_bold_bet
+# # Removing networks:		[R*std(O)-V_0]*(-1)
+# fslmaths tmp.${flpr}_networks_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_vessels-mvar_bold_bet \
+# 		 -mul -1 ${fdir}/${bold}_networks-mvar_bold_bet
 
 rm tmp.${flpr}_*
 
@@ -163,7 +169,7 @@ do
 done
 
 # Topup everything!
-for type in meica vessels networks
+for type in meica vessels  # networks
 do
 	for den in recn aggr orth preg mvar
 	do

@@ -37,48 +37,9 @@ ves=$( cat ${flpr}_vessels_list.1D )
 net=$( cat ${flpr}_networks_list.1D )
 
 # 01.2. Process rejected
-1dcat "$meica_mix[$acc$net$ves]" > tmp.${flpr}_meica_good.1D
+1dcat "$meica_mix[$acc$net]" > ${flpr}_meica_good.1D
+1dcat "$meica_mix[$ves]" > ${flpr}_vessels.1D
 1dcat "$meica_mix[$rej]" > ${flpr}_rejected.1D
-
-# 01.3. Orthogonalise them
-1dtranspose ${flpr}_rejected.1D > tmp.${flpr}_meica_rej.1D
-3dTproject -ort tmp.${flpr}_meica_good.1D -polort -1 -prefix tmp.${flpr}_tr.1D -input tmp.${flpr}_meica_rej.1D -overwrite
-1dtranspose tmp.${flpr}_tr.1D > ${flpr}_rejected_ort.1D
-
-# 01.4. Process rejected and vessels
-1dcat "$meica_mix[$acc$net]" > tmp.${flpr}_meica_good.1D
-1dcat "$meica_mix[$rej$ves]" > ${flpr}_vessels.1D
-
-# 01.5. Orthogonalise them
-1dtranspose ${flpr}_vessels.1D > tmp.${flpr}_meica_rej.1D
-3dTproject -ort tmp.${flpr}_meica_good.1D -polort -1 -prefix tmp.${flpr}_tr.1D -input tmp.${flpr}_meica_rej.1D -overwrite
-1dtranspose tmp.${flpr}_tr.1D > ${flpr}_vessels_ort.1D
-
-# 01.6. Process rejected, vessels, and networks
-1dcat "$meica_mix[$acc]" > tmp.${flpr}_meica_good.1D
-1dcat "$meica_mix[$rej$ves$net]" > ${flpr}_networks.1D
-
-# 01.7. Orthogonalise them
-1dtranspose ${flpr}_networks.1D > tmp.${flpr}_meica_rej.1D
-3dTproject -ort tmp.${flpr}_meica_good.1D -polort -1 -prefix tmp.${flpr}_tr.1D -input tmp.${flpr}_meica_rej.1D -overwrite
-1dtranspose tmp.${flpr}_tr.1D > ${flpr}_networks_ort.1D
-
-# 01.8. Preparing lists for fsl_regfilt 
-# 01.8.1. Start with dropping the first line of the tsv output.
-csvtool -t TAB -u TAB drop 1 ${meica_mix} > tmp.${flpr}_mmix.tsv
-
-# 01.8.2. Add 1 to the indexes to use with fsl_regfilt - which means:
-# transpose, add one, transpose, paste different solutions together.
-for type in accepted rejected vessels networks
-do
-	csvtool transpose ${flpr}_${type}_list.1D > tmp.${flpr}_${type}_transpose.1D
-	1deval -a tmp.${flpr}_${type}_transpose.1D -expr 'a+1' > tmp.${flpr}_${type}.fsl.1D
-	csvtool transpose tmp.${flpr}_${type}.fsl.1D > tmp.${flpr}_${type}.1D
-done
-
-cat tmp.${flpr}_rejected.1D > ${flpr}_rejected_fsl_list.1D
-paste ${flpr}_rejected_fsl_list.1D tmp.${flpr}_vessels.1D -d , > ${flpr}_vessels_fsl_list.1D
-paste ${flpr}_vessels_fsl_list.1D tmp.${flpr}_networks.1D -d , > ${flpr}_networks_fsl_list.1D
 
 # 01.9. Run 4D denoise
 # 01.9.1. Transforming kappa based idx into var based idx for each type !!! independently !!!
@@ -96,21 +57,6 @@ echo "   " | cat - ${meica_fldr}/ica_mixing_orig.tsv > tmp.${flpr}_orig_mix
 
 # 02. Running different kinds of denoise: aggressive, orthogonalised, partial regression, multivariate
 
-# 02.1. Running aggressive, orthogonalised, and partial regression
-for type in rejected vessels   # networks
-do
-	3dTproject -input ${func}.nii.gz \
-	-ort ${flpr}_${type}.1D  -overwrite \
-	-polort -1 -prefix ${fdir}/${bold}_${type}-aggr_bold_bet.nii.gz
-	3dTproject -input ${func}.nii.gz \
-	-ort ${flpr}_${type}_ort.1D  -overwrite \
-	-polort -1 -prefix ${fdir}/${bold}_${type}-orth_bold_bet.nii.gz
-	fsl_regfilt -i ${func} \
-	-d tmp.${flpr}_mmix.tsv \
-	-f "$( cat ${flpr}_${type}_fsl_list.1D )" \
-	-o ${fdir}/${bold}_${type}-preg_bold_bet
-done
-
 # 02.2. Run 4D denoise (multivariate): recreates a matrix of noise post-ICA, then substract it from original data.
 for type in rejected vessels  # networks
 do
@@ -120,14 +66,6 @@ do
 				 -prefix tmp.${flpr}_${type}_volume.nii.gz \
 				 -overwrite
 done
-
-#### Addon: try reconstructing the good signal only.
-3dSynthesize -cbucket ${meica_fldr}/ica_components_orig.nii.gz \
-			 -matrix tmp.${flpr}_orig_mix -TR ${TR} \
-			 -select $( cat ${flpr}_${type}_var_list.1D ) \
-			 -prefix tmp.${flpr}_accepted_volume.nii.gz \
-			 -overwrite
-
 
 # 02.3. Computing voxelwise std of the original volume,
 #       multiplying the results of 3dSynthesize to scale them to the original data,
@@ -139,15 +77,6 @@ fslmaths ${func} -Tmean tmp.${flpr}_mean
 ## PCA: O = (Y + E) * std(O) + avg(O)						E: noise
 ## ICA: Y = T*S = A+R+V+N 									T: time decomp		S: space decomp
 
-# Reconstructing "good" data:   (A+V+N)*std(O)+avg(O)
-fslmaths tmp.${flpr}_accepted_volume -add tmp.${flpr}_vessels_volume -add tmp.${flpr}_networks_volume \
-		 -mul tmp.${flpr}_std -add tmp.${flpr}_mean ${fdir}/${bold}_meica-recn_bold_bet
-# Reconstructing "vessel" data:   (A+N)*std(O)+avg(O)
-fslmaths tmp.${flpr}_accepted_volume -add tmp.${flpr}_networks_volume \
-		 -mul tmp.${flpr}_std -add tmp.${flpr}_mean ${fdir}/${bold}_meica-recn_bold_bet
-# # Reconstructing "network" data:   (A)*std(O)+avg(O)
-# fslmaths tmp.${flpr}_accepted_volume \
-# 		 -mul tmp.${flpr}_std -add tmp.${flpr}_mean ${fdir}/${bold}_meica-recn_bold_bet
 # Removing rejected:			[R*std(O)-O]*(-1) = R_0
 fslmaths tmp.${flpr}_rejected_volume -mul tmp.${flpr}_std -sub ${func} \
 		 -mul -1 ${fdir}/${bold}_meica-mvar_bold_bet
@@ -171,7 +100,7 @@ done
 # Topup everything!
 for type in meica vessels  # networks
 do
-	for den in recn aggr orth preg mvar
+	for den in mvar  # recn aggr orth preg mvar
 	do
 		${cwd}/02.func_preproc/02.func_pepolar.sh ${bold}_${type}-${den}_bold_bet ${fdir} ${sbrf}_topup
 		imrm ${bold}_${type}-${den}_bold_bet.nii.gz

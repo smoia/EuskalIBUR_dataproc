@@ -66,24 +66,21 @@ do
 				-polort 3 \
 				-ortvec ${flpr}_motpar_demean.par motdemean \
 				-ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-				-stim_file 1 ${shiftdir}/shift_${i}.1D \
+				-stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 				-x1D ${shiftdir}/mat_${i}.1D \
 				-xjpeg ${shiftdir}/mat.jpg \
 				-rout -tout \
 				-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz
 			;;
 			meica-aggr )
-1dcat "$meica_mix[$acc$net]" > ${flpr}_meica_good.1D
-1dcat "$meica_mix[$ves]" > ${flpr}_vessels.1D
-1dcat "$meica_mix[$rej]" > ${flpr}_rejected.1D
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 				-float -num_stimts 1 \
 				-mask ${mask}.nii.gz \
 				-polort 3 \
 				-ortvec ${flpr}_motpar_demean.par motdemean \
 				-ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-				-ortvec ${decompdir}/${flpr}_rejected.1D \
-				-stim_file 1 ${shiftdir}/shift_${i}.1D \
+				-ortvec ${decompdir}/${flpr}_rejected.1D rejected \
+				-stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 				-x1D ${shiftdir}/mat_${i}.1D \
 				-xjpeg ${shiftdir}/mat.jpg \
 				-rout -tout \
@@ -91,14 +88,19 @@ do
 				-cbucket tmp.${flpr}_${ftype}_res/c_stats_${i}.nii.gz
 			;;
 			meica-naggr )
+				1dtranspose ${decompdir}/${flpr}_accepted.1D > tmp.${flpr}_acc.1D
+				3dTproject -ort ${shiftdir}/shift_${i}.1D -polort -1 -prefix tmp.${flpr}_tr.1D -input tmp.${flpr}_acc.1D -overwrite
+				1dtranspose tmp.${flpr}_tr.1D > tmp.${flpr}_accepted_ort.1D
+
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 				-float -num_stimts 1 \
 				-mask ${mask}.nii.gz \
 				-polort 3 \
 				-ortvec ${flpr}_motpar_demean.par motdemean \
 				-ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-				-ortvec ${decompdir}/${flpr}_rejected.1D \
-				-stim_file 1 ${shiftdir}/shift_${i}.1D \
+				-ortvec ${decompdir}/${flpr}_rejected_ort.1D rejected \
+				-ortvec tmp.${flpr}_accepted_ort.1D accepted \
+				-stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 				-x1D ${shiftdir}/mat_${i}.1D \
 				-xjpeg ${shiftdir}/mat.jpg \
 				-rout -tout \
@@ -106,14 +108,19 @@ do
 				-cbucket tmp.${flpr}_${ftype}_res/c_stats_${i}.nii.gz
 			;;
 			meica-orth )
+				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_rej.1D
+				3dTproject -ort ${shiftdir}/shift_${i}.1D -ort ${decompdir}/${flpr}_accepted.1D -ort ${decompdir}/${flpr}_vessels.1D \
+						   -polort -1 -prefix tmp.${flpr}_tr.1D -input tmp.${flpr}_rej.1D -overwrite
+				1dtranspose tmp.${flpr}_tr.1D > tmp.${flpr}_rejected_ort.1D
+
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 				-float -num_stimts 1 \
 				-mask ${mask}.nii.gz \
 				-polort 3 \
 				-ortvec ${flpr}_motpar_demean.par motdemean \
 				-ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-				-ortvec ${decompdir}/${flpr}_rejected.1D \
-				-stim_file 1 ${shiftdir}/shift_${i}.1D \
+				-ortvec tmp.${flpr}_rejected_ort.1D rejected \
+				-stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 				-x1D ${shiftdir}/mat_${i}.1D \
 				-xjpeg ${shiftdir}/mat.jpg \
 				-rout -tout \
@@ -122,22 +129,6 @@ do
 			;;
 			* ) echo "    !!! Warning !!! Invalid ftype: ${ftype}"
 		esac
-
-
-		if [[  ]]
-		then
-		else
-			3dDeconvolve -input ${func}.nii.gz -jobs 6 \
-			-float -num_stimts 1 \
-			-mask ${mask}.nii.gz \
-			-polort 3 \
-			-stim_file 1 ${shiftdir}/shift_${i}.1D \
-			-x1D ${shiftdir}/mat.1D \
-			-xjpeg ${shiftdir}/mat.jpg \
-			-x1D_uncensored ${shiftdir}/${i}_uncensored_mat.1D \
-			-rout -tout \
-			-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz
-		fi
 
 		3dbucket -prefix tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_r2_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz'[0]' -overwrite
 		3dbucket -prefix tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz'[2]' -overwrite

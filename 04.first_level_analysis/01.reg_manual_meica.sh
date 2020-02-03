@@ -37,7 +37,7 @@ ves=$( cat ${flpr}_vessels_list.1D )
 net=$( cat ${flpr}_networks_list.1D )
 
 # 01.2. Process rejected
-1dcat "$meica_mix[$acc$net]" > ${flpr}_meica_good.1D
+1dcat "$meica_mix[$acc$net]" > ${flpr}_accepted.1D
 1dcat "$meica_mix[$ves]" > ${flpr}_vessels.1D
 1dcat "$meica_mix[$rej]" > ${flpr}_rejected.1D
 

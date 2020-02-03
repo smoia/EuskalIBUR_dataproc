@@ -67,11 +67,43 @@ do
 				-ortvec ${flpr}_motpar_demean.par motdemean \
 				-ortvec ${flpr}_motpar_deriv1.par motderiv1 \
 				-stim_file 1 ${shiftdir}/shift_${i}.1D \
-				-x1D ${shiftdir}/mat.1D \
+				-x1D ${shiftdir}/mat_${i}.1D \
 				-xjpeg ${shiftdir}/mat.jpg \
-				-x1D_uncensored ${shiftdir}/${i}_uncensored_mat.1D \
 				-rout -tout \
 				-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz
+			;;
+			meica-aggr )
+1dcat "$meica_mix[$acc$net]" > ${flpr}_meica_good.1D
+1dcat "$meica_mix[$ves]" > ${flpr}_vessels.1D
+1dcat "$meica_mix[$rej]" > ${flpr}_rejected.1D
+				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
+				-float -num_stimts 1 \
+				-mask ${mask}.nii.gz \
+				-polort 3 \
+				-ortvec ${flpr}_motpar_demean.par motdemean \
+				-ortvec ${flpr}_motpar_deriv1.par motderiv1 \
+				-ortvec ${decompdir}/${flpr}_rejected.1D \
+				-stim_file 1 ${shiftdir}/shift_${i}.1D \
+				-x1D ${shiftdir}/mat_${i}.1D \
+				-xjpeg ${shiftdir}/mat.jpg \
+				-rout -tout \
+				-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz \
+				-cbucket tmp.${flpr}_${ftype}_res/c_stats_${i}.nii.gz
+			;;
+			meica-naggr )
+				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
+				-float -num_stimts 1 \
+				-mask ${mask}.nii.gz \
+				-polort 3 \
+				-ortvec ${flpr}_motpar_demean.par motdemean \
+				-ortvec ${flpr}_motpar_deriv1.par motderiv1 \
+				-ortvec ${decompdir}/${flpr}_rejected.1D \
+				-stim_file 1 ${shiftdir}/shift_${i}.1D \
+				-x1D ${shiftdir}/mat_${i}.1D \
+				-xjpeg ${shiftdir}/mat.jpg \
+				-rout -tout \
+				-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz \
+				-cbucket tmp.${flpr}_${ftype}_res/c_stats_${i}.nii.gz
 			;;
 			meica-orth )
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
@@ -80,16 +112,13 @@ do
 				-polort 3 \
 				-ortvec ${flpr}_motpar_demean.par motdemean \
 				-ortvec ${flpr}_motpar_deriv1.par motderiv1 \
+				-ortvec ${decompdir}/${flpr}_rejected.1D \
 				-stim_file 1 ${shiftdir}/shift_${i}.1D \
-				-x1D ${shiftdir}/mat.1D \
+				-x1D ${shiftdir}/mat_${i}.1D \
 				-xjpeg ${shiftdir}/mat.jpg \
-				-x1D_uncensored ${shiftdir}/${i}_uncensored_mat.1D \
 				-rout -tout \
-				-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz			
-			;;
-			meica-naggr )
-			;;
-			meica-aggr )
+				-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz \
+				-cbucket tmp.${flpr}_${ftype}_res/c_stats_${i}.nii.gz
 			;;
 			* ) echo "    !!! Warning !!! Invalid ftype: ${ftype}"
 		esac

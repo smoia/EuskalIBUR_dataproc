@@ -38,7 +38,7 @@ do
 	echo "*** Processing xslx sheet"
 	echo "************************************"
 	echo "************************************"
-	# ./03.data_preproc/01.sheet_preproc.sh
+	./03.data_preproc/01.sheet_preproc.sh
 
 	for ses in $( seq -f %02g 1 10 )
 	do
@@ -47,7 +47,7 @@ do
 		echo "*** Denoising sub ${sub} ses ${ses}"
 		echo "************************************"
 		echo "************************************"
-		# ./04.first_level_analysis/01.reg_manual_meica.sh ${sub} ${ses}
+		./04.first_level_analysis/01.reg_manual_meica.sh ${sub} ${ses}
 
 		echo "************************************"
 		echo "*** Preparing CVR sub ${sub} ses ${ses}"

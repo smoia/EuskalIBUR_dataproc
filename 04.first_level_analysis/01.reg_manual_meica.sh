@@ -41,10 +41,10 @@ net=$( cat ${flpr}_networks_list.1D )
 1dcat "$meica_mix[$ves]" > ${flpr}_vessels.1D
 1dcat "$meica_mix[$rej]" > ${flpr}_rejected.1D
 
-# 01.9. Run 4D denoise
 # 01.9.1. Transforming kappa based idx into var based idx for each type !!! independently !!!
 for type in accepted rejected vessels networks
 do
+	csvtool transpose ${flpr}_${type}_list.1D > tmp.${flpr}_${type}_transpose.1D
 	touch tmp.${flpr}_${type}_var_list.1D
 	for i in $( cat tmp.${flpr}_${type}_transpose.1D )
 	do
@@ -90,12 +90,6 @@ fslmaths tmp.${flpr}_vessels_volume -mul tmp.${flpr}_std -sub ${fdir}/${bold}_me
 rm tmp.${flpr}_*
 
 cd ${cwd}
-
-# 03. Change all the "rejected" names into "meica"
-for den in aggr orth preg
-do
-	immv ${fdir}/${bold}_rejected-${den}_bold_bet ${fdir}/${bold}_meica-${den}_bold_bet
-done
 
 # Topup everything!
 for type in meica vessels  # networks

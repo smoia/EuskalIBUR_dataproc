@@ -60,6 +60,7 @@ do
 	then
 		case ${ftype} in
 			optcom | echo-2 | *-mvar )
+				# Simply add motparams and polorts ( = N )
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 				-float -num_stimts 1 \
 				-mask ${mask}.nii.gz \
@@ -73,6 +74,7 @@ do
 				-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz
 			;;
 			meica-aggr )
+				# Simply add rejected and N
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 				-float -num_stimts 1 \
 				-mask ${mask}.nii.gz \
@@ -88,8 +90,10 @@ do
 				-cbucket tmp.${flpr}_${ftype}_res/c_stats_${i}.nii.gz
 			;;
 			meica-naggr )
+				# Add rejected, N, and accepted, the latter orthogonal to the PetCO2
 				1dtranspose ${decompdir}/${flpr}_accepted.1D > tmp.${flpr}_acc.1D
-				3dTproject -ort ${shiftdir}/shift_${i}.1D -polort -1 -prefix tmp.${flpr}_tr.1D -input tmp.${flpr}_acc.1D -overwrite
+				3dTproject -ort ${shiftdir}/shift_${i}.1D -polort -1 -prefix tmp.${flpr}_acc.1D \
+						   -input tmp.${flpr}_acc.1D -overwrite
 				1dtranspose tmp.${flpr}_tr.1D > tmp.${flpr}_accepted_ort.1D
 
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
@@ -108,6 +112,7 @@ do
 				-cbucket tmp.${flpr}_${ftype}_res/c_stats_${i}.nii.gz
 			;;
 			meica-orth )
+				# Add rejected, orthogonalised by the good components and the PetCO2, and N.
 				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_rej.1D
 				3dTproject -ort ${shiftdir}/shift_${i}.1D -ort ${decompdir}/${flpr}_accepted.1D -ort ${decompdir}/${flpr}_vessels.1D \
 						   -polort -1 -prefix tmp.${flpr}_tr.1D -input tmp.${flpr}_rej.1D -overwrite
@@ -134,16 +139,6 @@ do
 		3dbucket -prefix tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz'[2]' -overwrite
 		3dbucket -prefix tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_tstat_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz'[3]' -overwrite
 
-		# 3dREMLfit -matrix ${shiftdir}/${i}_uncensored_mat.1D \
-		# -input ${flpr}_${ftype}_SPC.nii.gz -nobout \
-		# -mask ${mask}.nii.gz \
-		# -Rbuck tmp.${flpr}_${ftype}_res_reml/stats_REML_${i}.nii.gz \
-		# -Rfitts tmp.${flpr}_${ftype}_res_reml/fitts_REML_${i}.nii.gz \
-		# -verb -overwrite
-
-		# -Rvar tmp.${flpr}_${ftype}_res/stats_REMLvar_${i}.nii.gz \
-
-		# 3dbucket -prefix tmp.${flpr}_${ftype}_res_reml/${flpr}_${ftype}_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res_reml/stats_REML_${i}.nii.gz'[1]' -overwrite
 	fi
 done
 

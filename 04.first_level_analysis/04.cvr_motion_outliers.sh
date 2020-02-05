@@ -43,7 +43,7 @@ case ${ftype} in
 	optcom | echo-2 | *-mvar )
 		# Reconstruct motparams and polorts ( = N )
 		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
-					 -matrix ${matdir}/mat.1D -TR ${TR} \
+					 -matrix ${matdir}/mat.1D \
 					 -select polort motdemean motderiv1 \
 					 -prefix tmp.${flpr}_${ftype}_remove.nii.gz \
 					 -overwrite
@@ -51,7 +51,7 @@ case ${ftype} in
 	meica-aggr )
 		# Reconstruct rejected and N
 		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
-					 -matrix ${matdir}/mat.1D -TR ${TR} \
+					 -matrix ${matdir}/mat.1D \
 					 -select polort motdemean motderiv1 rejected \
 					 -prefix tmp.${flpr}_${ftype}_remove.nii.gz \
 					 -overwrite
@@ -59,7 +59,7 @@ case ${ftype} in
 	meica-naggr )
 		# Reconstruct rejected and N  # VERIFY CAUSE UNSURE
 		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
-					 -matrix ${matdir}/mat_0000.1D -TR ${TR} \
+					 -matrix ${matdir}/mat_0000.1D \
 					 -select polort motdemean motderiv1 rejected \
 					 -prefix tmp.${flpr}_${ftype}_remove.nii.gz \
 					 -overwrite
@@ -68,7 +68,7 @@ case ${ftype} in
 		# Reconstruct rejected, orthogonalised by the good components and the PetCO2, and N.
 		# Start with N
 		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
-					 -matrix ${matdir}/mat_0000.1D -TR ${TR} \
+					 -matrix ${matdir}/mat_0000.1D \
 					 -select polort motdemean motderiv1 \
 					 -prefix tmp.${flpr}_${ftype}_remove.nii.gz \
 					 -overwrite
@@ -93,7 +93,7 @@ case ${ftype} in
 					   -expr "a*equals(b,${i})" -prefix tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
 
 				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
-							 -matrix ${matdir}/mat_${v}.1D -TR ${TR} \
+							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
 							 -prefix tmp.${flpr}_orth/tmp.${flpr}_${ftype}_remove.nii.gz \
 							 -overwrite
@@ -115,10 +115,10 @@ if [[ ! -d "sub-${sub}" ]]; then mkdir sub-${sub}; fi
 fsl_motion_outliers -i ${flpr}_${ftype}_residuals -o tmp.${flpr}_${ftype}_out \
 					-s sub-${sub}/dvars_${ftype}_${flpr}.1D --dvars --nomoco
 
-fslmeants -i ${flpr}_${ftype}_residuals -m sub-${sub}_GM > sub-${sub}/avg_GM_${ftype}_${flpr}.1D
+fslmeants -i ${flpr}_${ftype}_residuals -m ../CVR/sub-${sub}_GM_native > sub-${sub}/avg_GM_${ftype}_${flpr}.1D
 
 fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-2_bold_cr \
-		  -m sub-${sub}_GM > sub-${sub}/avg_GM_pre_${flpr}.1D
+		  -m ../CVR/sub-${sub}_GM_native > sub-${sub}/avg_GM_pre_${flpr}.1D
 
 # rm -rf tmp.${flpr}*
 

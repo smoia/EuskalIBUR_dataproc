@@ -58,6 +58,7 @@ if [ -d tmp.${flpr}_${ftype}_res ]
 then
 	rm -rf tmp.${flpr}_${ftype}_res
 fi
+# creating folder
 mkdir tmp.${flpr}_${ftype}_res
 
 if [ -d ${matdir} ]
@@ -109,13 +110,13 @@ do
 						   -input tmp.${flpr}_acc.1D -overwrite
 				1dtranspose tmp.${flpr}_tr.1D > tmp.${flpr}_accepted_ort.1D
 
-				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
+				3dDeconvolve -input ${func}.nii.gz -jobs 6 -GOFORIT 4 \
 							 -float -num_stimts 1 \
 							 -mask ${mask}.nii.gz \
 							 -polort 3 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-							 -ortvec ${decompdir}/${flpr}_rejected_ort.1D rejected \
+							 -ortvec ${decompdir}/${flpr}_rejected.1D rejected \
 							 -ortvec tmp.${flpr}_accepted_ort.1D accepted \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat_${i}.1D \
@@ -177,7 +178,7 @@ do
 		   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_spc_over_V.nii.gz -overwrite
 	3dcalc -a ${flpr}_${ftype}_tmap.nii.gz -b tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
 		   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_tmap.nii.gz -overwrite
-	3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b c_stats_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+	3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b tmp.${flpr}_${ftype}_res/c_stats_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
 		   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_cbuck.nii.gz -overwrite
 done
 

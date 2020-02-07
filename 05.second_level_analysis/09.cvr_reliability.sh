@@ -59,13 +59,13 @@ do
 		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_idx_mask.nii.gz \
 			 ./${sub}_${ses}_${ftype}_cvr_idx_mask.nii.gz
 		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag.nii.gz \
-			 ./${sub}_${ses}_${ftype}_cvr_lag.nii.gz
+			 ./${sub}_${ses}_${ftype}_lag.nii.gz
 		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap.nii.gz \
 			 ./${sub}_${ses}_${ftype}_tmap.nii.gz
 		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap_abs_mask.nii.gz \
 			 ./${sub}_${ses}_${ftype}_tstat_mask.nii.gz
 
-		for inmap in cvr cvr_idx_mask cvr_lag tmap tstat_mask
+		for inmap in cvr cvr_idx_mask lag tmap tstat_mask
 		do
 			echo "Transforming ${inmap} maps of session ${ses} to MNI"
 			infile=${sub}_${ses}_${ftype}_${inmap}.nii.gz
@@ -75,16 +75,17 @@ do
 								-t ./reg/${sub}_T1w2std0GenericAffine.mat \
 								-t ./reg/${sub}_T2w2T1w0GenericAffine.mat \
 								-t [./reg/${sub}_T2w2sbref0GenericAffine.mat,1]
+			imrm ${infile}
 		done
 	done
 done
 
 cd normalised
 
-for inmap in cvr cvr_lag
+for inmap in cvr lag
 do
 
-3dICC -prefix ICC2_${inmap}_${ftype}.nii.gz -jobs 6                                        \
+3dICC -prefix ../ICC2_${inmap}_${ftype}.nii.gz -jobs 6                                     \
       -model  '1+(1|session)+(1|Subj)'                                                     \
       -tStat 'tFile'                                                                       \
       -dataTable                                                                           \

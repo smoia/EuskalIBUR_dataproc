@@ -60,17 +60,25 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST):
     plot_title = f'DVARS vs FD, all subjects'
     plt.title(plot_title)
 
-    for sub in SUB_LIST:
-        for ses in range(1, LAST_SES):
-            x_col = f'{sub}_{ses:02g}_fd'
-            # loop for ftype
-            for i, ftype in enumerate(ftypes):
+    for i, ftype in enumerate(ftypes):
+        x_data = np.empty(0)
+        y_data = np.empty(0)
+        for sub in SUB_LIST:
+            for ses in range(1, LAST_SES):
+                x_col = f'{sub}_{ses:02g}_fd'
+                x_data = np.append(x_data, data[x_col])
                 y_col = f'{sub}_{ses:02g}_dvars_{ftype}'
+                y_data = np.append(y_data, data[y_col])
                 sns.regplot(x=data[x_col], y=data[y_col], scatter=False,
-                            fit_reg=True, label=FTYPE_DICT[ftype],
-                            color=COLOURS[i], robust=True, ci=None)
+                            fit_reg=True,
+                            color=COLOURS[i], robust=True, ci=None,
+                            line_kws={'alpha':0.1})
 
-    plt.legend()
+        sns.regplot(x=x_data, y=y_data, scatter=False,
+                    fit_reg=True,  label=FTYPE_DICT[ftype],
+                    color=COLOURS[i], ci=100)
+
+    plt.legend(FTYPE_DICT.values())
     plt.xlabel('FD')
     plot_ylabel = 'DVARS'
     plt.ylabel(plot_ylabel)

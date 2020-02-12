@@ -19,15 +19,14 @@ cd CVR_reliability
 mkdir reg
 mkdir normalised
 
-# Copy files for transformation
-cp /scripts/MNI_T1_putamen_cerebellum.nii.gz ./reg/.
-cp /scripts/MNI152_T1_1mm_brain.nii.gz ./reg/MNI_T1_brain_1mm.nii.gz
+# Copy files for transformation & create mask
 cp /scripts/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
+fslmaths ./reg/MNI_T1_brain.nii.gz -bin ./reg/MNI_T1_brain_mask.nii.gz
 
 # Copy
 for sub in $( seq -f %03g 1 10 )
 do
-	if [[ ${sub} == 05 || ${sub} == 06 || ${sub} == 10 ]]
+	if [[ ${sub} == 005 || ${sub} == 006 || ${sub} == 010  || ${sub} == 008 ]]
 	then
 		continue
 	fi
@@ -36,12 +35,12 @@ do
 
 	echo "Preparing transformation"
 	# this has to be simplified
-	imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain.nii.gz \
-		 ./reg/${sub}_sbref_brain.nii.gz
-	imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask.nii.gz \
-		 ./reg/${sub}_sbref_brain_mask.nii.gz
-	imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz \
-		 ./reg/${sub}_T1w2std1InverseWarp.nii.gz
+	# imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain.nii.gz \
+	# 	 ./reg/${sub}_sbref_brain.nii.gz
+	# imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask.nii.gz \
+	# 	 ./reg/${sub}_sbref_brain_mask.nii.gz
+	# imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz \
+	# 	 ./reg/${sub}_T1w2std1InverseWarp.nii.gz
 	imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std1Warp.nii.gz \
 		 ./reg/${sub}_T1w2std1Warp.nii.gz
 	cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std0GenericAffine.mat \
@@ -56,16 +55,16 @@ do
 		echo "Copying session ${ses}"
 		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr.nii.gz \
 			 ./${sub}_${ses}_${ftype}_cvr.nii.gz
-		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_idx_mask.nii.gz \
-			 ./${sub}_${ses}_${ftype}_cvr_idx_mask.nii.gz
+		# imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_idx_mask.nii.gz \
+		# 	 ./${sub}_${ses}_${ftype}_cvr_idx_mask.nii.gz
 		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag.nii.gz \
 			 ./${sub}_${ses}_${ftype}_lag.nii.gz
 		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap.nii.gz \
 			 ./${sub}_${ses}_${ftype}_tmap.nii.gz
-		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap_abs_mask.nii.gz \
-			 ./${sub}_${ses}_${ftype}_tstat_mask.nii.gz
+		# imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap_abs_mask.nii.gz \
+		# 	 ./${sub}_${ses}_${ftype}_tstat_mask.nii.gz
 
-		for inmap in cvr cvr_idx_mask lag tmap tstat_mask
+		for inmap in cvr lag tmap  # cvr_idx_mask tstat_mask
 		do
 			echo "Transforming ${inmap} maps of session ${ses} to MNI"
 			infile=${sub}_${ses}_${ftype}_${inmap}.nii.gz
@@ -85,7 +84,8 @@ cd normalised
 for inmap in cvr lag
 do
 
-3dICC -prefix ../ICC2_${inmap}_${ftype}.nii.gz -jobs 6                                     \
+3dICC -prefix ../ICC2_${inmap}_${ftype}.nii.gz -jobs 10                                    \
+      -mask ../reg/MNI_T1_brain_mask.nii.gz                                                \
       -model  '1+(1|session)+(1|Subj)'                                                     \
       -tStat 'tFile'                                                                       \
       -dataTable                                                                           \

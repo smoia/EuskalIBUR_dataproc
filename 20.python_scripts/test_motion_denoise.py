@@ -7,7 +7,7 @@ import numpy as np
 from scipy.stats import ttest_rel
 from itertools import combinations
 
-P_VAL = 0.001
+P_VALS = [0.05, 0.01, 0.001]
 LAST_SES = 10
 SUB_LIST = ['001', '002', '003', '004', '007', '009']  # '008', 
 FTYPE_LIST = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-preg',
@@ -30,11 +30,11 @@ slope_table = pd.DataFrame(columns=['sub',  'ses', 'ftype', 'm', 'q'])
 for sub in SUB_LIST:
     for ses in range(1, LAST_SES):
         fd = sub_table[f'{sub}_{ses:02g}_fd'].to_numpy()
+        X = np.vstack([fd, np.ones(len(fd))]).T
 
         for ftype in FTYPE_LIST:
             dvars = sub_table[f'{sub}_{ses:02g}_dvars_{ftype}'].to_numpy()
-            X = np.vstack([dvars, np.ones(len(dvars))]).T
-            m, q = np.linalg.lstsq(X, fd)[0]
+            m, q = np.linalg.lstsq(X, dvars)[0]
 
             slope_table = slope_table.append({'sub': sub,  'ses': f'{ses:02g}',
                                               'ftype': ftype, 'm': m, 'q': q},
@@ -55,14 +55,15 @@ for ftype_one, ftype_two in list(combinations(FTYPE_LIST, 2)):
                      ignore_index=True)
 
 # Compute Sidak correction
-p_corr = 1-(1-P_VAL)**(1/len(list(combinations(FTYPE_LIST, 2))))
+for p_val in P_VALS:
+    p_corr = 1-(1-p_val)**(1/len(list(combinations(FTYPE_LIST, 2))))
 
-T_t_mask = T_t.copy(deep=True)
-T_t_mask['p_m'] = T_t['p_m'].mask(T_t['p_m'] > p_corr)
-T_t_mask['p_q'] = T_t['p_q'].mask(T_t['p_q'] > p_corr)
+    T_t_mask = T_t.copy(deep=True)
+    T_t_mask['p_m'] = T_t['p_m'].mask(T_t['p_m'] > p_corr)
+    T_t_mask['p_q'] = T_t['p_q'].mask(T_t['p_q'] > p_corr)
 
-T_t.to_csv('Ttests.csv')
-T_t_mask.to_csv('Ttests_masked.csv')
+    T_t.to_csv('Ttests.csv')
+    T_t_mask.to_csv(f'Ttests_masked_{p_val}.csv')
 
 
 os.chdir(cwd)

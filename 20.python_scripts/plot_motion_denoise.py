@@ -69,14 +69,20 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST):
                 x_data = np.append(x_data, data[x_col])
                 y_col = f'{sub}_{ses:02g}_dvars_{ftype}'
                 y_data = np.append(y_data, data[y_col])
-                sns.regplot(x=data[x_col], y=data[y_col], scatter=False,
-                            fit_reg=True,
-                            color=COLOURS[i], robust=True, ci=None,
-                            line_kws={'alpha':0.1})
 
         sns.regplot(x=x_data, y=y_data, scatter=False,
                     fit_reg=True,  label=FTYPE_DICT[ftype],
                     color=COLOURS[i], ci=100)
+
+    for i, ftype in enumerate(ftypes):
+        for sub in SUB_LIST:
+            x_col = f'{sub}_{ses:02g}_fd'
+            for ses in range(1, LAST_SES):
+                y_col = f'{sub}_{ses:02g}_dvars_{ftype}'
+                sns.regplot(x=data[x_col], y=data[y_col], scatter=False,
+                            fit_reg=True,
+                            color=COLOURS[i], robust=True, ci=None,
+                            line_kws={'alpha': 0.05})
 
     plt.legend(FTYPE_DICT.values())
     plt.xlabel('FD')

@@ -80,7 +80,7 @@ do
 
 	# Creating full sessions maps
 	appending="convert -append"
-	for ftype in echo-2 optcom meica vessels
+	for ftype in echo-2 optcom meica-aggr meica-orth meica-preg meica-mvar meica-recn vessels-preg
 	do
 		for ses in $( seq -f %02g 1 9 )
 		do

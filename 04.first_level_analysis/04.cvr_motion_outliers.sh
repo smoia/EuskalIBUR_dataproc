@@ -33,8 +33,8 @@ cd ${wdr}/CVR || exit
 if [[ ! -d "../ME_Denoising" ]]; then mkdir ../ME_Denoising; fi
 
 case ${ftype} in
-	echo-2 | *-mvar ) func=${fdir}/00.${flpr}_task-breathhold_${ftype}_bold_native_SPC_preprocessed ;;
-	* ) func=${fdir}/00.${flpr}_task-breathhold_optcom_bold_native_SPC_preprocessed ;;
+	echo-2 | *-mvar ) func=${fdir}/00.${flpr}_task-breathhold_${ftype}_bold_native_preprocessed ;;
+	* ) func=${fdir}/00.${flpr}_task-breathhold_optcom_bold_native_preprocessed ;;
 esac
 
 mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask

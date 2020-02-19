@@ -6,15 +6,15 @@ import pandas as pd
 import seaborn as sns
 
 
-SUB_LIST = ['001', '002', '003', '004', '007']
-LAST_SES = 5
+SUB_LIST = ['001', ]  # '002', '003', '004', '007']
+LAST_SES = 1
 
 SET_DPI = 100
 FIGSIZE = (18,10)
 BH_LEN = 39
 
 FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',
-              'meica-preg', 'meica-mvar']  # , 'meica-recn']
+              'meica-naggr', 'meica-mvar']  # , 'meica-recn']
 COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff', '#d62728ff', '#ff33ccff',
            '#663300ff', '#003300ff']  # , '#07ad95ff']
 TIME = np.asarray(range(BH_LEN))

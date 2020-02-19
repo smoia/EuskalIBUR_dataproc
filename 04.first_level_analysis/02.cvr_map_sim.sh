@@ -103,21 +103,21 @@ do
 							 -bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz \
 							 -cbucket tmp.${flpr}_${ftype}_res/c_stats_${i}.nii.gz
 			;;
-			meica-naggr )
-				# Add rejected, N, and accepted, the latter orthogonal to the PetCO2
-				1dtranspose ${decompdir}/${flpr}_accepted.1D > tmp.${flpr}_acc.1D
-				3dTproject -ort ${shiftdir}/shift_${i}.1D -polort -1 -prefix tmp.${flpr}_acc.1D \
-						   -input tmp.${flpr}_acc.1D -overwrite
-				1dtranspose tmp.${flpr}_tr.1D > tmp.${flpr}_accepted_ort.1D
+			meica-cons )
+				# Add rejected, orthogonalised by the (all the) good components and the PetCO2, and N.
+				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_rej.1D
+				3dTproject -ort ${shiftdir}/shift_${i}.1D -ort ${decompdir}/${flpr}_accepted.1D \
+						   -ort ${decompdir}/${flpr}_vessels.1D -ort ${decompdir}/${flpr}_networks.1D \
+						   -polort -1 -prefix tmp.${flpr}_tr.1D -input tmp.${flpr}_rej.1D -overwrite
+				1dtranspose tmp.${flpr}_tr.1D > tmp.${flpr}_rejected_ort.1D
 
-				3dDeconvolve -input ${func}.nii.gz -jobs 6 -GOFORIT 4 \
+				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
 							 -mask ${mask}.nii.gz \
 							 -polort 3 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-							 -ortvec ${decompdir}/${flpr}_rejected.1D rejected \
-							 -ortvec tmp.${flpr}_accepted_ort.1D accepted \
+							 -ortvec tmp.${flpr}_rejected_ort.1D rejected \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat_${i}.1D \
 							 -xjpeg ${matdir}/mat.jpg \
@@ -126,9 +126,9 @@ do
 							 -cbucket tmp.${flpr}_${ftype}_res/c_stats_${i}.nii.gz
 			;;
 			meica-orth )
-				# Add rejected, orthogonalised by the good components and the PetCO2, and N.
+				# Add rejected, orthogonalised by the PetCO2, and N.
 				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_rej.1D
-				3dTproject -ort ${shiftdir}/shift_${i}.1D -ort ${decompdir}/${flpr}_accepted.1D -ort ${decompdir}/${flpr}_vessels.1D \
+				3dTproject -ort ${shiftdir}/shift_${i}.1D \
 						   -polort -1 -prefix tmp.${flpr}_tr.1D -input tmp.${flpr}_rej.1D -overwrite
 				1dtranspose tmp.${flpr}_tr.1D > tmp.${flpr}_rejected_ort.1D
 

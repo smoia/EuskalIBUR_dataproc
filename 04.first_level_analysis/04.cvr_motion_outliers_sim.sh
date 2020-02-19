@@ -60,14 +60,6 @@ case ${ftype} in
 					 -prefix tmp.${flpr}_${ftype}_remove.nii.gz \
 					 -overwrite
 	;;
-	meica-naggr )
-		# Reconstruct rejected and N  # VERIFY CAUSE UNSURE
-		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
-					 -matrix ${matdir}/mat_0000.1D \
-					 -select polort motdemean motderiv1 rejected \
-					 -prefix tmp.${flpr}_${ftype}_remove.nii.gz \
-					 -overwrite
-	;;
 	meica-orth )
 		# Reconstruct rejected, orthogonalised by the good components and the PetCO2, and N.
 		# Start with N
@@ -105,7 +97,46 @@ case ${ftype} in
 						 tmp.${flpr}_${ftype}_remove.nii.gz
 			fi
 		done
-		# rm -rf tmp.${flpr}_orth
+		# rm -rf tmp.${flpr}_meica-orth
+	;;
+	meica-cons )
+		# Reconstruct rejected, orthogonalised by the good components and the PetCO2, and N.
+		# Start with N
+		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
+					 -matrix ${matdir}/mat_0000.1D \
+					 -select polort motdemean motderiv1 \
+					 -prefix tmp.${flpr}_${ftype}_remove.nii.gz \
+					 -overwrite
+
+		# Create folder for synthesize
+		if [ -d tmp.${flpr}_orth ]
+		then
+			rm -rf tmp.${flpr}_orth
+		fi
+		mkdir tmp.${flpr}_orth
+
+		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
+
+		for i in $( seq -f %g 1 ${maxidx[1]} )
+		do
+			let v=(i-1)*step
+			v=$( printf %04d $v )
+			if [ -e ${matdir}/mat_${v}.1D ]
+			then
+				# Extract only right voxels for synthesize
+				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx.nii.gz \
+					   -expr "a*equals(b,${i})" -prefix tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
+
+				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
+							 -matrix ${matdir}/mat_${v}.1D \
+							 -select rejected \
+							 -prefix tmp.${flpr}_orth/tmp.${flpr}_${ftype}_remove.nii.gz \
+							 -overwrite
+				fslmaths tmp.${flpr}_${ftype}_remove.nii.gz -add tmp.${flpr}_orth/tmp.${flpr}_${ftype}_remove.nii.gz \
+						 tmp.${flpr}_${ftype}_remove.nii.gz
+			fi
+		done
+		# rm -rf tmp.${flpr}_meica-cons
 	;;
 	* ) echo "    !!! Warning !!! Invalid ftype: ${ftype}"
 esac

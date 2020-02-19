@@ -33,8 +33,12 @@ cd ${wdr}/CVR || exit
 if [[ ! -d "../ME_Denoising" ]]; then mkdir ../ME_Denoising; fi
 
 case ${ftype} in
-	echo-2 | *-mvar ) func=${fdir}/00.${flpr}_task-breathhold_${ftype}_bold_native_preprocessed ;;
-	* ) func=${fdir}/00.${flpr}_task-breathhold_optcom_bold_native_preprocessed ;;
+	echo-2 | *-mvar )
+		func=${fdir}/01.${flpr}_task-breathhold_${ftype}_bold_native_SPC_preprocessed
+		func_no_SPC=${fdir}/00.${flpr}_task-breathhold_${ftype}_bold_native_preprocessed ;;
+	* ) 
+		func=${fdir}/01.${flpr}_task-breathhold_optcom_bold_native_SPC_preprocessed
+		func_no_SPC=${fdir}/00.${flpr}_task-breathhold_optcom_bold_native_preprocessed ;;
 esac
 
 mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
@@ -106,9 +110,13 @@ case ${ftype} in
 	* ) echo "    !!! Warning !!! Invalid ftype: ${ftype}"
 esac
 
-fslmaths ${func} -sub tmp.${flpr}_${ftype}_remove.nii.gz ../ME_Denoising/${flpr}_${ftype}_residuals
+fslmaths ${func} -sub tmp.${flpr}_${ftype}_remove.nii.gz ../ME_Denoising/${flpr}_${ftype}_residuals_SPC
 
 cd ../ME_Denoising
+
+fslmaths ${func_no_SPC} -Tmean tmp.${flpr}_${ftype}_avg
+
+fslmaths ${flpr}_${ftype}_residuals_SPC -mul tmp.${flpr}_${ftype}_avg -add tmp.${flpr}_${ftype}_avg ${flpr}_${ftype}_residuals
 
 if [[ ! -d "sub-${sub}" ]]; then mkdir sub-${sub}; fi
 

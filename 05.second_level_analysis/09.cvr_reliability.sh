@@ -26,7 +26,7 @@ fslmaths ./reg/MNI_T1_brain.nii.gz -bin ./reg/MNI_T1_brain_mask.nii.gz
 # Copy
 for sub in $( seq -f %03g 1 10 )
 do
-	if [[ ${sub} == 005 || ${sub} == 006 || ${sub} == 010  || ${sub} == 008 ]]
+	if [[ ${sub} == 005 || ${sub} == 006 || ${sub} == 010 ]]
 	then
 		continue
 	fi

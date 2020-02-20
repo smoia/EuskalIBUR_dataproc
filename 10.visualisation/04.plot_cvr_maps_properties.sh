@@ -81,7 +81,7 @@ done
 
 cd ${cwd}
 
-python3 ${cwd}/20.python_scripts/compute_CVR_ICCs.py
-python3 ${cwd}/20.python_scripts/plot_CVR_changes.py
+python3 /scripts/20.python_scripts/compute_CVR_ICCs.py
+python3 /scripts/20.python_scripts/plot_CVR_changes.py
 
 cd ${cwd}

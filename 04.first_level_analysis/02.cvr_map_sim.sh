@@ -255,6 +255,6 @@ cd ..
 # done
 
 
-# rm -rf tmp.${flpr}*
+rm -rf tmp.${flpr}*
 
 cd ${cwd}

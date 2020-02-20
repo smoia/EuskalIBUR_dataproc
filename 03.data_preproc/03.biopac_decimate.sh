@@ -10,6 +10,6 @@ cd ${wdr} || exit
 
 echo "Decimating biopac traces"
 
-python3 ${cwd}/20.python_scripts/biopac_decimate.py
+python3 /scripts/20.python_scripts/biopac_decimate.py
 
 cd ${cwd}

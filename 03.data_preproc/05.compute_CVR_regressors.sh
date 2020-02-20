@@ -15,6 +15,6 @@ cd ${wdr} || exit
 
 echo "Compute CVR regressors"
 
-python3 ${cwd}/20.python_scripts/compute_CVR_regressors.py $1 $2 $3
+python3 /scripts/20.python_scripts/compute_CVR_regressors.py $1 $2 $3
 
 cd ${cwd}

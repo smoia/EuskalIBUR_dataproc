@@ -20,7 +20,7 @@ do
 	rdir=${wdr}/sub-${sub}/ses-01/reg
 	aparc=${adir}/sub-${sub}_ses-01_aparc2009
 
-	atlas=${cwd}/Schaefer2018_100Parcels_7Networks_order_FSLMNI152_1mm
+	atlas=${cwd}/90.template/Schaefer2018_100Parcels_7Networks_order_FSLMNI152_1mm
 	mref=${rdir}/sub-${sub}_sbref_brain
 
 	if [ ! -e sub-${sub}_atlas.nii.gz ]

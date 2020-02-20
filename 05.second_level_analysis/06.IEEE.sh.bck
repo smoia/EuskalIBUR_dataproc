@@ -19,9 +19,9 @@ cd 00.IEEE
 mkdir reg
 
 # Copy files for transformation
-fslmaths /scripts/HOS_putamen_l_1mm.nii.gz -add /scripts/HOS_putamen_r_1mm.nii.gz -bin ./reg/MNI_putamen_1mm
-cp /scripts/MNI152_T1_1mm_brain.nii.gz ./reg/MNI_T1_brain_1mm.nii.gz
-cp /scripts/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
+fslmaths /scripts/90.template/HOS_putamen_l_1mm.nii.gz -add /scripts/90.template/HOS_putamen_r_1mm.nii.gz -bin ./reg/MNI_putamen_1mm
+cp /scripts/90.template/MNI152_T1_1mm_brain.nii.gz ./reg/MNI_T1_brain_1mm.nii.gz
+cp /scripts/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
 
 # Copy
 for sub in $( seq -f %03g 1 10 )

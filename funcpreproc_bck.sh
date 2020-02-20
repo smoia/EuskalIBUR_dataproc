@@ -32,7 +32,7 @@ anat2=${flpr}_T2w
 adir=${wdr}/sub-${sub}/ses-${ses}/anat_preproc
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 fmap=${wdr}/sub-${sub}/ses-${ses}/fmap_preproc
-stdp=/scripts
+stdp=/scripts/90.template
 
 vdsc=10
 std=MNI152_T1_1mm_brain

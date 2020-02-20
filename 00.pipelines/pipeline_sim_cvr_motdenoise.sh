@@ -4,7 +4,7 @@ sub=$1
 ses=$2
 wdr=${3:-/data}
 
-logname=pipeline_sim_cvr_motdenoise_log
+logname=pipeline_sim_cvr_motdenoise_sub-${sub}_ses-${ses}_log
 
 ######################################
 ######### Script starts here #########
@@ -27,7 +27,7 @@ echo "************************************"
 cwd=$(pwd)
 
 echo "************************************"
-echo "***    CVR mapping ${flpr}    ***"
+echo "***    CVR mapping ${sub} ${ses}    ***"
 echo "************************************"
 echo "************************************"
 echo ""
@@ -43,7 +43,7 @@ echo "************************************"
 echo "*** Denoising sub ${sub} ses ${ses}"
 echo "************************************"
 echo "************************************"
-/scripts/04.first_level_analysis/01.reg_manual_meica.sh ${sub} ${ses}
+/scripts/04.first_level_analysis/01.reg_manual_meica_sim.sh ${sub} ${ses}
 
 echo "************************************"
 echo "*** Preparing CVR sub ${sub} ses ${ses}"
@@ -51,40 +51,29 @@ echo "************************************"
 echo "************************************"
 /scripts/03.data_preproc/02.prepare_CVR_mapping.sh ${sub} ${ses}
 
-for ftype in meica-aggr meica-orth meica-preg meica-mvar optcom echo-2  #  meica-recn vessels-preg
+for ftype in meica-mvar optcom echo-2
 do
 	echo "************************************"
 	echo "*** Compute CVR regressors"
 	echo "************************************"
 	echo "************************************"
 	/scripts/03.data_preproc/05.compute_CVR_regressors.sh ${sub} ${ses} ${ftype}
+done
 
+for ftype in meica-aggr meica-orth meica-cons meica-mvar optcom echo-2  #  meica-recn vessels-preg
+do
 	echo "************************************"
 	echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
 	echo "************************************"
 	echo "************************************"
-	/scripts/04.first_level_analysis/02.cvr_map.sh ${sub} ${ses} ${ftype} 
+	/scripts/04.first_level_analysis/02.cvr_map_sim.sh ${sub} ${ses} ${ftype}
+
+	echo "************************************"
+	echo "*** Motion outliers sub ${sub} ses ${ses} ${ftype}"
+	echo "************************************"
+	echo "************************************"
+	/scripts/04.first_level_analysis/04.cvr_motion_outliers_sim.sh ${sub} ${ses} ${ftype} 
 done
-
-for sub in 001 002 003 004 007 008 009
-do
-	for ftype in optcom echo-2 meica-aggr meica-orth meica-preg meica-mvar meica-recn vessels-preg
-	do
-		echo "************************************"
-		echo "*** General CVR sub ${sub} ${ftype}"
-		echo "************************************"
-		echo "************************************"
-
-		/scripts/05.second_level_analysis/01.generalcvrmaps.sh ${sub} ${ftype}
-	done
-done
-
-echo "************************************"
-echo "*** Plot CVRs"
-echo "************************************"
-echo "************************************"
-
-/scripts/10.visualisation/01.plot_cvr_maps.sh
 
 echo ""
 echo ""

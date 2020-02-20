@@ -84,7 +84,7 @@ echo ""
 #########   Prepare folders  #########
 ######################################
 
-./prepare_folder.sh ${sub} ${ses} ${wdr} ${overwrite} \
+/scripts/prepare_folder.sh ${sub} ${ses} ${wdr} ${overwrite} \
 				   ${anat1} ${anat2} ${stdp} ${std}
 
 if [[ "${overwrite}" == "overwrite" ]]
@@ -103,7 +103,7 @@ then
 	if [ ${ses} -eq 1 ]
 	then
 		# If asked & it's ses 01, run anat
-		./anat_preproc.sh ${sub} ${ses} ${wdr} ${anat1} ${anat2} \
+		/scripts/00.pipelines/anat_preproc.sh ${sub} ${ses} ${wdr} ${anat1} ${anat2} \
 						  ${adir} ${std} ${mmres}
 	elif [ ${ses} -gt 1 ] && [ ! -d ${uni_adir} ]
 	then
@@ -135,7 +135,7 @@ then
 	if [ ${ses} -eq 1 ]
 	then
 		# If asked & it's ses 01, run sbref
-		./sbref_preproc.sh ${sub} ${ses} ${wdr} ${flpr} ${fdir} ${fmap} ${anat2} ${adir}
+		/scripts/00.pipelines/sbref_preproc.sh ${sub} ${ses} ${wdr} ${flpr} ${fdir} ${fmap} ${anat2} ${adir}
 	elif [ ${ses} -gt 1 ] && [ ! -d ${uni_adir} ]
 	then
 		# If it isn't ses 01 but that ses wasn't run, exit.
@@ -167,7 +167,7 @@ fi
 #########    Task preproc    #########
 ######################################
 
-./breathhold_preproc.sh ${sub} ${ses} ${wdr} ${flpr} \
+/scripts/00.pipelines/breathhold_preproc.sh ${sub} ${ses} ${wdr} ${flpr} \
 						${fdir} ${vdsc} "${TEs}" \
 						${nTE} ${siot} ${dspk}
 

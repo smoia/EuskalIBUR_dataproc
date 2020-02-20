@@ -63,8 +63,8 @@ then
 	echo "************************************"
 	echo "************************************"
 
-	99.cleaning/04.anat_delete.sh ${adir} ${anat1}
-	99.cleaning/04.anat_delete.sh ${adir} ${anat2}
+	/scripts/99.cleaning/04.anat_delete.sh ${adir} ${anat1}
+	/scripts/99.cleaning/04.anat_delete.sh ${adir} ${anat2}
 fi
 
 if [[ ${part} == "phys" || ${part} == "all" ]]
@@ -75,7 +75,7 @@ then
 	echo "************************************"
 	echo "************************************"
 
-	99.cleaning/01.physio_delete.sh ${pdir}
+	/scripts/99.cleaning/01.physio_delete.sh ${pdir}
 fi
 
 if [[ ${part} == "task" || ${part} == "all" ]]
@@ -92,7 +92,7 @@ then
 			echo "************************************"
 
 			func=${flpr}_acq-${f}_dir-${d}_epi
-			99.cleaning/05.fmap_delete.sh ${fmap} ${func}
+			/scripts/99.cleaning/05.fmap_delete.sh ${fmap} ${func}
 		done
 
 		for e in $( seq 1 ${nTE} )
@@ -105,8 +105,8 @@ then
 
 			sbrf=${flpr}_task-${f}_rec-magnitude_echo-${e}_sbref
 			bold=${flpr}_task-${f}_echo-${e}_bold
-			99.cleaning/03.func_delete.sh ${fdir} ${sbrf}
-			99.cleaning/03.func_delete.sh ${fdir} ${bold}
+			/scripts/99.cleaning/03.func_delete.sh ${fdir} ${sbrf}
+			/scripts/99.cleaning/03.func_delete.sh ${fdir} ${bold}
 
 		done
 
@@ -115,14 +115,14 @@ then
 		echo "************************************"
 		echo "************************************"
 
-		99.cleaning/03.func_delete.sh ${fdir} ${flpr}_task-${f}_optcom_bold
+		/scripts/99.cleaning/03.func_delete.sh ${fdir} ${flpr}_task-${f}_optcom_bold
 
 		echo "************************************"
 		echo "*** MEICA clean ${f}"
 		echo "************************************"
 		echo "************************************"
 
-		99.cleaning/02.meica_delete.sh ${fdir} ${flpr}_task-${f}_echo-1_bold_RPI_bet
+		/scripts/99.cleaning/02.meica_delete.sh ${fdir} ${flpr}_task-${f}_echo-1_bold_RPI_bet
 
 	done
 
@@ -144,7 +144,7 @@ then
 			echo "************************************"
 
 			func=${flpr}_acq-rest_dir-${d}_run-${r}_epi
-			99.cleaning/05.fmap_delete.sh ${fmap} ${func}
+			/scripts/99.cleaning/05.fmap_delete.sh ${fmap} ${func}
 		done
 
 		for e in $( seq 1 ${nTE} )
@@ -157,8 +157,8 @@ then
 
 			sbrf=${flpr}_task-rest_rec-magnitude_run-${r}_echo-${e}_sbref
 			bold=${flpr}_task-rest_run-${r}_echo-${e}_bold
-			99.cleaning/03.func_delete.sh ${fdir} ${sbrf}
-			99.cleaning/03.func_delete.sh ${fdir} ${bold}
+			/scripts/99.cleaning/03.func_delete.sh ${fdir} ${sbrf}
+			/scripts/99.cleaning/03.func_delete.sh ${fdir} ${bold}
 
 		done
 
@@ -167,7 +167,7 @@ then
 		echo "************************************"
 		echo "************************************"
 
-		99.cleaning/02.meica_delete.sh ${fdir} ${flpr}_task-rest_run-${r}_echo-1_bold_RPI_bet
+		/scripts/99.cleaning/02.meica_delete.sh ${fdir} ${flpr}_task-rest_run-${r}_echo-1_bold_RPI_bet
 
 	done
 

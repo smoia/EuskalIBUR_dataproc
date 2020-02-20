@@ -35,7 +35,7 @@ do
 	echo "************************************"
 
 	func=${flpr}_acq-breathhold_dir-${d}_epi
-	./02.func_preproc/01.func_correct.sh ${func} ${fmap}
+	/scripts/02.func_preproc/01.func_correct.sh ${func} ${fmap}
 done
 
 bfor=${fmap}/${flpr}_acq-breathhold_dir-PA_epi_cr
@@ -49,7 +49,7 @@ echo "************************************"
 sbrf=${flpr}_task-breathhold_rec-magnitude_echo-1_sbref
 if [[ ! -e ${sbrf}_cr.nii.gz ]]
 then
-	./02.func_preproc/01.func_correct.sh ${sbrf} ${fdir}
+	/scripts/02.func_preproc/01.func_correct.sh ${sbrf} ${fdir}
 fi
 
 echo "************************************"
@@ -57,14 +57,14 @@ echo "*** Func pepolar breathhold SBREF echo 1"
 echo "************************************"
 echo "************************************"
 
-./02.func_preproc/02.func_pepolar.sh ${sbrf}_cr ${fdir} none ${brev} ${bfor}
+/scripts/02.func_preproc/02.func_pepolar.sh ${sbrf}_cr ${fdir} none ${brev} ${bfor}
 
 echo "************************************"
 echo "*** Func spacecomp breathhold SBREF echo 1"
 echo "************************************"
 echo "************************************"
 
-./02.func_preproc/11.sbref_spacecomp.sh ${sbrf}_tpp ${anat} ${fdir} ${adir} 
+/scripts/02.func_preproc/11.sbref_spacecomp.sh ${sbrf}_tpp ${anat} ${fdir} ${adir} 
 
 # Copy this sbref to reg folder
 imcp ${fdir}/${sbrf}_tpp ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref

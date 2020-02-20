@@ -27,17 +27,17 @@ cwd=$(pwd)
 
 for sub in 003 004 007 008 009  # 001 002
 do
-	./03.data_preproc/01.sheet_preproc.sh ${sub}
+	/scripts/03.data_preproc/01.sheet_preproc.sh ${sub}
 	for ses in $( seq -f %02g 1 10 )
 	do
-		./04.first_level_analysis/01.reg_manual_meica.sh ${sub} ${ses}
-		./04.first_level_analysis/03.compute_motion_outliers.sh ${sub} ${ses}
+		/scripts/04.first_level_analysis/01.reg_manual_meica.sh ${sub} ${ses}
+		/scripts/04.first_level_analysis/03.compute_motion_outliers.sh ${sub} ${ses}
 	done
 done
 
-./05.second_level_analysis/02.compare_motion_denoise.sh
+/scripts/05.second_level_analysis/02.compare_motion_denoise.sh
 
-./10.visualisation/02.plot_motion_denoise.sh
+/scripts/10.visualisation/02.plot_motion_denoise.sh
 
 echo ""
 echo ""

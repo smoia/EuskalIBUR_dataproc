@@ -38,7 +38,7 @@ do
 	echo "*** Processing xslx sheet"
 	echo "************************************"
 	echo "************************************"
-	./03.data_preproc/01.sheet_preproc.sh
+	/scripts/03.data_preproc/01.sheet_preproc.sh
 
 	for ses in $( seq -f %02g 1 10 )
 	do
@@ -47,13 +47,13 @@ do
 		echo "*** Denoising sub ${sub} ses ${ses}"
 		echo "************************************"
 		echo "************************************"
-		./04.first_level_analysis/01.reg_manual_meica.sh ${sub} ${ses}
+		/scripts/04.first_level_analysis/01.reg_manual_meica.sh ${sub} ${ses}
 
 		echo "************************************"
 		echo "*** Preparing CVR sub ${sub} ses ${ses}"
 		echo "************************************"
 		echo "************************************"
-		./03.data_preproc/02.prepare_CVR_mapping.sh ${sub} ${ses}
+		/scripts/03.data_preproc/02.prepare_CVR_mapping.sh ${sub} ${ses}
 
 		for ftype in meica-aggr meica-orth meica-preg meica-mvar meica-recn vessels-preg  # optcom echo-2 
 		do
@@ -61,13 +61,13 @@ do
 			echo "*** Compute CVR regressors"
 			echo "************************************"
 			echo "************************************"
-			./03.data_preproc/05.compute_CVR_regressors.sh ${sub} ${ses} ${ftype}
+			/scripts/03.data_preproc/05.compute_CVR_regressors.sh ${sub} ${ses} ${ftype}
 
 			echo "************************************"
 			echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
 			echo "************************************"
 			echo "************************************"
-			./04.first_level_analysis/02.cvr_map.sh ${sub} ${ses} ${ftype} 
+			/scripts/04.first_level_analysis/02.cvr_map.sh ${sub} ${ses} ${ftype} 
 		done
 	done
 done
@@ -81,7 +81,7 @@ do
 		echo "************************************"
 		echo "************************************"
 
-		./05.second_level_analysis/01.generalcvrmaps.sh ${sub} ${ftype}
+		/scripts/05.second_level_analysis/01.generalcvrmaps.sh ${sub} ${ftype}
 	done
 done
 
@@ -90,7 +90,7 @@ echo "*** Plot CVRs"
 echo "************************************"
 echo "************************************"
 
-./10.visualisation/01.plot_cvr_maps.sh
+/scripts/10.visualisation/01.plot_cvr_maps.sh
 
 echo ""
 echo ""

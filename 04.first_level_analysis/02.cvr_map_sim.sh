@@ -107,7 +107,7 @@ do
 				# Add rejected, orthogonalised by the (all the) good components and the PetCO2, and N.
 				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_rej.1D
 				3dTproject -ort ${shiftdir}/shift_${i}.1D -ort ${decompdir}/${flpr}_accepted.1D \
-						   -ort ${decompdir}/${flpr}_vessels.1D -ort ${decompdir}/${flpr}_networks.1D \
+						   -ort ${decompdir}/${flpr}_vessels.1D \
 						   -polort -1 -prefix tmp.${flpr}_tr.1D -input tmp.${flpr}_rej.1D -overwrite
 				1dtranspose tmp.${flpr}_tr.1D > tmp.${flpr}_rejected_ort.1D
 

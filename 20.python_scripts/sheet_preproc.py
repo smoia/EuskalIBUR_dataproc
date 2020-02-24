@@ -27,7 +27,7 @@ sub_table = pd.read_excel(xl, sub)
 LAST_SES += 1
 for ses in range(1, LAST_SES):
     col = f'ses-{ses:02d}'
-    net = sub_table.index[sub_table[col] == 'N'].tolist()
+    # net = sub_table.index[sub_table[col] == 'N'].tolist()
     vas = sub_table.index[sub_table[col] == 'V'].tolist()
     acc = sub_table.index[sub_table[col] == 'A'].tolist()
     rej = sub_table.index[sub_table[col] == 'R'].tolist()
@@ -36,6 +36,6 @@ for ses in range(1, LAST_SES):
     savetxt(f'{px}_accepted_list.1D', acc, fmt='%d', delimiter=',', newline=',')
     savetxt(f'{px}_rejected_list.1D', rej, fmt='%d', delimiter=',', newline=',')
     savetxt(f'{px}_vessels_list.1D', vas, fmt='%d', delimiter=',', newline=',')
-    savetxt(f'{px}_networks_list.1D', net, fmt='%d', delimiter=',', newline=',')
+    # savetxt(f'{px}_networks_list.1D', net, fmt='%d', delimiter=',', newline=',')
 
 os.chdir(cwd)

@@ -153,7 +153,7 @@ fslmaths ${flpr}_${ftype}_residuals_SPC -mul tmp.${flpr}_${ftype}_avg -add tmp.$
 
 if [[ ! -d "sub-${sub}" ]]; then mkdir sub-${sub}; fi
 
-3dTto1D -input ${flpr}_${ftype}_residuals -mask ${mask}.nii.gz -method dvars -prefix sub-${sub}/dvars_${ftype}_${flpr}.1D
+3dTto1D -input ${flpr}_${ftype}_residuals.nii.gz -mask ${mask}.nii.gz -method dvars -prefix sub-${sub}/dvars_${ftype}_${flpr}.1D
 
 fslmeants -i ${flpr}_${ftype}_residuals -m ../CVR/sub-${sub}_GM_native > sub-${sub}/avg_GM_${ftype}_${flpr}.1D
 

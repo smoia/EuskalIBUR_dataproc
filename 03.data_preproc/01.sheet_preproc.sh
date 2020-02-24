@@ -14,7 +14,7 @@ echo "Processing sheet"
 
 if [[ ! -d "decomp" ]]; then mkdir decomp; fi
 
-python3 ${cwd}/20.python_scripts/sheet_preproc.py $1
+python3 /scripts/20.python_scripts/sheet_preproc.py $1
 
 
 cd ${cwd}

@@ -31,46 +31,46 @@ echo "*** Anat correction ${anat1}"
 echo "************************************"
 echo "************************************"
 
-./01.anat_preproc/01.anat_correct.sh ${anat1} ${adir}
+/scripts/01.anat_preproc/01.anat_correct.sh ${anat1} ${adir}
 
 echo "************************************"
 echo "*** Anat correction ${anat2}"
 echo "************************************"
 echo "************************************"
 
-./01.anat_preproc/01.anat_correct.sh ${anat2} ${adir} ${anat1}
+/scripts/01.anat_preproc/01.anat_correct.sh ${anat2} ${adir} ${anat1}
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat2}"
 echo "************************************"
 echo "************************************"
 
-./01.anat_preproc/02.anat_skullstrip.sh ${anat2}_bfc ${adir} none ${anat1} none
+/scripts/01.anat_preproc/02.anat_skullstrip.sh ${anat2}_bfc ${adir} none ${anat1} none
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat1}"
 echo "************************************"
 echo "************************************"
 
-./01.anat_preproc/02.anat_skullstrip.sh ${anat1}_bfc ${adir} ${anat1}_brain_mask none ${anat2}
+/scripts/01.anat_preproc/02.anat_skullstrip.sh ${anat1}_bfc ${adir} ${anat1}_brain_mask none ${anat2}
 
 echo "************************************"
 echo "*** Anat segment"
 echo "************************************"
 echo "************************************"
 
-./01.anat_preproc/03.anat_segment.sh ${anat1}_brain ${adir}
+/scripts/01.anat_preproc/03.anat_segment.sh ${anat1}_brain ${adir}
 
 echo "************************************"
 echo "*** Anat normalise"
 echo "************************************"
 echo "************************************"
 
-./01.anat_preproc/04.anat_normalize.sh ${anat1}_brain ${adir} ${std} ${mmres}
+/scripts/01.anat_preproc/04.anat_normalize.sh ${anat1}_brain ${adir} ${std} ${mmres}
 
 echo "************************************"
 echo "*** Clearspace"
 echo "************************************"
 echo "************************************"
 
-./clearspace.sh ${sub} ${ses} ${wdr} anat
+/scripts/clearspace.sh ${sub} ${ses} ${wdr} anat

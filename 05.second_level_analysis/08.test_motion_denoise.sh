@@ -10,6 +10,6 @@ cd ${wdr} || exit
 
 echo "Processing motion outliers"
 
-python3 ${cwd}/20.python_scripts/test_motion_denoise.py
+python3 /scripts/20.python_scripts/test_motion_denoise.py
 
 cd ${cwd}

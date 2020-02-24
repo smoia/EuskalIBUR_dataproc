@@ -18,9 +18,9 @@ cd 00.IEEE
 mkdir reg
 
 # Copy files for transformation
-cp /scripts/MNI_T1_putamen_cerebellum.nii.gz ./reg/.
-cp /scripts/MNI152_T1_1mm_brain.nii.gz ./reg/MNI_T1_brain_1mm.nii.gz
-cp /scripts/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
+cp /scripts/90.template/MNI_T1_putamen_cerebellum.nii.gz ./reg/.
+cp /scripts/90.template/MNI152_T1_1mm_brain.nii.gz ./reg/MNI_T1_brain_1mm.nii.gz
+cp /scripts/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
 
 # Copy
 for sub in $( seq -f %03g 1 10 )

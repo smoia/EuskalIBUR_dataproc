@@ -63,7 +63,7 @@ mv fullmodel/avg_std_lag_corrected_5s.png fullmodel_avg_std_lag_corrected_5s.png
 for fld in fullmodel nomot premot
 do for sub in 001 002 003 004 007 008 009 010
 do echo "$fld $sub"
-fslstats -K MNI_T1_putamen_cerebellum_v3.nii.gz ${fld}/${sub}_lag_masked.nii.gz -l -8.45 -u 8.45 -M
+fslstats -K 90.template/MNI_T1_putamen_cerebellum_v3.nii.gz ${fld}/${sub}_lag_masked.nii.gz -l -8.45 -u 8.45 -M
 fslstats -K MNI_mask_v3.nii.gz ${fld}/${sub}_lag_masked.nii.gz -l -8.45 -u 8.45 -S
 done
 done
@@ -71,20 +71,20 @@ done
 for fld in fullmodel noshift
 do for sub in 001 002 003 004 007 008 009 010
 do echo "$fld $sub"
-fslstats -K MNI_T1_putamen_cerebellum_v3.nii.gz ${fld}/${sub}_cvr_masked.nii.gz -l 0 -u 5 -M
-fslstats -K MNI_T1_putamen_cerebellum_v3.nii.gz ${fld}/${sub}_cvr_masked.nii.gz -l 0 -u 5 -S
+fslstats -K 90.template/MNI_T1_putamen_cerebellum_v3.nii.gz ${fld}/${sub}_cvr_masked.nii.gz -l 0 -u 5 -M
+fslstats -K 90.template/MNI_T1_putamen_cerebellum_v3.nii.gz ${fld}/${sub}_cvr_masked.nii.gz -l 0 -u 5 -S
 done
 done
 
 for fld in fullmodel
 do for sub in 001 002 003 004 007 008 009 010
 do echo "$fld $sub"
-fslstats -K MNI_T1_putamen_cerebellum_v3.nii.gz ${fld}/${sub}_lag_masked.nii.gz -l -8.45 -u 8.45 -M
-fslstats -K MNI_T1_putamen_cerebellum_v3.nii.gz ${fld}/${sub}_lag_masked.nii.gz -l -8.45 -u 8.45 -S
+fslstats -K 90.template/MNI_T1_putamen_cerebellum_v3.nii.gz ${fld}/${sub}_lag_masked.nii.gz -l -8.45 -u 8.45 -M
+fslstats -K 90.template/MNI_T1_putamen_cerebellum_v3.nii.gz ${fld}/${sub}_lag_masked.nii.gz -l -8.45 -u 8.45 -S
 done
 done
 
 fslmeants -i fullmodel/avg_std_cvr_corrected.nii.gz  --showall --transpose -m MNI_mask_v3 > cvr_simmot.csv
 fslmeants -i noshift/avg_std_cvr_corrected.nii.gz  --showall --transpose -m MNI_mask_v3 > cvr_nonopt.csv
 fslmeants -i fullmodel/avg_std_lag_corrected.nii.gz  --showall --transpose -m MNI_mask_v3 > lag.csv
-fslmeants -i MNI_T1_putamen_cerebellum_v3.nii.gz  --showall --transpose -m MNI_mask_v3 > mask.csv
+fslmeants -i 90.template/MNI_T1_putamen_cerebellum_v3.nii.gz  --showall --transpose -m MNI_mask_v3 > mask.csv

@@ -63,7 +63,7 @@ fslmaths ts_OC.nii.gz ../${func_optcom} -odt float
 # 01.4. Orthogonalising good and bad components
 
 echo "Extracting good and bad copmonents"
-python3 ${cwd}/20.python_scripts/00.process_tedana_output.py ${fdir}/${func}_meica
+python3 /scripts/20.python_scripts/00.process_tedana_output.py ${fdir}/${func}_meica
 
 echo "Orthogonalising good and bad components in ${func}"
 nacc=$( cat accepted.1D )

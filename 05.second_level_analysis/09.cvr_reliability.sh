@@ -20,13 +20,13 @@ mkdir reg
 mkdir normalised
 
 # Copy files for transformation & create mask
-cp /scripts/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
+cp /scripts/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
 fslmaths ./reg/MNI_T1_brain.nii.gz -bin ./reg/MNI_T1_brain_mask.nii.gz
 
 # Copy
 for sub in $( seq -f %03g 1 10 )
 do
-	if [[ ${sub} == 005 || ${sub} == 006 || ${sub} == 010  || ${sub} == 008 ]]
+	if [[ ${sub} == 005 || ${sub} == 006 || ${sub} == 010 ]]
 	then
 		continue
 	fi

@@ -123,4 +123,4 @@ immv ${fdir}/${bold}_tpp ${fdir}/00.${bold}_native_preprocessed
 immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
 
-/scripts/clearspace.sh ${sub} ${ses} ${wdr} rest
+/scripts/00.pipelines/clearspace.sh ${sub} ${ses} ${wdr} rest

@@ -73,4 +73,4 @@ echo "*** Clearspace"
 echo "************************************"
 echo "************************************"
 
-/scripts/clearspace.sh ${sub} ${ses} ${wdr} anat
+/scripts/00.pipelines/clearspace.sh ${sub} ${ses} ${wdr} anat

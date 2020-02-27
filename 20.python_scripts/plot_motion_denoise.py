@@ -10,16 +10,16 @@ SUB_LIST = ['001', '002', '003', '004', '007', '008', '009']
 LAST_SES = 10
 
 SET_DPI = 100
-FIGSIZE = (11,7)
+FIGSIZE = (11, 7)
 BH_LEN = 39
 
 FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',
               'meica-naggr', 'meica-mvar']  # , 'meica-recn']
 COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff', '#d62728ff', '#ff33ccff',
            '#663300ff', '#003300ff']  # , '#07ad95ff']
-FTYPE_DICT = {'pre': 'Pre', 'echo-2': 'SE', 'optcom': 'OC',
-              'meica-aggr': 'Aggr', 'meica-orth': 'Orth',
-              'meica-preg': 'NAggr', 'meica-mvar': '4D'}
+FTYPE_DICT = {'pre': 'pre', 'echo-2': 'echo-2', 'optcom': 'optcom',
+              'meica-aggr': 'me-agg', 'meica-orth': 'me-ort',
+              'meica-cons': 'me-con', 'meica-mvar': 'me-4db'}
 
 TIME = np.asarray(range(BH_LEN))
 
@@ -239,48 +239,6 @@ def plot_timeseries_and_BOLD_vs_FD(ftypes=FTYPE_LIST):
 
         #     bh_timesesplot.savefig(f'{sub}_BOLD_time_ses_{ses:02g}.png',
         #                            dpi=SET_DPI)
-
-
-# 03. Make DBOLD vs FD plot
-# def plot_tps_BOLD_vs_FD():
-#     for sub in SUB_LIST:
-#         fd_responses = np.empty((8*(LAST_SES - 1), BH_LEN))
-#         for ses in range(1, LAST_SES):
-#             fd = np.genfromtxt(f'sub-{sub}/fd_sub-{sub}_ses-{ses:02g}.1D')
-#             for bh in range(8):
-#                 fd_responses[(8*(ses-1)+bh), :] = fd[BH_LEN*bh:BH_LEN*(bh+1)]
-
-#         bh_responses = np.empty((8*(LAST_SES - 1), BH_LEN, len(ftypes)))
-#         for i in range(len(ftypes)):
-#             for ses in range(1, LAST_SES):
-#                 avg_gm = np.genfromtxt(f'sub-{sub}/avg_GM_{ftypes[i]}_sub-{sub}_ses-{ses:02g}.1D')
-#                 for bh in range(8):
-#                     bh_responses[(8*(ses-1)+bh), :, i] = avg_gm[BH_LEN*bh:BH_LEN*(bh+1)]
-
-#         bh_delta_responses = np.empty((8*(LAST_SES - 1), BH_LEN, len(ftypes)))
-#         for i in range(len(ftypes)):
-#             bh_delta_responses[:, :, i] = (bh_responses[:, :, i] -
-#                                            bh_responses[:, :, 0])
-
-#         for tps in range(BH_LEN):
-#             plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
-#             plt.title(f'BOLD_vs_FD, sub {sub}, tp {tps:02g}')
-#             for i in range(1, len(ftypes)):
-#                 # plt.plot(bh_delta_responses[:, tps, i], fd_responses[:, tps],
-#                 #          'o', label=f'{ftypes[i]}', color=COLOURS[i])
-#                 sns.regplot(x=bh_delta_responses[:, tps, i],
-#                             y=fd_responses[:, tps], fit_reg=True,
-#                             label=ftypes[i], color=COLOURS[i],
-#                             robust=False, ci=None)
-
-#             plt.legend()
-#             plt.ylabel('FD')
-#             plt.ylim(0, 0.7)
-#             plt.xlabel('BOLD post - BOLD pre')
-#             plt.xlim(-3000, 0)
-#             plt.savefig(f'{sub}_BOLD_vs_FD_tps_{tps:02g}', dpi=SET_DPI)
-#             plt.clf()
-#             plt.close()
 
 
 if __name__ == '__main__':

@@ -22,7 +22,7 @@ cwd = os.getcwd()
 # os.chdir('/home/nemo/Documenti/Archive/Data/gdrive/PJMASK/CVR/00.Reliability')
 os.chdir('/data/CVR/00.Reliability')
 
-n_ftypes = 3 #len(FTYPE_LIST)
+n_ftypes = 3  # len(FTYPE_LIST)
 n_subs = len(SUB_LIST)
 
 # for val in VALUE_LIST:

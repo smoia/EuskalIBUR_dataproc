@@ -39,9 +39,6 @@ for sub in SUB_LIST:
             filename = f'sub-{sub}/dvars_{ftype}_sub-{sub}_ses-{ses:02d}.1D'
             sub_table[dvars_type] = np.genfromtxt(filename)
 
-            delta_dvars = f'{sub}_{ses:02d}_delta_dvars_{ftype}'
-            sub_table[delta_dvars] = sub_table[dvars_pre] - sub_table[dvars_type]
-
 ftype_list = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',
               'meica-cons', 'meica-mvar']
 

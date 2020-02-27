@@ -43,7 +43,7 @@ ves=$( cat ${flpr}_vessels_list.1D )
 1dcat "$meica_mix[$rej]" > ${flpr}_rejected.1D
 
 # 01.9.1. Transforming kappa based idx into var based idx for each type !!! independently !!!
-for type in accepted rejected vessels networks
+for type in accepted rejected vessels  # networks
 do
 	csvtool transpose ${flpr}_${type}_list.1D > tmp.${flpr}_${type}_transpose.1D
 	touch tmp.${flpr}_${type}_var_list.1D

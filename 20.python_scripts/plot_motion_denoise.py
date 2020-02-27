@@ -50,7 +50,7 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST):
         plt.xlim(-.1, 1)
         plot_ylabel = 'DVARS'
         plt.ylabel(plot_ylabel)
-        plt.ylim(-10, 120)
+        plt.ylim(0, 200)
         fig_name = f'{sub}_DVARS_vs_FD.png'
         plt.savefig(fig_name, dpi=SET_DPI)
         plt.clf()

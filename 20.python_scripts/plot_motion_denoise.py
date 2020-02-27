@@ -10,7 +10,7 @@ SUB_LIST = ['001', '002', '003', '004', '007', '008', '009']
 LAST_SES = 10
 
 SET_DPI = 100
-FIGSIZE = (11, 7)
+FIGSIZE = (18, 10)
 BH_LEN = 39
 
 FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',

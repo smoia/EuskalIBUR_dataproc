@@ -14,7 +14,7 @@ FIGSIZE = (11, 7)
 BH_LEN = 39
 
 FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',
-              'meica-naggr', 'meica-mvar']  # , 'meica-recn']
+              'meica-cons', 'meica-mvar']  # , 'meica-recn']
 COLOURS = ['#1f77b4ff', '#ff7f0eff', '#2ca02cff', '#d62728ff', '#ff33ccff',
            '#663300ff', '#003300ff']  # , '#07ad95ff']
 FTYPE_DICT = {'pre': 'pre', 'echo-2': 'echo-2', 'optcom': 'optcom',

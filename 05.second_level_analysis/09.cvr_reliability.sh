@@ -20,8 +20,14 @@ mkdir reg
 mkdir normalised
 
 # Copy files for transformation & create mask
-cp /scripts/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
-fslmaths ./reg/MNI_T1_brain.nii.gz -bin ./reg/MNI_T1_brain_mask.nii.gz
+if [ ! -e ./reg/MNI_T1_brain.nii.gz ]
+then
+	cp /scripts/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
+fi
+if [ ! -e ./reg/MNI_T1_brain_mask.nii.gz ]
+then
+	fslmaths ./reg/MNI_T1_brain.nii.gz -bin ./reg/MNI_T1_brain_mask.nii.gz
+fi
 
 # Copy
 for sub in $( seq -f %03g 1 10 )
@@ -34,35 +40,36 @@ do
 	echo "%%% Working on subject ${sub} %%%"
 
 	echo "Preparing transformation"
-	# this has to be simplified
-	# imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain.nii.gz \
-	# 	 ./reg/${sub}_sbref_brain.nii.gz
-	# imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask.nii.gz \
-	# 	 ./reg/${sub}_sbref_brain_mask.nii.gz
-	# imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz \
-	# 	 ./reg/${sub}_T1w2std1InverseWarp.nii.gz
-	imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std1Warp.nii.gz \
-		 ./reg/${sub}_T1w2std1Warp.nii.gz
-	cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std0GenericAffine.mat \
-	   ./reg/${sub}_T1w2std0GenericAffine.mat
-	cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat \
-	   ./reg/${sub}_T2w2sbref0GenericAffine.mat
-	cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat \
-	   ./reg/${sub}_T2w2T1w0GenericAffine.mat
+	if [ ! -e ${sub}_T1w2std1Warp.nii.gz ]
+	then
+		imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std1Warp.nii.gz \
+			 ./reg/${sub}_T1w2std1Warp.nii.gz
+	fi
+	if [ ! -e ./reg/${sub}_T1w2std0GenericAffine.mat ]
+	then
+		cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std0GenericAffine.mat \
+		   ./reg/${sub}_T1w2std0GenericAffine.mat
+	fi
+	if [ ! -e ./reg/${sub}_T2w2sbref0GenericAffine.mat ]
+	then
+		cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat \
+		   ./reg/${sub}_T2w2sbref0GenericAffine.mat
+	fi
+	if [ ! -e ./reg/${sub}_T2w2T1w0GenericAffine.mat
+	then
+		cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat \
+		   ./reg/${sub}_T2w2T1w0GenericAffine.mat
+	fi
 
 	for ses in $( seq -f %02g 1 ${lastses} )
 	do
 		echo "Copying session ${ses}"
 		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr.nii.gz \
 			 ./${sub}_${ses}_${ftype}_cvr.nii.gz
-		# imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_idx_mask.nii.gz \
-		# 	 ./${sub}_${ses}_${ftype}_cvr_idx_mask.nii.gz
 		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag.nii.gz \
 			 ./${sub}_${ses}_${ftype}_lag.nii.gz
 		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap.nii.gz \
 			 ./${sub}_${ses}_${ftype}_tmap.nii.gz
-		# imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap_abs_mask.nii.gz \
-		# 	 ./${sub}_${ses}_${ftype}_tstat_mask.nii.gz
 
 		for inmap in cvr lag tmap  # cvr_idx_mask tstat_mask
 		do

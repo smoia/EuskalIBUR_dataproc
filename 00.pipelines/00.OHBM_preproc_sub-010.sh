@@ -100,12 +100,12 @@ fi
 
 if [[ "${run_anat}" == "true" ]]
 then
-	if [ ${ses} -eq 1 ]
+	if [ ${ses} -eq 2 ]
 	then
 		# If asked & it's ses 01, run anat
 		/scripts/00.pipelines/anat_preproc.sh ${sub} ${ses} ${wdr} ${anat1} ${anat2} \
 						  ${adir} ${std} ${mmres}
-	elif [ ${ses} -gt 1 ] && [ ! -d ${uni_adir} ]
+	elif [ ${ses} -gt 2 ] && [ ! -d ${uni_adir} ]
 	then
 		# If it isn't ses 01 but that ses wasn't run, exit.
 		echo "ERROR: the universal anat_preproc folder,"
@@ -113,7 +113,7 @@ then
 		echo "doesn't exist. For the moment, this means the program quits"
 		echo "Please run the first session of each subject first"
 		exit
-	elif [ ${ses} -gt 1 ] && [ -d ${uni_adir} ]
+	elif [ ${ses} -gt 2 ] && [ -d ${uni_adir} ]
 	then
 		# If it isn't ses 01, and that ses was run, copy relevant files.
 		cp -R ${uni_adir}/* ${adir}/.
@@ -132,11 +132,11 @@ fi
 
 if [[ "${run_sbref}" == "true" ]]
 then
-	if [ ${ses} -eq 1 ]
+	if [ ${ses} -eq 2 ]
 	then
 		# If asked & it's ses 01, run sbref
 		/scripts/00.pipelines/sbref_preproc.sh ${sub} ${ses} ${wdr} ${flpr} ${fdir} ${fmap} ${anat2} ${adir}
-	elif [ ${ses} -gt 1 ] && [ ! -d ${uni_adir} ]
+	elif [ ${ses} -gt 2 ] && [ ! -d ${uni_adir} ]
 	then
 		# If it isn't ses 01 but that ses wasn't run, exit.
 		echo "ERROR: the universal sbref,"
@@ -144,7 +144,7 @@ then
 		echo "doesn't exist. For the moment, this means the program quits"
 		echo "Please run the first session of each subject first"
 		exit
-	elif [ ${ses} -gt 1 ] && [ -d ${uni_adir} ]
+	elif [ ${ses} -gt 2 ] && [ -d ${uni_adir} ]
 	then
 		# If it isn't ses 01, and that ses was run, copy relevant files.
 		imcp ${uni_sbref} ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref

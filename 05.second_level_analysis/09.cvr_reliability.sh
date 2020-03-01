@@ -55,7 +55,7 @@ do
 		cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat \
 		   ./reg/${sub}_T2w2sbref0GenericAffine.mat
 	fi
-	if [ ! -e ./reg/${sub}_T2w2T1w0GenericAffine.mat
+	if [ ! -e ./reg/${sub}_T2w2T1w0GenericAffine.mat ]
 	then
 		cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat \
 		   ./reg/${sub}_T2w2T1w0GenericAffine.mat

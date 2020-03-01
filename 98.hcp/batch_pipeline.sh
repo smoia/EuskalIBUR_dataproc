@@ -28,12 +28,13 @@ fi
 # 	done
 # done
 
-qsub -q short.q -N "optcom_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
+# qsub -q short.q -N "optcom_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
 
-for ftype in meica-aggr meica-orth meica-cons meica-mvar echo-2
-do
-	qsub -q short.q -hold_jid "optcom_EuskalIBUR" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
-done
+qsub -q short.q -N "meica-aggr_EuskalIBUR" -o ${wdr}/../LogFiles/meica-aggr_pipe -e ${wdr}/../LogFiles/meica-aggr_pipe ${wdr}/98.hcp/run_cvr_reliability.sh meica-aggr
+qsub -q short.q -hold_jid "meica-aggr_EuskalIBUR" -N "meica-orth_EuskalIBUR" -o ${wdr}/../LogFiles/meica-orth_pipe -e ${wdr}/../LogFiles/meica-orth_pipe ${wdr}/98.hcp/run_cvr_reliability.sh meica-orth
+qsub -q short.q -hold_jid "meica-orth_EuskalIBUR" -N "meica-cons_EuskalIBUR" -o ${wdr}/../LogFiles/meica-cons_pipe -e ${wdr}/../LogFiles/meica-cons_pipe ${wdr}/98.hcp/run_cvr_reliability.sh meica-cons
+qsub -q short.q -hold_jid "meica-cons_EuskalIBUR" -N "meica-mvar_EuskalIBUR" -o ${wdr}/../LogFiles/meica-mvar_pipe -e ${wdr}/../LogFiles/meica-mvar_pipe ${wdr}/98.hcp/run_cvr_reliability.sh meica-mvar
+qsub -q short.q -hold_jid "meica-mvar_EuskalIBUR" -N "echo-2_EuskalIBUR" -o ${wdr}/../LogFiles/echo-2_pipe -e ${wdr}/../LogFiles/echo-2_pipe ${wdr}/98.hcp/run_cvr_reliability.sh echo-2
 
 # for sub in 001 002 003 004 007 008 009
 # do

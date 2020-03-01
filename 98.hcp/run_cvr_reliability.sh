@@ -15,4 +15,7 @@ wdir=/bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc
 
 cd ${wdir}
 
-singularity exec -e --no-home -B /bcbl/home/public/PJMASK_2/preproc:/data -B /bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc:/scripts -B /bcbl/home/public/PJMASK_2/tmp:/tmp euskalibur.sif 05.second_level_analysis/09.cvr_reliability.sh $1
+for ftype in meica-aggr meica-orth meica-cons meica-mvar echo-2
+do
+	singularity exec -e --no-home -B /bcbl/home/public/PJMASK_2/preproc:/data -B /bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc:/scripts -B /bcbl/home/public/PJMASK_2/tmp:/tmp euskalibur.sif 05.second_level_analysis/09.cvr_reliability.sh ${ftype}
+done

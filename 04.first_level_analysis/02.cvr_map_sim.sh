@@ -105,11 +105,11 @@ do
 			;;
 			meica-cons )
 				# Add rejected, orthogonalised by the (all the) good components and the PetCO2, and N.
-				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_rej.1D
+				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_${ftype}_rej.1D
 				3dTproject -ort ${shiftdir}/shift_${i}.1D -ort ${decompdir}/${flpr}_accepted.1D \
 						   -ort ${decompdir}/${flpr}_vessels.1D \
-						   -polort -1 -prefix tmp.${flpr}_tr.1D -input tmp.${flpr}_rej.1D -overwrite
-				1dtranspose tmp.${flpr}_tr.1D > tmp.${flpr}_rejected_ort.1D
+						   -polort -1 -prefix tmp.${flpr}_${ftype}_tr.1D -input tmp.${flpr}_${ftype}_rej.1D -overwrite
+				1dtranspose tmp.${flpr}_${ftype}_tr.1D > tmp.${flpr}_${ftype}_rejected_ort.1D
 
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
@@ -117,7 +117,7 @@ do
 							 -polort 3 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-							 -ortvec tmp.${flpr}_rejected_ort.1D rejected \
+							 -ortvec tmp.${flpr}_${ftype}_rejected_ort.1D rejected \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat_${i}.1D \
 							 -xjpeg ${matdir}/mat.jpg \
@@ -127,10 +127,10 @@ do
 			;;
 			meica-orth )
 				# Add rejected, orthogonalised by the PetCO2, and N.
-				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_rej.1D
+				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_${ftype}_rej.1D
 				3dTproject -ort ${shiftdir}/shift_${i}.1D \
-						   -polort -1 -prefix tmp.${flpr}_tr.1D -input tmp.${flpr}_rej.1D -overwrite
-				1dtranspose tmp.${flpr}_tr.1D > tmp.${flpr}_rejected_ort.1D
+						   -polort -1 -prefix tmp.${flpr}_${ftype}_tr.1D -input tmp.${flpr}_${ftype}_rej.1D -overwrite
+				1dtranspose tmp.${flpr}_${ftype}_tr.1D > tmp.${flpr}_${ftype}_rejected_ort.1D
 
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
@@ -138,7 +138,7 @@ do
 							 -polort 3 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-							 -ortvec tmp.${flpr}_rejected_ort.1D rejected \
+							 -ortvec tmp.${flpr}_${ftype}_rejected_ort.1D rejected \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat_${i}.1D \
 							 -xjpeg ${matdir}/mat.jpg \
@@ -255,6 +255,6 @@ cd ..
 # done
 
 
-rm -rf tmp.${flpr}*
+rm -rf tmp.${flpr}_${ftype}*
 
 cd ${cwd}

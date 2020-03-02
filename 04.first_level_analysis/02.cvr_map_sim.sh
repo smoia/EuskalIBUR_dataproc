@@ -156,11 +156,11 @@ do
 	fi
 done
 
-fslmerge -tr tmp.${flpr}_${ftype}_r2_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_r2_* ${tr}
-# fslmerge -tr ${flpr}_${ftype}_betas_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_* ${tr}
-# fslmerge -tr ${flpr}_${ftype}_tstat_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_tstat_* ${tr}
+fslmerge -tr ${flpr}_${ftype}_r2_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_r2_* ${tr}
+fslmerge -tr ${flpr}_${ftype}_betas_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_* ${tr}
+fslmerge -tr ${flpr}_${ftype}_tstat_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_tstat_* ${tr}
 
-fslmaths tmp.${flpr}_${ftype}_r2_time -Tmaxn ${flpr}_${ftype}_cvr_idx
+fslmaths ${flpr}_${ftype}_r2_time -Tmaxn ${flpr}_${ftype}_cvr_idx
 fslmaths ${flpr}_${ftype}_cvr_idx -mul ${step} -sub ${poslag} -mul 0.025 ${flpr}_${ftype}_cvr_lag
 
 # prepare empty volumes

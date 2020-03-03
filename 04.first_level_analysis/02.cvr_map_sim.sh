@@ -170,7 +170,7 @@ fslmaths ${flpr}_${ftype}_cvr_idx -mul 0 ${flpr}_${ftype}_cbuck
 
 maxidx=( $( fslstats ${flpr}_${ftype}_cvr_idx -R ) )
 
-for i in $( seq -f %g 1 ${maxidx[1]} )
+for i in $( seq -f %g 0 ${maxidx[1]} )
 do
 	let v=i*step
 	v=$( printf %04d $v )

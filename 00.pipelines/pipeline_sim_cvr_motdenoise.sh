@@ -33,32 +33,32 @@ echo "************************************"
 echo ""
 echo ""
 
-echo "************************************"
-echo "*** Processing xslx sheet"
-echo "************************************"
-echo "************************************"
-/scripts/03.data_preproc/01.sheet_preproc.sh ${sub}
+# echo "************************************"
+# echo "*** Processing xslx sheet"
+# echo "************************************"
+# echo "************************************"
+# /scripts/03.data_preproc/01.sheet_preproc.sh ${sub}
 
-echo "************************************"
-echo "*** Denoising sub ${sub} ses ${ses}"
-echo "************************************"
-echo "************************************"
-/scripts/04.first_level_analysis/01.reg_manual_meica_sim.sh ${sub} ${ses}
+# echo "************************************"
+# echo "*** Denoising sub ${sub} ses ${ses}"
+# echo "************************************"
+# echo "************************************"
+# /scripts/04.first_level_analysis/01.reg_manual_meica_sim.sh ${sub} ${ses}
 
-echo "************************************"
-echo "*** Preparing CVR sub ${sub} ses ${ses}"
-echo "************************************"
-echo "************************************"
-/scripts/03.data_preproc/02.prepare_CVR_mapping.sh ${sub} ${ses}
+# echo "************************************"
+# echo "*** Preparing CVR sub ${sub} ses ${ses}"
+# echo "************************************"
+# echo "************************************"
+# /scripts/03.data_preproc/02.prepare_CVR_mapping.sh ${sub} ${ses}
 
-for ftype in meica-mvar optcom echo-2
-do
-	echo "************************************"
-	echo "*** Compute CVR regressors"
-	echo "************************************"
-	echo "************************************"
-	/scripts/03.data_preproc/05.compute_CVR_regressors.sh ${sub} ${ses} ${ftype}
-done
+# for ftype in meica-mvar optcom echo-2
+# do
+# 	echo "************************************"
+# 	echo "*** Compute CVR regressors"
+# 	echo "************************************"
+# 	echo "************************************"
+# 	/scripts/03.data_preproc/05.compute_CVR_regressors.sh ${sub} ${ses} ${ftype}
+# done
 
 for ftype in meica-aggr meica-orth meica-cons meica-mvar optcom echo-2  #  meica-recn vessels-preg
 do

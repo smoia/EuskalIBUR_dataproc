@@ -144,7 +144,7 @@ case ${ftype} in
 esac
 
 # Masking the reconstructed noise just in case
-fslmaths tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -mas ${flpr}_${ftype}_cvr_idx_mask tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
+fslmaths tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -mas ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_mask tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 # Removing noise from original file
 fslmaths ${func} -sub tmp.${flpr}_${ftype}_04cmos_remove.nii.gz ../ME_Denoising/${flpr}_${ftype}_residuals_SPC
 

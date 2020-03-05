@@ -64,11 +64,11 @@ do
 	for ses in $( seq -f %02g 1 ${lastses} )
 	do
 		echo "Copying session ${ses}"
-		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr.nii.gz \
+		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_masked.nii.gz \
 			 ./${sub}_${ses}_${ftype}_cvr.nii.gz
-		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag.nii.gz \
+		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag_masked.nii.gz \
 			 ./${sub}_${ses}_${ftype}_lag.nii.gz
-		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap.nii.gz \
+		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap_masked.nii.gz \
 			 ./${sub}_${ses}_${ftype}_tmap.nii.gz
 
 		for inmap in cvr lag tmap  # cvr_idx_mask tstat_mask

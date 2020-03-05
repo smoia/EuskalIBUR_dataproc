@@ -49,7 +49,7 @@ case ${ftype} in
 		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
 					 -matrix ${matdir}/mat.1D \
 					 -select polort motdemean motderiv1 \
-					 -prefix tmp.${flpr}_${ftype}_remove.nii.gz \
+					 -prefix tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 					 -overwrite
 	;;
 	meica-aggr )
@@ -57,7 +57,7 @@ case ${ftype} in
 		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
 					 -matrix ${matdir}/mat.1D \
 					 -select polort motdemean motderiv1 rejected \
-					 -prefix tmp.${flpr}_${ftype}_remove.nii.gz \
+					 -prefix tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 					 -overwrite
 	;;
 	meica-orth )
@@ -66,7 +66,7 @@ case ${ftype} in
 		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
 					 -matrix ${matdir}/mat_0000.1D \
 					 -select polort motdemean motderiv1 \
-					 -prefix tmp.${flpr}_${ftype}_remove.nii.gz \
+					 -prefix tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 					 -overwrite
 
 		# Create folder for synthesize
@@ -92,10 +92,10 @@ case ${ftype} in
 				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
-							 -prefix tmp.${flpr}_orth/tmp.${flpr}_${ftype}_remove.nii.gz \
+							 -prefix tmp.${flpr}_orth/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 							 -overwrite
-				fslmaths tmp.${flpr}_${ftype}_remove.nii.gz -add tmp.${flpr}_orth/tmp.${flpr}_${ftype}_remove.nii.gz \
-						 tmp.${flpr}_${ftype}_remove.nii.gz
+				fslmaths tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add tmp.${flpr}_orth/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+						 tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done
 		rm -rf tmp.${flpr}_meica-orth
@@ -106,7 +106,7 @@ case ${ftype} in
 		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
 					 -matrix ${matdir}/mat_0000.1D \
 					 -select polort motdemean motderiv1 \
-					 -prefix tmp.${flpr}_${ftype}_remove.nii.gz \
+					 -prefix tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 					 -overwrite
 
 		# Create folder for synthesize
@@ -132,10 +132,10 @@ case ${ftype} in
 				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
-							 -prefix tmp.${flpr}_orth/tmp.${flpr}_${ftype}_remove.nii.gz \
+							 -prefix tmp.${flpr}_orth/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 							 -overwrite
-				fslmaths tmp.${flpr}_${ftype}_remove.nii.gz -add tmp.${flpr}_orth/tmp.${flpr}_${ftype}_remove.nii.gz \
-						 tmp.${flpr}_${ftype}_remove.nii.gz
+				fslmaths tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add tmp.${flpr}_orth/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+						 tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done
 		rm -rf tmp.${flpr}_meica-cons
@@ -143,13 +143,16 @@ case ${ftype} in
 	* ) echo "    !!! Warning !!! Invalid ftype: ${ftype}"
 esac
 
-fslmaths ${func} -sub tmp.${flpr}_${ftype}_remove.nii.gz ../ME_Denoising/${flpr}_${ftype}_residuals_SPC
+# Masking the reconstructed noise just in case
+fslmaths tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -mas ${flpr}_${ftype}_cvr_idx_mask tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
+# Removing noise from original file
+fslmaths ${func} -sub tmp.${flpr}_${ftype}_04cmos_remove.nii.gz ../ME_Denoising/${flpr}_${ftype}_residuals_SPC
 
 cd ../ME_Denoising
 
-fslmaths ${func_no_SPC} -Tmean tmp.${flpr}_${ftype}_avg
+fslmaths ${func_no_SPC} -Tmean tmp.${flpr}_${ftype}_04cmos_avg
 
-fslmaths ${flpr}_${ftype}_residuals_SPC -mul tmp.${flpr}_${ftype}_avg -add tmp.${flpr}_${ftype}_avg ${flpr}_${ftype}_residuals
+fslmaths ${flpr}_${ftype}_residuals_SPC -mul tmp.${flpr}_${ftype}_04cmos_avg -add tmp.${flpr}_${ftype}_04cmos_avg ${flpr}_${ftype}_residuals
 
 if [[ ! -d "sub-${sub}" ]]; then mkdir sub-${sub}; fi
 
@@ -160,6 +163,6 @@ fslmeants -i ${flpr}_${ftype}_residuals -m ../CVR/sub-${sub}_GM_native > sub-${s
 fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-2_bold_cr \
 		  -m ../CVR/sub-${sub}_GM_native > sub-${sub}/avg_GM_pre_${flpr}.1D
 
-rm -rf tmp.${flpr}_${ftype}*
+rm -rf tmp.${flpr}_${ftype}_04cmos*
 
 cd ${cwd}

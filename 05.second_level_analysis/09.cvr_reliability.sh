@@ -90,6 +90,7 @@ cd normalised
 
 for inmap in cvr lag
 do
+rm ../ICC2_${inmap}_${ftype}.nii.gz
 
 3dICC -prefix ../ICC2_${inmap}_${ftype}.nii.gz -jobs 10                                    \
       -mask ../reg/MNI_T1_brain_mask.nii.gz                                                \

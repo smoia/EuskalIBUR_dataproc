@@ -78,7 +78,7 @@ case ${ftype} in
 
 		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
 
-		for i in $( seq -f %g 1 ${maxidx[1]} )
+		for i in $( seq -f %g 0 ${maxidx[1]} )
 		do
 			let v=i-1
 			let v*=step
@@ -118,7 +118,7 @@ case ${ftype} in
 
 		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
 
-		for i in $( seq -f %g 1 ${maxidx[1]} )
+		for i in $( seq -f %g 0 ${maxidx[1]} )
 		do
 			let v=i-1
 			let v*=step
@@ -160,6 +160,6 @@ fslmeants -i ${flpr}_${ftype}_residuals -m ../CVR/sub-${sub}_GM_native > sub-${s
 fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-2_bold_cr \
 		  -m ../CVR/sub-${sub}_GM_native > sub-${sub}/avg_GM_pre_${flpr}.1D
 
-rm -rf tmp.${flpr}*
+rm -rf tmp.${flpr}_${ftype}*
 
 cd ${cwd}

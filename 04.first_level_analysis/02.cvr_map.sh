@@ -45,12 +45,12 @@ cd ${wdr}/CVR || exit
 func=${fdir}/01.${flpr}_task-breathhold_${ftype}_bold_native_SPC_preprocessed
 mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
 
-if [ -d tmp.${flpr}_${ftype}_res ]
+if [ -d tmp.${flpr}_${ftype}_02cm_res ]
 then
-	rm -rf tmp.${flpr}_${ftype}_res
+	rm -rf tmp.${flpr}_${ftype}_02cm_res
 fi
-mkdir tmp.${flpr}_${ftype}_res
-# mkdir tmp.${flpr}_${ftype}_res_reml
+mkdir tmp.${flpr}_${ftype}_02cm_res
+# mkdir tmp.${flpr}_${ftype}_02cm_res_reml
 
 for i in $( seq -f %04g 0 ${step} ${miter} )
 do
@@ -69,7 +69,7 @@ do
 			-xjpeg ${shiftdir}/mat.jpg \
 			-x1D_uncensored ${shiftdir}/${i}_uncensored_mat.1D \
 			-rout -tout \
-			-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz
+			-bucket tmp.${flpr}_${ftype}_02cm_res/stats_${i}.nii.gz
 		else
 			3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 			-float -num_stimts 1 \
@@ -80,29 +80,29 @@ do
 			-xjpeg ${shiftdir}/mat.jpg \
 			-x1D_uncensored ${shiftdir}/${i}_uncensored_mat.1D \
 			-rout -tout \
-			-bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz
+			-bucket tmp.${flpr}_${ftype}_02cm_res/stats_${i}.nii.gz
 		fi
 
-		3dbucket -prefix tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_r2_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz'[0]' -overwrite
-		3dbucket -prefix tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz'[2]' -overwrite
-		3dbucket -prefix tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_tstat_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz'[3]' -overwrite
+		3dbucket -prefix tmp.${flpr}_${ftype}_02cm_res/${flpr}_${ftype}_r2_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_02cm_res/stats_${i}.nii.gz'[0]' -overwrite
+		3dbucket -prefix tmp.${flpr}_${ftype}_02cm_res/${flpr}_${ftype}_betas_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_02cm_res/stats_${i}.nii.gz'[2]' -overwrite
+		3dbucket -prefix tmp.${flpr}_${ftype}_02cm_res/${flpr}_${ftype}_tstat_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_02cm_res/stats_${i}.nii.gz'[3]' -overwrite
 
 		# 3dREMLfit -matrix ${shiftdir}/${i}_uncensored_mat.1D \
 		# -input ${flpr}_${ftype}_SPC.nii.gz -nobout \
 		# -mask ${mask}.nii.gz \
-		# -Rbuck tmp.${flpr}_${ftype}_res_reml/stats_REML_${i}.nii.gz \
-		# -Rfitts tmp.${flpr}_${ftype}_res_reml/fitts_REML_${i}.nii.gz \
+		# -Rbuck tmp.${flpr}_${ftype}_02cm_res_reml/stats_REML_${i}.nii.gz \
+		# -Rfitts tmp.${flpr}_${ftype}_02cm_res_reml/fitts_REML_${i}.nii.gz \
 		# -verb -overwrite
 
-		# -Rvar tmp.${flpr}_${ftype}_res/stats_REMLvar_${i}.nii.gz \
+		# -Rvar tmp.${flpr}_${ftype}_02cm_res/stats_REMLvar_${i}.nii.gz \
 
-		# 3dbucket -prefix tmp.${flpr}_${ftype}_res_reml/${flpr}_${ftype}_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res_reml/stats_REML_${i}.nii.gz'[1]' -overwrite
+		# 3dbucket -prefix tmp.${flpr}_${ftype}_02cm_res_reml/${flpr}_${ftype}_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_02cm_res_reml/stats_REML_${i}.nii.gz'[1]' -overwrite
 	fi
 done
 
-fslmerge -tr ${flpr}_${ftype}_r2_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_r2_* ${tr}
-fslmerge -tr ${flpr}_${ftype}_betas_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_* ${tr}
-fslmerge -tr ${flpr}_${ftype}_tstat_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_tstat_* ${tr}
+fslmerge -tr ${flpr}_${ftype}_r2_time tmp.${flpr}_${ftype}_02cm_res/${flpr}_${ftype}_r2_* ${tr}
+fslmerge -tr ${flpr}_${ftype}_betas_time tmp.${flpr}_${ftype}_02cm_res/${flpr}_${ftype}_betas_* ${tr}
+fslmerge -tr ${flpr}_${ftype}_tstat_time tmp.${flpr}_${ftype}_02cm_res/${flpr}_${ftype}_tstat_* ${tr}
 
 fslmaths ${flpr}_${ftype}_r2_time -Tmaxn ${flpr}_${ftype}_cvr_idx
 fslmaths ${flpr}_${ftype}_cvr_idx -mul ${step} -sub ${poslag} -mul 0.025 ${flpr}_${ftype}_cvr_lag
@@ -117,9 +117,9 @@ for i in $( seq -f %g ${maxidx[0]} ${maxidx[1]} )
 do
 	let v=i*step
 	v=$( printf %04d $v )
-	3dcalc -a ${flpr}_${ftype}_spc_over_V.nii.gz -b tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+	3dcalc -a ${flpr}_${ftype}_spc_over_V.nii.gz -b tmp.${flpr}_${ftype}_02cm_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
 	-expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_spc_over_V.nii.gz -overwrite
-	3dcalc -a ${flpr}_${ftype}_tmap.nii.gz -b tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+	3dcalc -a ${flpr}_${ftype}_tmap.nii.gz -b tmp.${flpr}_${ftype}_02cm_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
 	-expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_tmap.nii.gz -overwrite
 done
 
@@ -129,7 +129,7 @@ done
 # CO2[mmHg] = (768*0.988-47)[mmHg]*(channel_trace*10/100) ~ 71.2 mmHg
 # multiply by 100 cause it's not BOLD % yet!
 fslmaths ${flpr}_${ftype}_spc_over_V.nii.gz -div 71.2 -mul 100 ${flpr}_${ftype}_cvr.nii.gz
-fslmaths tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_0350 -div 71.2 -mul 100 ${flpr}_${ftype}_cvr_simple
+fslmaths tmp.${flpr}_${ftype}_02cm_res/${flpr}_${ftype}_betas_0350 -div 71.2 -mul 100 ${flpr}_${ftype}_cvr_simple
 
 if [ ! -d ${flpr}_${ftype}_map_cvr ]
 then
@@ -184,7 +184,7 @@ cd ..
 
 # for vol in MA #OC E2 DN
 # do
-# 	cd tmp.${flpr}_${ftype}_res
+# 	cd tmp.${flpr}_${ftype}_02cm_res
 # 	3dcalc -a fitts_REML_0000.nii.gz -expr 'a*0' -prefix fittsopt.nii.gz -overwrite
 # 	for i in $( seq -f %03g 0 ${step} ${miter} )
 # 	do
@@ -195,6 +195,6 @@ cd ..
 # done
 
 
-rm -rf tmp.${flpr}*
+rm -rf tmp.${flpr}_${ftype}_02cm_*
 
 cd ${cwd}

@@ -54,12 +54,12 @@ matdir=${flpr}_${ftype}_mat
 
 cd ${wdr}/CVR || exit
 
-if [ -d tmp.${flpr}_${ftype}_res ]
+if [ -d tmp.${flpr}_${ftype}_02cms__res ]
 then
-	rm -rf tmp.${flpr}_${ftype}_res
+	rm -rf tmp.${flpr}_${ftype}_02cms__res
 fi
 # creating folder
-mkdir tmp.${flpr}_${ftype}_res
+mkdir tmp.${flpr}_${ftype}_02cms__res
 
 if [ -d ${matdir} ]
 then
@@ -84,8 +84,8 @@ do
 							 -x1D ${matdir}/mat.1D \
 							 -xjpeg ${matdir}/mat.jpg \
 							 -rout -tout \
-							 -bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz \
-							 -cbucket tmp.${flpr}_${ftype}_res/c_stats_${i}.nii.gz
+							 -bucket tmp.${flpr}_${ftype}_02cms__res/stats_${i}.nii.gz \
+							 -cbucket tmp.${flpr}_${ftype}_02cms__res/c_stats_${i}.nii.gz
 			;;
 			meica-aggr )
 				# Simply add rejected and N
@@ -100,16 +100,16 @@ do
 							 -x1D ${matdir}/mat.1D \
 							 -xjpeg ${matdir}/mat.jpg \
 							 -rout -tout \
-							 -bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz \
-							 -cbucket tmp.${flpr}_${ftype}_res/c_stats_${i}.nii.gz
+							 -bucket tmp.${flpr}_${ftype}_02cms__res/stats_${i}.nii.gz \
+							 -cbucket tmp.${flpr}_${ftype}_02cms__res/c_stats_${i}.nii.gz
 			;;
 			meica-cons )
 				# Add rejected, orthogonalised by the (all the) good components and the PetCO2, and N.
-				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_${ftype}_rej.1D
+				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_${ftype}_02cms__rej.1D
 				3dTproject -ort ${shiftdir}/shift_${i}.1D -ort ${decompdir}/${flpr}_accepted.1D \
 						   -ort ${decompdir}/${flpr}_vessels.1D \
-						   -polort -1 -prefix tmp.${flpr}_${ftype}_tr.1D -input tmp.${flpr}_${ftype}_rej.1D -overwrite
-				1dtranspose tmp.${flpr}_${ftype}_tr.1D > tmp.${flpr}_${ftype}_rejected_ort.1D
+						   -polort -1 -prefix tmp.${flpr}_${ftype}_02cms__tr.1D -input tmp.${flpr}_${ftype}_02cms__rej.1D -overwrite
+				1dtranspose tmp.${flpr}_${ftype}_02cms__tr.1D > tmp.${flpr}_${ftype}_02cms__rejected_ort.1D
 
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
@@ -117,20 +117,20 @@ do
 							 -polort 3 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-							 -ortvec tmp.${flpr}_${ftype}_rejected_ort.1D rejected \
+							 -ortvec tmp.${flpr}_${ftype}_02cms__rejected_ort.1D rejected \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat_${i}.1D \
 							 -xjpeg ${matdir}/mat.jpg \
 							 -rout -tout \
-							 -bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz \
-							 -cbucket tmp.${flpr}_${ftype}_res/c_stats_${i}.nii.gz
+							 -bucket tmp.${flpr}_${ftype}_02cms__res/stats_${i}.nii.gz \
+							 -cbucket tmp.${flpr}_${ftype}_02cms__res/c_stats_${i}.nii.gz
 			;;
 			meica-orth )
 				# Add rejected, orthogonalised by the PetCO2, and N.
-				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_${ftype}_rej.1D
+				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_${ftype}_02cms__rej.1D
 				3dTproject -ort ${shiftdir}/shift_${i}.1D \
-						   -polort -1 -prefix tmp.${flpr}_${ftype}_tr.1D -input tmp.${flpr}_${ftype}_rej.1D -overwrite
-				1dtranspose tmp.${flpr}_${ftype}_tr.1D > tmp.${flpr}_${ftype}_rejected_ort.1D
+						   -polort -1 -prefix tmp.${flpr}_${ftype}_02cms__tr.1D -input tmp.${flpr}_${ftype}_02cms__rej.1D -overwrite
+				1dtranspose tmp.${flpr}_${ftype}_02cms__tr.1D > tmp.${flpr}_${ftype}_02cms__rejected_ort.1D
 
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
@@ -138,27 +138,27 @@ do
 							 -polort 3 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-							 -ortvec tmp.${flpr}_${ftype}_rejected_ort.1D rejected \
+							 -ortvec tmp.${flpr}_${ftype}_02cms__rejected_ort.1D rejected \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat_${i}.1D \
 							 -xjpeg ${matdir}/mat.jpg \
 							 -rout -tout \
-							 -bucket tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz \
-							 -cbucket tmp.${flpr}_${ftype}_res/c_stats_${i}.nii.gz
+							 -bucket tmp.${flpr}_${ftype}_02cms__res/stats_${i}.nii.gz \
+							 -cbucket tmp.${flpr}_${ftype}_02cms__res/c_stats_${i}.nii.gz
 			;;
 			* ) echo "    !!! Warning !!! Invalid ftype: ${ftype}"; exit ;;
 		esac
 
-		3dbucket -prefix tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_r2_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz'[0]' -overwrite
-		3dbucket -prefix tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz'[2]' -overwrite
-		3dbucket -prefix tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_tstat_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_res/stats_${i}.nii.gz'[3]' -overwrite
+		3dbucket -prefix tmp.${flpr}_${ftype}_02cms__res/${flpr}_${ftype}_r2_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_02cms__res/stats_${i}.nii.gz'[0]' -overwrite
+		3dbucket -prefix tmp.${flpr}_${ftype}_02cms__res/${flpr}_${ftype}_betas_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_02cms__res/stats_${i}.nii.gz'[2]' -overwrite
+		3dbucket -prefix tmp.${flpr}_${ftype}_02cms__res/${flpr}_${ftype}_tstat_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_02cms__res/stats_${i}.nii.gz'[3]' -overwrite
 
 	fi
 done
 
-fslmerge -tr ${flpr}_${ftype}_r2_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_r2_* ${tr}
-fslmerge -tr ${flpr}_${ftype}_betas_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_* ${tr}
-fslmerge -tr ${flpr}_${ftype}_tstat_time tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_tstat_* ${tr}
+fslmerge -tr ${flpr}_${ftype}_r2_time tmp.${flpr}_${ftype}_02cms__res/${flpr}_${ftype}_r2_* ${tr}
+fslmerge -tr ${flpr}_${ftype}_betas_time tmp.${flpr}_${ftype}_02cms__res/${flpr}_${ftype}_betas_* ${tr}
+fslmerge -tr ${flpr}_${ftype}_tstat_time tmp.${flpr}_${ftype}_02cms__res/${flpr}_${ftype}_tstat_* ${tr}
 
 fslmaths ${flpr}_${ftype}_r2_time -Tmaxn ${flpr}_${ftype}_cvr_idx
 fslmaths ${flpr}_${ftype}_cvr_idx -mul ${step} -sub ${poslag} -mul 0.025 ${flpr}_${ftype}_cvr_lag
@@ -174,11 +174,11 @@ for i in $( seq -f %g 0 ${maxidx[1]} )
 do
 	let v=i*step
 	v=$( printf %04d $v )
-	3dcalc -a ${flpr}_${ftype}_spc_over_V.nii.gz -b tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+	3dcalc -a ${flpr}_${ftype}_spc_over_V.nii.gz -b tmp.${flpr}_${ftype}_02cms__res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
 		   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_spc_over_V.nii.gz -overwrite
-	3dcalc -a ${flpr}_${ftype}_tmap.nii.gz -b tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+	3dcalc -a ${flpr}_${ftype}_tmap.nii.gz -b tmp.${flpr}_${ftype}_02cms__res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
 		   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_tmap.nii.gz -overwrite
-	3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b tmp.${flpr}_${ftype}_res/c_stats_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+	3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b tmp.${flpr}_${ftype}_02cms__res/c_stats_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
 		   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_cbuck.nii.gz -overwrite
 done
 
@@ -189,7 +189,7 @@ done
 # multiply by 100 cause it's not BOLD % yet!
 fslmaths ${flpr}_${ftype}_spc_over_V.nii.gz -div 71.2 -mul 100 ${flpr}_${ftype}_cvr.nii.gz
 medianvol=$( printf %04d ${poslag} )
-fslmaths tmp.${flpr}_${ftype}_res/${flpr}_${ftype}_betas_${medianvol} -div 71.2 -mul 100 ${flpr}_${ftype}_cvr_simple
+fslmaths tmp.${flpr}_${ftype}_02cms__res/${flpr}_${ftype}_betas_${medianvol} -div 71.2 -mul 100 ${flpr}_${ftype}_cvr_simple
 
 if [ ! -d ${flpr}_${ftype}_map_cvr ]
 then
@@ -244,7 +244,7 @@ cd ..
 
 # for vol in MA #OC E2 DN
 # do
-# 	cd tmp.${flpr}_${ftype}_res
+# 	cd tmp.${flpr}_${ftype}_02cms__res
 # 	3dcalc -a fitts_REML_0000.nii.gz -expr 'a*0' -prefix fittsopt.nii.gz -overwrite
 # 	for i in $( seq -f %03g 0 ${step} ${miter} )
 # 	do
@@ -255,6 +255,6 @@ cd ..
 # done
 
 
-rm -rf tmp.${flpr}_${ftype}*
+rm -rf tmp.${flpr}_${ftype}_02cms_*
 
 cd ${cwd}

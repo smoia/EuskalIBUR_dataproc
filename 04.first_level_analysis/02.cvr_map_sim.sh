@@ -10,10 +10,11 @@
 sub=$1
 ses=$2
 ftype=$3
+pval=${4:-0.00175}  # it's 0.1 corrected for 60 repetitions
 
 # ftype is optcom, echo-2, or any denoising of meica, vessels, and networks
 
-wdr=${4:-/data}
+wdr=${5:-/data}
 
 step=12
 lag=9
@@ -21,8 +22,7 @@ freq=40
 tr=1.5
 
 case ${ftype} in
-	meica* | vessels* | networks* ) tscore=2.7	;;
-	optcom | echo-2 ) tscore=2.6 ;;
+	meica* | vessels* | networks* | optcom | echo-2 ) echo "Good ftype ${ftype}" ;;
 	* ) echo "Wrong ftype: ${ftype}"; exit ;;
 esac
 
@@ -161,7 +161,7 @@ fslmerge -tr ${flpr}_${ftype}_betas_time tmp.${flpr}_${ftype}_02cms__res/${flpr}
 fslmerge -tr ${flpr}_${ftype}_tstat_time tmp.${flpr}_${ftype}_02cms__res/${flpr}_${ftype}_tstat_* ${tr}
 
 fslmaths ${flpr}_${ftype}_r2_time -Tmaxn ${flpr}_${ftype}_cvr_idx
-fslmaths ${flpr}_${ftype}_cvr_idx -mul ${step} -sub ${poslag} -mul 0.025 ${flpr}_${ftype}_cvr_lag
+fslmaths ${flpr}_${ftype}_cvr_idx -mul ${step} -sub ${poslag} -mul 0.025 -mas ${mask} ${flpr}_${ftype}_cvr_lag
 
 # prepare empty volumes
 fslmaths ${flpr}_${ftype}_cvr_idx -mul 0 ${flpr}_${ftype}_spc_over_V
@@ -206,8 +206,34 @@ mv ${flpr}_${ftype}_tmap* ${flpr}_${ftype}_map_cvr/.
 ##				              ####
 # -------------------------- #####
 
-cd ${flpr}_${ftype}_map_cvr
+cd ${matdir}
+# Get T score to threshold
 
+# Read and process any mat there is in the "mat" folder
+if [ -e "mat_0000.1D" ]
+then
+	mat=mat_0000.1D
+elif [ -e "mat.1D" ]
+then
+	mat=mat.1D
+else
+	echo "Can't find any matrix. Abort."; exit
+fi
+
+# Extract degrees of freedom
+n=$( head -n 2 ${mat} | tail -n 1 - )
+n=${n#*\"}
+n=${n%\**}
+m=$( head -n 2 ${mat} | tail -n 1 - )
+m=${m#*\"}
+m=${m%\"*}
+let ndof=m-n-1
+
+# Get equivalent in t value
+tscore=$( cdf -p2t fitt ${pval} ${ndof} )
+tscore=${tscore##* }
+
+cd ../${flpr}_${ftype}_map_cvr
 # Applying threshold on positive and inverted negative t scores, then adding them together to have absolute tscores.
 fslmaths ${flpr}_${ftype}_tmap -thr ${tscore} ${flpr}_${ftype}_tmap_pos
 fslmaths ${flpr}_${ftype}_tmap -mul -1 -thr ${tscore} ${flpr}_${ftype}_tmap_neg
@@ -226,10 +252,13 @@ fslmaths ${mask} -sub ${flpr}_${ftype}_cvr_idx_mask ${flpr}_${ftype}_cvr_idx_bad
 
 # Obtaining lag map (but check next line)
 fslmaths ${flpr}_${ftype}_cvr_idx -sub 36 -mas ${flpr}_${ftype}_cvr_idx_mask -add 36 -mas ${mask} ${flpr}_${ftype}_cvr_idx_corrected
-fslmaths ${flpr}_${ftype}_cvr_idx_corrected -mul ${step} -sub ${poslag} -mul 0.025 ${flpr}_${ftype}_cvr_lag_corrected
+fslmaths ${flpr}_${ftype}_cvr_idx_corrected -mul ${step} -sub ${poslag} -mul 0.025 -mas ${mask} ${flpr}_${ftype}_cvr_lag_corrected
 
-# Mask Good CVR map
-fslmaths ${flpr}_${ftype}_cvr -mas ${flpr}_${ftype}_cvr_idx_mask ${flpr}_${ftype}_cvr_masked
+# Mask Good CVR map, lags and tstats
+for map in cvr cvr_lag tmap
+do
+	fslmaths ${flpr}_${ftype}_${map} -mas ${flpr}_${ftype}_cvr_idx_mask ${flpr}_${ftype}_${map}_masked
+done
 
 # Assign the value of the "simple" CVR map to the bad voxels to have a complete brain.
 fslmaths ${flpr}_${ftype}_cvr_idx_bad_vxs -mul ${flpr}_${ftype}_cvr_simple -add ${flpr}_${ftype}_cvr_masked ${flpr}_${ftype}_cvr_corrected

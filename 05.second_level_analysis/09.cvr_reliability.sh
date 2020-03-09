@@ -92,9 +92,9 @@ done
 
 cd normalised
 
-for inmap in cvr lag
-do
 for map in masked corrected
+do
+for inmap in cvr lag
 do
 
 inmap=${inmap}_${map}

@@ -21,7 +21,7 @@ then
 fi
 
 # joblist=""
-# for sub in 001 002 003 004 005 007 008 009
+# for sub in 007 008 009
 # do
 # 	for ses in $(seq -f %02g 1 10)
 # 	do
@@ -29,6 +29,10 @@ fi
 # 		joblist=${joblist}s_${sub}_${ses}_EuskalIBUR,
 # 	done
 # done
+
+# qsub -q short.q -N "s_002_07_EuskalIBUR" -o ${wdr}/../LogFiles/002_07_pipe -e ${wdr}/../LogFiles/002_07_pipe ${wdr}/98.hcp/run_subject_pipeline.sh 002 07
+# joblist=${joblist}s_002_07_EuskalIBUR,
+
 # joblist=${joblist::-1}
 
 qsub -q short.q -N "optcom_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
@@ -46,7 +50,6 @@ qsub -q short.q -hold_jid "meica-mvar_EuskalIBUR" -N "echo-2_EuskalIBUR" -o ${wd
 # 	done
 # done
 
-# qsub -q short.q -N "s_010_11_prep" -o ${wdr}/../LogFiles/010_11_pipe -e ${wdr}/../LogFiles/010_11_pipe ${wdr}/tmp.preproc_10.sh
-
 # qsub -q veryshort.q -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
 
+# qsub -q short.q -N "s_010_11_prep" -o ${wdr}/../LogFiles/010_11_pipe -e ${wdr}/../LogFiles/010_11_pipe ${wdr}/tmp.preproc_10.sh

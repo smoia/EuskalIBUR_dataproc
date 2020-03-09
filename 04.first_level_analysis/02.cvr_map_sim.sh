@@ -208,7 +208,7 @@ cd ${wdr}/CVR || exit
 # ##                            ####
 # # -------------------------- #####
 
-# cd ${matdir}
+cd ${matdir}
 # # Get T score to threshold
 
 # # Read and process any mat there is in the "mat" folder
@@ -256,6 +256,7 @@ cd ../${flpr}_${ftype}_map_cvr
 fslmaths ${flpr}_${ftype}_cvr_idx -sub 36 -mas ${flpr}_${ftype}_cvr_idx_mask -add 36 -mas ${mask} ${flpr}_${ftype}_cvr_idx_corrected
 fslmaths ${flpr}_${ftype}_cvr_idx_corrected -mul ${step} -sub ${poslag} -mul 0.025 -mas ${mask} ${flpr}_${ftype}_cvr_lag_corrected
 
+echo "Getting masked maps"
 # Mask Good CVR map, lags and tstats
 for map in cvr cvr_lag tmap
 do
@@ -265,6 +266,7 @@ done
 # Momentarily retrieving tmap #30
 fslroi ../${flpr}_${ftype}_tstat_time ${flpr}_${ftype}_tmap_simple 30 1
 
+echo "Getting corrected maps"
 # Assign the value of the "simple" CVR and tmap map to the bad voxels to have a complete brain.
 fslmaths ${flpr}_${ftype}_cvr_idx_bad_vxs -mul ${flpr}_${ftype}_cvr_simple -add ${flpr}_${ftype}_cvr_masked ${flpr}_${ftype}_cvr_corrected
 fslmaths ${flpr}_${ftype}_cvr_idx_bad_vxs -mul ${flpr}_${ftype}_tmap_simple -add ${flpr}_${ftype}_tmap_masked ${flpr}_${ftype}_tmap_corrected

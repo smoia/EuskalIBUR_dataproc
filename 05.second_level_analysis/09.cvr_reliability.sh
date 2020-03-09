@@ -64,24 +64,28 @@ do
 	for ses in $( seq -f %02g 1 ${lastses} )
 	do
 		echo "Copying session ${ses}"
-		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_masked.nii.gz \
-			 ./${sub}_${ses}_${ftype}_cvr.nii.gz
-		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag_masked.nii.gz \
-			 ./${sub}_${ses}_${ftype}_lag.nii.gz
-		imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap_masked.nii.gz \
-			 ./${sub}_${ses}_${ftype}_tmap.nii.gz
-
-		for inmap in cvr lag tmap  # cvr_idx_mask tstat_mask
+		for map in masked corrected
 		do
-			echo "Transforming ${inmap} maps of session ${ses} to MNI"
-			infile=${sub}_${ses}_${ftype}_${inmap}.nii.gz
-			antsApplyTransforms -d 3 -i ${infile} -r ./reg/MNI_T1_brain.nii.gz \
-								-o ./normalised/std_${infile}.nii.gz -n NearestNeighbor \
-								-t ./reg/${sub}_T1w2std1Warp.nii.gz \
-								-t ./reg/${sub}_T1w2std0GenericAffine.mat \
-								-t ./reg/${sub}_T2w2T1w0GenericAffine.mat \
-								-t [./reg/${sub}_T2w2sbref0GenericAffine.mat,1]
-			imrm ${infile}
+			imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_${map}.nii.gz \
+				 ./${sub}_${ses}_${ftype}_cvr_${map}.nii.gz
+			imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag_${map}.nii.gz \
+				 ./${sub}_${ses}_${ftype}_lag_${map}.nii.gz
+			imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap_${map}.nii.gz \
+				 ./${sub}_${ses}_${ftype}_tmap_${map}.nii.gz
+
+			for inmap in cvr lag tmap  # cvr_idx_mask tstat_mask
+			do
+				inmap=${inmap}_${map}
+				echo "Transforming ${inmap} maps of session ${ses} to MNI"
+				infile=${sub}_${ses}_${ftype}_${inmap}.nii.gz
+				antsApplyTransforms -d 3 -i ${infile} -r ./reg/MNI_T1_brain.nii.gz \
+									-o ./normalised/std_${infile}.nii.gz -n NearestNeighbor \
+									-t ./reg/${sub}_T1w2std1Warp.nii.gz \
+									-t ./reg/${sub}_T1w2std0GenericAffine.mat \
+									-t ./reg/${sub}_T2w2T1w0GenericAffine.mat \
+									-t [./reg/${sub}_T2w2sbref0GenericAffine.mat,1]
+				imrm ${infile}
+			done
 		done
 	done
 done
@@ -90,6 +94,10 @@ cd normalised
 
 for inmap in cvr lag
 do
+for map in masked corrected
+do
+
+inmap=${inmap}_${map}
 rm ../ICC2_${inmap}_${ftype}.nii.gz
 
 3dICC -prefix ../ICC2_${inmap}_${ftype}.nii.gz -jobs 10                                    \
@@ -169,6 +177,7 @@ rm ../ICC2_${inmap}_${ftype}.nii.gz
       009  09       std_009_09_${ftype}_tmap.nii.gz    std_009_09_${ftype}_${inmap}.nii.gz \
       009  10       std_009_10_${ftype}_tmap.nii.gz    std_009_10_${ftype}_${inmap}.nii.gz
 
+done
 done
 
 cd ${cwd}

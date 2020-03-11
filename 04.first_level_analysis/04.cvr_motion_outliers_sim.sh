@@ -76,7 +76,7 @@ case ${ftype} in
 		fi
 		mkdir tmp.${flpr}_orth
 
-		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
+		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_corrected -R ) )
 
 		for i in $( seq -f %g 0 ${maxidx[1]} )
 		do
@@ -86,7 +86,7 @@ case ${ftype} in
 			if [ -e ${matdir}/mat_${v}.1D ]
 			then
 				# Extract only right voxels for synthesize
-				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx.nii.gz \
+				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_corrected.nii.gz \
 					   -expr "a*equals(b,${i})" -prefix tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
 
 				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
@@ -116,7 +116,7 @@ case ${ftype} in
 		fi
 		mkdir tmp.${flpr}_orth
 
-		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
+		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_corrected -R ) )
 
 		for i in $( seq -f %g 0 ${maxidx[1]} )
 		do
@@ -126,7 +126,7 @@ case ${ftype} in
 			if [ -e ${matdir}/mat_${v}.1D ]
 			then
 				# Extract only right voxels for synthesize
-				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx.nii.gz \
+				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_corrected.nii.gz \
 					   -expr "a*equals(b,${i})" -prefix tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
 
 				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
@@ -143,8 +143,8 @@ case ${ftype} in
 	* ) echo "    !!! Warning !!! Invalid ftype: ${ftype}"
 esac
 
-# Masking the reconstructed noise just in case
-fslmaths tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -mas ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_mask tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
+# # Masking the reconstructed noise just in case
+# fslmaths tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -mas ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_mask tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 # Removing noise from original file
 fslmaths ${func} -sub tmp.${flpr}_${ftype}_04cmos_remove.nii.gz ../ME_Denoising/${flpr}_${ftype}_residuals_SPC
 

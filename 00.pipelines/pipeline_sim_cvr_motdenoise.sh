@@ -60,7 +60,7 @@ echo ""
 # 	/scripts/03.data_preproc/05.compute_CVR_regressors.sh ${sub} ${ses} ${ftype}
 # done
 
-for ftype in meica-aggr meica-orth meica-cons meica-mvar optcom echo-2  #  meica-recn vessels-preg
+for ftype in meica-aggr meica-orth meica-cons # meica-mvar optcom echo-2  #  meica-recn vessels-preg
 do
 	echo "************************************"
 	echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"

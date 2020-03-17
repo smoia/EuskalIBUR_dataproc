@@ -18,7 +18,8 @@ os.chdir('ME_Denoising')
 
 # 01. Read and organise motion related parameters
 ftype_list = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-cons',
-              'meica-mvar']
+              'meica-mvar', 'meica-aggr-twosteps', 'meica-orth-twosteps',
+              'meica-cons-twosteps']
 
 LAST_SES += 1
 

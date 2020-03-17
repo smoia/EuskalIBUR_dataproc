@@ -92,7 +92,7 @@ done
 
 cd normalised
 
-for map in masked corrected
+for map in masked # corrected
 do
 for inmap in cvr lag
 do

@@ -293,12 +293,12 @@ case ${ftype} in
 		mkdir ${mapdir_2}
 
 		# Copying idx and lag maps into new folder (they won't change)
-		imcp ${flpr}_optcom_map_cvr/${flpr}_${ftype}_cvr_idx ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx
-		imcp ${flpr}_optcom_map_cvr/${flpr}_${ftype}_cvr_idx_mask ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx_mask
-		imcp ${flpr}_optcom_map_cvr/${flpr}_${ftype}_cvr_idx_corrected ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx_corrected
-		imcp ${flpr}_optcom_map_cvr/${flpr}_${ftype}_cvr_lag ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag
-		imcp ${flpr}_optcom_map_cvr/${flpr}_${ftype}_cvr_lag_masked ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag_masked
-		imcp ${flpr}_optcom_map_cvr/${flpr}_${ftype}_cvr_lag_corrected ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag_corrected
+		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_idx ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx
+		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_idx_mask ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx_mask
+		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_idx_corrected ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx_corrected
+		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_lag ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag
+		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_lag_masked ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag_masked
+		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_lag_corrected ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag_corrected
 
 		# prepare empty volumes
 		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${flpr}_${ftype}-twosteps_spc_over_V

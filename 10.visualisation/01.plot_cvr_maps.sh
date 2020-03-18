@@ -12,7 +12,7 @@ for sub in 001 002 003 004 007 008 009
 do
 	for ses in $( seq -f %02g 1 10 )
 	do
-		for ftype in optcom echo-2 meica-aggr meica-orth meica-preg meica-mvar meica-recn vessels-preg
+		for ftype in optcom echo-2 meica-aggr meica-orth meica-cons meica-mvar
 		do
 			case "${ftype}" in
 				meica* | vessels* | networks* ) tscore=3.367	;;
@@ -80,7 +80,7 @@ do
 
 	# Creating full sessions maps
 	appending="convert -append"
-	for ftype in echo-2 optcom meica-aggr meica-orth meica-preg meica-mvar meica-recn vessels-preg
+	for ftype in optcom echo-2 meica-aggr meica-orth meica-cons meica-mvar
 	do
 		for ses in $( seq -f %02g 1 9 )
 		do

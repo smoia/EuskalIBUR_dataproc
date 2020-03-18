@@ -21,14 +21,14 @@ then
 fi
 
 # joblist=""
-for sub in 001 002 003 004 007 008 009
-do
-	for ses in $(seq -f %02g 1 10)
-	do
-		qsub -q long.q -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
-		joblist=${joblist}s_${sub}_${ses}_EuskalIBUR,
-	done
-done
+# for sub in 001 002 003 004 007 008 009
+# do
+# 	for ses in $(seq -f %02g 1 10)
+# 	do
+# 		qsub -q long.q -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
+# 		joblist=${joblist}s_${sub}_${ses}_EuskalIBUR,
+# 	done
+# done
 
 # qsub -q short.q -N "s_002_07_EuskalIBUR" -o ${wdr}/../LogFiles/002_07_pipe -e ${wdr}/../LogFiles/002_07_pipe ${wdr}/98.hcp/run_subject_pipeline.sh 002 07
 # joblist=${joblist}s_002_07_EuskalIBUR,

@@ -299,13 +299,14 @@ case ${ftype} in
 		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_lag ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag
 		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_lag_masked ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag_masked
 		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_lag_corrected ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag_corrected
+		imcp ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_simple ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_simple
 
 		# prepare empty volumes
 		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${flpr}_${ftype}-twosteps_spc_over_V
 		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${flpr}_${ftype}-twosteps_tmap
 		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${flpr}_${ftype}-twosteps_cbuck
 
-		maxidx=( $( fslstats ${flpr}_${ftype}_cvr_idx -R ) )
+		maxidx=( $( fslstats ${flpr}_${ftype}-twosteps_cvr_idx -R ) )
 
 		for i in $( seq -f %g 0 ${maxidx[1]} )
 		do

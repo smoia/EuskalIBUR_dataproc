@@ -77,7 +77,7 @@ case ${ftype} in
 		fi
 		mkdir tmp.${flpr}_orth
 
-		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_corrected -R ) )
+		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
 
 		for i in $( seq -f %g 0 ${maxidx[1]} )
 		do
@@ -87,7 +87,7 @@ case ${ftype} in
 			if [ -e ${matdir}/mat_${v}.1D ]
 			then
 				# Extract only right voxels for synthesize
-				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_corrected.nii.gz \
+				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx.nii.gz \
 					   -expr "a*equals(b,${i})" -prefix tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
 
 				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
@@ -117,7 +117,7 @@ case ${ftype} in
 		fi
 		mkdir tmp.${flpr}_orth
 
-		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_corrected -R ) )
+		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
 
 		for i in $( seq -f %g 0 ${maxidx[1]} )
 		do
@@ -127,7 +127,7 @@ case ${ftype} in
 			if [ -e ${matdir}/mat_${v}.1D ]
 			then
 				# Extract only right voxels for synthesize
-				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_corrected.nii.gz \
+				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx.nii.gz \
 					   -expr "a*equals(b,${i})" -prefix tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
 
 				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
@@ -167,7 +167,7 @@ case ${ftype} in
 		fi
 		mkdir tmp.${flpr}_orth
 
-		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_corrected -R ) )
+		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
 
 		for i in $( seq -f %g 0 ${maxidx[1]} )
 		do
@@ -177,7 +177,7 @@ case ${ftype} in
 			if [ -e ${matdir}/mat_${v}.1D ]
 			then
 				# Extract only right voxels for synthesize
-				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_corrected.nii.gz \
+				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx.nii.gz \
 					   -expr "a*equals(b,${i})" -prefix tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
 
 				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
@@ -208,7 +208,7 @@ case ${ftype} in
 		fi
 		mkdir tmp.${flpr}_orth
 
-		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_corrected -R ) )
+		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
 
 		for i in $( seq -f %g 0 ${maxidx[1]} )
 		do
@@ -218,7 +218,7 @@ case ${ftype} in
 			if [ -e ${matdir}/mat_${v}.1D ]
 			then
 				# Extract only right voxels for synthesize
-				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx_corrected.nii.gz \
+				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx.nii.gz \
 					   -expr "a*equals(b,${i})" -prefix tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
 
 				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \

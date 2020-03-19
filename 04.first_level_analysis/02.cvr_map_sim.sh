@@ -15,6 +15,7 @@ pval=${4:-0.00175}  # it's 0.1 corrected for 60 repetitions
 # ftype is optcom, echo-2, or any denoising of meica, vessels, and networks
 
 wdr=${5:-/data}
+tmp=${6:-/tmp}
 
 step=12
 lag=9
@@ -54,12 +55,12 @@ matdir=${flpr}_${ftype}_mat
 
 cd ${wdr}/CVR || exit
 
-if [ -d tmp.${flpr}_${ftype}_02cms_res ]
+if [ -d ${tmp}/tmp.${flpr}_${ftype}_02cms_res ]
 then
-	rm -rf tmp.${flpr}_${ftype}_02cms_res
+	rm -rf ${tmp}/tmp.${flpr}_${ftype}_02cms_res
 fi
 # creating folder
-mkdir tmp.${flpr}_${ftype}_02cms_res
+mkdir ${tmp}/tmp.${flpr}_${ftype}_02cms_res
 
 if [ -d ${matdir} ]
 then
@@ -84,8 +85,8 @@ do
 							 -x1D ${matdir}/mat.1D \
 							 -xjpeg ${matdir}/mat.jpg \
 							 -rout -tout \
-							 -bucket tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
-							 -cbucket tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
+							 -bucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
+							 -cbucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
 			;;
 			meica-aggr )
 				# Simply add rejected and N
@@ -100,16 +101,16 @@ do
 							 -x1D ${matdir}/mat.1D \
 							 -xjpeg ${matdir}/mat.jpg \
 							 -rout -tout \
-							 -bucket tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
-							 -cbucket tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
+							 -bucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
+							 -cbucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
 			;;
 			meica-cons )
 				# Add rejected, orthogonalised by the (all the) good components and the PetCO2, and N.
-				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_${ftype}_02cms_rej.1D
+				1dtranspose ${decompdir}/${flpr}_rejected.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D
 				3dTproject -ort ${shiftdir}/shift_${i}.1D -ort ${decompdir}/${flpr}_accepted.1D \
 						   -ort ${decompdir}/${flpr}_vessels.1D \
-						   -polort -1 -prefix tmp.${flpr}_${ftype}_02cms_tr.1D -input tmp.${flpr}_${ftype}_02cms_rej.1D -overwrite
-				1dtranspose tmp.${flpr}_${ftype}_02cms_tr.1D > tmp.${flpr}_${ftype}_02cms_rejected_ort.1D
+						   -polort -1 -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D -input ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D -overwrite
+				1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D
 
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
@@ -117,20 +118,20 @@ do
 							 -polort 3 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-							 -ortvec tmp.${flpr}_${ftype}_02cms_rejected_ort.1D rejected \
+							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D rejected \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat_${i}.1D \
 							 -xjpeg ${matdir}/mat.jpg \
 							 -rout -tout \
-							 -bucket tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
-							 -cbucket tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
+							 -bucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
+							 -cbucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
 			;;
 			meica-orth )
 				# Add rejected, orthogonalised by the PetCO2, and N.
-				1dtranspose ${decompdir}/${flpr}_rejected.1D > tmp.${flpr}_${ftype}_02cms_rej.1D
+				1dtranspose ${decompdir}/${flpr}_rejected.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D
 				3dTproject -ort ${shiftdir}/shift_${i}.1D \
-						   -polort -1 -prefix tmp.${flpr}_${ftype}_02cms_tr.1D -input tmp.${flpr}_${ftype}_02cms_rej.1D -overwrite
-				1dtranspose tmp.${flpr}_${ftype}_02cms_tr.1D > tmp.${flpr}_${ftype}_02cms_rejected_ort.1D
+						   -polort -1 -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D -input ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D -overwrite
+				1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D
 
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
@@ -138,27 +139,27 @@ do
 							 -polort 3 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-							 -ortvec tmp.${flpr}_${ftype}_02cms_rejected_ort.1D rejected \
+							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D rejected \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat_${i}.1D \
 							 -xjpeg ${matdir}/mat.jpg \
 							 -rout -tout \
-							 -bucket tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
-							 -cbucket tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
+							 -bucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
+							 -cbucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
 			;;
 			* ) echo "    !!! Warning !!! Invalid ftype: ${ftype}"; exit ;;
 		esac
 
-		3dbucket -prefix tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_r2_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz'[0]' -overwrite
-		3dbucket -prefix tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz'[2]' -overwrite
-		3dbucket -prefix tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${i}.nii.gz -abuc tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz'[3]' -overwrite
+		3dbucket -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_r2_${i}.nii.gz -abuc ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz'[0]' -overwrite
+		3dbucket -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${i}.nii.gz -abuc ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz'[2]' -overwrite
+		3dbucket -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${i}.nii.gz -abuc ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz'[3]' -overwrite
 
 	fi
 done
 
-fslmerge -tr ${flpr}_${ftype}_r2_time tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_r2_* ${tr}
-fslmerge -tr ${flpr}_${ftype}_betas_time tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_* ${tr}
-fslmerge -tr ${flpr}_${ftype}_tstat_time tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_* ${tr}
+fslmerge -tr ${flpr}_${ftype}_r2_time ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_r2_* ${tr}
+fslmerge -tr ${flpr}_${ftype}_betas_time ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_* ${tr}
+fslmerge -tr ${flpr}_${ftype}_tstat_time ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_* ${tr}
 
 fslmaths ${flpr}_${ftype}_r2_time -Tmaxn ${flpr}_${ftype}_cvr_idx
 fslmaths ${flpr}_${ftype}_cvr_idx -mul ${step} -sub ${poslag} -mul 0.025 -mas ${mask} ${flpr}_${ftype}_cvr_lag
@@ -174,11 +175,11 @@ for i in $( seq -f %g 0 ${maxidx[1]} )
 do
 	let v=i*step
 	v=$( printf %04d $v )
-	3dcalc -a ${flpr}_${ftype}_spc_over_V.nii.gz -b tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+	3dcalc -a ${flpr}_${ftype}_spc_over_V.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
 		   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_spc_over_V.nii.gz -overwrite
-	3dcalc -a ${flpr}_${ftype}_tmap.nii.gz -b tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+	3dcalc -a ${flpr}_${ftype}_tmap.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
 		   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_tmap.nii.gz -overwrite
-	3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+	3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
 		   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_cbuck.nii.gz -overwrite
 done
 
@@ -190,8 +191,8 @@ done
 fslmaths ${flpr}_${ftype}_spc_over_V.nii.gz -div 71.2 -mul 100 ${flpr}_${ftype}_cvr.nii.gz
 # Obtain "simple" t-stats and CVR 
 medianvol=$( printf %04d ${poslag} )
-fslmaths tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${medianvol} -div 71.2 -mul 100 ${flpr}_${ftype}_cvr_simple
-fslmaths tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${medianvol} ${flpr}_${ftype}_tmap_simple
+fslmaths ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${medianvol} -div 71.2 -mul 100 ${flpr}_${ftype}_cvr_simple
+fslmaths ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${medianvol} ${flpr}_${ftype}_tmap_simple
 
 if [ ! -d ${flpr}_${ftype}_map_cvr ]
 then
@@ -300,6 +301,7 @@ case ${ftype} in
 		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_lag_masked ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag_masked
 		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_lag_corrected ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag_corrected
 		imcp ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_simple ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_simple
+		imcp ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_tmap_simple ${mapdir_2}/${flpr}_${ftype}-twosteps_tmap_simple
 
 		# prepare empty volumes
 		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${flpr}_${ftype}-twosteps_spc_over_V
@@ -312,11 +314,11 @@ case ${ftype} in
 		do
 			let v=i*step
 			v=$( printf %04d $i )
-			3dcalc -a ${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -b tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+			3dcalc -a ${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
 				   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -overwrite
-			3dcalc -a ${flpr}_${ftype}-twosteps_tmap.nii.gz -b tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+			3dcalc -a ${flpr}_${ftype}-twosteps_tmap.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
 				   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}-twosteps_tmap.nii.gz -overwrite
-			3dcalc -a ${flpr}_${ftype}-twosteps_cbuck.nii.gz -b tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+			3dcalc -a ${flpr}_${ftype}-twosteps_cbuck.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz -c ${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
 				   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}-twosteps_cbuck.nii.gz -overwrite
 		done
 
@@ -351,6 +353,10 @@ case ${ftype} in
 		tscore=${tscore##* }
 
 		cd ../${mapdir_2}
+
+		# From %/V to %/mmHg
+		fslmaths ${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -div 71.2 -mul 100 ${flpr}_${ftype}-twosteps_cvr.nii.gz
+
 		# Applying threshold on positive and inverted negative t scores, then adding them together to have absolute tscores.
 		fslmaths ${flpr}_${ftype}-twosteps_tmap -thr ${tscore} ${flpr}_${ftype}-twosteps_tmap_pos
 		fslmaths ${flpr}_${ftype}-twosteps_tmap -mul -1 -thr ${tscore} ${flpr}_${ftype}-twosteps_tmap_neg
@@ -385,6 +391,6 @@ esac
 
 cd ..
 
-rm -rf tmp.${flpr}_${ftype}_02cms_*
+rm -rf ${tmp}/tmp.${flpr}_${ftype}_02cms_*
 
 cd ${cwd}

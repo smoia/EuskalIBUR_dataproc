@@ -9,6 +9,7 @@
 sub=$1
 ses=$2
 wdr=${3:-/data}
+tmp=${4:-/tmp}
 
 ### Main ###
 cwd=$( pwd )

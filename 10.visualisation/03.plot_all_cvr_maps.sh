@@ -8,9 +8,9 @@ cwd=$( pwd )
 
 cd ${wdr}/CVR || exit
 
-for sub in 007 003 002
+for sub in 001 002 003 004 007 008 009
 do
-	for ftype in echo-2 optcom meica vessels  # networks
+	for ftype in echo-2 optcom meica-mvar meica-aggr meica-orth meica-cons
 	do
 		for ses in $( seq -f %02g 1 9 )
 		do

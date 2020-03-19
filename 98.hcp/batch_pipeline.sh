@@ -58,7 +58,7 @@ joblist=""
 # rm ${wdr}/../LogFiles/motion_pipe
 # qsub -q veryshort.q -hold_jid "${old_ftype}_EuskalIBUR" -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
 
-# rm ${wdr}/../LogFiles/plot_pipe
-# qsub -q short.q -hold_jid "${old_ftype}_EuskalIBUR" -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/plot_pipe -e ${wdr}/../LogFiles/plot_pipe ${wdr}/98.hcp/run_plot_pipeline.sh
+rm ${wdr}/../LogFiles/plot_pipe
+qsub -q short.q -N "plot_EuskalIBUR" -o ${wdr}/../LogFiles/plot_pipe -e ${wdr}/../LogFiles/plot_pipe ${wdr}/98.hcp/run_plot_pipeline.sh
 
 # qsub -q short.q -N "s_010_11_prep" -o ${wdr}/../LogFiles/010_11_pipe -e ${wdr}/../LogFiles/010_11_pipe ${wdr}/tmp.preproc_10.sh

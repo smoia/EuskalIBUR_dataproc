@@ -308,51 +308,24 @@ case ${ftype} in
 		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${flpr}_${ftype}-twosteps_tmap
 		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${flpr}_${ftype}-twosteps_cbuck
 
-		maxidx=( $( fslstats ${flpr}_${ftype}-twosteps_cvr_idx -R ) )
+		maxidx=( $( fslstats ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -R ) )
 
 		for i in $( seq -f %g 0 ${maxidx[1]} )
 		do
 			let v=i*step
 			v=$( printf %04d $i )
-			3dcalc -a ${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
+			3dcalc -a ${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
 				   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -overwrite
-			3dcalc -a ${flpr}_${ftype}-twosteps_tmap.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
+			3dcalc -a ${flpr}_${ftype}-twosteps_tmap.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
 				   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}-twosteps_tmap.nii.gz -overwrite
-			3dcalc -a ${flpr}_${ftype}-twosteps_cbuck.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz -c ${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
+			3dcalc -a ${flpr}_${ftype}-twosteps_cbuck.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
 				   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}-twosteps_cbuck.nii.gz -overwrite
 		done
 
 		mv ${flpr}_${ftype}-twosteps_spc* ${mapdir_2}/.
 		mv ${flpr}_${ftype}-twosteps_tmap* ${mapdir_2}/.
 
-		cd ${matdir}
-		# Get T score to threshold
-
-		# Read and process any mat there is in the "mat" folder
-		if [ -e "mat_0000.1D" ]
-		then
-			mat=mat_0000.1D
-		elif [ -e "mat.1D" ]
-		then
-			mat=mat.1D
-		else
-			echo "Can't find any matrix. Abort."; exit
-		fi
-
-		# Extract degrees of freedom
-		n=$( head -n 2 ${mat} | tail -n 1 - )
-		n=${n#*\"}
-		n=${n%\**}
-		m=$( head -n 2 ${mat} | tail -n 1 - )
-		m=${m#*\"}
-		m=${m%\"*}
-		let ndof=m-n-1
-
-		# Get equivalent in t value
-		tscore=$( cdf -p2t fitt ${pval} ${ndof} )
-		tscore=${tscore##* }
-
-		cd ../${mapdir_2}
+		cd ${mapdir_2}
 
 		# From %/V to %/mmHg
 		fslmaths ${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -div 71.2 -mul 100 ${flpr}_${ftype}-twosteps_cvr.nii.gz

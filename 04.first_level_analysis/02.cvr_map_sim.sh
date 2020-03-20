@@ -313,7 +313,7 @@ case ${ftype} in
 		for i in $( seq -f %g 0 ${maxidx[1]} )
 		do
 			let v=i*step
-			v=$( printf %04d $i )
+			v=$( printf %04d $v )
 			3dcalc -a ${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
 				   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -overwrite
 			3dcalc -a ${flpr}_${ftype}-twosteps_tmap.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \

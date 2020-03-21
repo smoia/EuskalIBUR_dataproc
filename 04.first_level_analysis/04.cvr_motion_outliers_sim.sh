@@ -93,9 +93,9 @@ case ${ftype} in
 				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
-							 -prefix tmp.${flpr}_orth/${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+							 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 							 -overwrite
-				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add tmp.${flpr}_orth/${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done
@@ -133,9 +133,9 @@ case ${ftype} in
 				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
-							 -prefix tmp.${flpr}_orth/${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+							 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 							 -overwrite
-				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add tmp.${flpr}_orth/${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done
@@ -183,9 +183,9 @@ case ${ftype} in
 				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
-							 -prefix tmp.${flpr}_orth/${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+							 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 							 -overwrite
-				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add tmp.${flpr}_orth/${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done
@@ -224,9 +224,9 @@ case ${ftype} in
 				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
-							 -prefix tmp.${flpr}_orth/${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+							 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 							 -overwrite
-				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add tmp.${flpr}_orth/${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done

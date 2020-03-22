@@ -60,7 +60,7 @@ cwd=$(pwd)
 # 	/scripts/03.data_preproc/05.compute_CVR_regressors.sh ${sub} ${ses} ${ftype}
 # done
 
-for ftype in meica-aggr meica-orth meica-cons # optcom meica-mvar echo-2 meica-aggr meica-orth meica-cons # meica-recn vessels-preg
+for ftype in meica-aggr meica-orth meica-cons  # meica-mvar echo-2 meica-aggr meica-orth meica-cons # meica-recn vessels-preg
 do
 	echo "************************************"
 	echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"

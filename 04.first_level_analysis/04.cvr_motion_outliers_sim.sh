@@ -71,11 +71,11 @@ case ${ftype} in
 					 -overwrite
 
 		# Create folder for synthesize
-		if [ -d tmp.${flpr}_orth ]
+		if [ -d ${tmp}/tmp.${flpr}_orth ]
 		then
-			rm -rf tmp.${flpr}_orth
+			rm -rf ${tmp}/tmp.${flpr}_orth
 		fi
-		mkdir tmp.${flpr}_orth
+		mkdir ${tmp}/tmp.${flpr}_orth
 
 		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
 
@@ -88,9 +88,9 @@ case ${ftype} in
 			then
 				# Extract only right voxels for synthesize
 				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx.nii.gz \
-					   -expr "a*equals(b,${i})" -prefix tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
+					   -expr "a*equals(b,${i})" -prefix ${tmp}/tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
 
-				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
+				3dSynthesize -cbucket ${tmp}/tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
 							 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
@@ -99,7 +99,7 @@ case ${ftype} in
 						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done
-		rm -rf tmp.${flpr}_meica-orth
+		rm -rf ${tmp}/tmp.${flpr}_orth
 	;;
 	meica-cons )
 		# Reconstruct rejected, orthogonalised by the good components and the PetCO2, and N.
@@ -111,11 +111,11 @@ case ${ftype} in
 					 -overwrite
 
 		# Create folder for synthesize
-		if [ -d tmp.${flpr}_orth ]
+		if [ -d ${tmp}/tmp.${flpr}_orth ]
 		then
-			rm -rf tmp.${flpr}_orth
+			rm -rf ${tmp}/tmp.${flpr}_orth
 		fi
-		mkdir tmp.${flpr}_orth
+		mkdir ${tmp}/tmp.${flpr}_orth
 
 		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
 
@@ -128,9 +128,9 @@ case ${ftype} in
 			then
 				# Extract only right voxels for synthesize
 				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx.nii.gz \
-					   -expr "a*equals(b,${i})" -prefix tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
+					   -expr "a*equals(b,${i})" -prefix ${tmp}/tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
 
-				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
+				3dSynthesize -cbucket ${tmp}/tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
 							 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
@@ -139,7 +139,7 @@ case ${ftype} in
 						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done
-		rm -rf tmp.${flpr}_meica-cons
+		rm -rf ${tmp}/tmp.${flpr}_orth
 	;;
 	meica-aggr-twosteps )
 		matdir=${flpr}_${ftype%-twosteps}_mat
@@ -161,11 +161,11 @@ case ${ftype} in
 					 -overwrite
 
 		# Create folder for synthesize
-		if [ -d tmp.${flpr}_orth ]
+		if [ -d ${tmp}/tmp.${flpr}_orth ]
 		then
-			rm -rf tmp.${flpr}_orth
+			rm -rf ${tmp}/tmp.${flpr}_orth
 		fi
-		mkdir tmp.${flpr}_orth
+		mkdir ${tmp}/tmp.${flpr}_orth
 
 		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
 
@@ -178,9 +178,9 @@ case ${ftype} in
 			then
 				# Extract only right voxels for synthesize
 				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx.nii.gz \
-					   -expr "a*equals(b,${i})" -prefix tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
+					   -expr "a*equals(b,${i})" -prefix ${tmp}/tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
 
-				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
+				3dSynthesize -cbucket ${tmp}/tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
 							 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
@@ -189,7 +189,7 @@ case ${ftype} in
 						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done
-		rm -rf tmp.${flpr}_meica-orth
+		rm -rf ${tmp}/tmp.${flpr}_orth
 	;;
 	meica-cons-twosteps )
 		matdir=${flpr}_${ftype%-twosteps}_mat
@@ -202,11 +202,11 @@ case ${ftype} in
 					 -overwrite
 
 		# Create folder for synthesize
-		if [ -d tmp.${flpr}_orth ]
+		if [ -d ${tmp}/tmp.${flpr}_orth ]
 		then
-			rm -rf tmp.${flpr}_orth
+			rm -rf ${tmp}/tmp.${flpr}_orth
 		fi
-		mkdir tmp.${flpr}_orth
+		mkdir ${tmp}/tmp.${flpr}_orth
 
 		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
 
@@ -219,9 +219,9 @@ case ${ftype} in
 			then
 				# Extract only right voxels for synthesize
 				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx.nii.gz \
-					   -expr "a*equals(b,${i})" -prefix tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
+					   -expr "a*equals(b,${i})" -prefix ${tmp}/tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz -overwrite
 
-				3dSynthesize -cbucket tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
+				3dSynthesize -cbucket ${tmp}/tmp.${flpr}_orth/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
 							 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
@@ -230,7 +230,7 @@ case ${ftype} in
 						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done
-		rm -rf tmp.${flpr}_meica-cons
+		rm -rf ${tmp}/tmp.${flpr}_orth
 	;;
 	* ) echo "    !!! Warning !!! Invalid ftype: ${ftype}"
 esac

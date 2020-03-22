@@ -165,9 +165,9 @@ fslmaths ${flpr}_${ftype}_r2_time -Tmaxn ${flpr}_${ftype}_cvr_idx
 fslmaths ${flpr}_${ftype}_cvr_idx -mul ${step} -sub ${poslag} -mul 0.025 -mas ${mask} ${flpr}_${ftype}_cvr_lag
 
 # prepare empty volumes
-fslmaths ${flpr}_${ftype}_cvr_idx -mul 0 ${flpr}_${ftype}_spc_over_V
-fslmaths ${flpr}_${ftype}_cvr_idx -mul 0 ${flpr}_${ftype}_tmap
-fslmaths ${flpr}_${ftype}_cvr_idx -mul 0 ${flpr}_${ftype}_cbuck
+fslmaths ${flpr}_${ftype}_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}_spc_over_V
+fslmaths ${flpr}_${ftype}_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}_tmap
+fslmaths ${flpr}_${ftype}_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}_cbuck
 
 maxidx=( $( fslstats ${flpr}_${ftype}_cvr_idx -R ) )
 
@@ -175,13 +175,17 @@ for i in $( seq -f %g 0 ${maxidx[1]} )
 do
 	let v=i*step
 	v=$( printf %04d $v )
-	3dcalc -a ${flpr}_${ftype}_spc_over_V.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
-		   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_spc_over_V.nii.gz -overwrite
-	3dcalc -a ${flpr}_${ftype}_tmap.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
-		   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_tmap.nii.gz -overwrite
-	3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
-		   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}_cbuck.nii.gz -overwrite
+	3dcalc -a ${tmp}/${flpr}_${ftype}_spc_over_V.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+		   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}_spc_over_V.nii.gz -overwrite
+	3dcalc -a ${tmp}/${flpr}_${ftype}_tmap.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+		   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}_tmap.nii.gz -overwrite
+	3dcalc -a ${tmp}/${flpr}_${ftype}_cbuck.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+		   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}_cbuck.nii.gz -overwrite
 done
+
+mv ${tmp}/${flpr}_${ftype}_spc_over_V.nii.gz .
+mv ${tmp}/${flpr}_${ftype}_tmap.nii.gz .
+mv ${tmp}/${flpr}_${ftype}_cbuck.nii.gz .
 
 # Obtain first CVR maps
 # the factor 71.2 is to take into account the pressure in mmHg:
@@ -304,9 +308,9 @@ case ${ftype} in
 		imcp ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_tmap_simple ${mapdir_2}/${flpr}_${ftype}-twosteps_tmap_simple
 
 		# prepare empty volumes
-		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${flpr}_${ftype}-twosteps_spc_over_V
-		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${flpr}_${ftype}-twosteps_tmap
-		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${flpr}_${ftype}-twosteps_cbuck
+		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}-twosteps_spc_over_V
+		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}-twosteps_tmap
+		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}-twosteps_cbuck
 
 		maxidx=( $( fslstats ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -R ) )
 
@@ -314,13 +318,17 @@ case ${ftype} in
 		do
 			let v=i*step
 			v=$( printf %04d $v )
-			3dcalc -a ${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
-				   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -overwrite
-			3dcalc -a ${flpr}_${ftype}-twosteps_tmap.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
-				   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}-twosteps_tmap.nii.gz -overwrite
-			3dcalc -a ${flpr}_${ftype}-twosteps_cbuck.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
-				   -expr "a+b*equals(c,${i})" -prefix ${flpr}_${ftype}-twosteps_cbuck.nii.gz -overwrite
+			3dcalc -a ${tmp}/${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
+				   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -overwrite
+			3dcalc -a ${tmp}/${flpr}_${ftype}-twosteps_tmap.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
+				   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}-twosteps_tmap.nii.gz -overwrite
+			3dcalc -a ${tmp}/${flpr}_${ftype}-twosteps_cbuck.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
+				   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}-twosteps_cbuck.nii.gz -overwrite
 		done
+
+		mv ${tmp}/${flpr}_${ftype}-twosteps_spc_over_V.nii.gz .
+		mv ${tmp}/${flpr}_${ftype}-twosteps_tmap.nii.gz .
+		mv ${tmp}/${flpr}_${ftype}-twosteps_cbuck.nii.gz .
 
 		mv ${flpr}_${ftype}-twosteps_spc* ${mapdir_2}/.
 		mv ${flpr}_${ftype}-twosteps_tmap* ${mapdir_2}/.

@@ -21,7 +21,7 @@ then
 fi
 
 joblist=""
-for sub in 001 002 003 004 007 008 009
+for sub in 001 002 003  # 004 007 008 009
 do
 	for ses in $(seq -f %02g 1 10)
 	do
@@ -33,18 +33,18 @@ done
 
 joblist=${joblist::-1}
 
-ftype=meica-aggr-twosteps
-rm ${wdr}/../LogFiles/${ftype}_pipe
-qsub -q short.q -hold_jid "${joblist}" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
+# ftype=meica-aggr-twosteps
+# rm ${wdr}/../LogFiles/${ftype}_pipe
 # qsub -q short.q -hold_jid "${joblist}" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
-old_ftype=${ftype}
+# # qsub -q short.q -hold_jid "${joblist}" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
+# old_ftype=${ftype}
 
-for ftype in meica-orth-twosteps meica-cons-twosteps  # meica-aggr meica-orth meica-cons meica-mvar echo-2 meica-aggr-twosteps meica-orth-twosteps meica-cons-twosteps
-do
-	rm ${wdr}/../LogFiles/${ftype}_pipe
-	qsub -q short.q -hold_jid "${old_ftype}_EuskalIBUR" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
-	old_ftype=${ftype}
-done
+# for ftype in meica-orth-twosteps meica-cons-twosteps  # meica-aggr meica-orth meica-cons meica-mvar echo-2 meica-aggr-twosteps meica-orth-twosteps meica-cons-twosteps
+# do
+# 	rm ${wdr}/../LogFiles/${ftype}_pipe
+# 	qsub -q short.q -hold_jid "${old_ftype}_EuskalIBUR" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
+# 	old_ftype=${ftype}
+# done
 
 # for sub in 001 002 003 004 007 008 009
 # do

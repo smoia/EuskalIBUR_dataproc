@@ -21,7 +21,7 @@ then
 fi
 
 joblist=""
-for sub in 001 002 003  # 004 007 008 009
+for sub in 004 007  # 001 002 003 004 007 008 009
 do
 	for ses in $(seq -f %02g 1 10)
 	do

@@ -20,16 +20,16 @@ then
 	mkdir ../LogFiles
 fi
 
-# joblist=""
-# for sub in 008 009  # 001 002 003 004 007 008 009
-# do
-# 	for ses in $(seq -f %02g 1 10)
-# 	do
-# 		rm ${wdr}/../LogFiles/${sub}_${ses}_pipe
-# 		qsub -q long.q -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
-# 		joblist=${joblist}s_${sub}_${ses}_EuskalIBUR,
-# 	done
-# done
+joblist=""
+for sub in 001 002 003 # 004 007 008 009
+do
+	for ses in $(seq -f %02g 1 10)
+	do
+		rm ${wdr}/../LogFiles/${sub}_${ses}_pipe
+		qsub -q short.q -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
+		joblist=${joblist}s_${sub}_${ses}_EuskalIBUR,
+	done
+done
 
 # joblist=${joblist::-1}
 
@@ -55,8 +55,8 @@ fi
 # 	done
 # done
 
-rm ${wdr}/../LogFiles/motion_pipe
-qsub -q veryshort.q -hold_jid "${old_ftype}_EuskalIBUR" -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
+# rm ${wdr}/../LogFiles/motion_pipe
+# qsub -q veryshort.q -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
 
 # rm ${wdr}/../LogFiles/plot_pipe
 # qsub -q short.q -N "plot_EuskalIBUR" -o ${wdr}/../LogFiles/plot_pipe -e ${wdr}/../LogFiles/plot_pipe ${wdr}/98.hcp/run_plot_pipeline.sh

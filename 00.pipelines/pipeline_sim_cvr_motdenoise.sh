@@ -62,17 +62,27 @@ cwd=$(pwd)
 
 for ftype in meica-aggr meica-orth meica-cons  # meica-mvar echo-2 meica-aggr meica-orth meica-cons # meica-recn vessels-preg
 do
-	echo "************************************"
-	echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
-	echo "************************************"
-	echo "************************************"
-	/scripts/04.first_level_analysis/02.cvr_map_sim.sh ${sub} ${ses} ${ftype}
+	# echo "************************************"
+	# echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
+	# echo "************************************"
+	# echo "************************************"
+	# /scripts/04.first_level_analysis/02.cvr_map_sim.sh ${sub} ${ses} ${ftype}
 
-	echo "************************************"
-	echo "*** Motion outliers sub ${sub} ses ${ses} ${ftype}"
-	echo "************************************"
-	echo "************************************"
-	/scripts/04.first_level_analysis/04.cvr_motion_outliers_sim.sh ${sub} ${ses} ${ftype} 
+	# echo "************************************"
+	# echo "*** Motion outliers sub ${sub} ses ${ses} ${ftype}"
+	# echo "************************************"
+	# echo "************************************"
+	# /scripts/04.first_level_analysis/04.cvr_motion_outliers_sim.sh ${sub} ${ses} ${ftype} 
+
+	case ${ftype} in
+		meica-aggr | meica-orth | meica-cons )
+		echo "************************************"
+		echo "*** Motion outliers sub ${sub} ses ${ses} ${ftype}-twosteps"
+		echo "************************************"
+		echo "************************************"
+		/scripts/04.first_level_analysis/04.cvr_motion_outliers_sim.sh ${sub} ${ses} ${ftype}-twosteps 
+		;;
+	esac
 done
 
 echo ""

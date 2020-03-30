@@ -12,7 +12,7 @@ for sub in 001 002 003 004 007 008 009
 do
 	for ses in $( seq -f %02g 1 10 )
 	do
-		for ftype in echo-2 optcom meica-aggr meica-mvar meica-orth meica-cons
+		for ftype in echo-2 optcom meica-mvar meica-aggr meica-orth meica-cons meica-aggr-twosteps meica-orth-twosteps meica-cons-twosteps
 		do
 			echo "sub ${sub} ses ${ses} ftype ${ftype}"
 			echo "cvr"
@@ -62,19 +62,19 @@ do
 			convert -append sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr.png \
 			sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_masked.png \
 			sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_corrected.png \
-			tmp.01pcm_${sub}_${ses}_${ftype}_1.png
+			+repage tmp.01pcm_${sub}_${ses}_${ftype}_1.png
 			convert -append sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag.png \
 			sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap_masked.png \
 			sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag_corrected.png \
-			tmp.01pcm_${sub}_${ses}_${ftype}_2.png
-			convert -background black +append tmp.01pcm_${sub}_${ses}_${ftype}_1.png tmp.01pcm_${sub}_${ses}_${ftype}_2.png sub-${sub}_ses-${ses}_${ftype}.png
+			+repage tmp.01pcm_${sub}_${ses}_${ftype}_2.png
+			convert -background black +append tmp.01pcm_${sub}_${ses}_${ftype}_1.png tmp.01pcm_${sub}_${ses}_${ftype}_2.png +repage sub-${sub}_ses-${ses}_${ftype}.png
 			rm tmp.01pcm_${sub}_${ses}_${ftype}_?.png
 		done
 	done
 
 	# Creating full sessions maps
 	appending="convert -append"
-	for ftype in echo-2 optcom meica-aggr meica-mvar meica-orth meica-cons
+	for ftype in echo-2 optcom meica-mvar meica-aggr meica-orth meica-cons meica-aggr-twosteps meica-orth-twosteps meica-cons-twosteps
 	do
 		for ses in $( seq -f %02g 1 9 )
 		do
@@ -84,10 +84,10 @@ do
 		convert +append tmp.01pcm_${sub}_??_${ftype}.png +repage tmp.01pcm_${sub}_${ftype}.png
 		appending="${appending} tmp.01pcm_${sub}_${ftype}.png"
 	done
-	appending="${appending} sub-${sub}_alltypes.png"
+	appending="${appending} +repage sub-${sub}_alltypes.png"
 	exec "${appending}"
 done
 
-rm tmp.01pcm_*
+# rm tmp.01pcm_*
 
 cd ${cwd}

@@ -33,18 +33,18 @@ fi
 
 # joblist=${joblist::-1}
 
-ftype=meica-aggr-twosteps
-rm ${wdr}/../LogFiles/${ftype}_pipe
-qsub -q short.q -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
-# qsub -q short.q -hold_jid "${joblist}" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
-old_ftype=${ftype}
+# ftype=meica-aggr-twosteps
+# rm ${wdr}/../LogFiles/${ftype}_pipe
+# qsub -q short.q -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
+# # qsub -q short.q -hold_jid "${joblist}" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
+# old_ftype=${ftype}
 
-for ftype in meica-orth-twosteps meica-cons-twosteps  # meica-aggr meica-orth meica-cons meica-mvar echo-2 meica-aggr-twosteps meica-orth-twosteps meica-cons-twosteps
-do
-	rm ${wdr}/../LogFiles/${ftype}_pipe
-	qsub -q short.q -hold_jid "${old_ftype}_EuskalIBUR" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
-	old_ftype=${ftype}
-done
+# for ftype in meica-orth-twosteps meica-cons-twosteps  # meica-aggr meica-orth meica-cons meica-mvar echo-2 meica-aggr-twosteps meica-orth-twosteps meica-cons-twosteps
+# do
+# 	rm ${wdr}/../LogFiles/${ftype}_pipe
+# 	qsub -q short.q -hold_jid "${old_ftype}_EuskalIBUR" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
+# 	old_ftype=${ftype}
+# done
 
 # for sub in 001 002 003 004 007 008 009
 # do
@@ -55,8 +55,8 @@ done
 # 	done
 # done
 
-# rm ${wdr}/../LogFiles/motion_pipe
-# qsub -q veryshort.q -hold_jid "${old_ftype}_EuskalIBUR" -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
+rm ${wdr}/../LogFiles/motion_pipe
+qsub -q veryshort.q -hold_jid "${old_ftype}_EuskalIBUR" -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
 
 # rm ${wdr}/../LogFiles/plot_pipe
 # qsub -q short.q -N "plot_EuskalIBUR" -o ${wdr}/../LogFiles/plot_pipe -e ${wdr}/../LogFiles/plot_pipe ${wdr}/98.hcp/run_plot_pipeline.sh

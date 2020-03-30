@@ -85,7 +85,7 @@ do
 		appending="${appending} tmp.01pcm_${sub}_${ftype}.png"
 	done
 	appending="${appending} +repage sub-${sub}_alltypes.png"
-	exec "${appending}"
+	${appending}
 done
 
 # rm tmp.01pcm_*

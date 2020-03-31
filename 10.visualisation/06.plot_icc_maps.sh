@@ -45,8 +45,8 @@ do
 			convert ICC2_${map}_${ftype}.png -filter Point -resize 1035x370 +repage -crop 920x212+15+70 +repage tmp.06pim/ICC2_${map}_${ftype}_res.png
 			convert ICC2_${map}_${ftype}_noclip.png -filter Point -resize 1035x370 +repage -crop 920x212+15+70 +repage tmp.06pim/ICC2_${map}_${ftype}_noclip_res.png
 
-			appending="${appending} +repage tmp.06pim/ICC2_${map}_${ftype}_res.png"
-			appending_noclip="${appending_noclip} +repage tmp.06pim/ICC2_${map}_${ftype}_noclip_res.png"
+			appending="${appending} tmp.06pim/ICC2_${map}_${ftype}_res.png"
+			appending_noclip="${appending_noclip} tmp.06pim/ICC2_${map}_${ftype}_noclip_res.png"
 		done
 
 		appending="${appending} +repage tmp.06pim/ICC2_${map}_app.png"
@@ -92,8 +92,8 @@ do
 			convert ICC2_${map}_${ftype}.png -filter Point -resize 1035x370 +repage -crop 920x212+15+70 +repage tmp.06pim/ICC2_${map}_${ftype}_res.png
 			convert ICC2_${map}_${ftype}_noclip.png -filter Point -resize 1035x370 +repage -crop 920x212+15+70 +repage tmp.06pim/ICC2_${map}_${ftype}_noclip_res.png
 
-			appending="${appending} +repage tmp.06pim/ICC2_${map}_${ftype}_res.png"
-			appending_noclip="${appending_noclip} +repage tmp.06pim/ICC2_${map}_${ftype}_noclip_res.png"
+			appending="${appending} tmp.06pim/ICC2_${map}_${ftype}_res.png"
+			appending_noclip="${appending_noclip} tmp.06pim/ICC2_${map}_${ftype}_noclip_res.png"
 		done
 
 		appending="${appending} +repage tmp.06pim/ICC2_${map}_app.png"

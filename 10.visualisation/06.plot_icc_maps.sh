@@ -11,7 +11,7 @@ cd ${wdr}/CVR_reliability
 
 mkdir tmp.06pim
 
-for mtype in corrected masked
+for mtype in corrected  # masked
 do
 	for map in cvr lag
 	do

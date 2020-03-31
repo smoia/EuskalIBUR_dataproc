@@ -10,16 +10,20 @@ cd ${wdr}/CVR || exit
 
 for sub in 001 002 003 004 007 008 009
 do
-	for ftype in echo-2 optcom meica-mvar meica-aggr meica-orth meica-cons
+	# Creating full sessions maps
+	appending="convert -append"
+	for ftype in echo-2 optcom meica-mvar meica-aggr meica-orth meica-cons meica-aggr-twosteps meica-orth-twosteps meica-cons-twosteps
 	do
-		for ses in $( seq -f %02g 1 9 )
+		for ses in $( seq -f %02g 1 10 )
 		do
 			echo "sub ${sub} ses ${ses} ftype ${ftype}"
-			convert sub-${sub}_ses-${ses}_${ftype}.png -crop 234x265+466+642 tmp.${sub}_${ses}_${ftype}.png
+			convert sub-${sub}_ses-${ses}_${ftype}.png -crop 234x265+466+642 +repage tmp.01pcm_${sub}_${ses}_${ftype}.png
 		done
-		convert +append tmp.${sub}_??_${ftype}.png +repage tmp.${sub}_${ftype}.png
+		convert +append tmp.01pcm_${sub}_??_${ftype}.png +repage tmp.01pcm_${sub}_${ftype}.png
+		appending="${appending} tmp.01pcm_${sub}_${ftype}.png"
 	done
-	convert -append tmp.${sub}_echo-2.png tmp.${sub}_optcom.png tmp.${sub}_meica.png tmp.${sub}_vessels.png tmp.${sub}_networks.png sub-${sub}_alltypes.png
+	appending="${appending} +repage sub-${sub}_alltypes.png"
+	${appending}
 done
 
 rm tmp.*.png

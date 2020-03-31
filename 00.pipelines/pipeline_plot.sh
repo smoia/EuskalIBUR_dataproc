@@ -26,11 +26,16 @@ echo "************************************"
 # saving the current wokdir
 cwd=$(pwd)
 
+# Make session maps chart
+# ${scriptdir}/10.visualisation/01.plot_cvr_maps.sh ${wdr}
 
-${scriptdir}/10.visualisation/01.plot_cvr_maps.sh ${wdr}
-${scriptdir}/10.visualisation/02.plot_motion_denoise.sh ${wdr}
+# Normally these two do not have to be run
+# Plot FD vs DVARS
+# ${scriptdir}/10.visualisation/02.plot_motion_denoise.sh ${wdr}
+# Make the ten session x N methods chart
 ${scriptdir}/10.visualisation/03.plot_all_cvr_maps.sh ${wdr}
-${scriptdir}/10.visualisation/06.plot_icc_maps.sh ${wdr} ${scriptdir}
+# Make ICC maps
+# ${scriptdir}/10.visualisation/06.plot_icc_maps.sh ${wdr} ${scriptdir}
 
 echo ""
 echo ""

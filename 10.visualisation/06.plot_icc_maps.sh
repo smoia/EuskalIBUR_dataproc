@@ -11,7 +11,7 @@ cd ${wdr}/CVR_reliability
 
 mkdir tmp.06pim
 
-for mtype in corrected  # masked
+for mtype in masked  # corrected masked
 do
 	for map in cvr lag
 	do
@@ -58,7 +58,7 @@ do
 	composite -geometry +990+0 tmp.06pim/ICC2_lag_${mtype}_noclip_app.png tmp.06pim/ICC2_cvr_${mtype}.png +repage ICC2_${mtype}-twosteps.png
 done
 
-for mtype in corrected  # masked
+for mtype in masked  # corrected masked
 do
 	for map in cvr lag
 	do

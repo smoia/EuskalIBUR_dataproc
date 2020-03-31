@@ -100,9 +100,9 @@ case ${ftype} in
 				3dSynthesize -cbucket ${tmp}/tmp.${flpr}_${ftype}/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
-							 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+							 -prefix ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove_synth.nii.gz \
 							 -overwrite
-				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove_synth.nii.gz \
 						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done
@@ -140,9 +140,9 @@ case ${ftype} in
 				3dSynthesize -cbucket ${tmp}/tmp.${flpr}_${ftype}/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
-							 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+							 -prefix ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 							 -overwrite
-				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done
@@ -190,9 +190,9 @@ case ${ftype} in
 				3dSynthesize -cbucket ${tmp}/tmp.${flpr}_${ftype}/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
-							 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+							 -prefix ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 							 -overwrite
-				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done
@@ -231,9 +231,9 @@ case ${ftype} in
 				3dSynthesize -cbucket ${tmp}/tmp.${flpr}_${ftype}/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
-							 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+							 -prefix ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 							 -overwrite
-				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done

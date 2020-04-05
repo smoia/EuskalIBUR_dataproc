@@ -6,6 +6,43 @@
 # Date:    15.08.2019
 #########
 
+matrix_mod() {
+mat=$1
+newmat=${mat%.1D}_mod.1D
+# Get data from original matrix
+ni_type=$( cat ${mat} | grep ni_type )
+ni_dimen=$( cat ${mat} | grep ni_dimen )
+ColumnLabels=$( cat ${mat} | grep ColumnLabels )
+RowTR=$( cat ${mat} | grep RowTR )
+GoodList=$( cat ${mat} | grep GoodList )
+NRowFull=$( cat ${mat} | grep NRowFull )
+RunStart=$( cat ${mat} | grep RunStart )
+
+# Get updated data based on original matrix
+Nstim=${ni_type#*\"}
+Nstim=${Nstim%\**}
+StimLabels=\"${ColumnLabels#*\"}
+let StimBotsTops=Nstim-1
+
+# Print matrix to file
+echo "\# <matrix" > ${newmat}
+echo "${ni_type}" >> ${newmat}
+echo "${ni_dimen}" >> ${newmat}
+echo "${ColumnLabels}" >> ${newmat}
+echo "${RowTR}" >> ${newmat}
+echo "${GoodList}" >> ${newmat}
+echo "${NRowFull}" >> ${newmat}
+echo "${RunStart}" >> ${newmat}
+echo "\#  Nstim = \"${Nstim}\"" >> ${newmat}
+echo "\#  StimBots = \"0..${StimBotsTops}\"" >> ${newmat}
+echo "\#  StimTops = \"0..${StimBotsTops}\"" >> ${newmat}
+echo "\#  StimLabels = ${StimLabels}" >> ${newmat}
+echo "\# >" >> ${newmat}
+
+# Print data to file
+csvtool drop 15 ${mat} >> ${newmat}
+}
+
 
 sub=$1
 ses=$2
@@ -62,6 +99,8 @@ fi
 # creating folder
 mkdir ${tmp}/tmp.${flpr}_${ftype}_02cms_res
 
+# creating 
+
 if [ -d ${matdir} ]
 then
 	rm -rf ${matdir}
@@ -75,34 +114,47 @@ do
 		case ${ftype} in
 			optcom | echo-2 | *-mvar )
 				# Simply add motparams and polorts ( = N )
+				# Prepare matrix
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
 							 -mask ${mask}.nii.gz \
-							 -polort 3 \
+							 -polort 4 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat.1D \
 							 -xjpeg ${matdir}/mat.jpg \
-							 -rout -tout \
-							 -bucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
-							 -cbucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
+							 -x1D_stop
+
+				# Modify matrix and call 3dREMLfit
+				matrix_mod ${matdir}/mat.1D
+				3dREMLfit -input ${func}.nii.gz -matrix ${matdir}/mat_mod.1D \
+						  -mask ${mask}.nii.gz \
+						  -rout -tout \
+						  -Obuck ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
+						  -Obeta ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
 			;;
 			meica-aggr )
 				# Simply add rejected and N
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
 							 -mask ${mask}.nii.gz \
-							 -polort 3 \
+							 -polort 4 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
 							 -ortvec ${decompdir}/${flpr}_rejected.1D rejected \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat.1D \
 							 -xjpeg ${matdir}/mat.jpg \
-							 -rout -tout \
-							 -bucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
-							 -cbucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
+							 -x1D_stop
+
+				# Modify matrix and call 3dREMLfit
+				matrix_mod ${matdir}/mat.1D
+				3dREMLfit -input ${func}.nii.gz -matrix ${matdir}/mat_mod.1D \
+						  -mask ${mask}.nii.gz \
+						  -rout -tout \
+						  -Obuck ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
+						  -Obeta ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
 			;;
 			meica-cons )
 				# Add rejected, orthogonalised by the (all the) good components and the PetCO2, and N.
@@ -115,16 +167,22 @@ do
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
 							 -mask ${mask}.nii.gz \
-							 -polort 3 \
+							 -polort 4 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
 							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D rejected \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat_${i}.1D \
 							 -xjpeg ${matdir}/mat.jpg \
-							 -rout -tout \
-							 -bucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
-							 -cbucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
+							 -x1D_stop
+
+				# Modify matrix and call 3dREMLfit
+				matrix_mod ${matdir}/mat_${i}.1D
+				3dREMLfit -input ${func}.nii.gz -matrix ${matdir}/mat_${i}_mod.1D \
+						  -mask ${mask}.nii.gz \
+						  -rout -tout \
+						  -Obuck ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
+						  -Obeta ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
 			;;
 			meica-orth )
 				# Add rejected, orthogonalised by the PetCO2, and N.
@@ -136,16 +194,22 @@ do
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
 							 -mask ${mask}.nii.gz \
-							 -polort 3 \
+							 -polort 4 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
 							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D rejected \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat_${i}.1D \
 							 -xjpeg ${matdir}/mat.jpg \
-							 -rout -tout \
-							 -bucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
-							 -cbucket ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
+							 -x1D_stop
+
+				# Modify matrix and call 3dREMLfit
+				matrix_mod ${matdir}/mat_${i}.1D
+				3dREMLfit -input ${func}.nii.gz -matrix ${matdir}/mat_${i}_mod.1D \
+						  -mask ${mask}.nii.gz \
+						  -rout -tout \
+						  -Obuck ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
+						  -Obeta ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
 			;;
 			* ) echo "    !!! Warning !!! Invalid ftype: ${ftype}"; exit ;;
 		esac
@@ -372,6 +436,6 @@ esac
 
 cd ..
 
-rm -rf ${tmp}/tmp.${flpr}_${ftype}_02cms_*
+# rm -rf ${tmp}/tmp.${flpr}_${ftype}_02cms_*
 
 cd ${cwd}

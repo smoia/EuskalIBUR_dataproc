@@ -23,6 +23,7 @@ Nstim=${ni_type#*\"}
 Nstim=${Nstim%\**}
 StimLabels=\"${ColumnLabels#*\"}
 let StimBotsTops=Nstim-1
+let Nstim=Nstim-5
 
 # Print matrix to file
 echo "\# <matrix" > ${newmat}
@@ -34,8 +35,9 @@ echo "${GoodList}" >> ${newmat}
 echo "${NRowFull}" >> ${newmat}
 echo "${RunStart}" >> ${newmat}
 echo "\#  Nstim = \"${Nstim}\"" >> ${newmat}
-echo "\#  StimBots = \"0..${StimBotsTops}\"" >> ${newmat}
-echo "\#  StimTops = \"0..${StimBotsTops}\"" >> ${newmat}
+# All the columns will contain SIGNAL, except for the baseline.
+echo "\#  StimBots = \"5..${StimBotsTops}\"" >> ${newmat}
+echo "\#  StimTops = \"5..${StimBotsTops}\"" >> ${newmat}
 echo "\#  StimLabels = ${StimLabels}" >> ${newmat}
 echo "\# >" >> ${newmat}
 

@@ -457,6 +457,6 @@ esac
 
 cd ..
 
-# rm -rf ${tmp}/tmp.${flpr}_${ftype}_02cms_*
+rm -rf ${tmp}/tmp.${flpr}_${ftype}_02cms_*
 
 cd ${cwd}

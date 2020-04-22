@@ -68,6 +68,15 @@ then
 fi
 mkdir ${matdir}
 
+# Demean rejected ICAs
+case ${ftype} in
+	meica-aggr | meica-cons | meica-orth )
+		1d_tool.py -infile ${decompdir}/${flpr}_rejected.1D -demean \
+				   -write ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_rejected.1D -overwrite
+	;;
+esac
+
+
 for i in $( seq -f %04g 0 ${step} ${miter} )
 do
 	if [ -e ${shiftdir}/shift_${i}.1D ]
@@ -78,7 +87,7 @@ do
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
 							 -mask ${mask}.nii.gz \
-							 -polort 3 \
+							 -polort 4 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
@@ -90,13 +99,25 @@ do
 			;;
 			meica-aggr )
 				# Simply add rejected and N
+				1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_rejected.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D
+
+				3dTproject -input ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D \
+						   -ort ${shiftdir}/shift_${i}.1D \
+						   -ort ${flpr}_motpar_demean.par motdemean \
+						   -ort ${flpr}_motpar_deriv1.par motderiv1 \
+						   -polort 4 -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D -overwrite
+
+				1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D
+				1d_tool.py -infile ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D -demean \
+						   -write ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D -overwrite
+
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
 							 -mask ${mask}.nii.gz \
-							 -polort 3 \
+							 -polort 4 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-							 -ortvec ${decompdir}/${flpr}_rejected.1D rejected \
+							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_rejected.1D rejected \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat.1D \
 							 -xjpeg ${matdir}/mat.jpg \
@@ -106,16 +127,29 @@ do
 			;;
 			meica-cons )
 				# Add rejected, orthogonalised by the (all the) good components and the PetCO2, and N.
-				1dtranspose ${decompdir}/${flpr}_rejected.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D
-				3dTproject -ort ${shiftdir}/shift_${i}.1D -ort ${decompdir}/${flpr}_accepted.1D \
-						   -ort ${decompdir}/${flpr}_vessels.1D \
-						   -polort -1 -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D -input ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D -overwrite
+				1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_rejected.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D
+
+				1d_tool.py -infile ${decompdir}/${flpr}_vessels.1D -demean \
+						   -write ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_vessels.1D -overwrite
+				1d_tool.py -infile ${decompdir}/${flpr}_accepted.1D -demean \
+						   -write ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_accepted.1D -overwrite
+
+				3dTproject -input ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D \
+						   -ort ${shiftdir}/shift_${i}.1D \
+						   -ort ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_accepted.1D \
+						   -ort ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_vessels.1D \
+						   -ort ${flpr}_motpar_demean.par motdemean \
+						   -ort ${flpr}_motpar_deriv1.par motderiv1 \
+						   -polort 4 -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D -overwrite
+
 				1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D
+				1d_tool.py -infile ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D -demean \
+						   -write ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D -overwrite
 
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
 							 -mask ${mask}.nii.gz \
-							 -polort 3 \
+							 -polort 4 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
 							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D rejected \
@@ -128,15 +162,22 @@ do
 			;;
 			meica-orth )
 				# Add rejected, orthogonalised by the PetCO2, and N.
-				1dtranspose ${decompdir}/${flpr}_rejected.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D
-				3dTproject -ort ${shiftdir}/shift_${i}.1D \
-						   -polort -1 -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D -input ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D -overwrite
+				1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_rejected.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D
+
+				3dTproject -input ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D \
+						   -ort ${shiftdir}/shift_${i}.1D \
+						   -ort ${flpr}_motpar_demean.par motdemean \
+						   -ort ${flpr}_motpar_deriv1.par motderiv1 \
+						   -polort 4 -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D -overwrite
+
 				1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D
+				1d_tool.py -infile ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D -demean \
+						   -write ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D -overwrite
 
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
 							 -float -num_stimts 1 \
 							 -mask ${mask}.nii.gz \
-							 -polort 3 \
+							 -polort 4 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
 							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D rejected \

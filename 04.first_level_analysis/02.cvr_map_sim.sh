@@ -36,8 +36,8 @@ echo "${NRowFull}" >> ${newmat}
 echo "${RunStart}" >> ${newmat}
 echo "\#  Nstim = \"${Nstim}\"" >> ${newmat}
 # All the columns will contain SIGNAL, except for the baseline.
-echo "\#  StimBots = \"1..${StimBotsTops}\"" >> ${newmat} 
-echo "\#  StimTops = \"1..${StimBotsTops}\"" >> ${newmat}
+echo "\#  StimBots = \"0..${StimBotsTops}\"" >> ${newmat} 
+echo "\#  StimTops = \"0..${StimBotsTops}\"" >> ${newmat}
 echo "\#  StimLabels = ${StimLabels}" >> ${newmat}
 echo "\# >" >> ${newmat}
 

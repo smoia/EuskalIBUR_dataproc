@@ -5,8 +5,8 @@ import pandas as pd
 import numpy as np
 
 NTE = 5
-LAST_SES = 10  # 10
-SUB_LIST = ['001', '002', '003', '004', '007', '008', '009']
+LAST_SES = 1  # 10
+SUB_LIST = ['001', ]  # '002', '003', '004', '007', '008', '009']
 
 
 cwd = os.getcwd()

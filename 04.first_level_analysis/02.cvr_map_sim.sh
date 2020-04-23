@@ -103,8 +103,8 @@ do
 
 				3dTproject -input ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D \
 						   -ort ${shiftdir}/shift_${i}.1D \
-						   -ort ${flpr}_motpar_demean.par motdemean \
-						   -ort ${flpr}_motpar_deriv1.par motderiv1 \
+						   -ort ${flpr}_motpar_demean.par \
+						   -ort ${flpr}_motpar_deriv1.par \
 						   -polort 4 -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D -overwrite
 
 				1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D
@@ -138,8 +138,8 @@ do
 						   -ort ${shiftdir}/shift_${i}.1D \
 						   -ort ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_accepted.1D \
 						   -ort ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_vessels.1D \
-						   -ort ${flpr}_motpar_demean.par motdemean \
-						   -ort ${flpr}_motpar_deriv1.par motderiv1 \
+						   -ort ${flpr}_motpar_demean.par \
+						   -ort ${flpr}_motpar_deriv1.par \
 						   -polort 4 -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D -overwrite
 
 				1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D
@@ -166,8 +166,8 @@ do
 
 				3dTproject -input ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D \
 						   -ort ${shiftdir}/shift_${i}.1D \
-						   -ort ${flpr}_motpar_demean.par motdemean \
-						   -ort ${flpr}_motpar_deriv1.par motderiv1 \
+						   -ort ${flpr}_motpar_demean.par \
+						   -ort ${flpr}_motpar_deriv1.par \
 						   -polort 4 -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D -overwrite
 
 				1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D

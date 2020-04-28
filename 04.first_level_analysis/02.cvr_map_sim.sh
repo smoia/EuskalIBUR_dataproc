@@ -125,8 +125,8 @@ then
 				 -x1D_stop -x1D ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials.1D -overwrite
 	1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials_tr.1D
 
-	1dtranspose ${flpr}_motpar_demean.par > ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_demean.par
-	1dtranspose ${flpr}_motpar_deriv1.par > ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_deriv1.par
+	1dtranspose ${flpr}_motpar_demean.par > ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_demean.1D
+	1dtranspose ${flpr}_motpar_deriv1.par > ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_deriv1.1D
 fi
 
 for i in $( seq -f %04g 0 ${step} ${miter} )
@@ -271,7 +271,7 @@ do
 				# Orthogonalise motion parameters to PetCO2 and polynomials
 				for mottype in demean deriv1
 				do
-					3dTproject -input ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_${mottype}.par \
+					3dTproject -input ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_${mottype}.1D \
 							   -ort ${shiftdir}/shift_${i}.1D \
 							   -ort ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials.1D'[1..$]' \
 							   -polort 0 -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D -overwrite

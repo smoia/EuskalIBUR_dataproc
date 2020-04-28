@@ -296,9 +296,9 @@ do
 							 -float -num_stimts 1 \
 							 -mask ${mask}.nii.gz \
 							 -polort 0 \
-							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials.1D'[1..$]' \
-							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_demean_ort.1D \
-							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_deriv1_ort.1D \
+							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials.1D'[1..$]' poly \
+							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_demean_ort.1D motpar \
+							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_deriv1_ort.1D motderiv \
 							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D rejected \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat_${i}.1D \

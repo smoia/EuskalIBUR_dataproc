@@ -258,22 +258,16 @@ do
 		esac
 
 		3dbucket -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_r2_${i}.nii.gz -abuc ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz'[0]' -overwrite
-		3dbucket -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${i}.nii.gz -abuc ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz'[17]' -overwrite
-		3dbucket -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${i}.nii.gz -abuc ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz'[18]' -overwrite
-
 	fi
 done
 
 fslmerge -tr ${flpr}_${ftype}_r2_time ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_r2_* ${tr}
-fslmerge -tr ${flpr}_${ftype}_betas_time ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_* ${tr}
-fslmerge -tr ${flpr}_${ftype}_tstat_time ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_* ${tr}
 
 fslmaths ${flpr}_${ftype}_r2_time -Tmaxn ${flpr}_${ftype}_cvr_idx
 fslmaths ${flpr}_${ftype}_cvr_idx -mul ${step} -sub ${poslag} -mul 0.025 -mas ${mask} ${flpr}_${ftype}_cvr_lag
 
 # prepare empty volumes
-fslmaths ${flpr}_${ftype}_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}_spc_over_V
-fslmaths ${flpr}_${ftype}_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}_tmap
+fslmaths ${flpr}_${ftype}_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}_statsbuck
 fslmaths ${flpr}_${ftype}_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}_cbuck
 
 maxidx=( $( fslstats ${flpr}_${ftype}_cvr_idx -R ) )
@@ -282,17 +276,19 @@ for i in $( seq -f %g 0 ${maxidx[1]} )
 do
 	let v=i*step
 	v=$( printf %04d $v )
-	3dcalc -a ${tmp}/${flpr}_${ftype}_spc_over_V.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
-		   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}_spc_over_V.nii.gz -overwrite
-	3dcalc -a ${tmp}/${flpr}_${ftype}_tmap.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
-		   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}_tmap.nii.gz -overwrite
+	3dcalc -a ${tmp}/${flpr}_${ftype}_statsbuck.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
+		   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}_statsbuck.nii.gz -overwrite
 	3dcalc -a ${tmp}/${flpr}_${ftype}_cbuck.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
 		   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}_cbuck.nii.gz -overwrite
 done
 
+3dbucket -prefix ${tmp}/${flpr}_${ftype}_spc_over_V.nii.gz -abuc ${tmp}/${flpr}_${ftype}_statsbuck.nii.gz'[17]' -overwrite
+3dbucket -prefix ${tmp}/${flpr}_${ftype}_tmap.nii.gz -abuc ${tmp}/${flpr}_${ftype}_statsbuck.nii.gz'[18]' -overwrite
+
 mv ${tmp}/${flpr}_${ftype}_spc_over_V.nii.gz .
 mv ${tmp}/${flpr}_${ftype}_tmap.nii.gz .
 mv ${tmp}/${flpr}_${ftype}_cbuck.nii.gz .
+mv ${tmp}/${flpr}_${ftype}_statsbuck.nii.gz .
 
 # Obtain first CVR maps
 # the factor 71.2 is to take into account the pressure in mmHg:
@@ -302,8 +298,8 @@ mv ${tmp}/${flpr}_${ftype}_cbuck.nii.gz .
 fslmaths ${flpr}_${ftype}_spc_over_V.nii.gz -div 71.2 -mul 100 ${flpr}_${ftype}_cvr.nii.gz
 # Obtain "simple" t-stats and CVR 
 medianvol=$( printf %04d ${poslag} )
-fslmaths ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${medianvol} -div 71.2 -mul 100 ${flpr}_${ftype}_cvr_simple
-fslmaths ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${medianvol} ${flpr}_${ftype}_tmap_simple
+fslmaths ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${medianvol}.nii.gz'[17]' -div 71.2 -mul 100 ${flpr}_${ftype}_cvr_simple
+fslmaths ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${medianvol}.nii.gz'[18]' ${flpr}_${ftype}_tmap_simple
 
 if [ ! -d ${flpr}_${ftype}_map_cvr ]
 then
@@ -480,6 +476,6 @@ esac
 
 cd ..
 
-rm -rf ${tmp}/tmp.${flpr}_${ftype}_02cms_*
+# rm -rf ${tmp}/tmp.${flpr}_${ftype}_02cms_*
 
 cd ${cwd}

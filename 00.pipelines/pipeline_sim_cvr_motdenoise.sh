@@ -33,17 +33,17 @@ echo "************************************"
 echo ""
 echo ""
 
-echo "************************************"
-echo "*** Processing xslx sheet"
-echo "************************************"
-echo "************************************"
-/scripts/03.data_preproc/01.sheet_preproc.sh ${sub}
+# echo "************************************"
+# echo "*** Processing xslx sheet"
+# echo "************************************"
+# echo "************************************"
+# /scripts/03.data_preproc/01.sheet_preproc.sh ${sub}
 
-echo "************************************"
-echo "*** Denoising sub ${sub} ses ${ses}"
-echo "************************************"
-echo "************************************"
-/scripts/04.first_level_analysis/01.reg_manual_meica_sim.sh ${sub} ${ses}
+# echo "************************************"
+# echo "*** Denoising sub ${sub} ses ${ses}"
+# echo "************************************"
+# echo "************************************"
+# /scripts/04.first_level_analysis/01.reg_manual_meica_sim.sh ${sub} ${ses}
 
 # echo "************************************"
 # echo "*** Preparing CVR sub ${sub} ses ${ses}"
@@ -60,7 +60,7 @@ echo "************************************"
 # 	/scripts/03.data_preproc/05.compute_CVR_regressors.sh ${sub} ${ses} ${ftype}
 # done
 
-for ftype in optcom meica-aggr meica-orth meica-cons meica-mvar echo-2  # meica-recn vessels-preg
+for ftype in all-orth  # optcom meica-aggr meica-orth meica-cons meica-mvar echo-2 all-orth # meica-recn vessels-preg
 do
 	echo "************************************"
 	echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
@@ -68,21 +68,21 @@ do
 	echo "************************************"
 	/scripts/04.first_level_analysis/02.cvr_map_sim.sh ${sub} ${ses} ${ftype}
 
-	echo "************************************"
-	echo "*** Motion outliers sub ${sub} ses ${ses} ${ftype}"
-	echo "************************************"
-	echo "************************************"
-	/scripts/04.first_level_analysis/04.cvr_motion_outliers_sim.sh ${sub} ${ses} ${ftype} 
+	# echo "************************************"
+	# echo "*** Motion outliers sub ${sub} ses ${ses} ${ftype}"
+	# echo "************************************"
+	# echo "************************************"
+	# /scripts/04.first_level_analysis/04.cvr_motion_outliers_sim.sh ${sub} ${ses} ${ftype} 
 
-	case ${ftype} in
-		meica-aggr | meica-orth | meica-cons )
-		echo "************************************"
-		echo "*** Motion outliers sub ${sub} ses ${ses} ${ftype}-twosteps"
-		echo "************************************"
-		echo "************************************"
-		/scripts/04.first_level_analysis/04.cvr_motion_outliers_sim.sh ${sub} ${ses} ${ftype}-twosteps 
-		;;
-	esac
+	# case ${ftype} in
+	# 	meica-aggr | meica-orth | meica-cons | all-orth )
+	# 	echo "************************************"
+	# 	echo "*** Motion outliers sub ${sub} ses ${ses} ${ftype}-twosteps"
+	# 	echo "************************************"
+	# 	echo "************************************"
+	# 	/scripts/04.first_level_analysis/04.cvr_motion_outliers_sim.sh ${sub} ${ses} ${ftype}-twosteps 
+	# 	;;
+	# esac
 done
 
 echo ""

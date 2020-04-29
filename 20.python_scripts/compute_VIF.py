@@ -13,7 +13,7 @@ from lib_afni1D import Afni1D as afni
 import nibabel as nib
 from copy import deepcopy
 from statsmodels.stats.outliers_influence import variance_inflation_factor as vif
-
+import matplotlib.pyplot as plt
 
 model = afni('sub-001_ses-01_meica-aggr_mat/mat.1D')
 mat = np.asarray(model.mat)
@@ -66,6 +66,12 @@ for j in ['meica-orth', 'meica-cons']:
     
         p_mat = np.append(full_mat[:6,:], mat[17:,:], axis=0)
         vif_time[f'icapol_{j}'][i] = vif(p_mat.T,0)
+
+for i, j in enumerate(['optcom', 'meica-aggr', 'meica-orth']):  # , 'meica-cons']):
+    plt.subplot(1, 3, i+1)
+    plt.plot(vif_time[j])
+    plt.title(j)
+
 
 img = {}
 data = {}

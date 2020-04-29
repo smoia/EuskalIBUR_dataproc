@@ -473,8 +473,7 @@ case ${ftype} in
 		imcp ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_tmap_simple ${mapdir_2}/${flpr}_${ftype}-twosteps_tmap_simple
 
 		# prepare empty volumes
-		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}-twosteps_spc_over_V
-		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}-twosteps_tmap
+		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}-twosteps_statsbuck
 		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}-twosteps_cbuck
 
 		maxidx=( $( fslstats ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -R ) )
@@ -483,13 +482,20 @@ case ${ftype} in
 		do
 			let v=i*step
 			v=$( printf %04d $v )
-			3dcalc -a ${tmp}/${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_betas_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
-				   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -overwrite
-			3dcalc -a ${tmp}/${flpr}_${ftype}-twosteps_tmap.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_${ftype}_tstat_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
-				   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}-twosteps_tmap.nii.gz -overwrite
-			3dcalc -a ${tmp}/${flpr}_${ftype}-twosteps_cbuck.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
+			3dcalc -a ${tmp}/${flpr}_${ftype}-twosteps_statsbuck.nii.gz \
+				   -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${v}.nii.gz \
+				   -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
+				   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}-twosteps_statsbuck.nii.gz -overwrite
+			3dcalc -a ${tmp}/${flpr}_${ftype}-twosteps_cbuck.nii.gz \
+				   -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz \
+				   -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
 				   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}-twosteps_cbuck.nii.gz -overwrite
 		done
+
+		3dbucket -prefix ${tmp}/${flpr}_${ftype}-twosteps_spc_over_V.nii.gz \
+				 -abuc ${tmp}/${flpr}_${ftype}-twosteps_statsbuck.nii.gz'[17]' -overwrite
+		3dbucket -prefix ${tmp}/${flpr}_${ftype}-twosteps_tmap.nii.gz \
+				 -abuc ${tmp}/${flpr}_${ftype}-twosteps_statsbuck.nii.gz'[18]' -overwrite
 
 		mv ${tmp}/${flpr}_${ftype}-twosteps_spc_over_V.nii.gz .
 		mv ${tmp}/${flpr}_${ftype}-twosteps_tmap.nii.gz .

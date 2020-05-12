@@ -53,7 +53,7 @@ joblist=""
 # qsub -q short.q -hold_jid "${joblist}" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
 # old_ftype=${ftype}
 
-# for ftype in meica-aggr meica-orth meica-cons meica-mvar echo-2 meica-aggr-twosteps meica-orth-twosteps meica-cons-twosteps
+# for ftype in meica-aggr meica-orth all-orth meica-cons meica-mvar echo-2 meica-aggr-twosteps meica-orth-twosteps all-orth-twosteps meica-cons-twosteps
 # do
 # 	rm ${wdr}/../LogFiles/${ftype}_pipe
 # 	qsub -q short.q -hold_jid "${old_ftype}_EuskalIBUR" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}

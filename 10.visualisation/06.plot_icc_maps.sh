@@ -19,7 +19,7 @@ do
 		appending_noclip="convert -append"
 
 		map=${map}_${mtype}
-		for ftype in echo-2 optcom meica-aggr-twosteps meica-mvar meica-orth-twosteps meica-cons-twosteps
+		for ftype in echo-2 optcom meica-mvar meica-aggr meica-orth meica-cons all-orth meica-aggr-twosteps meica-orth-twosteps meica-cons-twosteps all-orth-twosteps
 		do
 			echo "ICC2_${map}_${ftype}"
 			fsleyes render -of ICC2_${map}_${ftype} --size 1400 500 --scene lightbox --displaySpace reg/MNI_T1_brain.nii.gz \

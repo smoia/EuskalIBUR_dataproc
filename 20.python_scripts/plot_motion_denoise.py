@@ -14,15 +14,17 @@ FIGSIZE = (18, 10)
 BH_LEN = 39
 
 FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',
-              'meica-cons', 'meica-mvar', 'meica-aggr-twosteps',
-              'meica-orth-twosteps', 'meica-cons-twosteps']  # , 'meica-recn']
+              'meica-cons', 'all-orth', 'meica-aggr-twosteps',
+              'meica-orth-twosteps', 'meica-cons-twosteps', 'all-orth-twosteps']
 COLOURS = ['#d62728ff', '#07ad95ff', '#ff7f0eff', '#2ca02cff', '#ff33ccff',
-           '#1f77b4ff', '#663300ff', '#003300ff', '#000066ff', '#b3b300']  # , '#07ad95ff']
+           '#1f77b4ff', '#663300ff', '#003300ff', '#000066ff', '#b3b300ff',
+           '#000000ff']
 FTYPE_DICT = {'pre': 'pre', 'echo-2': 'echo-2', 'optcom': 'optcom',
               'meica-aggr': 'me-agg', 'meica-orth': 'me-ort',
-              'meica-cons': 'me-con', 'meica-mvar': 'me-4db',
+              'meica-cons': 'me-con', 'all-orth': 'allort',
               'meica-aggr-twosteps': 'me-agg-2s',
               'meica-orth-twosteps': 'me-ort-2s',
+              'all-orth-twosteps': 'allort-2s',
               'meica-cons-twosteps': 'me-con-2s'}
 
 TIME = np.asarray(range(BH_LEN))

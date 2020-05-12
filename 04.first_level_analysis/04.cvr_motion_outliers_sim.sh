@@ -69,7 +69,7 @@ case ${ftype} in
 					 -overwrite
 	;;
 	meica-orth )
-		# Reconstruct rejected, orthogonalised by the good components and the PetCO2, and N.
+		# Reconstruct rejected, orthogonalised by the PetCO2, and N.
 		# Start with N
 		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
 					 -matrix ${matdir}/mat_0000.1D \
@@ -100,6 +100,47 @@ case ${ftype} in
 				3dSynthesize -cbucket ${tmp}/tmp.${flpr}_${ftype}/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
 							 -select rejected \
+							 -prefix ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove_synth.nii.gz \
+							 -overwrite
+				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove_synth.nii.gz \
+						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
+			fi
+		done
+		rm -rf ${tmp}/tmp.${flpr}_${ftype}
+	;;
+	all-orth )
+		# Reconstruct everything orthogonalised by the the PetCO2.
+		# Start with creating an empty file
+		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
+					 -matrix ${matdir}/mat_0000.1D \
+					 -select polort \
+					 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+					 -overwrite
+
+		fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -mul 0 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
+		# Create folder for synthesize
+		if [ -d ${tmp}/tmp.${flpr}_${ftype} ]
+		then
+			rm -rf ${tmp}/tmp.${flpr}_${ftype}
+		fi
+		mkdir ${tmp}/tmp.${flpr}_${ftype}
+
+		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
+
+		for i in $( seq -f %g 0 ${maxidx[1]} )
+		do
+			let v=i-1
+			let v*=step
+			v=$( printf %04d $v )
+			if [ -e ${matdir}/mat_${v}.1D ]
+			then
+				# Extract only right voxels for synthesize
+				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx.nii.gz \
+					   -expr "a*equals(b,${i})" -prefix ${tmp}/tmp.${flpr}_${ftype}/tmp.masked_cbuck_${v}.nii.gz -overwrite
+
+				3dSynthesize -cbucket ${tmp}/tmp.${flpr}_${ftype}/tmp.masked_cbuck_${v}.nii.gz \
+							 -matrix ${matdir}/mat_${v}.1D \
+							 -select polort motdemean motderiv1 rejected \
 							 -prefix ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove_synth.nii.gz \
 							 -overwrite
 				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove_synth.nii.gz \
@@ -234,6 +275,47 @@ case ${ftype} in
 							 -prefix ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 							 -overwrite
 				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
+			fi
+		done
+		rm -rf ${tmp}/tmp.${flpr}_${ftype}
+	;;
+	all-orth-twosteps )
+		# Reconstruct everything orthogonalised by the the PetCO2.
+		# Start with creating an empty file
+		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
+					 -matrix ${matdir}/mat_0000.1D \
+					 -select polort \
+					 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
+					 -overwrite
+
+		fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -mul 0 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
+		# Create folder for synthesize
+		if [ -d ${tmp}/tmp.${flpr}_${ftype} ]
+		then
+			rm -rf ${tmp}/tmp.${flpr}_${ftype}
+		fi
+		mkdir ${tmp}/tmp.${flpr}_${ftype}
+
+		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
+
+		for i in $( seq -f %g 0 ${maxidx[1]} )
+		do
+			let v=i-1
+			let v*=step
+			v=$( printf %04d $v )
+			if [ -e ${matdir}/mat_${v}.1D ]
+			then
+				# Extract only right voxels for synthesize
+				3dcalc -a ${flpr}_${ftype}_cbuck.nii.gz -b ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx.nii.gz \
+					   -expr "a*equals(b,${i})" -prefix ${tmp}/tmp.${flpr}_${ftype}/tmp.masked_cbuck_${v}.nii.gz -overwrite
+
+				3dSynthesize -cbucket ${tmp}/tmp.${flpr}_${ftype}/tmp.masked_cbuck_${v}.nii.gz \
+							 -matrix ${matdir}/mat_${v}.1D \
+							 -select polort motdemean motderiv1 rejected \
+							 -prefix ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove_synth.nii.gz \
+							 -overwrite
+				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove_synth.nii.gz \
 						 ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz
 			fi
 		done

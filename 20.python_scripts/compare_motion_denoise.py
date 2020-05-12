@@ -41,8 +41,8 @@ for sub in SUB_LIST:
             sub_table[dvars_type] = np.genfromtxt(filename)
 
 ftype_list = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',
-              'meica-cons', 'meica-mvar', 'meica-aggr-twosteps', 'meica-orth-twosteps',
-              'meica-cons-twosteps']
+              'meica-cons', 'all-orth', 'meica-aggr-twosteps', 'meica-orth-twosteps',
+              'meica-cons-twosteps', 'all-orth-twosteps']
 
 for sub in SUB_LIST:
     for ses in range(1, LAST_SES):

@@ -6,8 +6,8 @@ import pandas as pd
 import seaborn as sns
 
 
-SUB_LIST = ['001', ]  # '002', '003', '004', '007', '008', '009']
-LAST_SES = 1  # 10
+SUB_LIST = ['001', '002', '003', '004', '007', '008', '009']
+LAST_SES = 10  # 10
 
 SET_DPI = 100
 FIGSIZE = (18, 10)

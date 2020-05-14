@@ -105,6 +105,6 @@ do
 	composite -geometry +990+0 tmp.06pim/ICC2_lag_${mtype}_noclip_app.png tmp.06pim/ICC2_cvr_${mtype}.png +repage ICC2_${mtype}.png
 done
 
-#rm -rf tmp.06pim
+rm -rf tmp.06pim
 
 cd ${cwd}

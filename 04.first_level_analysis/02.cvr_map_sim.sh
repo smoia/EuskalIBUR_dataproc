@@ -134,7 +134,7 @@ do
 	if [ -e ${shiftdir}/shift_${i}.1D ]
 	then
 		case ${ftype} in
-			optcom | echo-2 | *-mvar )
+			optcom | echo-2 )
 				# Simply add motparams and polorts ( = N )
 				# Prepare matrix
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \

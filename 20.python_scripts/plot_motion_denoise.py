@@ -14,14 +14,12 @@ FIGSIZE = (18, 10)
 BH_LEN = 39
 
 FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',
-              'meica-cons', 'all-orth', 'meica-aggr-twosteps',
-              'meica-orth-twosteps', 'meica-cons-twosteps', 'all-orth-twosteps']
+              'meica-cons', 'all-orth']
 COLOURS = ['#d62728ff', '#07ad95ff', '#ff7f0eff', '#2ca02cff', '#ff33ccff',
-           '#1f77b4ff', '#663300ff', '#003300ff', '#000066ff', '#b3b300ff',
-           '#000000ff']
+           '#1f77b4ff', '#663300ff']  # , '#003300ff', '#000066ff', '#b3b300ff', '#000000ff']
 FTYPE_DICT = {'pre': 'pre', 'echo-2': 'echo-2', 'optcom': 'optcom',
-              'meica-aggr': 'me-agg', 'meica-orth': 'me-ort',
-              'meica-cons': 'me-con', 'all-orth': 'allort',
+              'meica-aggr': 'meica-agg', 'meica-orth': 'meica-ort',
+              'meica-cons': 'meica-con', 'all-orth': 'all-ort',
               'meica-aggr-twosteps': 'me-agg-2s',
               'meica-orth-twosteps': 'me-ort-2s',
               'all-orth-twosteps': 'allort-2s',

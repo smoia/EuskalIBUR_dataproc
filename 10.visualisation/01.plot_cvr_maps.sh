@@ -12,7 +12,7 @@ for sub in 001 002 003 004 007 008 009
 do
 	for ses in $( seq -f %02g 1 10 )
 	do
-		for ftype in echo-2 optcom meica-mvar meica-aggr meica-orth meica-cons all-orth meica-aggr-twosteps meica-orth-twosteps meica-cons-twosteps all-orth-twosteps
+		for ftype in echo-2 optcom meica-aggr meica-orth meica-cons all-orth 
 		do
 			echo "sub ${sub} ses ${ses} ftype ${ftype}"
 			echo "cvr"
@@ -74,7 +74,7 @@ do
 
 	# Creating full sessions maps
 	appending="convert -append"
-	for ftype in echo-2 optcom meica-mvar meica-aggr meica-orth meica-cons meica-aggr-twosteps meica-orth-twosteps meica-cons-twosteps
+	for ftype in echo-2 optcom meica-aggr meica-orth meica-cons all-orth 
 	do
 		for ses in $( seq -f %02g 1 10 )
 		do

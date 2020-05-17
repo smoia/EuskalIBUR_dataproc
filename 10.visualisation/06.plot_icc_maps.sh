@@ -9,6 +9,11 @@ cwd=$( pwd )
 
 cd ${wdr}/CVR_reliability
 
+if [ -d ${tmp}/tmp.06pim ]
+then
+	rm -rf ${tmp}/tmp.06pim
+fi
+
 mkdir tmp.06pim
 
 for mtype in masked  # corrected masked
@@ -19,7 +24,7 @@ do
 		appending_noclip="convert -append"
 
 		map=${map}_${mtype}
-		for ftype in echo-2 optcom meica-aggr-twosteps meica-mvar meica-orth-twosteps meica-cons-twosteps
+		for ftype in echo-2 optcom meica-aggr meica-orth meica-cons all-orth
 		do
 			echo "ICC2_${map}_${ftype}"
 			fsleyes render -of ICC2_${map}_${ftype} --size 1400 500 --scene lightbox --displaySpace reg/MNI_T1_brain.nii.gz \
@@ -66,7 +71,7 @@ do
 		appending_noclip="convert -append"
 
 		map=${map}_${mtype}
-		for ftype in echo-2 optcom meica-aggr meica-mvar meica-orth meica-cons
+		for ftype in echo-2 optcom meica-aggr meica-orth meica-cons all-orth
 		do
 			echo "ICC2_${map}_${ftype}"
 			fsleyes render -of ICC2_${map}_${ftype} --size 1400 500 --scene lightbox --displaySpace reg/MNI_T1_brain.nii.gz \
@@ -105,6 +110,6 @@ do
 	composite -geometry +990+0 tmp.06pim/ICC2_lag_${mtype}_noclip_app.png tmp.06pim/ICC2_cvr_${mtype}.png +repage ICC2_${mtype}.png
 done
 
-#rm -rf tmp.06pim
+rm -rf tmp.06pim
 
 cd ${cwd}

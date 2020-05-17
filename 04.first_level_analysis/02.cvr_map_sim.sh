@@ -134,7 +134,7 @@ do
 	if [ -e ${shiftdir}/shift_${i}.1D ]
 	then
 		case ${ftype} in
-			optcom | echo-2 | *-mvar )
+			optcom | echo-2 )
 				# Simply add motparams and polorts ( = N )
 				# Prepare matrix
 				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
@@ -435,109 +435,6 @@ echo "Getting corrected maps"
 # Assign the value of the "simple" CVR and tmap map to the bad voxels to have a complete brain.
 fslmaths ${flpr}_${ftype}_cvr_idx_bad_vxs -mul ${flpr}_${ftype}_cvr_simple -add ${flpr}_${ftype}_cvr_masked ${flpr}_${ftype}_cvr_corrected
 fslmaths ${flpr}_${ftype}_cvr_idx_bad_vxs -mul ${flpr}_${ftype}_tmap_simple -add ${flpr}_${ftype}_tmap_masked ${flpr}_${ftype}_tmap_corrected
-
-
-##### -------------------------- #
-####                            ##
-###   Getting T and CVR maps   ###
-##           twosteps         ####
-# -------------------------- #####
-
-# if two steps are necessary, go for them
-case ${ftype} in
-	meica-aggr | meica-orth | meica-cons | all-orth )
-		echo "Computing two steps equivalent for ${ftype}"
-
-		cd ${wdr}/CVR
-
-		mapdir_2=${flpr}_${ftype}-twosteps_map_cvr
-		
-		if [ -d ${mapdir_2} ]
-		then
-			rm -rf ${mapdir_2}
-		fi
-		mkdir ${mapdir_2}
-
-		# Copying idx and lag maps into new folder (they won't change)
-		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_idx ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx
-		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_idx_mask ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx_mask
-		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_idx_corrected ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx_corrected
-		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_lag ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag
-		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_lag_masked ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag_masked
-		imcp ${flpr}_optcom_map_cvr/${flpr}_optcom_cvr_lag_corrected ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_lag_corrected
-		imcp ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_simple ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_simple
-		imcp ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_tmap_simple ${mapdir_2}/${flpr}_${ftype}-twosteps_tmap_simple
-
-		# prepare empty volumes
-		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}-twosteps_statsbuck
-		fslmaths ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -mul 0 ${tmp}/${flpr}_${ftype}-twosteps_cbuck
-
-		maxidx=( $( fslstats ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx -R ) )
-
-		for i in $( seq -f %g 0 ${maxidx[1]} )
-		do
-			let v=i*step
-			v=$( printf %04d $v )
-			3dcalc -a ${tmp}/${flpr}_${ftype}-twosteps_statsbuck.nii.gz \
-				   -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${v}.nii.gz \
-				   -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
-				   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}-twosteps_statsbuck.nii.gz -overwrite
-			3dcalc -a ${tmp}/${flpr}_${ftype}-twosteps_cbuck.nii.gz \
-				   -b ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${v}.nii.gz \
-				   -c ${mapdir_2}/${flpr}_${ftype}-twosteps_cvr_idx.nii.gz \
-				   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}-twosteps_cbuck.nii.gz -overwrite
-		done
-
-		3dbucket -prefix ${tmp}/${flpr}_${ftype}-twosteps_spc_over_V.nii.gz \
-				 -abuc ${tmp}/${flpr}_${ftype}-twosteps_statsbuck.nii.gz'[17]' -overwrite
-		3dbucket -prefix ${tmp}/${flpr}_${ftype}-twosteps_tmap.nii.gz \
-				 -abuc ${tmp}/${flpr}_${ftype}-twosteps_statsbuck.nii.gz'[18]' -overwrite
-
-		mv ${tmp}/${flpr}_${ftype}-twosteps_spc_over_V.nii.gz .
-		mv ${tmp}/${flpr}_${ftype}-twosteps_tmap.nii.gz .
-		mv ${tmp}/${flpr}_${ftype}-twosteps_cbuck.nii.gz .
-
-		mv ${flpr}_${ftype}-twosteps_spc* ${mapdir_2}/.
-		mv ${flpr}_${ftype}-twosteps_tmap* ${mapdir_2}/.
-
-		cd ${mapdir_2}
-
-		# From %/V to %/mmHg
-		fslmaths ${flpr}_${ftype}-twosteps_spc_over_V.nii.gz -div 71.2 -mul 100 ${flpr}_${ftype}-twosteps_cvr.nii.gz
-
-		# Applying threshold on positive and inverted negative t scores, then adding them together to have absolute tscores.
-		fslmaths ${flpr}_${ftype}-twosteps_tmap -thr ${tscore} ${flpr}_${ftype}-twosteps_tmap_pos
-		fslmaths ${flpr}_${ftype}-twosteps_tmap -mul -1 -thr ${tscore} ${flpr}_${ftype}-twosteps_tmap_neg
-		fslmaths ${flpr}_${ftype}-twosteps_tmap_neg -add ${flpr}_${ftype}-twosteps_tmap_pos ${flpr}_${ftype}-twosteps_tmap_abs
-		# Binarising all the above to obtain masks.
-		fslmaths ${flpr}_${ftype}-twosteps_tmap_pos -bin ${flpr}_${ftype}-twosteps_tmap_pos_mask
-		fslmaths ${flpr}_${ftype}-twosteps_tmap_neg -bin ${flpr}_${ftype}-twosteps_tmap_neg_mask
-		fslmaths ${flpr}_${ftype}-twosteps_tmap_abs -bin ${flpr}_${ftype}-twosteps_tmap_abs_mask
-
-		# Apply constriction by physiology (if a voxel didn't peak in range, might never peak)
-		fslmaths ${flpr}_${ftype}-twosteps_cvr_idx -mul ${step} -thr 5 -uthr 705 -bin ${flpr}_${ftype}-twosteps_cvr_idx_physio_constrained
-
-		# Obtaining the mask of good and the mask of bad voxels.
-		fslmaths ${flpr}_${ftype}-twosteps_cvr_idx_physio_constrained -mas ${flpr}_${ftype}-twosteps_tmap_abs_mask -bin ${flpr}_${ftype}-twosteps_cvr_idx_mask
-		fslmaths ${mask} -sub ${flpr}_${ftype}-twosteps_cvr_idx_mask ${flpr}_${ftype}-twosteps_cvr_idx_bad_vxs
-
-		echo "Getting masked maps"
-		# Mask Good CVR map, lags and tstats
-		for map in cvr cvr_lag tmap
-		do
-			fslmaths ${flpr}_${ftype}-twosteps_${map} -mas ${flpr}_${ftype}-twosteps_cvr_idx_mask ${flpr}_${ftype}-twosteps_${map}_masked
-		done
-
-		echo "Getting corrected maps"
-		# Assign the value of the "simple" CVR and tmap map to the bad voxels to have a complete brain.
-		fslmaths ${flpr}_${ftype}-twosteps_cvr_idx_bad_vxs -mul ${flpr}_${ftype}-twosteps_cvr_simple -add ${flpr}_${ftype}-twosteps_cvr_masked ${flpr}_${ftype}-twosteps_cvr_corrected
-		fslmaths ${flpr}_${ftype}-twosteps_cvr_idx_bad_vxs -mul ${flpr}_${ftype}-twosteps_tmap_simple -add ${flpr}_${ftype}-twosteps_tmap_masked ${flpr}_${ftype}-twosteps_tmap_corrected
-
-	;;
-	* ) echo "It's done!" ;;
-esac
-
-cd ..
 
 rm -rf ${tmp}/tmp.${flpr}_${ftype}_02cms_*
 

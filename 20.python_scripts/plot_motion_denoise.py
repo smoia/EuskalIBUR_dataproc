@@ -131,7 +131,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST):
 
     # Compute trial distance from average
     dist_avg = np.empty(bold_responses.shape[:2])
-    for n in range(bold_responses.shape[2]):
+    for n in range(bold_responses.shape[1]):
         dist_avg[:, n] = np.abs(avg_b - np.squeeze(bold_responses[:, :(n+1), :].mean(axis=1))).mean(axis=1)
 
     # Create response plot
@@ -181,7 +181,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST):
         bh_subplot.plot(dist_avg[i, :],
                         label=FTYPE_DICT[ftype], color=COLOURS[i])
 
-        bh_subplot.set_ylim(0, 1)
+        bh_subplot.set_ylim(0, dist_avg.max())
         bh_subplot.set_ylabel('avg dist')
         bh_subplot.axes.get_xaxis().set_ticks([])
         bh_subplot.legend(loc=1, prop={'size': 8})

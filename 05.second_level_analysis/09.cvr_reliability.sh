@@ -62,11 +62,11 @@ do
 		   ./reg/${sub}_T2w2T1w0GenericAffine.mat
 	fi
 
-	for map in masked corrected
+	for map in masked # corrected
 	do
-        for ses in $( seq -f %02g 1 ${lastses} )
-        do
-    		echo "Copying session ${ses} ${map}"
+            for ses in $( seq -f %02g 1 ${lastses} )
+            do
+    		      echo "Copying session ${ses} ${map}"
 			imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_${map}.nii.gz \
 				 ./${sub}_${ses}_${ftype}_cvr_${map}.nii.gz
 			imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag_${map}.nii.gz \
@@ -84,13 +84,13 @@ do
 									-t ./reg/${sub}_T1w2std0GenericAffine.mat \
 									-t ./reg/${sub}_T2w2T1w0GenericAffine.mat \
 									-t [./reg/${sub}_T2w2sbref0GenericAffine.mat,1]
-				imrm ${infile}
 
-                # Compute CoV
-                fslmerge -t normalised/all_${sub}_${ftype}_${inmap}.nii.gz normalised/std_${sub}_${ftype}_${inmap}_*
+                        # Compute CoV
+                        fslmerge -t normalised/all_${sub}_${ftype}_${inmap}.nii.gz normalised/std_${sub}_${ftype}_${inmap}_*
 
-                fslmaths normalised/all_${sub}_${ftype}_${inmap} -Tmean avg_${sub}_${ftype}_${inmap}
-                fslmaths normalised/all_${sub}_${ftype}_${inmap} -Tstd -div CoV_${sub}_${ftype}_${inmap} 
+                        fslmaths normalised/all_${sub}_${ftype}_${inmap} -Tmean avg_${sub}_${ftype}_${inmap}
+                        fslmaths normalised/all_${sub}_${ftype}_${inmap} -Tstd -div avg_${sub}_${ftype}_${inmap} CoV_${sub}_${ftype}_${inmap} 
+				imrm ${sub}_${ses}_${ftype}_${inmap}.nii.gz
 			done
 		done
 	done

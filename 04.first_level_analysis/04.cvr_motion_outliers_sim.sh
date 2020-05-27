@@ -113,7 +113,7 @@ case ${ftype} in
 		# Start with creating an empty file
 		3dSynthesize -cbucket ${flpr}_${ftype}_cbuck.nii.gz \
 					 -matrix ${matdir}/mat_0000.1D \
-					 -select polort \
+					 -select poly \
 					 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 					 -overwrite
 
@@ -140,7 +140,7 @@ case ${ftype} in
 
 				3dSynthesize -cbucket ${tmp}/tmp.${flpr}_${ftype}/tmp.masked_cbuck_${v}.nii.gz \
 							 -matrix ${matdir}/mat_${v}.1D \
-							 -select polort motdemean motderiv1 rejected \
+							 -select poly motpar motderiv rejected \
 							 -prefix ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove_synth.nii.gz \
 							 -overwrite
 				fslmaths ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz -add ${tmp}/tmp.${flpr}_${ftype}/tmp.${flpr}_${ftype}_04cmos_remove_synth.nii.gz \

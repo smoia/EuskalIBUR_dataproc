@@ -89,8 +89,10 @@ do
                         fslmerge -t normalised/all_${sub}_${ftype}_${inmap}.nii.gz normalised/std_${sub}_${ftype}_${inmap}_*
 
                         fslmaths normalised/all_${sub}_${ftype}_${inmap} -Tmean avg_${sub}_${ftype}_${inmap}
-                        fslmaths normalised/all_${sub}_${ftype}_${inmap} -Tstd -div avg_${sub}_${ftype}_${inmap} CoV_${sub}_${ftype}_${inmap} 
-				imrm ${sub}_${ses}_${ftype}_${inmap}.nii.gz
+                        fslmaths normalised/all_${sub}_${ftype}_${inmap} -Tstd -div avg_${sub}_${ftype}_${inmap} CoV_${sub}_${inmap}_${ftype}
+				
+                        imrm ${sub}_${ses}_${ftype}_${inmap}.nii.gz
+                        imrm avg_${sub}_${ftype}_${inmap}.nii.gz
 			done
 		done
 	done

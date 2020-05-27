@@ -60,22 +60,8 @@ do
 	old_ftype=${ftype}
 done
 
-# joblist=""
-
-# for sub in 001 002 003 004 007 008 009
-# do
-# 	for ses in $(seq -f %02g 1 10)
-# 	do
-# 		rm ${wdr}/../LogFiles/s_${sub}_${ses}_EuskalIBUR_pipe
-# 		qsub -q short.q -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/s_${sub}_${ses}_EuskalIBUR_pipe -e ${wdr}/../LogFiles/s_${sub}_${ses}_EuskalIBUR_pipe ${wdr}/98.hcp/run_cvr_dvars.sh ${sub} ${ses}
-# 		joblist=${joblist}s_${sub}_${ses}_EuskalIBUR,
-# 	done
-# done
-
-# joblist=${joblist::-1}
-
-# rm ${wdr}/../LogFiles/motion_pipe
-# qsub -q short.q -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
+rm ${wdr}/../LogFiles/motion_pipe
+qsub -q short.q -hold_jid "${joblist}" -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
 
 # rm ${wdr}/../LogFiles/plot_pipe
 # qsub -q short.q -hold_jid "${joblist}" -N "plot_EuskalIBUR" -o ${wdr}/../LogFiles/plot_pipe -e ${wdr}/../LogFiles/plot_pipe ${wdr}/98.hcp/run_plot_pipeline.sh

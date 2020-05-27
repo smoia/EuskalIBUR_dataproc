@@ -88,6 +88,6 @@ do
 	${appending}
 done
 
-# rm tmp.01pcm_*
+rm tmp.01pcm_*
 
 cd ${cwd}

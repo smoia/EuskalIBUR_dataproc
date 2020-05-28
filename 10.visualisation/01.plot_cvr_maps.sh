@@ -90,4 +90,8 @@ done
 
 rm tmp.01pcm_*
 
+if [ ! -d ${wdr}/plots ]; then mkdir ${wdr}/plots; fi
+
+mv *.png ${wdr}/plots/.
+
 cd ${cwd}

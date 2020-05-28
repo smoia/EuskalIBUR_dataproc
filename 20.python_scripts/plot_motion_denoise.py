@@ -55,7 +55,7 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST):
         plot_ylabel = 'DVARS'
         plt.ylabel(plot_ylabel)
         plt.ylim(0, 400)
-        fig_name = f'{sub}_DVARS_vs_FD.png'
+        fig_name = f'/data/plots/{sub}_DVARS_vs_FD.png'
         plt.savefig(fig_name, dpi=SET_DPI)
         plt.clf()
         plt.close()
@@ -92,7 +92,7 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST):
     plt.xlabel('FD')
     plot_ylabel = 'DVARS'
     plt.ylabel(plot_ylabel)
-    fig_name = 'allsubs_DVARS_vs_FD.png'
+    fig_name = '/data/plots/allsubs_DVARS_vs_FD.png'
     plt.savefig(fig_name, dpi=SET_DPI)
     plt.clf()
     plt.close()
@@ -186,7 +186,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST):
         bh_subplot.axes.get_xaxis().set_ticks([])
         bh_subplot.legend(loc=1, prop={'size': 8})
 
-    bh_plot.savefig(f'{sub}_BOLD_time.png', dpi=SET_DPI)
+    bh_plot.savefig(f'/data/plots/{sub}_BOLD_time.png', dpi=SET_DPI)
 
     plt.close('all')
 

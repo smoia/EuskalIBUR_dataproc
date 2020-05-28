@@ -70,4 +70,8 @@ done
 
 rm -rf ${tmp}/tmp.07pcm
 
+if [ ! -d ${wdr}/plots ]; then mkdir ${wdr}/plots; fi
+
+mv *.png ${wdr}/plots/.
+
 cd ${cwd}

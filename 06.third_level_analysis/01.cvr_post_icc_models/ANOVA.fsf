@@ -482,7 +482,7 @@ set fmri(evg5.3) 0
 set fmri(evg6.3) 0
 
 # EV 4 title
-set fmri(evtitle4) "mvar"
+set fmri(evtitle4) "allorth"
 
 # Basic waveform shape (EV 4)
 # 0 : Square

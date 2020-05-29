@@ -1,6 +1,6 @@
 library(lme4)
 
-ftypes_list <- c("pre", "echo-2", "optcom", "meica-mvar", "meica-cons", "meica-orth", "meica-aggr", "meica-cons-twosteps", "meica-orth-twosteps", "meica-aggr-twosteps")
+ftypes_list <- c("pre", "echo-2", "optcom", "meica-cons", "meica-orth", "meica-aggr", "all-orth")
 
 # Read data and make model
 data <- read.csv('sub_long_table.csv')

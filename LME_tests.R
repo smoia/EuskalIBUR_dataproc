@@ -4,7 +4,7 @@ ftypes_list <- c("pre", "echo-2", "optcom", "meica-cons", "meica-orth", "meica-a
 
 # Read data and make model
 data <- read.csv('sub_long_table.csv')
-model <- lmer(dvars ~ fd + ftype + ((1+fd+ftype)|ses) + ((1+fd+ftype)|sub), data)
+model <- lmer(dvars ~ fd * ftype + ((1+fd*ftype)|ses) + ((1+fd*ftype)|sub), data)
 anova_table <- anova(model)
 
 # Save model

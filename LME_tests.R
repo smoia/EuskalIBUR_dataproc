@@ -50,25 +50,3 @@ sink()
 saveRDS(combinations, file = "lme_combinations.rds")
 saveRDS(model_subset, file = "lme_model_subset.rds")
 saveRDS(anova_table_subset, file = "lme_anova_table_subset.rds")
-
-sink(file = "LME_models.txt", append = TRUE, type = c("output", "message"),
-     split = FALSE)
-print("Full model")
-print(" ")
-print(model)
-print(" ")
-print(anova_table)
-print(" ")
-print("------------------")
-print(" ")
-print(" ")
-
-for(i in 1:n_comb) {
-print(combinations[1, i])
-print(combinations[2, i])
-anova_table_subset[[i]] <- anova(model_subset[[i]])
-print(model_subset[[i]])
-print(anova_table_subset[[i]])
-print("------------------")
-}
-sink()

@@ -79,7 +79,7 @@ do
 		for ses in $( seq -f %02g 1 10 )
 		do
 			echo "sub ${sub} ses ${ses} ftype ${ftype}"
-			convert sub-${sub}_ses-${ses}_${ftype}.png -crop 234x265+466+642 +repage tmp.01pcm_${sub}_${ses}_${ftype}.png
+			convert sub-${sub}_ses-${ses}_${ftype}.png -crop 192x265+488+670 +repage tmp.01pcm_${sub}_${ses}_${ftype}.png
 		done
 		convert +append tmp.01pcm_${sub}_??_${ftype}.png +repage tmp.01pcm_${sub}_${ftype}.png
 		appending="${appending} tmp.01pcm_${sub}_${ftype}.png"

@@ -15,4 +15,4 @@ wdir=/bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc
 
 cd ${wdir}
 
-singularity exec -e --no-home -B /bcbl/home/public/PJMASK_2/preproc:/data -B /bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc:/scripts -B /bcbl/home/public/PJMASK_2/tmp:/tmp euskalibur.sif 00.pipelines/pipeline_plot.sh
+singularity exec -e --no-home -B /bcbl/home/public/PJMASK_2/preproc:/data -B /bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc:/scripts -B /export/home/smoia/scratch:/tmp euskalibur.sif 00.pipelines/pipeline_plot.sh

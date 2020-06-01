@@ -52,7 +52,7 @@ def anova_and_export(f_dict, filename, map):
 
     # Seaborn it out!
     plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
-    sns.boxplot(x='ftype', y='val', data=df)
+    sns.boxenplot(x='ftype', y='val', data=df)
     plt.xlabel('')
     plt.ylabel(f'{map.upper()}')
     fig_name = f'{filename}.png'

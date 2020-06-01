@@ -27,7 +27,7 @@ do
 			# Extract CoV
 			for sub in 001 002 003 004 007 008 009
 			do
-				fslmeants -i CoV_${sub}_${inmap}_${ftype}.nii.gz -m mask.nii.gz --showall --transpose > tests/val/CoV_${inmap}_${ftype}.txt
+				fslmeants -i CoV_${sub}_${inmap}_${ftype}.nii.gz -m mask.nii.gz --showall --transpose > tests/val/CoV_${sub}_${inmap}_${ftype}.txt
 			done
 		done
 	done

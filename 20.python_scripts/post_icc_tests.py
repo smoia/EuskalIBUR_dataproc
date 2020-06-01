@@ -5,7 +5,7 @@ from itertools import combinations
 
 import numpy as np
 import pandas as pd
-import statsmodel.api as sm
+import statsmodels.api as sm
 
 from scipy.stats import ttest_rel
 from statsmodels.formula.api import ols

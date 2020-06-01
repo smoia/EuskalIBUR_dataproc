@@ -86,16 +86,16 @@ for map in ['cvr', 'lag']:
     for ftype in FTYPE_LIST:
         icc[map][ftype] = np.genfromtxt(f'val/ICC2_{map}_masked_{ftype}.txt')[:, 3]
 
-        # for sub in SUB_LIST:
-        #     cov[map][sub][ftype] = np.genfromtxt(f'val/CoV_{sub}_{map}_masked_{ftype}.txt')[:, 3]
+        for sub in SUB_LIST:
+            cov[map][sub][ftype] = np.genfromtxt(f'val/CoV_{sub}_{map}_masked_{ftype}.txt')[:, 3]
 
     # Tests
     t_test_and_export(icc[map], f'Ttests_ICC_{map.upper()}_{{p_val}}.csv')
     anova_and_export(icc[map], f'ANOVA_ICC_{map.upper()}', map)
 
-    # for sub in SUB_LIST:
-    #     t_test_and_export(cov[map][sub], f'Ttests_CoV_{sub}_{map.upper()}_{{p_val}}.csv')
-    #     anova_and_export(cov[map][sub], f'ANOVA_CoV_{sub}_{map.upper()}', map)
+    for sub in SUB_LIST:
+        t_test_and_export(cov[map][sub], f'Ttests_CoV_{sub}_{map.upper()}_{{p_val}}.csv')
+        anova_and_export(cov[map][sub], f'ANOVA_CoV_{sub}_{map.upper()}', map)
 
 
 os.chdir(cwd)

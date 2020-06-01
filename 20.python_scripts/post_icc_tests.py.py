@@ -6,6 +6,7 @@ from itertools import combinations
 import numpy as np
 import pandas as pd
 import statsmodel.api as sm
+
 from scipy.stats import ttest_rel
 from statsmodels.formula.api import ols
 
@@ -16,23 +17,40 @@ FTYPE_LIST = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-cons',
               'all-orth']
 
 
-def test_and_export(t_df, f_dict, filename):
+def t_test_and_export(f_dict, filename):
     # Prepare pandas dataframes
-    t_df = pd.DataFrame(columns=['ftype1', 'ftype2', 't', 'p'])
+    df = pd.DataFrame(columns=['ftype1', 'ftype2', 't', 'p'])
 
     # Run t-test and append results to the df
     for ftype_one, ftype_two in list(combinations(FTYPE_LIST, 2)):
         t, p = ttest_rel(f_dict[ftype_one], f_dict[ftype_two])
-        t_df = t_df.append({'ftype1': ftype_one, 'ftype2': ftype_two,
-                            't': t, 'p': p}, ignore_index=True)
+        df = df.append({'ftype1': ftype_one, 'ftype2': ftype_two,
+                        't': t, 'p': p}, ignore_index=True)
 
     # Threshold t-tests and export them
-    t_mask = dict.fromkeys(P_VALS, t_df.copy(deep=True))
+    t_mask = dict.fromkeys(P_VALS, df.copy(deep=True))
     for p_val in P_VALS:
         # Compute Sidak correction
         p_corr = 1-(1-p_val)**(1/len(list(combinations(FTYPE_LIST, 2))))
         t_mask[p_val]['p'] = t_mask[p_val]['p'].mask(t_mask[p_val]['p'] > p_corr)
         t_mask[p_val].to_csv(filename.format(p_val=p_val))
+
+
+def anova_and_export(f_dict, filename):
+    df = pd.DataFrame(columns=['val', 'ftype'])
+
+    # Rearrange data in long format table
+    for ftype in FTYPE_LIST:
+        tdf = pd.DataFrame(data=f_dict[ftype], columns=['val', ])
+        tdf['ftype'] = ftype
+        df = df.append(tdf)
+
+    # ANOVA
+    model = ols('val ~ C(ftype)', data=df).fit()
+
+    # Export table
+    with open(filename, 'w') as f:
+        print(sm.stats.anova_lm(model, typ=2), file=f)
 
 
 # THIS IS MAIN
@@ -56,13 +74,13 @@ for map in ['cvr', 'lag']:
         for sub in SUB_LIST:
             cov[map][sub][ftype] = np.genfromtxt(f'val/CoV_{sub}_{map}_masked_{ftype}.txt')[3]
 
-    # T-test and threshold
-    t_mask = test_and_export(t_icc[map], icc[map],
-                             f'Ttests_ICC_{map.upper()}_{{p_val}}.csv')
+    # Tests
+    t_test_and_export(icc[map], f'Ttests_ICC_{map.upper()}_{{p_val}}.csv')
+    anova_and_export(icc[map], f'ANOVA_ICC_{map.upper()}_{{p_val}}.txt')
 
     for sub in SUB_LIST:
-        t_mask = test_and_export(t_cov[map][sub], cov[map][sub],
-                                 f'Ttests_CoV_{sub}_{map.upper()}_{{p_val}}.csv')
+        t_test_and_export(cov[map][sub], f'Ttests_CoV_{sub}_{map.upper()}_{{p_val}}.csv')
+        anova_and_export(cov[map][sub], f'ANOVA_CoV_{sub}_{map.upper()}_{{p_val}}.txt')
 
 
 os.chdir(cwd)

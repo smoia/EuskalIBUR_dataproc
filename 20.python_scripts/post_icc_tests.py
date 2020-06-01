@@ -3,8 +3,10 @@
 import os
 from itertools import combinations
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import statsmodels.api as sm
 
 from scipy.stats import ttest_rel
@@ -16,6 +18,8 @@ SUB_LIST = ['001', '002', '003', '004', '007', '008', '009']
 FTYPE_LIST = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-cons',
               'all-orth']
 
+SET_DPI = 100
+FIGSIZE = (18, 10)
 
 def t_test_and_export(f_dict, filename):
     # Prepare pandas dataframes
@@ -27,6 +31,7 @@ def t_test_and_export(f_dict, filename):
         df = df.append({'ftype1': ftype_one, 'ftype2': ftype_two,
                         't': t, 'p': p}, ignore_index=True)
 
+    df.to_csv(filename.format(p_val='no_thr'))
     # Threshold t-tests and export them
     t_mask = dict.fromkeys(P_VALS, df.copy(deep=True))
     for p_val in P_VALS:
@@ -36,7 +41,7 @@ def t_test_and_export(f_dict, filename):
         t_mask[p_val].to_csv(filename.format(p_val=p_val))
 
 
-def anova_and_export(f_dict, filename):
+def anova_and_export(f_dict, filename, map):
     df = pd.DataFrame(columns=['val', 'ftype'])
 
     # Rearrange data in long format table
@@ -45,11 +50,21 @@ def anova_and_export(f_dict, filename):
         tdf['ftype'] = ftype
         df = df.append(tdf)
 
+    # Seaborn it out!
+    plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+    sns.boxplot(x='ftype', y='val', data=df)
+    plt.xlabel('')
+    plt.ylabel(f'{map.upper()}')
+    fig_name = f'{filename}.png'
+    plt.savefig(fig_name, dpi=SET_DPI)
+    plt.clf()
+    plt.close()
+
     # ANOVA
     model = ols('val ~ C(ftype)', data=df).fit()
 
     # Export table
-    with open(filename, 'w') as f:
+    with open(f'{filename}.txt', 'w') as f:
         print(sm.stats.anova_lm(model, typ=2), file=f)
 
 
@@ -69,18 +84,18 @@ t_cov = {'cvr': d, 'lag': d}
 for map in ['cvr', 'lag']:
     # Read files and import ICC and CoV values
     for ftype in FTYPE_LIST:
-        icc[map][ftype] = np.genfromtxt(f'val/ICC2_{map}_masked_{ftype}.txt')[3]
+        icc[map][ftype] = np.genfromtxt(f'val/ICC2_{map}_masked_{ftype}.txt')[:, 3]
 
-        for sub in SUB_LIST:
-            cov[map][sub][ftype] = np.genfromtxt(f'val/CoV_{sub}_{map}_masked_{ftype}.txt')[3]
+        # for sub in SUB_LIST:
+        #     cov[map][sub][ftype] = np.genfromtxt(f'val/CoV_{sub}_{map}_masked_{ftype}.txt')[:, 3]
 
     # Tests
     t_test_and_export(icc[map], f'Ttests_ICC_{map.upper()}_{{p_val}}.csv')
-    anova_and_export(icc[map], f'ANOVA_ICC_{map.upper()}_{{p_val}}.txt')
+    anova_and_export(icc[map], f'ANOVA_ICC_{map.upper()}', map)
 
-    for sub in SUB_LIST:
-        t_test_and_export(cov[map][sub], f'Ttests_CoV_{sub}_{map.upper()}_{{p_val}}.csv')
-        anova_and_export(cov[map][sub], f'ANOVA_CoV_{sub}_{map.upper()}_{{p_val}}.txt')
+    # for sub in SUB_LIST:
+    #     t_test_and_export(cov[map][sub], f'Ttests_CoV_{sub}_{map.upper()}_{{p_val}}.csv')
+    #     anova_and_export(cov[map][sub], f'ANOVA_CoV_{sub}_{map.upper()}', map)
 
 
 os.chdir(cwd)

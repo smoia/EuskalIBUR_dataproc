@@ -90,20 +90,32 @@ do
 		done
 	done
 
-	# Creating full sessions CVR maps
-	appending="convert -append"
-	for ftype in echo-2 optcom meica-aggr meica-orth meica-cons all-orth 
+	# Creating Alltypes all sessions maps
+	for map in cvr lag
 	do
-		for ses in $( seq -f %02g 1 10 )
+		# Choose the right crop position for the right map
+		case ${map} in
+			cvr ) cropsize="192x265+488+670" ;;
+			lag ) cropsize="192x265+1888+160" ;;
+			* ) echo "This shouldn't be happening: map ${map}"; exit ;;
+		esac 
+		# Start composing the append cmd
+		appending="convert -append"
+		for ftype in echo-2 optcom meica-aggr meica-orth meica-cons all-orth 
 		do
-			echo "sub ${sub} ses ${ses} ftype ${ftype}"
-			convert sub-${sub}_ses-${ses}_${ftype}.png -crop 192x265+488+670 +repage tmp.01pcm_${sub}_${ses}_${ftype}.png
+			for ses in $( seq -f %02g 1 10 )
+			do
+				echo "sub ${sub} ses ${ses} ftype ${ftype}"
+				# crop the right image
+				convert sub-${sub}_ses-${ses}_${ftype}.png -crop 192x265+488+670 +repage tmp.01pcm_${sub}_${ses}_${ftype}_${map}.png
+			done
+			# append all the session (row)
+			convert +append tmp.01pcm_${sub}_??_${ftype}_${map}.png +repage tmp.01pcm_${sub}_${ftype}_${map}.png
+			appending="${appending} tmp.01pcm_${sub}_${ftype}_${map}.png"
 		done
-		convert +append tmp.01pcm_${sub}_??_${ftype}.png +repage tmp.01pcm_${sub}_${ftype}.png
-		appending="${appending} tmp.01pcm_${sub}_${ftype}.png"
+		appending="${appending} +repage sub-${sub}_alltypes_${map}.png"
+		${appending}
 	done
-	appending="${appending} +repage sub-${sub}_alltypes.png"
-	${appending}
 done
 
 rm tmp.01pcm_* mask.nii.gz

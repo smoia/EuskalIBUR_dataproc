@@ -8,10 +8,12 @@ scriptdir=${2:-/scripts}
 cwd=$( pwd )
 
 cd ${wdr}/CVR
-fslmaths ${scriptdir}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm -bin mask
 
 for sub in 001 002 003 004 007 008 009
 do
+	# Get the right brain mask from the subject folder file
+	mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask.nii.gz
+
 	for ses in $( seq -f %02g 1 10 )
 	do
 		for ftype in echo-2 optcom meica-aggr meica-orth meica-cons all-orth 
@@ -55,26 +57,26 @@ do
 			--size 1400 500 --scene lightbox --sliceSpacing 18 --zrange 21 131 \
 			--ncols 6 --nrows 1 --hideCursor --bgColour 0.0 0.0 0.0 --fgColour 1.0 1.0 1.0 --showColourBar --colourBarLocation top \
 			--colourBarLabelSide top-left --colourBarSize 50 --labelSize 11 --performance 3 \
-			${wdr}/CVR/mask.nii.gz --name "mask" --disabled --overlayType volume --alpha 100.0 \
+			${mask} --name "mask" --disabled --overlayType volume --alpha 100.0 \
 			--brightness 50.0 --contrast 50.0 --cmap greyscale --negativeCmap greyscale --unlinkLowRanges --displayRange 0.0 1.0 \
 			--clippingRange 0.0 1.01 --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 \
 			--smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
 			${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag.nii.gz \
 			--name "CVR_lag" --overlayType volume --alpha 100.0 --cmap brain_colours_actc_iso --invert \
-			--clipImage ${wdr}/CVR/mask.nii.gz --displayRange -5.0 5.0 --clippingRange 0.0 1.01 \
+			--clipImage ${mask} --displayRange -5.0 5.0 --clippingRange 0.0 1.01 \
 			--gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 \
 			--blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
 			fsleyes render -of ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag_corrected \
 			--size 1400 500 --scene lightbox --sliceSpacing 18 --zrange 21 131 \
 			--ncols 6 --nrows 1 --hideCursor --bgColour 0.0 0.0 0.0 --fgColour 1.0 1.0 1.0 --showColourBar --colourBarLocation top \
 			--colourBarLabelSide top-left --colourBarSize 50 --labelSize 11 --performance 3 \
-			${wdr}/CVR/mask.nii.gz --name "mask" --disabled --overlayType volume --alpha 100.0 \
+			${mask} --name "mask" --disabled --overlayType volume --alpha 100.0 \
 			--brightness 50.0 --contrast 50.0 --cmap greyscale --negativeCmap greyscale --unlinkLowRanges --displayRange 0.0 1.0 \
 			--clippingRange 0.0 1.01 --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 \
 			--smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
 			${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag_corrected.nii.gz \
 			--name "CVR_lag_(corrected)" --overlayType volume --alpha 100.0 --cmap brain_colours_actc_iso --invert \
-			--clipImage ${wdr}/CVR/mask.nii.gz --displayRange -5.0 5.0 --clippingRange 0.0 1.01 \
+			--clipImage ${mask} --displayRange -5.0 5.0 --clippingRange 0.0 1.01 \
 			--gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 \
 			--blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
 			convert -append sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr.png \
@@ -96,30 +98,34 @@ do
 	do
 		# Choose the right crop position for the right map
 		case ${map} in
-			cvr ) cropsize="192x265+488+670" ;;
-			lag ) cropsize="192x265+1888+160" ;;
+			cvr ) cropsize="192x265+488+670"; cropbar="744x70+320+520" ;;
+			lag ) cropsize="192x265+1888+160"; cropbar="744x70+1726+22" ;;
 			* ) echo "This shouldn't be happening: map ${map}"; exit ;;
-		esac 
+		esac
+		# Crop the colourbar
+		convert sub-${sub}_ses-01_echo-2.png -crop ${cropbar} +repage tmp.01pcm_${sub}_colourbar_${map}.png
 		# Start composing the append cmd
-		appending="convert -append"
+		appending="convert -background black -gravity South -append"
 		for ftype in echo-2 optcom meica-aggr meica-orth meica-cons all-orth 
 		do
 			for ses in $( seq -f %02g 1 10 )
 			do
 				echo "sub ${sub} ses ${ses} ftype ${ftype}"
 				# crop the right image
-				convert sub-${sub}_ses-${ses}_${ftype}.png -crop 192x265+488+670 +repage tmp.01pcm_${sub}_${ses}_${ftype}_${map}.png
+				convert sub-${sub}_ses-${ses}_${ftype}.png -crop ${cropsize} +repage tmp.01pcm_${sub}_${ses}_${ftype}_${map}.png
 			done
 			# append all the session (row)
 			convert +append tmp.01pcm_${sub}_??_${ftype}_${map}.png +repage tmp.01pcm_${sub}_${ftype}_${map}.png
 			appending="${appending} tmp.01pcm_${sub}_${ftype}_${map}.png"
 		done
-		appending="${appending} +repage sub-${sub}_alltypes_${map}.png"
+		# Append colourbar and
+		appending="${appending} tmp.01pcm_${sub}_colourbar_${map}.png +repage tmp.01pcm_sub-${sub}_alltypes_${map}.png"
 		${appending}
+		composite -geometry +60+40 tmp.01pcm_sub-${sub}_alltypes_${map}.png ${scriptdir}/10.visualisation/canvas/Alltypes_canvas.png +repage sub-${sub}_alltypes_${map}.png
 	done
 done
 
-rm tmp.01pcm_* mask.nii.gz
+rm tmp.01pcm_*
 
 if [ ! -d ${wdr}/plots ]; then mkdir ${wdr}/plots; fi
 

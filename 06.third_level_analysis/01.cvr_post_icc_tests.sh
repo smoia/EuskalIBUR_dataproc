@@ -37,4 +37,6 @@ cd tests
 
 python3 ${scriptdir}/20.python_scripts/post_icc_tests.py
 
+rm mask.nii.gz
+
 cd ${cwd}

@@ -37,7 +37,7 @@ do
 						--brightness 50.0 --contrast 50.0 --cmap greyscale --displayRange 0.0 8337.0 --clippingRange 0.0 8420.37 \
 						--gamma 0.0 --cmapResolution 256 --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 \
 						--numInnerSteps 10 --volume 0 CoV_${sub}_${map}_${ftype}.nii.gz --name "CoV_${map}" --overlayType volume \
-						--alpha 100.0 --brightness 50.0 --contrast 50.0 --cmap brain_colours_1hot_iso --negativeCmap blue-lightblue \
+						--alpha 100.0 --brightness 50.0 --contrast 50.0 --cmap red-yellow --negativeCmap blue-lightblue \
 						--useNegativeCmap --displayRange 0 5.0 --clippingRange 0 100000 --gamma 0.0 --cmapResolution 256 \
 						--numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --volume 0
 

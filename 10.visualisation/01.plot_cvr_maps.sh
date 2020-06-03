@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 wdr=${1:-/data}
+scriptdir=${2:-/scripts}
 
 ### Main ###
 

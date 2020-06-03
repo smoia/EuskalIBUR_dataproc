@@ -28,7 +28,7 @@ echo "************************************"
 cwd=$(pwd)
 
 # Make session maps chart
-${scriptdir}/10.visualisation/01.plot_cvr_maps.sh ${wdr}
+${scriptdir}/10.visualisation/01.plot_cvr_maps.sh ${wdr} ${scriptdir}
 
 # Normally these two do not have to be run
 # Plot FD vs DVARS

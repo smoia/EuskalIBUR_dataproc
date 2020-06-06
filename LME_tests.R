@@ -1,10 +1,16 @@
-library(lme4)
+library(lmerTest)
 
 ftypes_list <- c("pre", "echo-2", "optcom", "meica-cons", "meica-orth", "meica-aggr", "all-orth")
 
-# Read data and make model
+# Read data and make sure all the categorical data is a factor
 data <- read.csv('sub_long_table.csv')
+data$sub <- as.factor(data$sub)
+data$ses <- as.factor(data$ses)
+data$ftype <- as.factor(data$ftype)
+
+# Run model
 model <- lmer(dvars ~ fd * ftype + ((1+fd*ftype)|ses) + ((1+fd*ftype)|sub), data)
+summary(model)
 anova_table <- anova(model)
 
 # Save model
@@ -21,29 +27,33 @@ anova_table_subset <- vector("list", length = n_comb)
 # Compute and output to file
 sink(file = "LME_models.txt", append = TRUE, type = c("output", "message"),
      split = FALSE)
-print("Full model")
-print(" ")
-print(model)
-print(" ")
-print(anova_table)
-print(" ")
-print("------------------")
-print(" ")
-print(" ")
+writeLines("Full model\n")
+writeLines(model)
+writeLines("\n\n")
+writeLines("Summary\n")
+summary(model)
+writeLines("\n\n")
+writeLines("ANOVA table\n")
+writeLines(anova_table)
+writeLines("\n\n")
+writeLines("------------------\n\n\n\n")
 
 for(i in 1:n_comb) {
-print(combinations[1, i])
-print(combinations[2, i])
-print(" ")
+writeLines(combinations[1, i])
+writeLines(combinations[2, i])
+writeLines("\n")
 subset_data <- subset(data, ftype == combinations[1, i] | ftype == combinations[2, i])
 model_subset[[i]] <- lmer(dvars ~ fd * ftype + ((1+fd*ftype)|ses) + ((1+fd*ftype)|sub), subset_data)
 anova_table_subset[[i]] <- anova(model_subset[[i]])
-print(model_subset[[i]])
-print(" ")
-print(anova_table_subset[[i]])
-print("------------------")
-print(" ")
-print(" ")
+writeLines(model_subset[[i]])
+writeLines("\n\n")
+writeLines("Summary\n")
+summary(model)
+writeLines("\n\n")
+writeLines("ANOVA table\n")
+writeLines(anova_table_subset[[i]])
+writeLines("\n\n")
+writeLines("------------------\n\n\n\n")
 }
 sink()
 

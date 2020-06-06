@@ -21,6 +21,7 @@ FTYPE_LIST = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-cons',
 SET_DPI = 100
 FIGSIZE = (18, 10)
 
+
 def t_test_and_export(f_dict, filename):
     # Prepare pandas dataframes
     df = pd.DataFrame(columns=['ftype1', 'ftype2', 't', 'p'])

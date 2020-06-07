@@ -28,7 +28,7 @@ echo "************************************"
 cwd=$(pwd)
 
 # Make session maps chart
-${scriptdir}/10.visualisation/01.plot_cvr_maps.sh ${wdr} ${scriptdir}
+# ${scriptdir}/10.visualisation/01.plot_cvr_maps.sh ${wdr} ${scriptdir}
 
 # Normally these two do not have to be run
 # Plot FD vs DVARS
@@ -36,7 +36,7 @@ ${scriptdir}/10.visualisation/01.plot_cvr_maps.sh ${wdr} ${scriptdir}
 # Make the ten session x N methods chart
 # ${scriptdir}/10.visualisation/03.plot_all_cvr_maps.sh ${wdr}
 # Make ICC maps
-${scriptdir}/10.visualisation/06.plot_icc_maps.sh ${wdr} ${scriptdir} ${tmp}
+# ${scriptdir}/10.visualisation/06.plot_icc_maps.sh ${wdr} ${scriptdir} ${tmp}
 ${scriptdir}/10.visualisation/07.plot_cov_maps.sh ${wdr} ${scriptdir} ${tmp}
 
 echo ""

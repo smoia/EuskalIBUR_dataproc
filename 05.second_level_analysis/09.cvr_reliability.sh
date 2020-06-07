@@ -86,6 +86,7 @@ do
 				imrm ${sub}_${ses}_${ftype}_${inmap}.nii.gz
 			done
 			for inmap in cvr lag
+			do
 				inmap=${inmap}_${map}
 				# Compute intrasubject CoV
 				fslmerge -t all_${sub}_${ftype}_${inmap}.nii.gz normalised/std_${ftype}_${inmap}_${sub}_*

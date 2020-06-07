@@ -17,8 +17,7 @@ fi
 
 cd CVR_reliability
 
-mkdir reg
-mkdir normalised
+mkdir reg normalised cov
 
 # Copy files for transformation & create mask
 if [ ! -e ./reg/MNI_T1_brain.nii.gz ]
@@ -79,22 +78,63 @@ do
 				inmap=${inmap}_${map}
 				echo "Transforming ${inmap} maps of session ${ses} to MNI"
 				antsApplyTransforms -d 3 -i ${sub}_${ses}_${ftype}_${inmap}.nii.gz -r ./reg/MNI_T1_brain.nii.gz \
-									-o ./normalised/std_${sub}_${ftype}_${inmap}_${ses}.nii.gz -n NearestNeighbor \
+									-o ./normalised/std_${ftype}_${inmap}_${sub}_${ses}.nii.gz -n NearestNeighbor \
 									-t ./reg/${sub}_T1w2std1Warp.nii.gz \
 									-t ./reg/${sub}_T1w2std0GenericAffine.mat \
 									-t ./reg/${sub}_T2w2T1w0GenericAffine.mat \
 									-t [./reg/${sub}_T2w2sbref0GenericAffine.mat,1]
+				imrm ${sub}_${ses}_${ftype}_${inmap}.nii.gz
+			done
+			for inmap in cvr lag
+				inmap=${inmap}_${map}
+				# Compute intrasubject CoV
+				fslmerge -t all_${sub}_${ftype}_${inmap}.nii.gz normalised/std_${ftype}_${inmap}_${sub}_*
 
-                        # Compute CoV
-                        fslmerge -t normalised/all_${sub}_${ftype}_${inmap}.nii.gz normalised/std_${sub}_${ftype}_${inmap}_*
-
-                        fslmaths normalised/all_${sub}_${ftype}_${inmap} -Tmean avg_${sub}_${ftype}_${inmap}
-                        fslmaths normalised/all_${sub}_${ftype}_${inmap} -Tstd -div avg_${sub}_${ftype}_${inmap} CoV_${sub}_${inmap}_${ftype}
+				fslmaths all_${sub}_${ftype}_${inmap} -Tmean avg_${sub}_${ftype}_${inmap}
+				fslmaths all_${sub}_${ftype}_${inmap} -Tstd -div avg_${sub}_${ftype}_${inmap} cov/CoV_sub_${inmap}_${ftype}_${sub}
 				
-                        imrm ${sub}_${ses}_${ftype}_${inmap}.nii.gz
-                        imrm avg_${sub}_${ftype}_${inmap}.nii.gz
+				imrm all_${sub}_${ftype}_${inmap}.nii.gz
+				imrm avg_${sub}_${ftype}_${inmap}.nii.gz
 			done
 		done
+	done
+done
+
+for map in masked # corrected
+do
+	for inmap in cvr lag # cvr_idx_mask tstat_mask
+	do
+		inmap=${inmap}_${map}
+		for ses in $( seq -f %02g 1 10 )
+		do
+			# Compute intersession CoV
+			fslmerge -t all_${ses}_${ftype}_${inmap}.nii.gz normalised/std_${ftype}_${inmap}_001_${ses}.nii.gz \
+			normalised/std_${ftype}_${inmap}_002_${ses}.nii.gz normalised/std_${ftype}_${inmap}_003_${ses}.nii.gz \
+			normalised/std_${ftype}_${inmap}_004_${ses}.nii.gz normalised/std_${ftype}_${inmap}_007_${ses}.nii.gz \
+			normalised/std_${ftype}_${inmap}_008_${ses}.nii.gz normalised/std_${ftype}_${inmap}_009_${ses}.nii.gz
+
+			fslmaths all_${ses}_${ftype}_${inmap} -Tmean avg_${ses}_${ftype}_${inmap}
+			fslmaths all_${ses}_${ftype}_${inmap} -Tstd -div avg_${ses}_${ftype}_${inmap} cov/CoV_ses_${inmap}_${ftype}_${ses}
+			imrm all_${ses}_${ftype}_${inmap}.nii.gz
+			imrm avg_${ses}_${ftype}_${inmap}.nii.gz
+		done
+
+		# Compute total CoV
+		fslmerge -t all_total_${ftype}_${inmap}.nii.gz normalised/std_${ftype}_${inmap}_*
+		fslmaths all_total_${ftype}_${inmap}.nii.gz -Tmean avg_total_${ftype}_${inmap}
+		fslmaths all_total_${ftype}_${inmap} -Tstd -div avg_total_${ftype}_${inmap} CoV_total_${inmap}_${ftype}
+		imrm all_total_${ftype}_${inmap}.nii.gz
+		imrm avg_total_${ftype}_${inmap}.nii.gz
+
+		# Compute average intersubject CoV
+		fslmerge -t all_cov_ses_${inmap}_${ftype} cov/CoV_ses_${inmap}_${ftype}_*
+		fslmaths all_cov_ses_${inmap}_${ftype} -Tmean CoV_intrases_${inmap}_${ftype}
+		imrm all_cov_ses_${inmap}_${ftype}.nii.gz
+
+		# Compute average intrasubject CoV
+		fslmerge -t all_cov_subs_${inmap}_${ftype} cov/CoV_sub_${inmap}_${ftype}_*
+		fslmaths all_cov_subs_${inmap}_${ftype} -Tmean CoV_intrasub_${inmap}_${ftype}
+		imrm all_cov_subs_${inmap}_${ftype}.nii.gz
 	done
 done
 

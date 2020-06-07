@@ -14,7 +14,7 @@ from statsmodels.formula.api import ols
 
 P_VALS = [0.05, 0.01, 0.001]
 
-SUB_LIST = ['001', '002', '003', '004', '007', '008', '009']
+CTYPE_LIST = ['intrasub', 'intrases', 'total']
 FTYPE_LIST = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-cons',
               'all-orth']
 
@@ -77,7 +77,7 @@ os.chdir('/data/CVR_reliability/tests')
 icc = {'cvr': {}, 'lag': {}}
 t_icc = {'cvr': {}, 'lag': {}}
 
-d = dict.fromkeys(SUB_LIST, {})
+d = dict.fromkeys(CTYPE_LIST, {})
 cov = {'cvr': d, 'lag': d}
 t_cov = {'cvr': d, 'lag': d}
 
@@ -87,16 +87,16 @@ for map in ['cvr', 'lag']:
     for ftype in FTYPE_LIST:
         icc[map][ftype] = np.genfromtxt(f'val/ICC2_{map}_masked_{ftype}.txt')[:, 3]
 
-        for sub in SUB_LIST:
-            cov[map][sub][ftype] = np.genfromtxt(f'val/CoV_{sub}_{map}_masked_{ftype}.txt')[:, 3]
+        for ctype in CTYPE_LIST:
+            cov[map][ctype][ftype] = np.genfromtxt(f'val/CoV_{ctype}_{map}_masked_{ftype}.txt')[:, 3]
 
     # Tests
     t_test_and_export(icc[map], f'Ttests_ICC_{map.upper()}_{{p_val}}.csv')
     anova_and_export(icc[map], f'ANOVA_ICC_{map.upper()}', map)
 
-    for sub in SUB_LIST:
-        t_test_and_export(cov[map][sub], f'Ttests_CoV_{sub}_{map.upper()}_{{p_val}}.csv')
-        anova_and_export(cov[map][sub], f'ANOVA_CoV_{sub}_{map.upper()}', map)
+    for ctype in CTYPE_LIST:
+        t_test_and_export(cov[map][ctype], f'Ttests_CoV_{ctype}_{map.upper()}_{{p_val}}.csv')
+        anova_and_export(cov[map][ctype], f'ANOVA_CoV_{ctype}_{map.upper()}', map)
 
 
 os.chdir(cwd)

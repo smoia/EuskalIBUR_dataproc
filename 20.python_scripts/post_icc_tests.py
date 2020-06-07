@@ -88,7 +88,8 @@ for map in ['cvr', 'lag']:
         icc[map][ftype] = np.genfromtxt(f'val/ICC2_{map}_masked_{ftype}.txt')[:, 3]
 
         for ctype in CTYPE_LIST:
-            cov[map][ctype][ftype] = np.genfromtxt(f'val/CoV_{ctype}_{map}_masked_{ftype}.txt')[:, 3]
+            # Actually testing the absolute of the CoV
+            cov[map][ctype][ftype] = np.absolute(np.genfromtxt(f'val/CoV_{ctype}_{map}_masked_{ftype}.txt')[:, 3])
 
     # Tests
     t_test_and_export(icc[map], f'Ttests_ICC_{map.upper()}_{{p_val}}.csv')

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from copy import deepcopy
 from itertools import combinations
 
 import matplotlib.pyplot as plt
@@ -77,9 +78,19 @@ os.chdir('/data/CVR_reliability/tests')
 icc = {'cvr': {}, 'lag': {}}
 t_icc = {'cvr': {}, 'lag': {}}
 
-d = dict.fromkeys(CTYPE_LIST, {})
-cov = {'cvr': d, 'lag': d}
-t_cov = {'cvr': d, 'lag': d}
+d = dict.fromkeys(FTYPE_LIST, '')
+cov = {'cvr': {'intrasub': deepcopy(d),
+               'intrases': deepcopy(d),
+               'total': deepcopy(d)},
+       'lag': {'intrasub': deepcopy(d),
+               'intrases': deepcopy(d),
+               'total': deepcopy(d)}}
+t_cov = {'cvr': {'intrasub': deepcopy(d),
+                 'intrases': deepcopy(d),
+                 'total': deepcopy(d)},
+         'lag': {'intrasub': deepcopy(d),
+                 'intrases': deepcopy(d),
+                 'total': deepcopy(d)}}
 
 
 for map in ['cvr', 'lag']:

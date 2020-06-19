@@ -62,7 +62,7 @@ do
 		${appending_noclip}
 	done
 	composite ${tmp}/tmp.06pim/ICC2_cvr_${mtype}_app.png ${scriptdir}/10.visualisation/canvas/ICC_canvas.png +repage ${tmp}/tmp.06pim/ICC2_cvr_${mtype}.png
-	composite -geometry +990+0 ${tmp}/tmp.06pim/ICC2_lag_${mtype}_noclip_app.png ${tmp}/tmp.06pim/ICC2_cvr_${mtype}.png +repage ICC2_${mtype}.png
+	composite -geometry +990+0 ${tmp}/tmp.06pim/ICC2_lag_${mtype}_app.png ${tmp}/tmp.06pim/ICC2_cvr_${mtype}.png +repage ICC2_${mtype}.png
 done
 
 rm -rf ${tmp}/tmp.06pim

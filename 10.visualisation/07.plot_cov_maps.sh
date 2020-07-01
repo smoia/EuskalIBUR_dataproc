@@ -27,7 +27,7 @@ do
 			appending_noclip="convert -append"
 
 			map=${map}_${mtype}
-			for ftype in echo-2 optcom meica-aggr meica-orth meica-cons all-orth
+			for ftype in echo-2 optcom meica-aggr meica-orth meica-cons
 			do
 				echo "CoV_${covtype}_${map}_${ftype}"
 				fsleyes render -of CoV_${covtype}_${map}_${ftype} --size 1400 500 --scene lightbox --displaySpace reg/MNI_T1_brain.nii.gz \

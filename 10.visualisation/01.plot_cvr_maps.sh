@@ -16,7 +16,7 @@ do
 
 	for ses in $( seq -f %02g 1 10 )
 	do
-		for ftype in echo-2 optcom meica-aggr meica-orth meica-cons all-orth 
+		for ftype in echo-2 optcom meica-aggr meica-orth meica-cons
 		do
 			echo "sub ${sub} ses ${ses} ftype ${ftype}"
 			echo "cvr"
@@ -106,7 +106,7 @@ do
 		convert sub-${sub}_ses-01_echo-2.png -crop ${cropbar} +repage tmp.01pcm_${sub}_colourbar_${map}.png
 		# Start composing the append cmd
 		appending="convert -background black -gravity South -append"
-		for ftype in echo-2 optcom meica-aggr meica-orth meica-cons all-orth 
+		for ftype in echo-2 optcom meica-aggr meica-orth meica-cons
 		do
 			for ses in $( seq -f %02g 1 10 )
 			do

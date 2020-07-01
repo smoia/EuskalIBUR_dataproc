@@ -208,9 +208,22 @@ if [[ ! -d "sub-${sub}" ]]; then mkdir sub-${sub}; fi
 3dTto1D -input ${flpr}_${ftype}_residuals.nii.gz -mask ${mask}.nii.gz -method dvars -prefix sub-${sub}/dvars_${ftype}_${flpr}.1D
 
 fslmeants -i ${flpr}_${ftype}_residuals -m ../CVR/sub-${sub}_GM_native > sub-${sub}/avg_GM_${ftype}_${flpr}.1D
+fslmeants -i ${flpr}_${ftype}_residuals_SPC -m ../CVR/sub-${sub}_GM_native > sub-${sub}/avg_GM_SPC_${ftype}_${flpr}.1D
 
-fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-2_bold_cr \
-		  -m ../CVR/sub-${sub}_GM_native > sub-${sub}/avg_GM_pre_${flpr}.1D
+# Compute "pre" SPC if it doesn't exists
+if [ ! -e "sub-${sub}/avg_GM_SPC_pre_${flpr}.1D" ]
+then
+	fslmaths ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-2_bold_cr \
+			 -Tmean ${tmp}/tmp.${flpr}_${ftype}_04cmos_pre_avg
+	fslmaths ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-2_bold_cr \
+			 -sub ${tmp}/tmp.${flpr}_${ftype}_04cmos_pre_avg -div ${tmp}/tmp.${flpr}_${ftype}_04cmos_pre_avg \
+			 ${tmp}/tmp.${flpr}_${ftype}_04cmos_pre_SPC
+
+	fslmeants -i ${tmp}/tmp.${flpr}_${ftype}_04cmos_pre_SPC \
+			  -m ../CVR/sub-${sub}_GM_native > sub-${sub}/avg_GM_SPC_pre_${flpr}.1D
+	fslmeants -i ${wdr}/sub-${sub}/ses-${ses}/func_preproc/${flpr}_task-breathhold_echo-2_bold_cr \
+			  -m ../CVR/sub-${sub}_GM_native > sub-${sub}/avg_GM_pre_${flpr}.1D
+fi
 
 rm -rf ${tmp}/tmp.${flpr}_${ftype}_04cmos*
 

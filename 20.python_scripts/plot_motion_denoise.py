@@ -123,7 +123,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST):
                                    f'ses-{{ses}}.1D', ['fd', ])
     dvars_responses = read_and_average(f'sub-{sub}/dvars_{{ftype}}_sub-'
                                        f'{sub}_ses-{{ses}}.1D')
-    bold_responses = read_and_average(f'sub-{sub}/avg_GM_{{ftype}}_sub-'
+    bold_responses = read_and_average(f'sub-{sub}/avg_GM_SPC_{{ftype}}_sub-'
                                       f'{sub}_ses-{{ses}}.1D')
     # Compute averages and standard deviations
     avg_d = dvars_responses.mean(axis=1)

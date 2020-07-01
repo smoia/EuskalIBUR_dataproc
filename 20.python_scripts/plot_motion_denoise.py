@@ -104,7 +104,7 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST):
 
 
 # 02. Helping function for the next one
-def read_and_average(filename, ftypes=FTYPE_LIST):
+def read_and_shape(filename, ftypes=FTYPE_LIST):
     # responses is ftype*ses*trials*BH_LEN
     responses = np.empty((len(ftypes), (LAST_SES - 1), 8, BH_LEN))
     for n, ftype in enumerate(ftypes):
@@ -119,25 +119,27 @@ def read_and_average(filename, ftypes=FTYPE_LIST):
 # 02. Make timeseries plots
 def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST):
     # Read and prepare files
-    fd_response = read_and_average(f'sub-{sub}/{{ftype}}_sub-{sub}_'
-                                   f'ses-{{ses}}.1D', ['fd', ])
-    dvars_responses = read_and_average(f'sub-{sub}/dvars_{{ftype}}_sub-'
-                                       f'{sub}_ses-{{ses}}.1D')
-    bold_responses = read_and_average(f'sub-{sub}/avg_GM_SPC_{{ftype}}_sub-'
-                                      f'{sub}_ses-{{ses}}.1D')
-    # Compute averages and standard deviations
+    fd_response = read_and_shape(f'sub-{sub}/{{ftype}}_sub-{sub}_'
+                                 f'ses-{{ses}}.1D', ['fd', ])
+    dvars_responses = read_and_shape(f'sub-{sub}/dvars_{{ftype}}_sub-'
+                                     f'{sub}_ses-{{ses}}.1D')
+    bold_responses = read_and_shape(f'sub-{sub}/avg_GM_SPC_{{ftype}}_sub-'
+                                    f'{sub}_ses-{{ses}}.1D')
+    # Compute averages
     avg_d = dvars_responses.mean(axis=1)
     std_d = dvars_responses.std(axis=1)
     avg_b = bold_responses.mean(axis=1)
     std_b = bold_responses.std(axis=1)
     # Compute plot data width for bold as max between distance of each ftype
-    delta_y = (((avg_b+std_b).max(axis=1)-(avg_b-std_b).min(axis=1)).max()
+    delta_y = ((avg_b.max(axis=1)-(avg_b.min(axis=1)).max()
                + 0.004)
 
     # Compute trial distance from average
     dist_avg = np.empty(bold_responses.shape[:2])
     for n in range(bold_responses.shape[1]):
-        dist_avg[:, n] = np.abs(avg_b - np.squeeze(bold_responses[:, :(n+1), :].mean(axis=1))).mean(axis=1)
+        dist_avg[:, n] = np.abs(avg_b -
+                                np.squeeze(bold_responses[:, :(n+1),
+                                           :].mean(axis=1))).mean(axis=1)
 
     # Create response plot
     bh_plot = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
@@ -150,6 +152,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST):
         bh_subplot = bh_plot.add_subplot(gs[len(ftypes), col])
 
         bh_subplot.plot(TIME, fd_response.mean(axis=(0, 1)))
+        bh_subplot.grid(True, axis='x', markevery='5')
 
         bh_subplot.set_ylabel('FD')
         bh_subplot.set_xlabel('TPs')
@@ -191,9 +194,9 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST):
         bh_subplot.axes.get_xaxis().set_ticks([])
         bh_subplot.legend(loc=1, prop={'size': 8})
 
-    #bh_plot.savefig(f'/data/plots/{sub}_BOLD_time.png', dpi=SET_DPI)
+    # bh_plot.savefig(f'/data/plots/{sub}_BOLD_time.png', dpi=SET_DPI)
 
-    #plt.close('all')
+    # plt.close('all')
 
 
 if __name__ == '__main__':

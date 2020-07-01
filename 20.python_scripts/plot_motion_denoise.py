@@ -131,7 +131,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST):
     avg_b = bold_responses.mean(axis=1)
     std_b = bold_responses.std(axis=1)
     # Compute plot data width for bold as max between distance of each ftype
-    delta_y = ((avg_b.max(axis=1)-(avg_b.min(axis=1)).max()
+    delta_y = (avg_b.max(axis=1)-(avg_b.min(axis=1)).max()
                + 0.004)
 
     # Compute trial distance from average

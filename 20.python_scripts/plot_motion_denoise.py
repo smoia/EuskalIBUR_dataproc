@@ -10,7 +10,7 @@ SUB_LIST = ['001', '002', '003', '004', '007', '008', '009']
 LAST_SES = 10  # 10
 
 SET_DPI = 100
-FIGSIZE = (18, 10)
+FIGSIZE = (9, 5)
 BH_LEN = 39
 
 FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',
@@ -19,11 +19,12 @@ COLOURS = ['#d62728ff', '#07ad95ff', '#ff7f0eff', '#2ca02cff', '#ff33ccff',
            '#1f77b4ff', '#663300ff']  # , '#003300ff', '#000066ff', '#b3b300ff', '#000000ff']
 FTYPE_DICT = {'pre': 'pre', 'echo-2': 'echo-2', 'optcom': 'optcom',
               'meica-aggr': 'meica-agg', 'meica-orth': 'meica-ort',
-              'meica-cons': 'meica-con', 'all-orth': 'all-ort',
-              'meica-aggr-twosteps': 'me-agg-2s',
-              'meica-orth-twosteps': 'me-ort-2s',
-              'all-orth-twosteps': 'allort-2s',
-              'meica-cons-twosteps': 'me-con-2s'}
+              'meica-cons': 'meica-con'}
+              # , 'all-orth': 'all-ort'}
+              # 'meica-aggr-twosteps': 'me-agg-2s',
+              # 'meica-orth-twosteps': 'me-ort-2s',
+              # 'all-orth-twosteps': 'allort-2s',
+              # 'meica-cons-twosteps': 'me-con-2s'}
 
 TIME = np.asarray(range(BH_LEN))
 
@@ -51,10 +52,11 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST):
                 plt.legend()
 
         plt.xlabel('FD')
-        plt.xlim(-.1, 1)
+        plt.xlim(-.01, 0.85)
         plot_ylabel = 'DVARS'
         plt.ylabel(plot_ylabel)
-        plt.ylim(0, 400)
+        plt.ylim(28, 450)
+        plt.tight_layout()
         fig_name = f'/data/plots/{sub}_DVARS_vs_FD.png'
         plt.savefig(fig_name, dpi=SET_DPI)
         plt.clf()
@@ -90,8 +92,11 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST):
 
     plt.legend(FTYPE_DICT.values())
     plt.xlabel('FD')
+    plt.xlim(0, 0.85)
     plot_ylabel = 'DVARS'
     plt.ylabel(plot_ylabel)
+    plt.ylim(60, 600)
+    plt.tight_layout()
     fig_name = '/data/plots/allsubs_DVARS_vs_FD.png'
     plt.savefig(fig_name, dpi=SET_DPI)
     plt.clf()
@@ -186,9 +191,9 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST):
         bh_subplot.axes.get_xaxis().set_ticks([])
         bh_subplot.legend(loc=1, prop={'size': 8})
 
-    bh_plot.savefig(f'/data/plots/{sub}_BOLD_time.png', dpi=SET_DPI)
+    #bh_plot.savefig(f'/data/plots/{sub}_BOLD_time.png', dpi=SET_DPI)
 
-    plt.close('all')
+    #plt.close('all')
 
 
 if __name__ == '__main__':

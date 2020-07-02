@@ -2,48 +2,20 @@
 
 import json
 import os
-from copy import deepcopy
-from itertools import combinations
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import statsmodels.api as sm
 
-from scipy.stats import ttest_rel
-from statsmodels.formula.api import ols
 
-P_VALS = [0.05, 0.01, 0.001]
-
-CTYPE_LIST = ['intrasub', 'intrases', 'total']
 FTYPE_LIST = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-cons']
 
 SET_DPI = 100
 FIGSIZE = (18, 10)
 
 
-def t_test_and_export(f_dict, filename):
-    # Prepare pandas dataframes
-    df = pd.DataFrame(columns=['ftype1', 'ftype2', 't', 'p'])
-
-    # Run t-test and append results to the df
-    for ftype_one, ftype_two in list(combinations(FTYPE_LIST, 2)):
-        t, p = ttest_rel(f_dict[ftype_one], f_dict[ftype_two])
-        df = df.append({'ftype1': ftype_one, 'ftype2': ftype_two,
-                        't': t, 'p': p}, ignore_index=True)
-
-    df.to_csv(filename.format(p_val='no_thr'))
-    # Threshold t-tests and export them
-    t_mask = dict.fromkeys(P_VALS, df.copy(deep=True))
-    for p_val in P_VALS:
-        # Compute Sidak correction
-        p_corr = 1-(1-p_val)**(1/len(list(combinations(FTYPE_LIST, 2))))
-        t_mask[p_val]['p'] = t_mask[p_val]['p'].mask(t_mask[p_val]['p'] > p_corr)
-        t_mask[p_val].to_csv(filename.format(p_val=p_val))
-
-
-def anova_and_export(f_dict, filename, map):
+def histogram_icc(f_dict, filename, map):
     df = pd.DataFrame(columns=['val', 'ftype'])
 
     # Rearrange data in long format table
@@ -61,13 +33,6 @@ def anova_and_export(f_dict, filename, map):
     plt.savefig(fig_name, dpi=SET_DPI)
     plt.clf()
     plt.close()
-
-    # ANOVA
-    model = ols('val ~ C(ftype)', data=df).fit()
-
-    # Export table
-    with open(f'{filename}.txt', 'w') as f:
-        print(sm.stats.anova_lm(model, typ=2), file=f)
 
 
 # THIS IS MAIN
@@ -87,8 +52,7 @@ for map in ['cvr', 'lag']:
         s_icc[map][ftype] = icc[map][ftype].std()
 
     # Tests
-    t_test_and_export(icc[map], f'Ttests_ICC_{map.upper()}_{{p_val}}.csv')
-    anova_and_export(icc[map], f'ANOVA_ICC_{map.upper()}', map)
+    histogram_icc(icc[map], f'hist_ICC_{map.upper()}', map)
 
 # Export jsons
 with open(f'avg_icc.json', 'w') as outfile:

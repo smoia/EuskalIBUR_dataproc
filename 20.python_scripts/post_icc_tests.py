@@ -79,27 +79,6 @@ icc = {'cvr': {}, 'lag': {}}
 m_icc = {'cvr': {}, 'lag': {}}
 s_icc = {'cvr': {}, 'lag': {}}
 
-d = dict.fromkeys(FTYPE_LIST, '')
-cov = {'cvr': {'intrasub': deepcopy(d),
-               'intrases': deepcopy(d),
-               'total': deepcopy(d)},
-       'lag': {'intrasub': deepcopy(d),
-               'intrases': deepcopy(d),
-               'total': deepcopy(d)}}
-m_cov = {'cvr': {'intrasub': deepcopy(d),
-                 'intrases': deepcopy(d),
-                 'total': deepcopy(d)},
-         'lag': {'intrasub': deepcopy(d),
-                 'intrases': deepcopy(d),
-                 'total': deepcopy(d)}}
-s_cov = {'cvr': {'intrasub': deepcopy(d),
-                 'intrases': deepcopy(d),
-                 'total': deepcopy(d)},
-         'lag': {'intrasub': deepcopy(d),
-                 'intrases': deepcopy(d),
-                 'total': deepcopy(d)}}
-
-
 for map in ['cvr', 'lag']:
     # Read files, import ICC and CoV values, and compute average
     for ftype in FTYPE_LIST:
@@ -107,31 +86,15 @@ for map in ['cvr', 'lag']:
         m_icc[map][ftype] = icc[map][ftype].mean()
         s_icc[map][ftype] = icc[map][ftype].std()
 
-        for ctype in CTYPE_LIST:
-            # Actually testing the absolute of the CoV
-            cov[map][ctype][ftype] = np.absolute(np.genfromtxt(f'val/CoV_{ctype}_{map}_masked_{ftype}.txt')[:, 3])
-            m_cov[map][ctype][ftype] = cov[map][ctype][ftype].mean()
-            s_cov[map][ctype][ftype] = cov[map][ctype][ftype].std()
-
     # Tests
     t_test_and_export(icc[map], f'Ttests_ICC_{map.upper()}_{{p_val}}.csv')
     anova_and_export(icc[map], f'ANOVA_ICC_{map.upper()}', map)
-
-    for ctype in CTYPE_LIST:
-        t_test_and_export(cov[map][ctype], f'Ttests_CoV_{ctype}_{map.upper()}_{{p_val}}.csv')
-        anova_and_export(cov[map][ctype], f'ANOVA_CoV_{ctype}_{map.upper()}', map)
 
 # Export jsons
 with open(f'avg_icc.json', 'w') as outfile:
     json.dump(m_icc, outfile, indent=4, sort_keys=True)
 
-with open(f'avg_cov.json', 'w') as outfile:
-    json.dump(m_cov, outfile, indent=4, sort_keys=True)
-
 with open(f'std_icc.json', 'w') as outfile:
     json.dump(s_icc, outfile, indent=4, sort_keys=True)
-
-with open(f'std_cov.json', 'w') as outfile:
-    json.dump(s_cov, outfile, indent=4, sort_keys=True)
 
 os.chdir(cwd)

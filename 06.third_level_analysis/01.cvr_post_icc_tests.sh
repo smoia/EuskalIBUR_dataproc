@@ -19,7 +19,7 @@ do
 	for inmap in cvr lag
 	do
 		inmap=${inmap}_${map}
-		for ftype in echo-2 optcom meica-aggr meica-cons meica-orth all-orth
+		for ftype in echo-2 optcom meica-aggr meica-cons meica-orth
 		do
 			# Extract ICC
 			fslmeants -i ICC2_${inmap}_${ftype}.nii.gz -m mask.nii.gz --showall --transpose > tests/val/ICC2_${inmap}_${ftype}.txt

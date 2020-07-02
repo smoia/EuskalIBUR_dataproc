@@ -62,7 +62,7 @@ freq=40
 tr=1.5
 
 case ${ftype} in
-	meica* | vessels* | networks* | optcom | echo-2 | all-orth ) echo "Good ftype ${ftype}" ;;
+	meica* | vessels* | networks* | optcom | echo-2 ) echo "Good ftype ${ftype}" ;;
 	* ) echo "Wrong ftype: ${ftype}"; exit ;;
 esac
 
@@ -80,7 +80,7 @@ flpr=sub-${sub}_ses-${ses}
 decompdir=${wdr}/decomp
 
 case ${ftype} in
-	echo-2 | *-mvar )
+	echo-2 )
 		func=${fdir}/01.${flpr}_task-breathhold_${ftype}_bold_native_SPC_preprocessed
 		shiftdir=${flpr}_GM_${ftype}_avg_regr_shift
 		;;
@@ -111,23 +111,12 @@ mkdir ${matdir}
 
 # Demean rejected ICAs
 case ${ftype} in
-	meica-aggr | meica-cons | meica-orth | all-orth )
+	meica-aggr | meica-cons | meica-orth )
 		1d_tool.py -infile ${decompdir}/${flpr}_rejected.1D -demean \
 				   -write ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_rejected.1D -overwrite
 		1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_res/${flpr}_rejected.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D
 	;;
 esac
-
-if [ ${ftype} == "all-orth" ]
-then
-	# Prepare polynomials and motion parameters
-	3dDeconvolve -input ${func}.nii.gz -polort 4 \
-				 -x1D_stop -x1D ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials.1D -overwrite
-	1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials_tr.1D
-
-	1dtranspose ${flpr}_motpar_demean.par > ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_demean.1D
-	1dtranspose ${flpr}_motpar_deriv1.par > ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_deriv1.1D
-fi
 
 for i in $( seq -f %04g 0 ${step} ${miter} )
 do
@@ -245,56 +234,6 @@ do
 							 -polort 4 \
 							 -ortvec ${flpr}_motpar_demean.par motdemean \
 							 -ortvec ${flpr}_motpar_deriv1.par motderiv1 \
-							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D rejected \
-							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
-							 -x1D ${matdir}/mat_${i}.1D \
-							 -xjpeg ${matdir}/mat.jpg \
-							 -x1D_stop
-
-				# Modify matrix and call 3dREMLfit
-				matrix_mod ${matdir}/mat_${i}.1D
-				3dREMLfit -input ${func}.nii.gz -matrix ${matdir}/mat_${i}_mod.1D \
-						  -mask ${mask}.nii.gz \
-						  -rout -tout \
-						  -Obuck ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${i}.nii.gz \
-						  -Obeta ${tmp}/tmp.${flpr}_${ftype}_02cms_res/c_stats_${i}.nii.gz
-			;;
-			all-orth )
-				# Orthogonalise everything to the PetCO2.
-				# Orthogonalise polynomials to PetCO2
-				3dTproject -input ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials_tr.1D -ort ${shiftdir}/shift_${i}.1D \
-						   -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials_ort.1D -overwrite
-				1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials_ort.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials.1D
-				1d_tool.py -infile ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials.1D -demean \
-						   -write ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials.1D -overwrite
-
-				# Orthogonalise motion parameters to PetCO2
-				for mottype in demean deriv1
-				do
-					3dTproject -input ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_${mottype}.1D \
-							   -ort ${shiftdir}/shift_${i}.1D \
-							   -polort -1 -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D -overwrite
-					1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_${mottype}_ort.1D
-					1d_tool.py -infile ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_${mottype}_ort.1D -demean \
-							   -write ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_${mottype}_ort.1D -overwrite
-				done
-
-				# Orthogonalise rejected components to PetCO2
-				3dTproject -input ${tmp}/tmp.${flpr}_${ftype}_02cms_rej.1D \
-						   -ort ${shiftdir}/shift_${i}.1D \
-						   -polort -1 -prefix ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D -overwrite
-
-				1dtranspose ${tmp}/tmp.${flpr}_${ftype}_02cms_tr.1D > ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D
-				1d_tool.py -infile ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D -demean \
-						   -write ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D -overwrite
-
-				3dDeconvolve -input ${func}.nii.gz -jobs 6 \
-							 -float -num_stimts 1 \
-							 -mask ${mask}.nii.gz \
-							 -polort 0 \
-							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_polynomials.1D'[1..$]' poly \
-							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_demean_ort.1D motpar \
-							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_motpar_deriv1_ort.1D motderiv \
 							 -ortvec ${tmp}/tmp.${flpr}_${ftype}_02cms_rejected_ort.1D rejected \
 							 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 							 -x1D ${matdir}/mat_${i}.1D \

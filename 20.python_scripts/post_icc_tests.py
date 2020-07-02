@@ -17,8 +17,7 @@ from statsmodels.formula.api import ols
 P_VALS = [0.05, 0.01, 0.001]
 
 CTYPE_LIST = ['intrasub', 'intrases', 'total']
-FTYPE_LIST = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-cons',
-              'all-orth']
+FTYPE_LIST = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-cons']
 
 SET_DPI = 100
 FIGSIZE = (18, 10)

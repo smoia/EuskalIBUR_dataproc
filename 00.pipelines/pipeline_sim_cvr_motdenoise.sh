@@ -60,7 +60,7 @@ echo ""
 # 	/scripts/03.data_preproc/05.compute_CVR_regressors.sh ${sub} ${ses} ${ftype}
 # done
 
-for ftype in optcom meica-aggr meica-orth meica-cons echo-2 all-orth # meica-recn vessels-preg
+for ftype in optcom meica-aggr meica-orth meica-cons echo-2
 do
 	# echo "************************************"
 	# echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
@@ -76,7 +76,7 @@ do
 
 
 	# case ${ftype} in
-	# 	meica-aggr | meica-orth | meica-cons | all-orth )
+	# 	meica-aggr | meica-orth | meica-cons )
 	# 	echo "************************************"
 	# 	echo "*** Motion outliers sub ${sub} ses ${ses} ${ftype}-twosteps"
 	# 	echo "************************************"

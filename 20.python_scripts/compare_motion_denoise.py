@@ -17,8 +17,7 @@ os.chdir('ME_Denoising')
 
 
 # 01. Read and organise motion related parameters
-ftype_list = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-cons',
-              'all-orth']
+ftype_list = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-cons']
 
 LAST_SES += 1
 
@@ -40,7 +39,7 @@ for sub in SUB_LIST:
             sub_table[dvars_type] = np.genfromtxt(filename)
 
 ftype_list = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',
-              'meica-cons', 'all-orth']
+              'meica-cons']
 
 for sub in SUB_LIST:
     for ses in range(1, LAST_SES):

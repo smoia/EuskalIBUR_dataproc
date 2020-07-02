@@ -11,18 +11,18 @@ LAST_SES = 10  # 10
 
 SET_DPI = 100
 FIGSIZE_1 = (9, 5)
-FIGSIZE_2 = (18,10)
+FIGSIZE_2 = (12, 10)
+FIGSIZE_3 = (6, 10)
 BH_LEN = 39
 BH_TRIALS = 8
 
 FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',
-              'meica-cons']  # , 'all-orth']
+              'meica-cons']
 COLOURS = ['#d62728ff', '#07ad95ff', '#ff7f0eff', '#2ca02cff', '#ff33ccff',
            '#1f77b4ff']  # , '#663300ff', '#003300ff', '#000066ff', '#b3b300ff', '#000000ff']
 FTYPE_DICT = {'pre': 'pre', 'echo-2': 'TE2', 'optcom': 'OC',
               'meica-aggr': 'meica-aggr', 'meica-orth': 'meica-orth',
               'meica-cons': 'meica-cons'}
-              # , 'all-orth': 'all-ort'}
 
 # Compute derivate constants
 

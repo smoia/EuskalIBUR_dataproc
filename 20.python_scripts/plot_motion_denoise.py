@@ -10,23 +10,26 @@ SUB_LIST = ['001', '002', '003', '004', '007', '008', '009']
 LAST_SES = 10  # 10
 
 SET_DPI = 100
-FIGSIZE = (9, 5)
+FIGSIZE_1 = (9, 5)
+FIGSIZE_2 = (18,10)
 BH_LEN = 39
+BH_TRIALS = 8
 
 FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',
-              'meica-cons', 'all-orth']
+              'meica-cons']  # , 'all-orth']
 COLOURS = ['#d62728ff', '#07ad95ff', '#ff7f0eff', '#2ca02cff', '#ff33ccff',
-           '#1f77b4ff', '#663300ff']  # , '#003300ff', '#000066ff', '#b3b300ff', '#000000ff']
-FTYPE_DICT = {'pre': 'pre', 'echo-2': 'echo-2', 'optcom': 'optcom',
-              'meica-aggr': 'meica-agg', 'meica-orth': 'meica-ort',
-              'meica-cons': 'meica-con'}
+           '#1f77b4ff']  # , '#663300ff', '#003300ff', '#000066ff', '#b3b300ff', '#000000ff']
+FTYPE_DICT = {'pre': 'pre', 'echo-2': 'TE2', 'optcom': 'OC',
+              'meica-aggr': 'meica-aggr', 'meica-orth': 'meica-orth',
+              'meica-cons': 'meica-cons'}
               # , 'all-orth': 'all-ort'}
-              # 'meica-aggr-twosteps': 'me-agg-2s',
-              # 'meica-orth-twosteps': 'me-ort-2s',
-              # 'all-orth-twosteps': 'allort-2s',
-              # 'meica-cons-twosteps': 'me-con-2s'}
+
+# Compute derivate constants
 
 TIME = np.asarray(range(BH_LEN))
+
+TOT_TRIALS = LAST_SES*BH_TRIALS
+DIST_TICKS = range(0, TOT_TRIALS, BH_TRIALS)
 
 LAST_SES += 1
 
@@ -34,7 +37,7 @@ LAST_SES += 1
 # 01. Make scatterplots of DVARS vs FD
 def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST):
     for sub in SUB_LIST:
-        plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+        plt.figure(figsize=FIGSIZE_1, dpi=SET_DPI)
 
         plot_title = f'DVARS vs FD, subject {sub}'
         plt.title(plot_title)
@@ -62,7 +65,7 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST):
         plt.clf()
         plt.close()
 
-    plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+    plt.figure(figsize=FIGSIZE_1, dpi=SET_DPI)
     plot_title = f'DVARS vs FD, all subjects'
     plt.title(plot_title)
 
@@ -106,97 +109,148 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST):
 # 02. Helping function for the next one
 def read_and_shape(filename, ftypes=FTYPE_LIST):
     # responses is ftype*ses*trials*BH_LEN
-    responses = np.empty((len(ftypes), (LAST_SES - 1), 8, BH_LEN))
+    responses = np.empty((len(ftypes), (LAST_SES - 1), BH_TRIALS, BH_LEN))
     for n, ftype in enumerate(ftypes):
         for ses in range(1, LAST_SES):
             data = np.genfromtxt(filename.format(ftype=ftype, ses=f'{ses:02g}'))
-            for bh in range(8):
+            for bh in range(BH_TRIALS):
                 responses[n, ses-1, bh, :] = data[12+BH_LEN*bh:12+BH_LEN*(bh+1)]
 
-    return responses.reshape((len(ftypes), (LAST_SES - 1)*8, BH_LEN), order='C')
+    return responses.reshape((len(ftypes), (LAST_SES - 1)*BH_TRIALS, BH_LEN),
+                             order='C')
 
 
 # 02. Make timeseries plots
-def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST):
+def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
     # Read and prepare files
     fd_response = read_and_shape(f'sub-{sub}/{{ftype}}_sub-{sub}_'
                                  f'ses-{{ses}}.1D', ['fd', ])
     dvars_responses = read_and_shape(f'sub-{sub}/dvars_{{ftype}}_sub-'
                                      f'{sub}_ses-{{ses}}.1D')
-    bold_responses = read_and_shape(f'sub-{sub}/avg_GM_SPC_{{ftype}}_sub-'
-                                    f'{sub}_ses-{{ses}}.1D')
+
+    # BOLD is for all subjects
+    bold_responses = dict.fromkeys(subjects, '')
+    dist_avg = dict.fromkeys(subjects, '')
+    avg_b = dict.fromkeys(subjects, '')
+
+    for sub_idx in subjects:
+        bold_responses[sub_idx] = read_and_shape(f'sub-{sub_idx}/'
+                                                 f'avg_GM_SPC_{{ftype}}_sub-'
+                                                 f'{sub_idx}_ses-{{ses}}.1D')
+        # Compute trial distance from average
+        avg_b[sub_idx] = bold_responses[sub_idx].mean(axis=1)
+        dist_avg[sub_idx] = np.empty((len(ftypes), TOT_TRIALS))
+        for n in range(TOT_TRIALS):
+            dist_avg[sub_idx][:, n] = np.abs(avg_b[sub_idx] -
+                                             np.squeeze(bold_responses[sub_idx]
+                                                        [:, :(n+1), :].mean(axis=1))
+                                             ).mean(axis=1)
+
     # Compute averages
     avg_d = dvars_responses.mean(axis=1)
     std_d = dvars_responses.std(axis=1)
-    avg_b = bold_responses.mean(axis=1)
-    std_b = bold_responses.std(axis=1)
-    # Compute plot data width for bold as max between distance of each ftype
-    delta_y = (avg_b.max(axis=1)-(avg_b.min(axis=1)).max()
-               + 0.004)
-
-    # Compute trial distance from average
-    dist_avg = np.empty(bold_responses.shape[:2])
-    for n in range(bold_responses.shape[1]):
-        dist_avg[:, n] = np.abs(avg_b -
-                                np.squeeze(bold_responses[:, :(n+1),
-                                           :].mean(axis=1))).mean(axis=1)
 
     # Create response plot
-    bh_plot = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+    bh_plot = plt.figure(figsize=FIGSIZE_2, dpi=SET_DPI)
     bh_plot.suptitle(f'BreathHold response, subject {sub}')
 
     gs = bh_plot.add_gridspec(nrows=(len(ftypes)+1), ncols=3)
 
+    # Work with dictionary of subplots
+    bh_splt = {}
+
     # Add FD on both columns
     for col in range(2):
-        bh_subplot = bh_plot.add_subplot(gs[len(ftypes), col])
+        bh_splt[f'fd_{col}'] = bh_plot.add_subplot(gs[len(ftypes), col])
 
-        bh_subplot.plot(TIME, fd_response.mean(axis=(0, 1)))
-        bh_subplot.grid(True, axis='x', markevery='5')
+        bh_splt[f'fd_{col}'].plot(TIME, fd_response[0, :, :].T,
+                                  color='#000', alpha=.05)
 
-        bh_subplot.set_ylabel('FD')
-        bh_subplot.set_xlabel('TPs')
+        bh_splt[f'fd_{col}'].plot(TIME, fd_response.mean(axis=(0, 1)),
+                                  color='#000')
+        bh_splt[f'fd_{col}'].grid(True, axis='x', markevery='5')
 
-    for i, ftype in enumerate(ftypes):
+        bh_splt[f'fd_{col}'].set_ylabel('FD')
+        bh_splt[f'fd_{col}'].yaxis.set_label_position("right")
+        bh_splt[f'fd_{col}'].set_xlabel('TPs')
+        bh_splt[f'fd_{col}'].set_xlim(0, BH_LEN-1)
+
+    for i, ftype in reversed(list(enumerate(ftypes))):
+        # Set plot row
+        if i == len(ftypes)-1:
+            # Set base dvars, bold and dist plot for axes
+            bh_splt[f'dvars_{ftype}'] = bh_plot.add_subplot(gs[i, 0],
+                                                            sharex=bh_splt[f'fd_0'])
+            bh_splt[f'bold_{ftype}'] = bh_plot.add_subplot(gs[i, 1],
+                                                           sharex=bh_splt[f'fd_1'])
+            bh_splt[f'dist_{ftype}'] = bh_plot.add_subplot(gs[i, 2])
+            # Set various axes properties
+            bh_splt[f'dvars_{ftype}'].set_ylim((avg_d - std_d).min()*8/10,
+                                               (avg_d + std_d).max()*11/10)
+            bh_splt[f'bold_{ftype}'].set_ylim(-.1, .1)
+            bh_splt[f'bold_{ftype}'].axes.get_yaxis().set_ticks([-.05, 0, .05])
+            bh_splt[f'dist_{ftype}'].axes.get_xaxis().set_ticks(DIST_TICKS)
+            bh_splt[f'dist_{ftype}'].set_xlim(0, TOT_TRIALS-1)
+        else:
+            # Recover y axis from base dvars and bold
+            key = {'dv': f'dvars_{ftypes[-1]}', 'b': f'bold_{ftypes[-1]}',
+                   'dst': f'dist_{ftypes[-1]}'}
+            bh_splt[f'dvars_{ftype}'] = bh_plot.add_subplot(gs[i, 0],
+                                                            sharex=bh_splt[f'fd_0'],
+                                                            sharey=bh_splt[key['dv']])
+            bh_splt[f'bold_{ftype}'] = bh_plot.add_subplot(gs[i, 1],
+                                                           sharex=bh_splt[f'fd_1'],
+                                                           sharey=bh_splt[key['b']])
+            bh_splt[f'dist_{ftype}'] = bh_plot.add_subplot(gs[i, 2],
+                                                           sharex=bh_splt[key['dst']])
+            plt.setp(bh_splt[f'dist_{ftype}'].get_xticklabels(), visible=False)
+
         # Add DVARS plots in first column
-        bh_subplot = bh_plot.add_subplot(gs[i, 0])
+        bh_splt[f'dvars_{ftype}'].plot(TIME, dvars_responses[i, :, :].T,
+                                       label=FTYPE_DICT[ftype],
+                                       color=COLOURS[i], alpha=.05)
+        bh_splt[f'dvars_{ftype}'].plot(TIME, avg_d[i, :],
+                                       label=FTYPE_DICT[ftype],
+                                       color=COLOURS[i])
 
-        bh_subplot.plot(TIME, avg_d[i, :],
-                        label=FTYPE_DICT[ftype], color=COLOURS[i])
-        bh_subplot.fill_between(TIME, avg_d[i, :] - std_d[i, :],
-                                avg_d[i, :] + std_d[i, :],
-                                color=COLOURS[i], alpha=0.2)
-
-        bh_subplot.set_ylim(0, (avg_d + std_d).max()*11/10)
-        bh_subplot.set_ylabel('DVARS')
-        bh_subplot.axes.get_xaxis().set_ticks([])
+        bh_splt[f'dvars_{ftype}'].set_ylabel('DVARS')
+        plt.setp(bh_splt[f'dvars_{ftype}'].get_xticklabels(), visible=False)
+        bh_splt[f'dvars_{ftype}'].grid(True, axis='x', markevery='5')
+        bh_splt[f'dvars_{ftype}'].yaxis.set_label_position("right")
 
         # Add BOLD plots in second column
-        bh_subplot = bh_plot.add_subplot(gs[i, 1])
-        bh_subplot.plot(TIME, avg_b[i, :],
-                        label=FTYPE_DICT[ftype], color=COLOURS[i])
-        bh_subplot.fill_between(TIME, avg_b[i, :] - std_b[i, :],
-                                avg_b[i, :] + std_b[i, :],
-                                color=COLOURS[i], alpha=0.2)
+        bh_splt[f'bold_{ftype}'].plot(TIME, bold_responses[sub][i, :, :].T,
+                                      label=FTYPE_DICT[ftype],
+                                      color=COLOURS[i], alpha=.05)
+        bh_splt[f'bold_{ftype}'].plot(TIME, avg_b[sub][i, :],
+                                      label=FTYPE_DICT[ftype],
+                                      color=COLOURS[i])
 
-        min_y = (avg_b - std_b)[i, :].min() - 0.002
-        bh_subplot.set_ylim(min_y, min_y + delta_y)
-        bh_subplot.set_ylabel('% BOLD')
-        bh_subplot.axes.get_xaxis().set_ticks([])
+        bh_splt[f'bold_{ftype}'].set_ylabel('% BOLD')
+        plt.setp(bh_splt[f'bold_{ftype}'].get_xticklabels(), visible=False)
+        bh_splt[f'bold_{ftype}'].grid(True, axis='x', markevery='5')
+        bh_splt[f'bold_{ftype}'].yaxis.set_label_position("right")
 
         # Add distance to average plot
-        bh_subplot = bh_plot.add_subplot(gs[i, 2])
-        bh_subplot.plot(dist_avg[i, :],
-                        label=FTYPE_DICT[ftype], color=COLOURS[i])
+        # Plot all subjects
+        for sub_idx in subjects:
+            bh_splt[f'dist_{ftype}'].plot(dist_avg[sub_idx][i, :],
+                                          label=FTYPE_DICT[ftype],
+                                          color=COLOURS[i], alpha=0.4)
 
-        bh_subplot.set_ylim(0, dist_avg.max())
-        bh_subplot.set_ylabel('avg dist')
-        bh_subplot.axes.get_xaxis().set_ticks([])
-        bh_subplot.legend(loc=1, prop={'size': 8})
+        bh_splt[f'dist_{ftype}'].set_ylim(0, dist_avg[sub_idx].max())
+        bh_splt[f'dist_{ftype}'].set_ylabel('avg dist')
+        bh_splt[f'dist_{ftype}'].grid(True, axis='x', markevery='8')
+        bh_splt[f'dist_{ftype}'].axes.get_xaxis().set_ticks(DIST_TICKS)
+        bh_splt[f'dist_{ftype}'].yaxis.set_label_position("right")
+        bh_splt[f'dist_{ftype}'].legend([f'{ftype}'], loc=1, prop={'size': 8})
 
-    # bh_plot.savefig(f'/data/plots/{sub}_BOLD_time.png', dpi=SET_DPI)
+    gs.tight_layout(bh_plot)
+    gs.update(top=0.95, hspace=0.1)
 
-    # plt.close('all')
+    bh_plot.savefig(f'/data/plots/{sub}_BOLD_time.png', dpi=SET_DPI)
+
+    plt.close('all')
 
 
 if __name__ == '__main__':

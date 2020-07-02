@@ -235,20 +235,20 @@ def plot_distance_from_avg(ftypes=FTYPE_LIST, subjects=SUB_LIST):
     dist_avg = dict.fromkeys(subjects, '')
     avg_b = dict.fromkeys(subjects, '')
 
-    for sub_idx in subjects:
-        bold_responses[sub_idx] = read_and_shape(f'sub-{sub_idx}/'
-                                                 f'avg_GM_{{ftype}}_sub-'
-                                                 f'{sub_idx}_ses-{{ses}}.1D')
+    for sub in subjects:
+        bold_responses[sub] = read_and_shape(f'sub-{sub}/'
+                                             f'avg_GM_{{ftype}}_sub-'
+                                             f'{sub}_ses-{{ses}}.1D')
         # Compute trial distance from average
-        avg_b[sub_idx] = bold_responses[sub_idx].mean(axis=1)
-        dist_avg[sub_idx] = np.empty((len(ftypes), TOT_TRIALS))
+        avg_b[sub] = bold_responses[sub].mean(axis=1)
+        dist_avg[sub] = np.empty((len(ftypes), TOT_TRIALS))
         for n in range(TOT_TRIALS):
-            dist_avg[sub_idx][:, n] = np.abs(avg_b[sub_idx] -
-                                             np.squeeze(bold_responses[sub_idx]
-                                                        [:, :(n+1), :].mean(axis=1))
-                                             ).mean(axis=1)
+            dist_avg[sub][:, n] = np.abs(avg_b[sub] -
+                                         np.squeeze(bold_responses[sub]
+                                                    [:, :(n+1), :].mean(axis=1))
+                                         ).mean(axis=1)
             # Divide by maximum
-            dist_avg[sub_idx] = dist_avg[sub_idx] / dist_avg[sub_idx].max()
+            # dist_avg[sub] = dist_avg[sub] / dist_avg[sub].max()
 
     # Create response plot
     bh_plot = plt.figure(figsize=FIGSIZE_3, dpi=SET_DPI)
@@ -267,6 +267,8 @@ def plot_distance_from_avg(ftypes=FTYPE_LIST, subjects=SUB_LIST):
             # Set various axes properties
             bh_splt[f'dist_{sub}'].axes.get_xaxis().set_ticks(DIST_TICKS)
             bh_splt[f'dist_{sub}'].set_xlim(0, TOT_TRIALS-1)
+            #first_legend = plt.legend(handles=[line1], loc='upper right')
+            #ax = plt.gca().add_artist(first_legend)
         else:
             # Recover y axis from base dvars and bold
             key = f'dist_{subjects[-1]}'
@@ -281,19 +283,20 @@ def plot_distance_from_avg(ftypes=FTYPE_LIST, subjects=SUB_LIST):
                                         label=FTYPE_DICT[ftype],
                                         color=COLOURS[j])
 
-        bh_splt[f'dist_{sub}'].set_ylim(0, 1.1)
+        # bh_splt[f'dist_{sub}'].set_ylim(0, 1.1)
         bh_splt[f'dist_{sub}'].set_ylabel('avg dist')
         bh_splt[f'dist_{sub}'].grid(True, axis='x', markevery='8')
         bh_splt[f'dist_{sub}'].axes.get_xaxis().set_ticks(DIST_TICKS)
-        bh_splt[f'dist_{sub}'].axes.get_yaxis().set_ticks([0, .5, 1])
+        # bh_splt[f'dist_{sub}'].axes.get_yaxis().set_ticks([0, .5, 1])
         bh_splt[f'dist_{sub}'].yaxis.set_label_position("right")
-        extra = Rectangle((0, 0), 1, 1, fc="w", fill=False, edgecolor='none', linewidth=0)
-        bh_splt[f'dist_{sub}'].legend([extra], [f'Subject {sub}'], loc=1, prop={'size': 8})
+        bh_splt[f'dist_{sub}'].set_title(f'Subject {sub}', fontsize=10)
 
+    bh_splt[f'dist_009'].legend(bbox_to_anchor=(0, -.5, 1, .102), loc='upper left', ncol=3,
+                                mode="expand", borderaxespad=0)
     gs.tight_layout(bh_plot)
-    gs.update(top=0.95, hspace=0)
+    gs.update(top=0.93, bottom=0.08)
 
-    bh_plot.savefig(f'/data/plots/{sub}_BOLD_time.png', dpi=SET_DPI)
+    bh_plot.savefig(f'/data/plots/distance_from_avg.png', dpi=SET_DPI)
 
     plt.close('all')
 

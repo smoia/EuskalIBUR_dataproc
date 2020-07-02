@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-from matplotlib.patches import Rectangle
 
 SUB_LIST = ['001', '002', '003', '004', '007', '008', '009']
 LAST_SES = 10  # 10
@@ -121,7 +120,7 @@ def read_and_shape(filename, ftypes=FTYPE_LIST):
                              order='C')
 
 
-# 02. Make timeseries plots
+# 03. Make timeseries plots
 def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
     # Read and prepare files
     fd_response = read_and_shape(f'sub-{sub}/{{ftype}}_sub-{sub}_'
@@ -229,6 +228,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
     plt.close('all')
 
 
+# 03. Make distfromavg plots
 def plot_distance_from_avg(ftypes=FTYPE_LIST, subjects=SUB_LIST):
     # BOLD is for all subjects
     bold_responses = dict.fromkeys(subjects, '')
@@ -267,8 +267,6 @@ def plot_distance_from_avg(ftypes=FTYPE_LIST, subjects=SUB_LIST):
             # Set various axes properties
             bh_splt[f'dist_{sub}'].axes.get_xaxis().set_ticks(DIST_TICKS)
             bh_splt[f'dist_{sub}'].set_xlim(0, TOT_TRIALS-1)
-            #first_legend = plt.legend(handles=[line1], loc='upper right')
-            #ax = plt.gca().add_artist(first_legend)
         else:
             # Recover y axis from base dvars and bold
             key = f'dist_{subjects[-1]}'
@@ -311,8 +309,6 @@ if __name__ == '__main__':
     plot_DVARS_vs_FD(data)
     for sub in SUB_LIST:
         plot_timeseries_and_BOLD_vs_FD(sub)
-    # os.makedirs('tps')
-    # os.chdir('tps')
-    # plot_tps_BOLD_vs_FD()
+    plot_distance_from_avg()
 
     os.chdir(cwd)

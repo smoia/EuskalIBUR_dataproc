@@ -75,7 +75,7 @@ imcp fmap/*rest*.nii.gz fmap_preproc/.
 imcp ${stdp}/${std}.nii.gz reg/.
 
 
-/scripts/00.pipelines/rest_short_preproc.sh ${sub} ${ses} ${wdr} ${flpr} \
+/scripts/00.pipelines/rest_short_preproc.sh ${sub} ${ses} 01 ${wdr} ${flpr} \
 						${fdir} ${vdsc} "${TEs}" \
 						${nTE} ${siot} ${dspk}
 

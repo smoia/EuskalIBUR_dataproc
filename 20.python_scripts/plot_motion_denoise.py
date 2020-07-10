@@ -158,10 +158,10 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
         bh_splt[f'fd_{col}'] = bh_plot.add_subplot(gs[len(ftypes), col])
 
         bh_splt[f'fd_{col}'].plot(TIME, fd_response[0, :, :].T,
-                                  color='#000', alpha=.05)
+                                  color='#000000ff', alpha=.05)
 
         bh_splt[f'fd_{col}'].plot(TIME, fd_response.mean(axis=(0, 1)),
-                                  color='#000')
+                                  color='#000000ff')
         bh_splt[f'fd_{col}'].grid(True, axis='x', markevery='5')
 
         bh_splt[f'fd_{col}'].set_ylabel('FD')
@@ -206,10 +206,10 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
         bh_splt[f'dvars_{ftype}'].yaxis.set_label_position("right")
 
         # Add BOLD plots in second column
-        bh_splt[f'bold_{ftype}'].plot(TIME, bold_responses[sub][i, :, :].T,
+        bh_splt[f'bold_{ftype}'].plot(TIME, bold_responses[i, :, :].T,
                                       label=FTYPE_DICT[ftype],
                                       color=COLOURS[i], alpha=.05)
-        bh_splt[f'bold_{ftype}'].plot(TIME, avg_b[sub][i, :],
+        bh_splt[f'bold_{ftype}'].plot(TIME, avg_b[i, :],
                                       label=FTYPE_DICT[ftype],
                                       color=COLOURS[i])
 

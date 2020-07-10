@@ -43,6 +43,8 @@ dspk=none
 ######### Script starts here #########
 ######################################
 
+cwd=$(pwd)
+
 # Preparing log folder and log file, removing the previous one
 if [[ ! -d "${wdr}/log" ]]; then mkdir ${wdr}/log; fi
 if [[ -e "${wdr}/log/${flpr}_log" ]]; then rm ${wdr}/log/${flpr}_log; fi
@@ -74,6 +76,7 @@ imcp func/*rest*.nii.gz func_preproc/.
 imcp fmap/*rest*.nii.gz fmap_preproc/.
 imcp ${stdp}/${std}.nii.gz reg/.
 
+cd /scripts
 
 /scripts/00.pipelines/rest_short_preproc.sh ${sub} ${ses} 01 ${wdr} ${flpr} \
 						${fdir} ${vdsc} "${TEs}" \

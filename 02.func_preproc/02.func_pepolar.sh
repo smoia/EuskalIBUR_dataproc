@@ -38,13 +38,13 @@ then
 
 	cd ${pepl}
 	echo "Computing PEPOLAR map for ${func}"
-	topup --imain=mgdmap --datain=${cwd}/acqparam.txt --out=outtp --verbose
+	topup --imain=mgdmap --datain=/scripts/acqparam.txt --out=outtp --verbose
 	cd ..
 fi
 
 # 03.2. Applying the warping to the functional volume
 echo "Applying PEPOLAR map on ${func}"
-applytopup --imain=${func_in} --datain=${cwd}/acqparam.txt --inindex=1 \
+applytopup --imain=${func_in} --datain=/scripts/acqparam.txt --inindex=1 \
 --topup=${pepl}/outtp --out=${func}_tpp --verbose --method=jac
 
 cd ${cwd}

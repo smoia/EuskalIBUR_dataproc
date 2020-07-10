@@ -12,47 +12,45 @@ import seaborn as sns
 FTYPE_LIST = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-cons']
 
 SET_DPI = 100
-FIGSIZE = (18, 10)
+FIGSIZE = (19.2, 2)
 
+COLOURS = ['#07ad95ff', '#ff7f0eff', '#2ca02cff', '#ff33ccff',
+           '#1f77b4ff']
 
-def histogram_icc(f_dict, filename, map):
-    df = pd.DataFrame(columns=['val', 'ftype'])
-
-    # Rearrange data in long format table
-    for ftype in FTYPE_LIST:
-        tdf = pd.DataFrame(data=f_dict[ftype], columns=['val', ])
-        tdf['ftype'] = ftype
-        df = df.append(tdf)
-
-    # Seaborn it out!
-    plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
-    sns.boxenplot(x='ftype', y='val', data=df)
-    plt.xlabel('')
-    plt.ylabel(f'{map.upper()}')
-    fig_name = f'{filename}.png'
-    plt.savefig(fig_name, dpi=SET_DPI)
-    plt.clf()
-    plt.close()
-
-
-# THIS IS MAIN
 cwd = os.getcwd()
 os.chdir('/data/CVR_reliability/tests')
 
 # Prepare dictionaries
-icc = {'cvr': {}, 'lag': {}}
+icc = {'cvr': pd.DataFrame(), 'lag': pd.DataFrame()}
 m_icc = {'cvr': {}, 'lag': {}}
 s_icc = {'cvr': {}, 'lag': {}}
 
+# Setup plot
+bh_plot = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+c = 13
+hc = c//2
+gs = bh_plot.add_gridspec(nrows=1, ncols=c)
+bh_splt = {}
+bh_splt['cvr'] = bh_plot.add_subplot(gs[0,:hc])
+bh_splt['lag'] = bh_plot.add_subplot(gs[0,-hc:])
+plt.tight_layout()
+
 for map in ['cvr', 'lag']:
-    # Read files, import ICC and CoV values, and compute average
-    for ftype in FTYPE_LIST:
+    # name axis
+    bh_splt[map].set_xlabel(f'{map.upper()}', labelpad=-2)
+    # Read files, import ICC values, compute average, and plot them
+    for i, ftype in enumerate(FTYPE_LIST):
         icc[map][ftype] = np.genfromtxt(f'val/ICC2_{map}_masked_{ftype}.txt')[:, 3]
         m_icc[map][ftype] = icc[map][ftype].mean()
         s_icc[map][ftype] = icc[map][ftype].std()
+        sns.kdeplot(data=icc[map][ftype], clip=(0, 1), color=COLOURS[i],
+                    ax=bh_splt[map])
 
-    # Tests
-    histogram_icc(icc[map], f'hist_ICC_{map.upper()}', map)
+# Tweak legend
+bh_splt['lag'].legend(bbox_to_anchor=(-1.05, .83, 1, .102), loc='upper right')
+bh_splt['cvr'].legend().remove()
+# Save plot
+plt.savefig('hist_ICC.png', dpi=SET_DPI)
 
 # Export jsons
 with open(f'avg_icc.json', 'w') as outfile:

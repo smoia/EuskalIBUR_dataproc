@@ -72,35 +72,35 @@ echo "*** Func MEICA rest_run-${run} BOLD"
 echo "************************************"
 echo "************************************"
 
-/scripts/02.func_preproc/05.func_meica.sh ${fmat}_bet ${fdir} "${TEs}" bck
+# /scripts/02.func_preproc/05.func_meica.sh ${fmat}_bet ${fdir} "${TEs}" bck
 
 /scripts/02.func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}"
 	
 
-# As it's rest_run-${run}, skip smoothing and denoising!
-for e in $( seq 1 ${nTE} )
-do
-	bold=${flpr}_task-rest_run-${run}_echo-${e}_bold
+# # As it's rest_run-${run}, skip smoothing and denoising!
+# for e in $( seq 1 ${nTE} )
+# do
+# 	bold=${flpr}_task-rest_run-${run}_echo-${e}_bold
 	
-	echo "************************************"
-	echo "*** Func Pepolar rest_run-${run} BOLD echo ${e}"
-	echo "************************************"
-	echo "************************************"
+# 	echo "************************************"
+# 	echo "*** Func Pepolar rest_run-${run} BOLD echo ${e}"
+# 	echo "************************************"
+# 	echo "************************************"
 
-	/scripts/02.func_preproc/02.func_pepolar.sh ${bold}_bet ${fdir} ${sbrf}_topup
+# 	/scripts/02.func_preproc/02.func_pepolar.sh ${bold}_bet ${fdir} ${sbrf}_topup
 
-	echo "************************************"
-	echo "*** Func SPC rest_run-${run} BOLD echo ${e}"
-	echo "************************************"
-	echo "************************************"
+# 	echo "************************************"
+# 	echo "*** Func SPC rest_run-${run} BOLD echo ${e}"
+# 	echo "************************************"
+# 	echo "************************************"
 
-	/scripts/02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir}
+# 	/scripts/02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir}
 
-	# First two outputs
-	immv ${fdir}/${bold}_tpp ${fdir}/00.${bold}_native_preprocessed
-	immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
+# 	# First two outputs
+# 	immv ${fdir}/${bold}_tpp ${fdir}/00.${bold}_native_preprocessed
+# 	immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
-done
+# done
 
 bold=${flpr}_task-rest_run-${run}_optcom_bold
 

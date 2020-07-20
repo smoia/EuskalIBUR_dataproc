@@ -49,16 +49,17 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST, subjects=SUB_LIST):
                 y_col = f'{sub}_{ses:02g}_dvars_{ftype}'
                 sns.regplot(x=data[x_col], y=data[y_col], fit_reg=True,
                             label=FTYPE_DICT[ftype], color=COLOURS[i],
-                            robust=True, ci=None)
+                            robust=True, ci=None, scatter_kws={'s': 5},
+                            line_kws={'lw': 1})
 
             if ses == 1:
                 plt.legend()
 
         plt.xlabel('FD')
-        plt.xlim(-.01, 0.85)
+        plt.xlim(-.01, 1.5)
         plot_ylabel = 'DVARS'
         plt.ylabel(plot_ylabel)
-        plt.ylim(28, 450)
+        plt.ylim(10, 650)
         plt.tight_layout()
         fig_name = f'/data/plots/{sub}_DVARS_vs_FD.png'
         plt.savefig(fig_name, dpi=SET_DPI)
@@ -95,10 +96,10 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST, subjects=SUB_LIST):
 
     plt.legend(FTYPE_DICT.values())
     plt.xlabel('FD')
-    plt.xlim(0, 0.85)
+    plt.xlim(-.01, 1.5)
     plot_ylabel = 'DVARS'
     plt.ylabel(plot_ylabel)
-    plt.ylim(60, 600)
+    plt.ylim(10, 650)
     plt.tight_layout()
     fig_name = '/data/plots/allsubs_DVARS_vs_FD.png'
     plt.savefig(fig_name, dpi=SET_DPI)
@@ -128,7 +129,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
     dvars_responses = read_and_shape(f'sub-{sub}/dvars_{{ftype}}_sub-'
                                      f'{sub}_ses-{{ses}}.1D')
     bold_responses = read_and_shape(f'sub-{sub}/'
-                                    f'avg_GM_SPC_{{ftype}}_sub-'
+                                    f'avg_GM_{{ftype}}_sub-'
                                     f'{sub}_ses-{{ses}}.1D')
 
     # Compute averages
@@ -165,8 +166,8 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
         bh_splt[f'fd_{col}'].grid(True, axis='x', markevery='5')
 
         bh_splt[f'fd_{col}'].set_ylabel('FD')
-        bh_splt[f'fd_{col}'].yaxis.set_label_position("right")
-        bh_splt[f'fd_{col}'].set_xlabel('TPs')
+        bh_splt[f'fd_{col}'].yaxis.set_label_position('right')
+        bh_splt[f'fd_{col}'].set_xlabel('Timepoints')
         bh_splt[f'fd_{col}'].set_xlim(0, BH_LEN-1)
 
     for i, ftype in enumerate(ftypes):
@@ -203,7 +204,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
         bh_splt[f'dvars_{ftype}'].set_ylabel('DVARS')
         plt.setp(bh_splt[f'dvars_{ftype}'].get_xticklabels(), visible=False)
         bh_splt[f'dvars_{ftype}'].grid(True, axis='x', markevery='5')
-        bh_splt[f'dvars_{ftype}'].yaxis.set_label_position("right")
+        bh_splt[f'dvars_{ftype}'].yaxis.set_label_position('right')
 
         # Add BOLD plots in second column
         bh_splt[f'bold_{ftype}'].plot(TIME, bold_responses[i, :, :].T,
@@ -216,7 +217,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
         bh_splt[f'bold_{ftype}'].set_ylabel('% BOLD')
         plt.setp(bh_splt[f'bold_{ftype}'].get_xticklabels(), visible=False)
         bh_splt[f'bold_{ftype}'].grid(True, axis='x', markevery='5')
-        bh_splt[f'bold_{ftype}'].yaxis.set_label_position("right")
+        bh_splt[f'bold_{ftype}'].yaxis.set_label_position('right')
 
         bh_splt[f'bold_{ftype}'].legend(loc=1, prop={'size': 8})
 
@@ -286,11 +287,11 @@ def plot_distance_from_avg(ftypes=FTYPE_LIST, subjects=SUB_LIST):
         bh_splt[f'dist_{sub}'].grid(True, axis='x', markevery='8')
         bh_splt[f'dist_{sub}'].axes.get_xaxis().set_ticks(DIST_TICKS)
         # bh_splt[f'dist_{sub}'].axes.get_yaxis().set_ticks([0, .5, 1])
-        bh_splt[f'dist_{sub}'].yaxis.set_label_position("right")
+        bh_splt[f'dist_{sub}'].yaxis.set_label_position('right')
         bh_splt[f'dist_{sub}'].set_title(f'Subject {sub}', fontsize=10)
 
     bh_splt['dist_009'].legend(bbox_to_anchor=(0, -.5, 1, .102), loc='upper left', ncol=3,
-                                mode="expand", borderaxespad=0)
+                               mode='expand', borderaxespad=0)
     gs.tight_layout(bh_plot)
     gs.update(top=0.93, bottom=0.08)
 

@@ -66,7 +66,7 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST, subjects=SUB_LIST):
         plt.close()
 
     plt.figure(figsize=FIGSIZE_1, dpi=SET_DPI)
-    plot_title = f'DVARS vs FD, all subjects'
+    plot_title = 'DVARS vs FD, all subjects'
     plt.title(plot_title)
 
     for i, ftype in enumerate(ftypes):
@@ -174,9 +174,9 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
         if i == 0:
             # Set base dvars, bold plot for axes
             bh_splt[f'dvars_{ftype}'] = bh_plot.add_subplot(gs[i, 0],
-                                                            sharex=bh_splt[f'fd_0'])
+                                                            sharex=bh_splt['fd_0'])
             bh_splt[f'bold_{ftype}'] = bh_plot.add_subplot(gs[i, 1],
-                                                           sharex=bh_splt[f'fd_1'])
+                                                           sharex=bh_splt['fd_1'])
             # Set various axes properties
             bh_splt[f'dvars_{ftype}'].set_ylim((avg_d - std_d).min()*8/10,
                                                (avg_d + std_d).max()*11/10)
@@ -186,10 +186,10 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
             # Recover y axis from base dvars and bold
             key = {'d': f'dvars_{ftypes[0]}', 'b': f'bold_{ftypes[0]}'}
             bh_splt[f'dvars_{ftype}'] = bh_plot.add_subplot(gs[i, 0],
-                                                            sharex=bh_splt[f'fd_0'],
+                                                            sharex=bh_splt['fd_0'],
                                                             sharey=bh_splt[key['d']])
             bh_splt[f'bold_{ftype}'] = bh_plot.add_subplot(gs[i, 1],
-                                                           sharex=bh_splt[f'fd_1'],
+                                                           sharex=bh_splt['fd_1'],
                                                            sharey=bh_splt[key['b']])
 
         # Add DVARS plots in first column
@@ -252,7 +252,7 @@ def plot_distance_from_avg(ftypes=FTYPE_LIST, subjects=SUB_LIST):
 
     # Create response plot
     bh_plot = plt.figure(figsize=FIGSIZE_3, dpi=SET_DPI)
-    bh_plot.suptitle(f'Normalised distance from average')
+    bh_plot.suptitle('Normalised distance from average')
 
     gs = bh_plot.add_gridspec(nrows=len(subjects), ncols=1)
 
@@ -289,12 +289,12 @@ def plot_distance_from_avg(ftypes=FTYPE_LIST, subjects=SUB_LIST):
         bh_splt[f'dist_{sub}'].yaxis.set_label_position("right")
         bh_splt[f'dist_{sub}'].set_title(f'Subject {sub}', fontsize=10)
 
-    bh_splt[f'dist_009'].legend(bbox_to_anchor=(0, -.5, 1, .102), loc='upper left', ncol=3,
+    bh_splt['dist_009'].legend(bbox_to_anchor=(0, -.5, 1, .102), loc='upper left', ncol=3,
                                 mode="expand", borderaxespad=0)
     gs.tight_layout(bh_plot)
     gs.update(top=0.93, bottom=0.08)
 
-    bh_plot.savefig(f'/data/plots/distance_from_avg.png', dpi=SET_DPI)
+    bh_plot.savefig('/data/plots/distance_from_avg.png', dpi=SET_DPI)
 
     plt.close('all')
 

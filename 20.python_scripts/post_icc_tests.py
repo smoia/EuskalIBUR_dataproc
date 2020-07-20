@@ -17,6 +17,10 @@ FIGSIZE = (19.2, 2)
 COLOURS = ['#07ad95ff', '#ff7f0eff', '#2ca02cff', '#ff33ccff',
            '#1f77b4ff']
 
+FTYPE_DICT = {'pre': 'SE-PRE', 'echo-2': 'SE-MPR', 'optcom': 'OC-MPR',
+              'meica-aggr': 'ME-AGG', 'meica-orth': 'ME-MOD',
+              'meica-cons': 'ME-CON'}
+
 cwd = os.getcwd()
 os.chdir('/data/CVR_reliability/tests')
 
@@ -44,7 +48,7 @@ for map in ['cvr', 'lag']:
         m_icc[map][ftype] = icc[map][ftype].mean()
         s_icc[map][ftype] = icc[map][ftype].std()
         sns.kdeplot(data=icc[map][ftype], clip=(0, 1), color=COLOURS[i],
-                    ax=bh_splt[map])
+                    ax=bh_splt[map], label=FTYPE_DICT[ftype])
 
 # Tweak legend
 bh_splt['lag'].legend(bbox_to_anchor=(-1.05, .83, 1, .102), loc='upper right')

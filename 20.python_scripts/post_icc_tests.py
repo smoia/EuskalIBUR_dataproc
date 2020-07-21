@@ -14,8 +14,8 @@ FTYPE_LIST = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-cons']
 SET_DPI = 100
 FIGSIZE = (19.2, 2)
 
-COLOURS = ['#07ad95ff', '#ff7f0eff', '#2ca02cff', '#ff33ccff',
-           '#1f77b4ff']
+COLOURS = ['#d62728ff', '#ff7f0eff', '#2ca02cff', '#1f77b4ff',
+           '#ff33ccff']
 
 FTYPE_DICT = {'pre': 'SE-PRE', 'echo-2': 'SE-MPR', 'optcom': 'OC-MPR',
               'meica-aggr': 'ME-AGG', 'meica-orth': 'ME-MOD',

@@ -56,10 +56,10 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST, subjects=SUB_LIST):
                 plt.legend()
 
         plt.xlabel('FD')
-        plt.xlim(-.01, 1.5)
+        plt.xlim(-.01, 1.2)
         plot_ylabel = 'DVARS'
         plt.ylabel(plot_ylabel)
-        plt.ylim(10, 650)
+        plt.ylim(10, 1250)
         plt.tight_layout()
         fig_name = f'/data/plots/{sub}_DVARS_vs_FD.png'
         plt.savefig(fig_name, dpi=SET_DPI)
@@ -96,10 +96,10 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST, subjects=SUB_LIST):
 
     plt.legend(FTYPE_DICT.values())
     plt.xlabel('FD')
-    plt.xlim(-.01, 1.5)
+    plt.xlim(-.01, 1.2)
     plot_ylabel = 'DVARS'
     plt.ylabel(plot_ylabel)
-    plt.ylim(10, 650)
+    plt.ylim(10, 1250)
     plt.tight_layout()
     fig_name = '/data/plots/allsubs_DVARS_vs_FD.png'
     plt.savefig(fig_name, dpi=SET_DPI)
@@ -132,16 +132,17 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
                                     f'avg_GM_{{ftype}}_sub-'
                                     f'{sub}_ses-{{ses}}.1D')
 
-    # Normalise all responses to the first row
-    bold_responses = ((bold_responses - bold_responses[0, :, :].mean()) /
-                      bold_responses[0, :, :].std())
-    dvars_responses = ((dvars_responses - dvars_responses[0, :, :].mean()) /
-                       dvars_responses[0, :, :].std())
+    # %BOLD all the responses
+    tavg_b = bold_responses.mean(axis=(1, 2))
+    tavg_d = dvars_responses.mean(axis=(1, 2))
+
+    for i in range(len(ftypes)):
+        bold_responses[i, :, :] = (bold_responses[i, :, :] - tavg_b[i]) / tavg_b[i] * 100
+        dvars_responses[i, :, :] = (dvars_responses[i, :, :] - tavg_d[i]) / tavg_d[i] * 100
 
     # Compute averages
     avg_b = bold_responses.mean(axis=1)
     avg_d = dvars_responses.mean(axis=1)
-    std_d = dvars_responses.std(axis=1)
 
     # Compute trial distance from average
     dist_avg = np.empty((len(ftypes), TOT_TRIALS))
@@ -175,6 +176,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
         bh_splt[f'fd_{col}'].yaxis.set_label_position('right')
         bh_splt[f'fd_{col}'].set_xlabel('Timepoints')
         bh_splt[f'fd_{col}'].set_xlim(0, BH_LEN-1)
+        bh_splt[f'fd_{col}'].set_ylim(0, np.percentile(fd_response, 98))
 
     for i, ftype in enumerate(ftypes):
         # Set plot row
@@ -185,10 +187,13 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
             bh_splt[f'bold_{ftype}'] = bh_plot.add_subplot(gs[i, 1],
                                                            sharex=bh_splt['fd_1'])
             # Set various axes properties
-            bh_splt[f'dvars_{ftype}'].set_ylim((avg_d - std_d).min()*8/10,
-                                               (avg_d + std_d).max()*11/10)
-            bh_splt[f'bold_{ftype}'].set_ylim(-.1, .1)
-            bh_splt[f'bold_{ftype}'].axes.get_yaxis().set_ticks([-.05, 0, .05])
+            bh_splt[f'dvars_{ftype}'].set_ylim(np.percentile(dvars_responses, 1),
+                                               np.percentile(dvars_responses, 98))
+            bh_splt[f'bold_{ftype}'].set_ylim(np.percentile(bold_responses, 1),
+                                              np.percentile(bold_responses, 99))
+            bh_splt[f'bold_{ftype}'].set_title("% BOLD")
+            bh_splt[f'dvars_{ftype}'].set_title("DVARS")
+            # bh_splt[f'bold_{ftype}'].axes.get_yaxis().set_ticks([-.05, 0, .05])
         else:
             # Recover y axis from base dvars and bold
             key = {'d': f'dvars_{ftypes[0]}', 'b': f'bold_{ftypes[0]}'}
@@ -201,8 +206,8 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
 
         # Add DVARS plots in first column
         bh_splt[f'dvars_{ftype}'].plot(TIME, dvars_responses[i, :, :].T,
-                                       label=FTYPE_DICT[ftype],
-                                       color=COLOURS[i], alpha=.05)
+                                       label='',
+                                       color=COLOURS[i], alpha=.05,)
         bh_splt[f'dvars_{ftype}'].plot(TIME, avg_d[i, :],
                                        label=FTYPE_DICT[ftype],
                                        color=COLOURS[i])
@@ -214,7 +219,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
 
         # Add BOLD plots in second column
         bh_splt[f'bold_{ftype}'].plot(TIME, bold_responses[i, :, :].T,
-                                      label=FTYPE_DICT[ftype],
+                                      label='',
                                       color=COLOURS[i], alpha=.05)
         bh_splt[f'bold_{ftype}'].plot(TIME, avg_b[i, :],
                                       label=FTYPE_DICT[ftype],
@@ -228,7 +233,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
         bh_splt[f'bold_{ftype}'].legend(loc=1, prop={'size': 8})
 
     gs.tight_layout(bh_plot)
-    gs.update(top=0.95, hspace=0)
+    gs.update(top=0.93, hspace=0)
 
     bh_plot.savefig(f'/data/plots/{sub}_BOLD_time.png', dpi=SET_DPI)
 

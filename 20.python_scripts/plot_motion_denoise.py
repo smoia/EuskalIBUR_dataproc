@@ -132,6 +132,12 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
                                     f'avg_GM_{{ftype}}_sub-'
                                     f'{sub}_ses-{{ses}}.1D')
 
+    # Normalise all responses to the first row
+    bold_responses = ((bold_responses - bold_responses[0, :, :].mean()) /
+                      bold_responses[0, :, :].std())
+    dvars_responses = ((dvars_responses - dvars_responses[0, :, :].mean()) /
+                       dvars_responses[0, :, :].std())
+
     # Compute averages
     avg_b = bold_responses.mean(axis=1)
     avg_d = dvars_responses.mean(axis=1)
@@ -229,7 +235,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
     plt.close('all')
 
 
-# 03. Make distfromavg plots
+# 04. Make distfromavg plots
 def plot_distance_from_avg(ftypes=FTYPE_LIST, subjects=SUB_LIST):
     # BOLD is for all subjects
     bold_responses = dict.fromkeys(subjects, '')

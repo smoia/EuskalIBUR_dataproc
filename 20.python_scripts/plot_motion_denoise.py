@@ -18,7 +18,7 @@ BH_TRIALS = 8
 
 FTYPE_LIST = ['pre', 'echo-2', 'optcom', 'meica-aggr', 'meica-orth',
               'meica-cons']
-COLOURS = ['#663300ff', '#d62728ff', '#ff7f0eff', '#2ca02cff', '#1f77b4ff',
+COLOURS = ['#663300ff', '#d62728ff', '#2ca02cff', '#ff7f0eff', '#1f77b4ff',
            '#ff33ccff']
 FTYPE_DICT = {'pre': 'SE-PRE', 'echo-2': 'SE-MPR', 'optcom': 'OC-MPR',
               'meica-aggr': 'ME-AGG', 'meica-orth': 'ME-MOD',
@@ -294,12 +294,18 @@ def plot_distance_from_avg(ftypes=FTYPE_LIST, subjects=SUB_LIST):
         # Add distance to average plot
         # Plot all subjects
         for j, ftype in enumerate(ftypes):
-            bh_splt[f'dist_{sub}'].plot(dist_avg[sub][j, :],
-                                        label=FTYPE_DICT[ftype],
-                                        color=COLOURS[j], linewidth=.8)
+            if ftype == 'optcom':
+                bh_splt[f'dist_{sub}'].plot(dist_avg[sub][j, :], '-',
+                                            label=FTYPE_DICT[ftype],
+                                            color=COLOURS[j], linewidth=1.1)
+            else:
+                bh_splt[f'dist_{sub}'].plot(dist_avg[sub][j, :], '-.',
+                                            label=FTYPE_DICT[ftype],
+                                            color=COLOURS[j], linewidth=1.1)
 
         # bh_splt[f'dist_{sub}'].set_ylim(0, 1.1)
         bh_splt[f'dist_{sub}'].set_ylabel('avg dist')
+        bh_splt[f'dist_{sub}'].set_ylim(bottom=0)
         bh_splt[f'dist_{sub}'].grid(True, axis='x', markevery='8')
         bh_splt[f'dist_{sub}'].axes.get_xaxis().set_ticks(DIST_TICKS)
         # bh_splt[f'dist_{sub}'].axes.get_yaxis().set_ticks([0, .5, 1])
@@ -310,7 +316,7 @@ def plot_distance_from_avg(ftypes=FTYPE_LIST, subjects=SUB_LIST):
                                loc='upper left', ncol=3,
                                mode='expand', borderaxespad=0)
     gs.tight_layout(bh_plot)
-    gs.update(top=0.93, bottom=0.08)
+    gs.update(top=0.93, bottom=0.08, hspace=.4)
 
     bh_plot.savefig('/data/plots/distance_from_avg.png', dpi=SET_DPI)
 

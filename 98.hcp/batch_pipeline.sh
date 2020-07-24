@@ -47,15 +47,15 @@ fi
 # 	joblist=${joblist::-1}
 # done
 
-for sub in 001 002 003 004 007 008 009
-do
-	for ses in $(seq -f %02g 1 10)
-	do
-		rm ${wdr}/../LogFiles/${sub}_${ses}_pipe
-		# qsub -q long.q -hold_jid "${joblist}" -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
-		qsub -q short.q -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
-	done
-done
+# for sub in 001 002 003 004 007 008 009
+# do
+# 	for ses in $(seq -f %02g 1 10)
+# 	do
+# 		rm ${wdr}/../LogFiles/${sub}_${ses}_pipe
+# 		# qsub -q long.q -hold_jid "${joblist}" -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
+# 		qsub -q short.q -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
+# 	done
+# done
 
 
 # ftype=optcom
@@ -76,8 +76,8 @@ done
 # qsub -q short.q -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
 # qsub -q short.q -hold_jid "${joblist}" -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
 
-# rm ${wdr}/../LogFiles/plot_pipe
-# qsub -q short.q -hold_jid "${joblist}" -N "plot_EuskalIBUR" -o ${wdr}/../LogFiles/plot_pipe -e ${wdr}/../LogFiles/plot_pipe ${wdr}/98.hcp/run_plot_pipeline.sh
+rm ${wdr}/../LogFiles/plot_pipe
+qsub -q short.q -hold_jid "${joblist}" -N "plot_EuskalIBUR" -o ${wdr}/../LogFiles/plot_pipe -e ${wdr}/../LogFiles/plot_pipe ${wdr}/98.hcp/run_plot_pipeline.sh
 
 # qsub -q short.q -N "s_010_11_prep" -o ${wdr}/../LogFiles/010_11_pipe -e ${wdr}/../LogFiles/010_11_pipe ${wdr}/tmp.preproc_10.sh
 

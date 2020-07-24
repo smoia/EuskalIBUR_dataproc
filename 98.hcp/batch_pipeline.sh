@@ -76,11 +76,12 @@ fi
 # qsub -q short.q -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
 # qsub -q short.q -hold_jid "${joblist}" -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
 
-rm ${wdr}/../LogFiles/plot_pipe
-qsub -q short.q -N "plot_EuskalIBUR" -o ${wdr}/../LogFiles/plot_pipe -e ${wdr}/../LogFiles/plot_pipe ${wdr}/98.hcp/run_plot_pipeline.sh
+# rm ${wdr}/../LogFiles/plot_pipe
+# qsub -q short.q -N "plot_EuskalIBUR" -o ${wdr}/../LogFiles/plot_pipe -e ${wdr}/../LogFiles/plot_pipe ${wdr}/98.hcp/run_plot_pipeline.sh
 # qsub -q short.q -hold_jid "${joblist}" -N "plot_EuskalIBUR" -o ${wdr}/../LogFiles/plot_pipe -e ${wdr}/../LogFiles/plot_pipe ${wdr}/98.hcp/run_plot_pipeline.sh
 
 # qsub -q short.q -N "s_010_11_prep" -o ${wdr}/../LogFiles/010_11_pipe -e ${wdr}/../LogFiles/010_11_pipe ${wdr}/tmp.preproc_10.sh
 
-# rm ${wdr}/../LogFiles/third_level_pipe
+rm ${wdr}/../LogFiles/third_level_pipe
+qsub -q short.q -N "third_level_EuskalIBUR" -o ${wdr}/../LogFiles/third_level_pipe -e ${wdr}/../LogFiles/third_level_pipe ${wdr}/98.hcp/run_third_level_pipe.sh
 # qsub -q short.q -hold_jid "${old_ftype}_EuskalIBUR" -N "third_level_EuskalIBUR" -o ${wdr}/../LogFiles/third_level_pipe -e ${wdr}/../LogFiles/third_level_pipe ${wdr}/98.hcp/run_third_level_pipe.sh

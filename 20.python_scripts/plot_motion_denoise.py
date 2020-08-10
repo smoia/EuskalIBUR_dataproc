@@ -108,7 +108,7 @@ def plot_DVARS_vs_FD(data, ftypes=FTYPE_LIST, subjects=SUB_LIST):
 
 
 # 02. Helping function for the next one
-def read_and_shape(filename, ftypes=FTYPE_LIST, norm=True):
+def read_and_shape(filename, ftypes=FTYPE_LIST, norm=True, ):
     # responses is ftype*ses*trials*BH_LEN
     responses = np.empty((len(ftypes), (LAST_SES - 1), BH_TRIALS, BH_LEN))
     for n, ftype in enumerate(ftypes):
@@ -168,6 +168,7 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
         bh_splt[f'fd_{col}'].plot(TIME, fd_response.mean(axis=(0, 1)),
                                   color='#000000ff')
         bh_splt[f'fd_{col}'].grid(True, axis='x', markevery='5')
+        bh_splt[f'fd_{col}'].axvspan(4, 17, color='#00000022')
 
         bh_splt[f'fd_{col}'].set_title("FD")
         # bh_splt[f'fd_{col}'].set_ylabel("FD")
@@ -213,11 +214,6 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
                                        label=FTYPE_DICT[ftype],
                                        color=COLOURS[i])
 
-        # bh_splt[f'dvars_{ftype}'].set_ylabel('% DVARS')
-        plt.setp(bh_splt[f'dvars_{ftype}'].get_xticklabels(), visible=False)
-        bh_splt[f'dvars_{ftype}'].grid(True, axis='x', markevery='5')
-        bh_splt[f'dvars_{ftype}'].yaxis.set_label_position('right')
-
         # Add BOLD plots in second column
         bh_splt[f'bold_{ftype}'].plot(TIME, bold_responses[i, :, :].T,
                                       label='',
@@ -225,13 +221,15 @@ def plot_timeseries_and_BOLD_vs_FD(sub, ftypes=FTYPE_LIST, subjects=SUB_LIST):
         bh_splt[f'bold_{ftype}'].plot(TIME, avg_b[i, :],
                                       label=FTYPE_DICT[ftype],
                                       color=COLOURS[i])
-
-        # bh_splt[f'bold_{ftype}'].set_ylabel('% BOLD')
-        plt.setp(bh_splt[f'bold_{ftype}'].get_xticklabels(), visible=False)
-        bh_splt[f'bold_{ftype}'].grid(True, axis='x', markevery='5')
-        bh_splt[f'bold_{ftype}'].yaxis.set_label_position('right')
-
         bh_splt[f'bold_{ftype}'].legend(loc=1, prop={'size': 8})
+
+        # Set labels, ticks, grid, apnoea fill, and other common things
+        for key in ['bold', 'dvars']:
+            # bh_splt[f'{key}_{ftype}'].set_ylabel('% {key.upper()}')
+            plt.setp(bh_splt[f'{key}_{ftype}'].get_xticklabels(), visible=False)
+            bh_splt[f'{key}_{ftype}'].grid(True, axis='x', markevery='5')
+            bh_splt[f'{key}_{ftype}'].axvspan(4, 17, color='#00000022')
+            bh_splt[f'{key}_{ftype}'].yaxis.set_label_position('right')
 
     for key in ['bold', 'dvars']:
         for tic in bh_splt[f'bold_{FTYPE_LIST[-1]}'].xaxis.get_major_ticks():

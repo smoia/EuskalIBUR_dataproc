@@ -13,6 +13,7 @@ if [ -d tests ]; then rm -rf tests; fi
 mkdir tests tests/val
 
 fslmaths ${scriptdir}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm -bin mask
+fslmaths ${scriptdir}/90.template/MNI152_T1_1mm_GM_resamp_2.5mm -bin GM
 
 for map in masked # corrected
 do
@@ -23,12 +24,7 @@ do
 		do
 			# Extract ICC
 			fslmeants -i ICC2_${inmap}_${ftype}.nii.gz -m mask.nii.gz --showall --transpose > tests/val/ICC2_${inmap}_${ftype}.txt
-
-			# Extract CoV
-			for covtype in intrasub intrases total
-			do
-				fslmeants -i CoV_${covtype}_${inmap}_${ftype}.nii.gz -m mask.nii.gz --showall --transpose > tests/val/CoV_${covtype}_${inmap}_${ftype}.txt
-			done
+			fslmeants -i ICC2_${inmap}_${ftype}.nii.gz -m mask.nii.gz --showall --transpose > tests/val/ICC2_${inmap}_${ftype}_GM.txt
 		done
 	done
 done

@@ -63,4 +63,31 @@ with open(f'avg_icc.json', 'w') as outfile:
 with open(f'std_icc.json', 'w') as outfile:
     json.dump(s_icc, outfile, indent=4, sort_keys=True)
 
+# Repeat for GM
+
+for map in ['cvr', 'lag']:
+    # name axis
+    bh_splt[map].set_xlabel(f'{map.upper()}', labelpad=-2)
+    # Read files, import ICC values, compute average, and plot them
+    for i, ftype in enumerate(FTYPE_LIST):
+        icc[map][ftype] = np.genfromtxt(f'val/ICC2_{map}_masked_{ftype}_GM.txt')[:, 3]
+        m_icc[map][ftype] = icc[map][ftype].mean()
+        s_icc[map][ftype] = icc[map][ftype].std()
+        sns.kdeplot(data=icc[map][ftype], clip=(0, 1), color=COLOURS[i],
+                    ax=bh_splt[map], label=FTYPE_DICT[ftype])
+
+# Tweak legend
+bh_splt['lag'].legend(bbox_to_anchor=(-1.05, .83, 1, .102), loc='upper right')
+bh_splt['cvr'].legend().remove()
+# Save plot
+plt.savefig('hist_ICC_GM.png', dpi=SET_DPI)
+
+# Export jsons
+with open(f'avg_icc_GM.json', 'w') as outfile:
+    json.dump(m_icc, outfile, indent=4, sort_keys=True)
+
+with open(f'std_icc_GM.json', 'w') as outfile:
+    json.dump(s_icc, outfile, indent=4, sort_keys=True)
+
+
 os.chdir(cwd)

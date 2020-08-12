@@ -71,7 +71,7 @@ for i in $SUBJECTS_DIR/$SUBJ/SUMA/*.nii
 do
   gzip $i
 done
-
+cp $SUBJECTS_DIR/$SUBJ/SUMA/aparc.a2009s+aseg.nii.gz $BIDS_DIR/${SUBJ}/ses-01/anat_preproc/${SUBJ}_aparc.a2009s+aseg.nii.gz
 echo  -e "\e[34m +++ ====================================================================================\e[39m"
 echo  -e "\e[34m +++ ------------> END OF SCRIPT: FREESURFER PREPROCESSING FINISHED   <------------------\e[39m"
 echo  -e "\e[34m +++ ====================================================================================\e[39m"

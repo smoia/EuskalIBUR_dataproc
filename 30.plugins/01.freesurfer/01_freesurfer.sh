@@ -23,7 +23,7 @@ if [[ -z "${SUBJ}" ]]; then
   fi
 fi
 
-BIDS_DIR=$PRJDIR/preproc/ # Bids database directory 
+BIDS_DIR=$PRJDIR/preproc # Bids database directory 
 SUBJECTS_DIR=${BIDS_DIR}/tmp_FREESURFER # Output directory for FREESURFER
 
 echo "Script that runs Freesurfer anatomical preprocessing"

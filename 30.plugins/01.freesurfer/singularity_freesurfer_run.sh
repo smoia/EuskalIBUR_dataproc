@@ -11,10 +11,10 @@ module load singularity/3.3.0
 
 date
 PRJDIR=/bcbl/home/public/PJMASK_2
-wdir=/bcbl/home/vferrer/EuskalIBUR_dataproc
+wdir=/bcbl/home/vferrer
 SUBJECTS_DIR=${PRJDIR}/tmp_freesurfer
 SUBJ=sub-001
 cd ${wdir}
 
-singularity exec -e --no-home -B /bcbl/home/public/PJMASK_2/preproc -B /bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc freesurfer_img.simg\
-${wdir}/01_freesurfer.sh $PRJDIR $SUBJ $SUBJECTS_DIR
+singularity exec -e --no-home -B /bcbl/home/public/PJMASK_2/preproc -B ${wdir} freesurfer_img.simg\
+${wdir}/EuskalIBUR_dataproc/30.plugins/01.freesurfer/01_freesurfer.sh $PRJDIR $SUBJ $SUBJECTS_DIR

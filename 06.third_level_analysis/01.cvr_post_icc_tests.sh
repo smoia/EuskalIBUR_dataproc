@@ -10,7 +10,7 @@ cd ${wdr}/CVR_reliability || exit
 
 if [ -d tests ]; then rm -rf tests; fi
 
-mkdir tests tests/val
+mkdir tests tests/val tests/stats
 
 fslmaths ${scriptdir}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm -bin mask
 fslmaths ${scriptdir}/90.template/MNI152_T1_1mm_GM_resamp_2.5mm -bin GM
@@ -25,6 +25,9 @@ do
 			# Extract ICC
 			fslmeants -i ICC2_${inmap}_${ftype}.nii.gz -m mask.nii.gz --showall --transpose > tests/val/ICC2_${inmap}_${ftype}.txt
 			fslmeants -i ICC2_${inmap}_${ftype}.nii.gz -m GM.nii.gz --showall --transpose > tests/val/ICC2_${inmap}_${ftype}_GM.txt
+			# Compute statistics
+			fslstats -t $i -k mask.nii.gz -M -S > tests/stats/stats_ICC2_${inmap}_${ftype}.txt
+			fslstats -t $i -k GM.nii.gz -M -S > tests/stats/stats_ICC2_${inmap}_${ftype}_GM.txt
 		done
 	done
 done

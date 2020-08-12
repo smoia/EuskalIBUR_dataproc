@@ -57,12 +57,12 @@ bh_splt['cvr'].legend().remove()
 plt.savefig('hist_ICC.png', dpi=SET_DPI)
 plt.close('all')
 
-# Export jsons
-with open(f'avg_icc.json', 'w') as outfile:
-    json.dump(m_icc, outfile, indent=4, sort_keys=True)
+# # Export jsons
+# with open(f'avg_icc.json', 'w') as outfile:
+#     json.dump(m_icc, outfile, indent=4, sort_keys=True)
 
-with open(f'std_icc.json', 'w') as outfile:
-    json.dump(s_icc, outfile, indent=4, sort_keys=True)
+# with open(f'std_icc.json', 'w') as outfile:
+#     json.dump(s_icc, outfile, indent=4, sort_keys=True)
 
 # Repeat for GM
 
@@ -98,12 +98,12 @@ bh_splt['cvr'].legend().remove()
 # Save plot
 plt.savefig('hist_ICC_GM.png', dpi=SET_DPI)
 
-# Export jsons
-with open(f'avg_icc_GM.json', 'w') as outfile:
-    json.dump(m_icc, outfile, indent=4, sort_keys=True)
+# # Export jsons
+# with open(f'avg_icc_GM.json', 'w') as outfile:
+#     json.dump(m_icc, outfile, indent=4, sort_keys=True)
 
-with open(f'std_icc_GM.json', 'w') as outfile:
-    json.dump(s_icc, outfile, indent=4, sort_keys=True)
+# with open(f'std_icc_GM.json', 'w') as outfile:
+#     json.dump(s_icc, outfile, indent=4, sort_keys=True)
 
 
 os.chdir(cwd)

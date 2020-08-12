@@ -2,6 +2,7 @@
 #$ -cwd
 #$ -m be
 #$ -M v.ferrer@bcbl.eu
+#$ -q long.q
 
 if [[ -z "${SUBJ}" ]]; then
   if [[ ! -z "$1" ]]; then

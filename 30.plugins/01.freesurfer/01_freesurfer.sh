@@ -48,8 +48,8 @@ fi
 echo  -e "\e[34m +++ =======================================================================\e[39m"
 echo  -e "\e[34m +++ ---------------> FREESURFER ANATOMICAL PREPROCESSING <-----------------\e[39m"
 echo  -e "\e[34m +++ =======================================================================\e[39m"
-T1=$BIDS_DIR/anat/${SUBJ}_ses-01_acq-uni_T1w_brain.nii.gz # find T1 sub-001_ses-01_acq-uni_T1w_brain.nii.gz
-T2=$BIDS_DIR/anat/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w_fsl.nii.gz # sub-001_ses-01_T2w2sub-001_ses-01_acq-uni_T1w_fsl
+T1=$BIDS_DIR/${SUBJ}/ses-01/anat_preproc/${SUBJ}_ses-01_acq-uni_T1w_brain.nii.gz # find T1 sub-001_ses-01_acq-uni_T1w_brain.nii.gz
+T2=$BIDS_DIR/${SUBJ}/ses-01/anat/${SUBJ}_ses-01_T2w.nii.gz # sub-001_ses-01_T2w2sub-001_ses-01_acq-uni_T1w_fsl
 option="T2"
 
 

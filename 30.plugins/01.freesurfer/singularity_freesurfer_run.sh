@@ -10,7 +10,7 @@ module load singularity/3.3.0
 ##########################################################################################################################
 
 date
-PRJDIR=/bcbl/home/home_n-z/public/PJMASK_2
+PRJDIR=/bcbl/home/public/PJMASK_2
 wdir=/bcbl/home/home_n-z/vferrer
 SUBJECTS_DIR=${PRJDIR}/tmp_freesurfer
 SUBJ=sub-001

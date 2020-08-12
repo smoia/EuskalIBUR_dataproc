@@ -24,7 +24,7 @@ do
 		do
 			# Extract ICC
 			fslmeants -i ICC2_${inmap}_${ftype}.nii.gz -m mask.nii.gz --showall --transpose > tests/val/ICC2_${inmap}_${ftype}.txt
-			fslmeants -i ICC2_${inmap}_${ftype}.nii.gz -m mask.nii.gz --showall --transpose > tests/val/ICC2_${inmap}_${ftype}_GM.txt
+			fslmeants -i ICC2_${inmap}_${ftype}.nii.gz -m GM.nii.gz --showall --transpose > tests/val/ICC2_${inmap}_${ftype}_GM.txt
 		done
 	done
 done

@@ -55,6 +55,7 @@ bh_splt['lag'].legend(bbox_to_anchor=(-1.05, .83, 1, .102), loc='upper right')
 bh_splt['cvr'].legend().remove()
 # Save plot
 plt.savefig('hist_ICC.png', dpi=SET_DPI)
+plt.close('all')
 
 # Export jsons
 with open(f'avg_icc.json', 'w') as outfile:
@@ -64,6 +65,21 @@ with open(f'std_icc.json', 'w') as outfile:
     json.dump(s_icc, outfile, indent=4, sort_keys=True)
 
 # Repeat for GM
+
+# Prepare dictionaries
+icc = {'cvr': pd.DataFrame(), 'lag': pd.DataFrame()}
+m_icc = {'cvr': {}, 'lag': {}}
+s_icc = {'cvr': {}, 'lag': {}}
+
+# Setup plot
+bh_plot = plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
+c = 13
+hc = c//2
+gs = bh_plot.add_gridspec(nrows=1, ncols=c)
+bh_splt = {}
+bh_splt['cvr'] = bh_plot.add_subplot(gs[0,:hc])
+bh_splt['lag'] = bh_plot.add_subplot(gs[0,-hc:])
+plt.tight_layout()
 
 for map in ['cvr', 'lag']:
     # name axis

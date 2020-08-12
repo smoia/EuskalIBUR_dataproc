@@ -1,7 +1,7 @@
 #$ -S /bin/bash
 #$ -cwd
 #$ -m be
-#$ -M s.moia@bcbl.eu
+#$ -M v.ferrer@bcbl.eu
 
 module load singularity/3.3.0
 

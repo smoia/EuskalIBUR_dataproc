@@ -11,7 +11,7 @@ module load singularity/3.3.0
 
 date
 PRJDIR=/bcbl/home/public/PJMASK_2
-wdir=/bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc
+wdir=/bcbl/home/vferrer/EuskalIBUR_dataproc
 SUBJECTS_DIR=${PRJDIR}/tmp_freesurfer
 SUBJ=sub-001
 cd ${wdir}

@@ -6,5 +6,5 @@ wdir=/bcbl/home/home_n-z/vferrer
 for subj in ${subjects[*]};
     do
     error=/bcbl/home/home_n-z/vferrer/freesurfer_${subj}_error.txt
-    qsub -e $error -o $error -N ${subj}_PJMASK_FRESURFER ${wdir}/EuskalIBUR_dataproc/30.plugins/01.freesurfer/singularity_freesurfer_run.sh $PRJDIR $subj
+    qsub -e $error -o $error -N ${subj}_PJMASK_FRESURFER ${wdir}/EuskalIBUR_dataproc/30.plugins/01.freesurfer/singularity_freesurfer_run.sh $PRJDIR $wdir $subj
 done

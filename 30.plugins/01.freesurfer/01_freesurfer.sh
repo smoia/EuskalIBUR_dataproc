@@ -62,17 +62,9 @@ recon-all -autorecon2 -autorecon3 -T2pial -sd $SUBJECTS_DIR -s $SUBJ -hippocampa
 echo  -e "\e[34m +++ =======================================================================\e[39m"
 echo  -e "\e[34m +++ ------------> CONVERTING FREESURFER OUTPUT TO NII and GII <------------\e[39m"
 echo  -e "\e[34m +++ =======================================================================\e[39m"
-@SUMA_Make_Spec_FS                            \
-    -NIFTI                                    \
-    -fspath $SUBJECTS_DIR/$SUBJ                          \
-    -sid    $SUBJ
-
-for i in $SUBJECTS_DIR/$SUBJ/SUMA/*.nii
-do
-  gzip $i
-done
-mkdir $BIDS_DIR/${SUBJ}/ses-01/atlas
-cp $SUBJECTS_DIR/$SUBJ/SUMA/aparc.a2009s+aseg.nii.gz $BIDS_DIR/${SUBJ}/ses-01/atlas/${SUBJ}_aparc.a2009s+aseg.nii.gz
+mkdir ${BIDS_DIR}/${SUBJ}/ses-01/atlas
+mri_convert -i ${SUBJECTS_DIR}/sub-001/mri/aparc.a2009s+aseg.mgz -o ${BIDS_DIR}/${SUBJ}/ses-01/atlas/${SUBJ}_aparc.a2009s+aseg.nii.gz
+rm -r ${SUBJECTS_DIR}/${SUBJ}
 echo  -e "\e[34m +++ ====================================================================================\e[39m"
 echo  -e "\e[34m +++ ------------> END OF SCRIPT: FREESURFER PREPROCESSING FINISHED   <------------------\e[39m"
 echo  -e "\e[34m +++ ====================================================================================\e[39m"

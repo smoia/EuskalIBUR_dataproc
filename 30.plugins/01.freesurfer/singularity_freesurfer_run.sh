@@ -6,7 +6,7 @@
 
 if [[ -z "${PRJDIR}" ]]; then
   if [[ ! -z "$1" ]]; then
-     SUBJ=$1
+     PRJDIR=$1
   else
      echo "You need to input SUBJECT (SUBJ) as ENVIRONMENT VARIABLE or $1"
      exit
@@ -15,7 +15,7 @@ fi
 
 if [[ -z "${wdir}" ]]; then
   if [[ ! -z "$2" ]]; then
-     SUBJ=$2
+     wdir=$2
   else
      echo "You need to input SUBJECT (SUBJ) as ENVIRONMENT VARIABLE or $2"
      exit

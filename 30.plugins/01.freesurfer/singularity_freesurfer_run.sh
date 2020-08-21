@@ -41,5 +41,5 @@ SUBJECTS_DIR=${PRJDIR}/tmp_freesurfer
 # SUBJ=sub-001
 cd ${wdir}
 
-singularity exec -e --no-home -B ${PRJDIR} -B ${wdir} ${wdir}/euskalibur_freesurfer_container/freesurfer_img.simg\
+singularity exec -e --no-home -B ${PRJDIR} -B ${wdir}/euskalibur_freesurfer_container/freesurfer_img.simg\
  ${wdir}/EuskalIBUR_dataproc/30.plugins/01.freesurfer/01_freesurfer.sh $PRJDIR $SUBJ $SUBJECTS_DIR

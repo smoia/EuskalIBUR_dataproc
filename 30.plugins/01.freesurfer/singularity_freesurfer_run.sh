@@ -4,11 +4,29 @@
 #$ -M v.ferrer@bcbl.eu
 #$ -q long.q
 
-if [[ -z "${SUBJ}" ]]; then
+if [[ -z "${PRJDIR}" ]]; then
   if [[ ! -z "$1" ]]; then
      SUBJ=$1
   else
      echo "You need to input SUBJECT (SUBJ) as ENVIRONMENT VARIABLE or $1"
+     exit
+  fi
+fi
+
+if [[ -z "${wdir}" ]]; then
+  if [[ ! -z "$2" ]]; then
+     SUBJ=$2
+  else
+     echo "You need to input SUBJECT (SUBJ) as ENVIRONMENT VARIABLE or $2"
+     exit
+  fi
+fi
+
+if [[ -z "${SUBJ}" ]]; then
+  if [[ ! -z "$3" ]]; then
+     SUBJ=$3
+  else
+     echo "You need to input SUBJECT (SUBJ) as ENVIRONMENT VARIABLE or $3"
      exit
   fi
 fi
@@ -19,8 +37,6 @@ module load singularity/3.3.0
 ##########################################################################################################################
 
 date
-PRJDIR=/bcbl/home/public/PJMASK_2
-wdir=/bcbl/home/home_n-z/vferrer
 SUBJECTS_DIR=${PRJDIR}/tmp_freesurfer
 # SUBJ=sub-001
 cd ${wdir}

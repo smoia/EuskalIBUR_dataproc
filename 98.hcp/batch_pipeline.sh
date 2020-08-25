@@ -22,6 +22,12 @@ fi
 
 # joblist=""
 
+for sub in 007  # 001 003 007
+do
+	rm ${wdr}/../LogFiles/${sub}_motor_pipe
+	qsub -q long.q -N "m_${sub}_01_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_motor_pipe -e ${wdr}/../LogFiles/${sub}_motor_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} 01
+done
+
 # for ses in $(seq -f %02g 1 10)
 # do
 # 	rm ${wdr}/../LogFiles/001_${ses}_pipe
@@ -82,6 +88,6 @@ fi
 
 # qsub -q short.q -N "s_010_11_prep" -o ${wdr}/../LogFiles/010_11_pipe -e ${wdr}/../LogFiles/010_11_pipe ${wdr}/tmp.preproc_10.sh
 
-rm ${wdr}/../LogFiles/third_level_pipe
-qsub -q short.q -N "third_level_EuskalIBUR" -o ${wdr}/../LogFiles/third_level_pipe -e ${wdr}/../LogFiles/third_level_pipe ${wdr}/98.hcp/run_third_level_pipe.sh
+# rm ${wdr}/../LogFiles/third_level_pipe
+# qsub -q short.q -N "third_level_EuskalIBUR" -o ${wdr}/../LogFiles/third_level_pipe -e ${wdr}/../LogFiles/third_level_pipe ${wdr}/98.hcp/run_third_level_pipe.sh
 # qsub -q short.q -hold_jid "${old_ftype}_EuskalIBUR" -N "third_level_EuskalIBUR" -o ${wdr}/../LogFiles/third_level_pipe -e ${wdr}/../LogFiles/third_level_pipe ${wdr}/98.hcp/run_third_level_pipe.sh

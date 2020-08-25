@@ -84,7 +84,7 @@ echo ""
 #########    Task preproc    #########
 ######################################
 
-/scripts/00.pipelines/motor_preproc.sh ${sub} ${ses} ${wdr} ${flpr} \
+/scripts/00.pipelines/tensor_preproc.sh ${sub} ${ses} ${wdr} ${flpr} \
 						${fdir} ${vdsc} "${TEs}" \
 						${nTE} ${siot} ${dspk}
 

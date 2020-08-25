@@ -10,12 +10,12 @@
 # files
 func_in=$1
 fmat=$2
-anat=$3
-aref=$4
+anat=$3  # If "none", it won't run average tissue
+aref=$4  # If "none", it won't run average tissue
 mref=$5
 # folders
 fdir=$6
-adir=$7
+adir=$7  # If "none", it won't run average tissue
 # action
 dprj=${8:-yes}
 # thresholds
@@ -60,19 +60,34 @@ echo "Preparing censoring"
 
 # 04.2. Create matrix
 echo "Preparing nuisance matrix"
-3dDeconvolve -input ${func_in}.nii.gz \
--polort 5 -float \
--num_stimts  2 \
--stim_file 1 ${func}_avg_tissue.1D'[0]' -stim_base 1 -stim_label 1 CSF \
--stim_file 2 ${func}_avg_tissue.1D'[2]' -stim_base 2 -stim_label 2 WM \
--ortvec ${fmat}_mcf_demean.par motdemean \
--ortvec ${fmat}_mcf_deriv1.par motderiv1 \
--ortvec ${fmat}_rej_ort.1D meica \
--censor ${func}_censors.1D \
--x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
--x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
--x1D_stop
-# -cenmode ZERO \
+
+
+if [ -e "${adir}/${anat}_seg_eroded.nii.gz" ]
+then
+	3dDeconvolve -input ${func_in}.nii.gz \
+	-polort 5 -float \
+	-num_stimts  2 \
+	-stim_file 1 ${func}_avg_tissue.1D'[0]' -stim_base 1 -stim_label 1 CSF \
+	-stim_file 2 ${func}_avg_tissue.1D'[2]' -stim_base 2 -stim_label 2 WM \
+	-ortvec ${fmat}_mcf_demean.par motdemean \
+	-ortvec ${fmat}_mcf_deriv1.par motderiv1 \
+	-ortvec ${fmat}_rej_ort.1D meica \
+	-censor ${func}_censors.1D \
+	-x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
+	-x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
+	-x1D_stop
+	# -cenmode ZERO \
+else
+	3dDeconvolve -input ${func_in}.nii.gz \
+	-polort 5 -float \
+	-ortvec ${fmat}_mcf_demean.par motdemean \
+	-ortvec ${fmat}_mcf_deriv1.par motderiv1 \
+	-ortvec ${fmat}_rej_ort.1D meica \
+	-censor ${func}_censors.1D \
+	-x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
+	-x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
+	-x1D_stop
+fi
 
 
 ## 06. Nuisance

@@ -97,7 +97,7 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	/scripts/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 4 ${mask}
+	/scripts/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 3 ${mask}
 
 	echo "************************************"
 	echo "*** Func SPC motor BOLD echo ${e}"

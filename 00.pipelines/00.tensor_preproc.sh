@@ -80,6 +80,14 @@ echo "************************************"
 echo ""
 echo ""
 
+cd ${wdr}/sub-${sub}/ses-${ses} || exit
+
+imcp func/*motor*.nii.gz func_preproc/.
+imcp fmap/*motor*.nii.gz fmap_preproc/.
+imcp ${stdp}/${std}.nii.gz reg/.
+
+cd /scripts
+
 ######################################
 #########    Task preproc    #########
 ######################################

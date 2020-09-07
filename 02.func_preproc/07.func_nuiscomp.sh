@@ -61,35 +61,28 @@ echo "Preparing censoring"
 # 04.2. Create matrix
 echo "Preparing nuisance matrix"
 
+run3dDeconvolve="3dDeconvolve -input ${func_in}.nii.gz \
+				 -polort 5 -float \
+				 -censor ${func}_censors.1D \
+				 -x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
+				 -x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
+				 -x1D_stop \
+				 -ortvec ${fmat}_mcf_demean.par motdemean \
+				 -ortvec ${fmat}_mcf_deriv1.par motderiv1"
 
-if [ -e "${adir}/${anat}_seg_eroded.nii.gz" ]
+if [ -e "${fmat}_rej_ort.1D" ]
 then
-	3dDeconvolve -input ${func_in}.nii.gz \
-	-polort 5 -float \
-	-num_stimts  2 \
+	run3dDeconvolve="${run3dDeconvolve} -ortvec ${fmat}_rej_ort.1D meica"
+fi
+if [ -e "${func}_avg_tissue.1D" ]
+then
+	run3dDeconvolve="${run3dDeconvolve} -num_stimts  2 \
 	-stim_file 1 ${func}_avg_tissue.1D'[0]' -stim_base 1 -stim_label 1 CSF \
-	-stim_file 2 ${func}_avg_tissue.1D'[2]' -stim_base 2 -stim_label 2 WM \
-	-ortvec ${fmat}_mcf_demean.par motdemean \
-	-ortvec ${fmat}_mcf_deriv1.par motderiv1 \
-	-ortvec ${fmat}_rej_ort.1D meica \
-	-censor ${func}_censors.1D \
-	-x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
-	-x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
-	-x1D_stop
+	-stim_file 2 ${func}_avg_tissue.1D'[2]' -stim_base 2 -stim_label 2 WM"
 	# -cenmode ZERO \
-else
-	3dDeconvolve -input ${func_in}.nii.gz \
-	-polort 5 -float \
-	-ortvec ${fmat}_mcf_demean.par motdemean \
-	-ortvec ${fmat}_mcf_deriv1.par motderiv1 \
-	-ortvec ${fmat}_rej_ort.1D meica \
-	-censor ${func}_censors.1D \
-	-x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
-	-x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
-	-x1D_stop
 fi
 
-
+${run3dDeconvolve}
 ## 06. Nuisance
 
 if [[ "${dprj}" != "none" ]]

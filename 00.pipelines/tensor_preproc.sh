@@ -73,7 +73,7 @@ echo "************************************"
 
 /scripts/02.func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}"
 
-# As it's motor, skip smoothing and denoising!
+# As it's motor, don't skip smoothing and denoising!
 for e in $( seq 1 ${nTE} )
 do
 	bold=${flpr}_task-motor_echo-${e}_bold

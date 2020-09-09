@@ -26,37 +26,37 @@ fi
 # 	qsub -q long.q -N "m_${sub}_01_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_motor_pipe -e ${wdr}/../LogFiles/${sub}_motor_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} 01
 # done
 
-joblist=""
+# joblist=""
 
-for ses in $(seq -f %02g 1 10)
-do
-	rm ${wdr}/../LogFiles/001_${ses}_pipe
-	qsub -q short.q -N "s_001_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/001_${ses}_pipe -e ${wdr}/../LogFiles/001_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh 001 ${ses}
-	joblist=${joblist}s_001_${ses}_EuskalIBUR,
-done
+# for ses in $(seq -f %02g 1 10)
+# do
+# 	rm ${wdr}/../LogFiles/001_${ses}_pipe
+# 	qsub -q long.q -N "s_001_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/001_${ses}_pipe -e ${wdr}/../LogFiles/001_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh 001 ${ses}
+# 	joblist=${joblist}s_001_${ses}_EuskalIBUR,
+# done
 
-joblist=${joblist::-1}
+# joblist=${joblist::-1}
 
-for sub in 002 003 004 007 008 009
-do
-	for ses in $(seq -f %02g 1 10)
-	do
-		rm ${wdr}/../LogFiles/${sub}_${ses}_pipe
-		qsub -q short.q -hold_jid "${joblist}" -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
-		# qsub -q long.q -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
-	done
-	joblist=""
-	for ses in $(seq -f %02g 1 10)
-	do
-		joblist=${joblist}s_${sub}_${ses}_EuskalIBUR,
-	done
-	joblist=${joblist::-1}
-done
+# for sub in 002 003 004 007 008 009
+# do
+# 	for ses in $(seq -f %02g 1 10)
+# 	do
+# 		rm ${wdr}/../LogFiles/${sub}_${ses}_pipe
+# 		qsub -q long.q -hold_jid "${joblist}" -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
+# 		# qsub -q long.q -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
+# 	done
+# 	joblist=""
+# 	for ses in $(seq -f %02g 1 10)
+# 	do
+# 		joblist=${joblist}s_${sub}_${ses}_EuskalIBUR,
+# 	done
+# 	joblist=${joblist::-1}
+# done
 
 ftype=optcom
 rm ${wdr}/../LogFiles/${ftype}_pipe
-# qsub -q short.q -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
-qsub -q short.q -hold_jid "${joblist}" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
+qsub -q short.q -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
+# qsub -q short.q -hold_jid "${joblist}" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
 old_ftype=${ftype}
 joblist=${ftype}_EuskalIBUR
 

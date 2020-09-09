@@ -70,10 +70,8 @@ do
 					 -x1D ${matdir}/mat.1D \
 					 -xjpeg ${matdir}/mat.jpg \
 					 -rout -tout -force_TR ${tr} \
-					 -bucket ${tmp}/tmp.${flpr}_${ftype}_05cmt_res/stats_${i}.1D \
-					 -cbucket ${tmp}/tmp.${flpr}_${ftype}_05cmt_res/c_stats_${i}.1D
+					 -bucket ${tmp}/tmp.${flpr}_${ftype}_05cmt_res/stats_${i}.1D
 
-		3dbucket -prefix ${tmp}/tmp.${flpr}_${ftype}_05cmt_res/${flpr}_${ftype}_r2_${i}.nii.gz -abuc ${tmp}/tmp.${flpr}_${ftype}_05cmt_res/stats_${i}.nii.gz'[0]' -overwrite
 	fi
 done
 
@@ -92,32 +90,32 @@ for i in $( seq -f %g 0 ${maxidx[1]} )
 do
 	let v=i*step
 	v=$( printf %04d $v )
-	3dcalc -a ${tmp}/${flpr}_${ftype}_statsbuck.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_05cmt_res/stats_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
-		   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}_statsbuck.nii.gz -overwrite
-	3dcalc -a ${tmp}/${flpr}_${ftype}_cbuck.nii.gz -b ${tmp}/tmp.${flpr}_${ftype}_05cmt_res/c_stats_${v}.nii.gz -c ${flpr}_${ftype}_cvr_idx.nii.gz \
-		   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}_cbuck.nii.gz -overwrite
+	3dcalc -a ${tmp}/${flpr}_${ftype}_statsbuck.1D -b ${tmp}/tmp.${flpr}_${ftype}_05cmt_res/stats_${v}.1D -c ${flpr}_${ftype}_cvr_idx.1D \
+		   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}_statsbuck.1D -overwrite
+	3dcalc -a ${tmp}/${flpr}_${ftype}_cbuck.1D -b ${tmp}/tmp.${flpr}_${ftype}_05cmt_res/c_stats_${v}.1D -c ${flpr}_${ftype}_cvr_idx.1D \
+		   -expr "a+b*equals(c,${i})" -prefix ${tmp}/${flpr}_${ftype}_cbuck.1D -overwrite
 done
 
-3dbucket -prefix ${tmp}/${flpr}_${ftype}_spc_over_V.nii.gz -abuc ${tmp}/${flpr}_${ftype}_statsbuck.nii.gz'[17]' -overwrite
-3dbucket -prefix ${tmp}/${flpr}_${ftype}_tmap.nii.gz -abuc ${tmp}/${flpr}_${ftype}_statsbuck.nii.gz'[18]' -overwrite
+3dbucket -prefix ${tmp}/${flpr}_${ftype}_spc_over_V.1D -abuc ${tmp}/${flpr}_${ftype}_statsbuck.1D'[17]' -overwrite
+3dbucket -prefix ${tmp}/${flpr}_${ftype}_tmap.1D -abuc ${tmp}/${flpr}_${ftype}_statsbuck.1D'[18]' -overwrite
 
-mv ${tmp}/${flpr}_${ftype}_spc_over_V.nii.gz .
-mv ${tmp}/${flpr}_${ftype}_tmap.nii.gz .
-mv ${tmp}/${flpr}_${ftype}_cbuck.nii.gz .
-mv ${tmp}/${flpr}_${ftype}_statsbuck.nii.gz .
+mv ${tmp}/${flpr}_${ftype}_spc_over_V.1D .
+mv ${tmp}/${flpr}_${ftype}_tmap.1D .
+mv ${tmp}/${flpr}_${ftype}_cbuck.1D .
+mv ${tmp}/${flpr}_${ftype}_statsbuck.1D .
 
 # Obtain first CVR maps
 # the factor 71.2 is to take into account the pressure in mmHg:
 # CO2[mmHg] = ([pressure in Donosti]*[Lab altitude] - [Air expiration at body temperature])[mmHg]*(channel_trace[V]*10[V^(-1)]/100)
 # CO2[mmHg] = (768*0.988-47)[mmHg]*(channel_trace*10/100) ~ 71.2 mmHg
 # multiply by 100 cause it's not BOLD % yet!
-fslmaths ${flpr}_${ftype}_spc_over_V.nii.gz -div 71.2 -mul 100 ${flpr}_${ftype}_cvr.nii.gz
+fslmaths ${flpr}_${ftype}_spc_over_V.1D -div 71.2 -mul 100 ${flpr}_${ftype}_cvr.1D
 # Obtain "simple" t-stats and CVR 
 medianvol=$( printf %04d ${poslag} )
-3dcalc -a ${tmp}/tmp.${flpr}_${ftype}_05cmt_res/stats_${medianvol}.nii.gz'[17]' -expr 'a / 71.2 * 100' \
-	   -prefix ${flpr}_${ftype}_cvr_simple.nii.gz -overwrite
-3dcalc -a ${tmp}/tmp.${flpr}_${ftype}_05cmt_res/stats_${medianvol}.nii.gz'[18]' -expr 'a' \
-	   -prefix ${flpr}_${ftype}_tmap_simple.nii.gz
+3dcalc -a ${tmp}/tmp.${flpr}_${ftype}_05cmt_res/stats_${medianvol}.1D'[17]' -expr 'a / 71.2 * 100' \
+	   -prefix ${flpr}_${ftype}_cvr_simple.1D -overwrite
+3dcalc -a ${tmp}/tmp.${flpr}_${ftype}_05cmt_res/stats_${medianvol}.1D'[18]' -expr 'a' \
+	   -prefix ${flpr}_${ftype}_tmap_simple.1D
 
 if [ ! -d ${flpr}_${ftype}_map_cvr ]
 then

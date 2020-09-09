@@ -31,7 +31,7 @@ joblist=""
 for ses in $(seq -f %02g 1 10)
 do
 	rm ${wdr}/../LogFiles/001_${ses}_pipe
-	qsub -q long.q -N "s_001_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/001_${ses}_pipe -e ${wdr}/../LogFiles/001_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh 001 ${ses}
+	qsub -q short.q -N "s_001_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/001_${ses}_pipe -e ${wdr}/../LogFiles/001_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh 001 ${ses}
 	joblist=${joblist}s_001_${ses}_EuskalIBUR,
 done
 
@@ -42,7 +42,7 @@ do
 	for ses in $(seq -f %02g 1 10)
 	do
 		rm ${wdr}/../LogFiles/${sub}_${ses}_pipe
-		qsub -q long.q -hold_jid "${joblist}" -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
+		qsub -q short.q -hold_jid "${joblist}" -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
 		# qsub -q long.q -N "s_${sub}_${ses}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${ses}_pipe -e ${wdr}/../LogFiles/${sub}_${ses}_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} ${ses}
 	done
 	joblist=""

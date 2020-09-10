@@ -229,4 +229,6 @@ rm ../ICC2_${inmap}_${ftype}.nii.gz
 done
 done
 
+echo "End of script!"
+
 cd ${cwd}

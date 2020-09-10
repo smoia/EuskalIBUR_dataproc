@@ -53,19 +53,19 @@ fi
 # 	joblist=${joblist::-1}
 # done
 
-ftype=optcom
-rm ${wdr}/../LogFiles/${ftype}_pipe
-qsub -q short.q -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
-# qsub -q short.q -hold_jid "${joblist}" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
-old_ftype=${ftype}
-joblist=${ftype}_EuskalIBUR
+# ftype=optcom
+# rm ${wdr}/../LogFiles/${ftype}_pipe
+# qsub -q long.q -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
+# # qsub -q long.q -hold_jid "${joblist}" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
+# old_ftype=${ftype}
+# joblist=${ftype}_EuskalIBUR
 
-for ftype in meica-aggr meica-orth meica-cons meica-mvar echo-2
-do
-	rm ${wdr}/../LogFiles/${ftype}_pipe
-	qsub -q short.q -hold_jid "${old_ftype}_EuskalIBUR" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
-	old_ftype=${ftype}
-done
+# for ftype in meica-aggr meica-orth meica-cons echo-2
+# do
+# 	rm ${wdr}/../LogFiles/${ftype}_pipe
+# 	qsub -q long.q -hold_jid "${old_ftype}_EuskalIBUR" -N "${ftype}_EuskalIBUR" -o ${wdr}/../LogFiles/${ftype}_pipe -e ${wdr}/../LogFiles/${ftype}_pipe ${wdr}/98.hcp/run_cvr_reliability.sh ${ftype}
+# 	old_ftype=${ftype}
+# done
 
 # rm ${wdr}/../LogFiles/motion_pipe
 # qsub -q short.q -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh

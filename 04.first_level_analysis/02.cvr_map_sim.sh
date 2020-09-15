@@ -365,6 +365,7 @@ echo "Getting masked maps"
 for map in cvr cvr_lag tmap
 do
 	fslmaths ${flpr}_${ftype}_${map} -mas ${flpr}_${ftype}_cvr_idx_mask ${flpr}_${ftype}_${map}_masked
+	fslmaths ${flpr}_${ftype}_${map} -mas ${flpr}_${ftype}_cvr_idx_physio_constrained ${flpr}_${ftype}_${map}_masked_physio_only
 done
 
 # # Momentarily retrieving tmap #30

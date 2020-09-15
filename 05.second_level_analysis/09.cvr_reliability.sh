@@ -61,7 +61,7 @@ do
 		   ./reg/${sub}_T2w2T1w0GenericAffine.mat
 	fi
 
-	for map in masked # corrected
+	for map in masked_physio_only # corrected
 	do
             for ses in $( seq -f %02g 1 ${lastses} )
             do
@@ -141,7 +141,7 @@ done
 
 cd normalised
 
-for map in masked # corrected
+for map in masked_physio_only # corrected
 do
 for inmap in cvr lag
 do

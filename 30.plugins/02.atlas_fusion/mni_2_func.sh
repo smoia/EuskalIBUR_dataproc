@@ -62,3 +62,5 @@ antsApplyTransforms -d 3 -i $Atlas_yeo \
           -t [/Data/${SUBJ}/ses-01/${SUBJ}_ses-01_acq-uni_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
           -t [/Data/${SUBJ}/ses-01/${SUBJ}_ses-01_acq-uni_T1w2std0GenericAffine.mat ,1] \
           -t /Data/${SUBJ}/ses-01/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz
+
+cp ${tmp_dir}/Yeo_atlas2${SUBJ}_ANAT.nii.gz /Data/${SUBJ}/ses-01/atlas/Yeo_atlas2${SUBJ}_ANAT.nii.gz

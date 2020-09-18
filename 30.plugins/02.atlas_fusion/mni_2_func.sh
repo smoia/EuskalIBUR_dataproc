@@ -58,9 +58,9 @@ Atlas_yeo=/scripts/90.template/Schaefer2018_100Parcels_7Networks_order_FSLMNI152
 # transform yeo atlas from MNI to func space
 antsApplyTransforms -d 3 -i $Atlas_yeo \
 					-r /Data/${SUBJ}/ses-01/anat_preproc/${SUBJ}_ses-01_acq-uni_T1w_brain.nii.gz -o ${tmp_dir}/Yeo_atlas2${SUBJ}_ANAT.nii.gz \
-          -n Multilabel -t [/Data/${SUBJ}/ses-01/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
-          -t [/Data/${SUBJ}/ses-01/${SUBJ}_ses-01_acq-uni_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
-          -t [/Data/${SUBJ}/ses-01/${SUBJ}_ses-01_acq-uni_T1w2std0GenericAffine.mat ,1] \
-          -t /Data/${SUBJ}/ses-01/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz
+          -n Multilabel -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
+          -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
+          -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std0GenericAffine.mat ,1] \
+          -t /Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz
 
 cp ${tmp_dir}/Yeo_atlas2${SUBJ}_ANAT.nii.gz /Data/${SUBJ}/ses-01/atlas/Yeo_atlas2${SUBJ}_ANAT.nii.gz

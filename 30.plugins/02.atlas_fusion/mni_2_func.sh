@@ -6,19 +6,11 @@
 #$ -M v.ferrer@bcbl.eu
 #$ -N mni2func
 #$ -S /bin/bash
-if [[ -z "${PRJDIR}" ]]; then
-  if [[ ! -z "$1" ]]; then
-     PRJDIR=$1
-  else
-     echo "You need to input PROJECT DIRECTORY (PRJDIR) as ENVIRONMENT VARIABLE or $1"
-     exit
-  fi
-fi
 if [[ -z "${SUBJ}" ]]; then
-  if [[ ! -z "$2" ]]; then
-     SUBJ=$2
+  if [[ ! -z "$1" ]]; then
+     SUBJ=$1
   else
-     echo "You need to input SUBJECT (SUBJ) as ENVIRONMENT VARIABLE or $2"
+     echo "You need to input SUBJECT (SUBJ) as ENVIRONMENT VARIABLE or $1"
      exit
   fi
 fi
@@ -63,7 +55,7 @@ cd $PRE_DIR
 
 # parcels_sizes=(100 400 1000)
 # for parcels in 
-Atlas_yeo=$PRJDIR/in_dir/Schaefer2018_400Parcels_17Networks_order_FSLMNI152_1mm_not_resampled.nii.gz
+Atlases=($PRJDIR/in_dir/Schaefer2018_400Parcels_17Networks_order_FSLMNI152_1mm.nii.gz)
 # transform yeo atlas from MNI to T1 space
 antsApplyTransforms -d 3 -i $Atlas_yeo \
 					-r /Data/${SUBJ}/ses-01/anat_preproc/${SUBJ}_ses-01_acq-uni_T1w_brain.nii.gz -o ${tmp_dir}/Yeo_atlas2${SUBJ}_ANAT.nii.gz \

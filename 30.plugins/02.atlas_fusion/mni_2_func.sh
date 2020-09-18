@@ -50,17 +50,16 @@ fi
 # 3dcalc -overwrite -a ${FS_aparc} -datum byte -prefix FS_Subcortical.nii.gz -expr 'amongst(a,9,10,11,12,13,17,18,19,20,26,27,28,48,49,50,51,52,53,54,55,56,58,59,60)'
 # echo -e "\e[32m ++ INFO: Create mask of GM voxels...\e[39m"
 # 3dcalc -overwrite -a lh.ribbon.nii.gz -b rh.ribbon.nii.gz -c FS_Cerebellum.nii.gz -d FS_Subcortical.nii.gz -expr 'bool(a+b+c+d)' -prefix FS_GM.nii.gz
-cd $PRE_DIR
 
 # parcels_sizes=(100 400 1000)
 # for parcels in 
 Atlas_yeo=/scripts/90.template/Schaefer2018_100Parcels_7Networks_order_FSLMNI152_1mm.nii.gz
 # transform yeo atlas from MNI to func space
 antsApplyTransforms -d 3 -i $Atlas_yeo \
-					-r /Data/${SUBJ}/ses-01/anat_preproc/${SUBJ}_ses-01_acq-uni_T1w_brain.nii.gz -o ${tmp_dir}/Yeo_atlas2${SUBJ}_ANAT.nii.gz \
+					-r /Data/${SUBJ}/ses-01/reg/${SUBJ}_sbref.nii.gz -o ${tmp_dir}/Yeo_atlas2${SUBJ}_FUNC.nii.gz \
           -n Multilabel -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
           -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
           -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std0GenericAffine.mat ,1] \
-          -t /Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz
+          -t /Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz -v
 
-cp ${tmp_dir}/Yeo_atlas2${SUBJ}_ANAT.nii.gz /Data/${SUBJ}/ses-01/atlas/Yeo_atlas2${SUBJ}_ANAT.nii.gz
+cp ${tmp_dir}/Yeo_atlas2${SUBJ}_FUNC.nii.gz /Data/${SUBJ}/ses-01/atlas/Yeo_atlas2${SUBJ}_FUNC.nii.gz

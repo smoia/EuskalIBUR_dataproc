@@ -62,4 +62,11 @@ antsApplyTransforms -d 3 -i $Atlas_yeo \
           -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std0GenericAffine.mat ,1] \
           -t /Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz -v
 
+antsApplyTransforms -d 3 -i $FS_aparc \
+					-r /Data/${SUBJ}/ses-01/reg/${SUBJ}_sbref.nii.gz -o ${tmp_dir}/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz \
+          -n Multilabel -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
+          -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
+         -v
+
 cp ${tmp_dir}/Yeo_atlas2${SUBJ}_FUNC.nii.gz /Data/${SUBJ}/ses-01/atlas/Yeo_atlas2${SUBJ}_FUNC.nii.gz
+cp ${tmp_dir}/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz  /Data/${SUBJ}/ses-01/atlas/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz

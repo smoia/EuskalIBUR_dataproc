@@ -31,7 +31,7 @@ echo  -e "\e[34m +++ ===========================================================
 echo  -e "\e[34m +++ ---------------> FREESURFER ANATOMICAL PREPROCESSING <-----------------\e[39m"
 echo  -e "\e[34m +++ =======================================================================\e[39m"
 T1=/Data/${SUBJ}/ses-01/anat_preproc/${SUBJ}_ses-01_acq-uni_T1w_brain.nii.gz # find T1 sub-001_ses-01_acq-uni_T1w_brain.nii.gz
-T2=/Data/${SUBJ}/ses-01/anat/${SUBJ}_ses-01_T2w.nii.gz # sub-001_ses-01_T2w2sub-001_ses-01_acq-uni_T1w_fsl
+T2=/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w_brain2${SUBJ}_ses-01_acq-uni_T1w_brain.nii.gz # sub-001_ses-01_T2w2sub-001_ses-01_acq-uni_T1w_fsl
 option="T2"
 
 

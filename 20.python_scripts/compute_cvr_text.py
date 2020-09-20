@@ -16,8 +16,8 @@ out_dir = sys.argv[7]
 lag_samples = lag * freq
 n_iter = lag_samples * 2
 
-dout = dict.fromkeys('cvr_idx', 'cvr_lag', 'cvr_masked_physio_only', 'tmap',
-                     'cvr_masked')
+dout = dict.fromkeys(['cvr_idx', 'cvr_lag', 'cvr_masked_physio_only', 'tmap',
+                     'cvr_masked'])
 
 data = dict.fromkeys(range(0, n_iter, step))
 for i in data.keys():
@@ -35,6 +35,8 @@ data_3d = np.stack([data[i] for i in data.keys()], 0)
 # Get idx of max R^2, then transform them into lags
 dout['cvr_idx'] = data_3d[:, :, 2].argmax(axis=0)
 dout['cvr_lag'] = (dout['cvr_idx'] * step - lag_samples) * (1/freq)
+
+# #!# Correct the lag by the median of the GM - missing weighted average though.
 
 data_squeeze = np.empty_like(data_3d[0])
 
@@ -56,6 +58,7 @@ for k in ['cvr_lag', 'cvr_masked_physio_only', 'tmap']:
 
 dout['cvr_masked'] = dout['cvr_masked_physio_only']*mask_t
 
+os.makedirs(out_dir)
 # export everything
 for k in dout.keys():
-    np.savetxt(os.path.join(out_dir, f'{prefix}_{k}.1D'), dout[k])
+    np.savetxt(os.path.join(out_dir, f'{prefix}_{k}.1D'), dout[k], fmt="%0.6f")

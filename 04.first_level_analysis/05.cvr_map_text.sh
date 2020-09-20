@@ -30,9 +30,9 @@ cwd=$( pwd )
 let poslag=lag*freq
 let miter=poslag*2
 
-func=${fdir}/01.${flpr}_task-breathhold_optcom_bold_parc-${parc}
-fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 flpr=sub-${sub}_ses-${ses}
+fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
+func=${fdir}/01.${flpr}_task-breathhold_optcom_bold_parc-${parc}
 
 matdir=${flpr}_${parc}_mat
 

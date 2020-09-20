@@ -23,6 +23,9 @@ lag=9
 freq=40
 tr=1.5
 
+# Number of voxel in atlas
+anvx=${wdr}/sub-${sub}/ses-01/atlases/sub-${sub}_${parc}_vx.1D
+
 ### Main ###
 
 cwd=$( pwd )
@@ -91,7 +94,7 @@ tscore=${tscore##* }
 
 python3 ${scriptdir}/20.python_scripts/compute_cvr_text.py \
 		${tmp}/tmp.${flpr}_${parc}_05cmt_res ${step} ${lag} \
-		${freq} ${tscore} ${flpr}_${parc} ${flpr}_${ftype}_map_cvr
+		${freq} ${tscore} ${flpr}_${parc} ${flpr}_${parc}_map_cvr ${anvx}
 
 rm -rf ${tmp}/tmp.${flpr}_${parc}_05cmt_*
 

@@ -12,6 +12,7 @@ freq = sys.argv[4]
 t_thr = sys.argv[5]
 prefix = sys.argv[6]
 out_dir = sys.argv[7]
+atlas_nvx = sys.argv[8]
 
 lag_samples = lag * freq
 n_iter = lag_samples * 2
@@ -36,7 +37,14 @@ data_3d = np.stack([data[i] for i in data.keys()], 0)
 dout['cvr_idx'] = data_3d[:, :, 2].argmax(axis=0)
 dout['cvr_lag'] = (dout['cvr_idx'] * step - lag_samples) * (1/freq)
 
-# #!# Correct the lag by the median of the GM - missing weighted average though.
+# Correct the lag by the median of the GM
+if atlas_nvx:
+    nvx = np.genfromtxt(atlas_nvx)
+    tot_lag = []
+    for n, i in enumerate(nvx):
+        tot_lag = tot_lag + [dout['cvr_lag'][n]] * i
+
+    dout['cvr_lag'] = dout['cvr_lag'] - np.median(tot_lag)
 
 data_squeeze = np.empty_like(data_3d[0])
 

@@ -91,7 +91,7 @@ tscore=${tscore##* }
 
 python3 ${scriptdir}/20.python_scripts/compute_cvr_text.py \
 		${tmp}/tmp.${flpr}_${parc}_05cmt_res ${step} ${lag} \
-		${freq} ${tscore} ${flpr}_${parc}
+		${freq} ${tscore} ${flpr}_${parc} ${flpr}_${ftype}_map_cvr
 
 rm -rf ${tmp}/tmp.${flpr}_${parc}_05cmt_*
 

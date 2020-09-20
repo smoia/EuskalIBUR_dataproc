@@ -53,17 +53,22 @@ fi
 
 fslmaths ${atlas} -mas sub-${sub}_GM_native ${atlas}_masked
 
-# Extract timeseries
-3dROIstats -mask ${atlas}_masked.nii.gz -nzmean -nomeanout \
-		   -1Dformat ${func}.nii.gz > ${tmp}/tmp.${flpr}_${parc}_06et/atlas.1D
+# Extract timeseries, label number, and number of voxels in each label
+fslmeants -i ${func} --label=${atlas}_masked > ${tmp}/tmp.${flpr}_${parc}_06et/atlas.1D
+fslmeants -i ${atlas}_masked --label=${atlas}_masked --transpose > ${atlas}_labels.1D
+
+touch ${atlas}_vx.1D
+for n in $(cat ${atlas}_labels.1D)
+do
+	let l=n-1
+	let u=n+1
+	fslstats ${atlas}_masked -l ${l} -u ${u} -V >> ${atlas}_vx.1D
+done
 
 # Compute SPC
 
-# 
-
-
-
-${fdir}/00.${flpr}_task-breathhold_optcom_bold_parc-${parc}
+python3 ${scriptdir}/20.python_scripts/compute_1d_spc.py ${tmp}/tmp.${flpr}_${parc}_06et/atlas.1D \
+${fdir}/00.${flpr}_task-breathhold_optcom_bold_parc-${parc}.1Dx
 
 rm -rf ${tmp}/tmp.${flpr}_${parc}_06et
 

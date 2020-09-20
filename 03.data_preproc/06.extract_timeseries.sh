@@ -68,7 +68,12 @@ done
 # Compute SPC
 
 python3 ${scriptdir}/20.python_scripts/compute_1d_spc.py ${tmp}/tmp.${flpr}_${parc}_06et/atlas.1D \
-${fdir}/00.${flpr}_task-breathhold_optcom_bold_parc-${parc}.1Dx
+${fdir}/00.${flpr}_task-breathhold_optcom_bold_parc-${parc}.1D
+# ${tmp}/tmp.${flpr}_${parc}_06et/spc.1D
+
+# Check that this actually works on 3dDeconvolve, otherwise use labels to format it right
+# 3dROIstats -mask ${atlas}_labels.1D -1Dformat \
+# 			 ${tmp}/tmp.${flpr}_${parc}_06et/spc.1D > ${fdir}/00.${flpr}_task-breathhold_optcom_bold_parc-${parc}.1D
 
 rm -rf ${tmp}/tmp.${flpr}_${parc}_06et
 

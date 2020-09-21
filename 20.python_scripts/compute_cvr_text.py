@@ -13,6 +13,7 @@ t_thr = sys.argv[5]
 prefix = sys.argv[6]
 out_dir = sys.argv[7]
 atlas_nvx = sys.argv[8]
+atlas_labels = sys.argv[9]
 
 lag_samples = lag * freq
 n_iter = lag_samples * 2
@@ -39,7 +40,7 @@ dout['cvr_lag'] = (dout['cvr_idx'] * step - lag_samples) * (1/freq)
 
 # Correct the lag by the median of the GM
 if atlas_nvx:
-    nvx = np.genfromtxt(atlas_nvx)
+    nvx = np.genfromtxt(f'{atlas_nvx}_vx.1D')
     tot_lag = []
     for n, i in enumerate(nvx):
         tot_lag = tot_lag + [dout['cvr_lag'][n]] * i
@@ -62,9 +63,20 @@ mask_t = (dout['tmap'] >= t_thr) * 1
 
 # mask maps
 for k in ['cvr_lag', 'cvr_masked_physio_only', 'tmap']:
-    dout[k] = dout[k]*mask_l
+    dout[k] = dout[k] * mask_l
 
-dout['cvr_masked'] = dout['cvr_masked_physio_only']*mask_t
+dout['cvr_masked'] = dout['cvr_masked_physio_only'] * mask_t
+
+# If this info is provided, also "complete" the atlas by inserting missing parcels.
+if atlas_nvx and atlas_labels:
+    sub_labels = np.genfromtxt(f'{atlas_nvx}_labels.1D')
+    tot_labels = np.genfromtxt(atlas_labels)
+
+    for n, l in enumerate(tot_labels):
+        if sub_labels[n] < l:
+            sub_labels = np.insert(sub_labels, n+1, l)
+            for k in dout.keys():
+                dout[k] = np.insert(dout[k], n+1, 0)
 
 os.makedirs(out_dir)
 # export everything

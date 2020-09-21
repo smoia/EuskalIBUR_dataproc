@@ -24,7 +24,8 @@ freq=40
 tr=1.5
 
 # Number of voxel in atlas
-anvx=${wdr}/sub-${sub}/ses-01/atlases/sub-${sub}_${parc}_vx.1D
+anvx=${wdr}/sub-${sub}/ses-01/atlases/sub-${sub}_${parc}
+alabel=${scriptdir}/90.template/${parc}.nii.gz
 
 ### Main ###
 
@@ -94,7 +95,8 @@ tscore=${tscore##* }
 
 python3 ${scriptdir}/20.python_scripts/compute_cvr_text.py \
 		${tmp}/tmp.${flpr}_${parc}_05cmt_res ${step} ${lag} \
-		${freq} ${tscore} ${flpr}_${parc} ${wdr}/CVR/${flpr}_${parc}_map_cvr ${anvx}
+		${freq} ${tscore} ${flpr}_${parc} ${wdr}/CVR/${flpr}_${parc}_map_cvr \
+		${anvx} ${alabel}
 
 rm -rf ${tmp}/tmp.${flpr}_${parc}_05cmt_*
 

@@ -56,12 +56,12 @@ fi
 Atlas_yeo=/scripts/90.template/Schaefer2018_100Parcels_7Networks_order_FSLMNI152_1mm.nii.gz
 Atlas_vessel=/scripts/90.template/ATTbasedFlowTerritories.nii.gz
 # transform yeo atlas from MNI to func space
-# antsApplyTransforms -d 3 -i $Atlas_yeo \
-# 					-r /Data/${SUBJ}/ses-01/reg/${SUBJ}_sbref.nii.gz -o ${tmp_dir}/Yeo_atlas2${SUBJ}_FUNC.nii.gz \
-#           -n Multilabel -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
-#           -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
-#           -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std0GenericAffine.mat ,1] \
-#           -t /Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz -v
+antsApplyTransforms -d 3 -i $Atlas_yeo \
+					-r /Data/${SUBJ}/ses-01/reg/${SUBJ}_sbref.nii.gz -o ${tmp_dir}/Yeo_atlas2${SUBJ}_FUNC.nii.gz \
+          -n Multilabel -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
+          -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
+          -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std0GenericAffine.mat ,1] \
+          -t /Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz -v
 
 # transfrom vessels territories atlas from MNI to func space
 antsApplyTransforms -d 3 -i $Atlas_vessel \
@@ -71,12 +71,12 @@ antsApplyTransforms -d 3 -i $Atlas_vessel \
           -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std0GenericAffine.mat ,1] \
           -t /Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz -v
 
-# antsApplyTransforms -d 3 -i $FS_aparc \
-# 					-r /Data/${SUBJ}/ses-01/reg/${SUBJ}_sbref.nii.gz -o ${tmp_dir}/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz \
-#           -n Multilabel -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
-#           -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
-#          -v
+antsApplyTransforms -d 3 -i $FS_aparc \
+					-r /Data/${SUBJ}/ses-01/reg/${SUBJ}_sbref.nii.gz -o ${tmp_dir}/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz \
+          -n Multilabel -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
+          -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
+         -v
 
-# cp ${tmp_dir}/Yeo_atlas2${SUBJ}_FUNC.nii.gz /Data/${SUBJ}/ses-01/atlas/Yeo_atlas2${SUBJ}_FUNC.nii.gz
-# cp ${tmp_dir}/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz  /Data/${SUBJ}/ses-01/atlas/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz
+cp ${tmp_dir}/Yeo_atlas2${SUBJ}_FUNC.nii.gz /Data/${SUBJ}/ses-01/atlas/Yeo_atlas2${SUBJ}_FUNC.nii.gz
+cp ${tmp_dir}/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz  /Data/${SUBJ}/ses-01/atlas/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz
 cp ${tmp_dir}/ATTbasedFlowTerritories2${SUBJ}_FUNC.nii.gz /Data/${SUBJ}/ses-01/atlas/ATTbasedFlowTerritories2${SUBJ}_FUNC.nii.gz

@@ -2,7 +2,7 @@ subjects=('sub-001' 'sub-002' 'sub-003' 'sub-004' 'sub-007' 'sub-008' 'sub-009')
 # project main directory 
 PRJDIR=/bcbl/home/public/PJMASK_2
 # directory containing scripts and containers
-wdir=/bcbl/home/home_n-z/vferrer
+wdir=/bcbl/home/public/PJMASK_2
 for subj in ${subjects[*]};
     do
     error=/bcbl/home/home_n-z/vferrer/atlas_${subj}_error.txt

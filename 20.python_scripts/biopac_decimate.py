@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
+import sys
 import os
 import biopac_preproc as bio
 import matplotlib.pyplot as plt
 
 from shutil import copyfile
 
-wdir = '/data'
+wdir = sys.argv[1]
 SET_DPI = 100
 
 cwd = os.getcwd()

@@ -20,12 +20,14 @@ then
 	mkdir ../LogFiles
 fi
 
-for sub in 001 002 003 004 005 006 007 008 009 010
-do
-	rm ${wdr}/../LogFiles/${sub}_motor_pipe
-	qsub -q long.q -N "m_${sub}_01_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_motor_pipe -e ${wdr}/../LogFiles/${sub}_motor_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} 01
-	qsub -q long.q -N "m_${sub}_01_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_motor_pipe -e ${wdr}/../LogFiles/${sub}_motor_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} 02
-done
+qsub -q long.q -N "biopac_EuskalIBUR" -o ${wdr}/../LogFiles/biopac_decimate -e ${wdr}/../LogFiles/biopac_decimate ${wdr}/98.hcp/run_biopac_decimate.sh
+
+# for sub in 001 002 003 004 005 006 007 008 009 010
+# do
+# 	rm ${wdr}/../LogFiles/${sub}_motor_pipe
+# 	qsub -q long.q -N "m_${sub}_01_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_motor_pipe -e ${wdr}/../LogFiles/${sub}_motor_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} 01
+# 	qsub -q long.q -N "m_${sub}_01_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_motor_pipe -e ${wdr}/../LogFiles/${sub}_motor_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} 02
+# done
 
 # joblist=""
 

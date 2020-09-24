@@ -111,4 +111,39 @@ do
 
 done
 
+# Repeat part of it for optcom
+bold=${flpr}_task-motor_optcom_bold
+
+echo "************************************"
+echo "*** Func Nuiscomp motor BOLD optcom"
+echo "************************************"
+echo "************************************"
+
+/scripts/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none yes 0.3 0.05 yes
+
+echo "************************************"
+echo "*** Func Pepolar motor BOLD optcom"
+echo "************************************"
+echo "************************************"
+
+/scripts/02.func_preproc/02.func_pepolar.sh ${bold}_den ${fdir} ${sbrf}_topup
+
+echo "************************************"
+echo "*** Func smoothing motor BOLD optcom"
+echo "************************************"
+echo "************************************"
+
+/scripts/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 3 ${mask}
+
+echo "************************************"
+echo "*** Func SPC motor BOLD optcom"
+echo "************************************"
+echo "************************************"
+
+/scripts/02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir}
+
+# Rename output
+immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
+
+
 /scripts/00.pipelines/clearspace.sh ${sub} ${ses} ${wdr} task

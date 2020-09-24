@@ -21,6 +21,8 @@ dprj=${8:-yes}
 # thresholds
 mthr=${9:-0.3}
 othr=${10:-0.05}
+no_motreg=${11:-no}
+no_detrend=${12:-no}
 
 ######################################
 ######### Script starts here #########
@@ -61,14 +63,23 @@ echo "Preparing censoring"
 # 04.2. Create matrix
 echo "Preparing nuisance matrix"
 
-run3dDeconvolve="3dDeconvolve -input ${func_in}.nii.gz \
-				 -polort 5 -float \
+run3dDeconvolve="3dDeconvolve -input ${func_in}.nii.gz -float \
 				 -censor ${func}_censors.1D \
 				 -x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
 				 -x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
-				 -x1D_stop \
-				 -ortvec ${fmat}_mcf_demean.par motdemean \
-				 -ortvec ${fmat}_mcf_deriv1.par motderiv1"
+				 -x1D_stop"
+				
+
+if [[ "${no_detrend}" != "yes" ]]
+then
+	run3dDeconvolve="${run3dDeconvolve} -polort 5"
+fi
+
+if [[ "${no_motreg}" != "yes" ]]
+then
+	run3dDeconvolve="${run3dDeconvolve} -ortvec ${fmat}_mcf_demean.par motdemean \
+				 						-ortvec ${fmat}_mcf_deriv1.par motderiv1"
+fi
 
 if [ -e "${fmat}_rej_ort.1D" ]
 then

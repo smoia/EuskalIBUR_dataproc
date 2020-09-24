@@ -23,7 +23,7 @@ for sub in range(1, 11):
         for task in ['breathhold', 'motor', 'simon', 'pinel', 'rest']:
             os.chdir(wdir)
             path = f'sub-{sub:03g}/ses-{ses:02g}/func'
-            filename = f'sub-{sub:03g}_ses-{ses:02g}_task-breathhold_physio'
+            filename = f'sub-{sub:03g}_ses-{ses:02g}_task-{task}_physio'
             try:
                 os.chdir(path)
                 if not os.path.exists('../func_phys'):

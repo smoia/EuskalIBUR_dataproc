@@ -15,15 +15,15 @@ if [[ -z "${SUBJ}" ]]; then
   fi
 fi
 
-FS_aparc=/Data/${SUBJ}/ses-01/atlas/${SUBJ}_aparc.a2009s+aseg.nii.gz
-tmp_dir=/Data/tmp_fuse
+FS_aparc=/data/${SUBJ}/ses-01/atlas/${SUBJ}_aparc.a2009s+aseg.nii.gz
+tmp_dir=/tmp
 
 if [[ -d $tmp_dir ]]; then
 	echo ""
 else
 	mkdir -p $tmp_dir
 fi
-tmp_dir=/Data/tmp_fuse/${SUBJ}
+tmp_dir=/data/tmp_fuse/${SUBJ}
 if [[ -d $tmp_dir ]]; then
 	echo ""
 else
@@ -57,26 +57,26 @@ Atlas_yeo=/scripts/90.template/Schaefer2018_100Parcels_7Networks_order_FSLMNI152
 Atlas_vessel=/scripts/90.template/ATTbasedFlowTerritories.nii.gz
 # transform yeo atlas from MNI to func space
 antsApplyTransforms -d 3 -i $Atlas_yeo \
-					-r /Data/${SUBJ}/ses-01/reg/${SUBJ}_sbref.nii.gz -o ${tmp_dir}/Yeo_atlas2${SUBJ}_FUNC.nii.gz \
-          -n Multilabel -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
-          -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
-          -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std0GenericAffine.mat ,1] \
-          -t /Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz -v
+					-r /data/${SUBJ}/ses-01/reg/${SUBJ}_sbref.nii.gz -o ${tmp_dir}/Yeo_atlas2${SUBJ}_FUNC.nii.gz \
+          -n Multilabel -t [/data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
+          -t [/data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
+          -t [/data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std0GenericAffine.mat ,1] \
+          -t /data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz -v
 
 # transfrom vessels territories atlas from MNI to func space
 antsApplyTransforms -d 3 -i $Atlas_vessel \
-					-r /Data/${SUBJ}/ses-01/reg/${SUBJ}_sbref.nii.gz -o ${tmp_dir}/ATTbasedFlowTerritories2${SUBJ}_FUNC.nii.gz \
-          -n Multilabel -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
-          -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
-          -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std0GenericAffine.mat ,1] \
-          -t /Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz -v
+					-r /data/${SUBJ}/ses-01/reg/${SUBJ}_sbref.nii.gz -o ${tmp_dir}/ATTbasedFlowTerritories2${SUBJ}_FUNC.nii.gz \
+          -n Multilabel -t [/data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
+          -t [/data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
+          -t [/data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std0GenericAffine.mat ,1] \
+          -t /data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz -v
 
 antsApplyTransforms -d 3 -i $FS_aparc \
-					-r /Data/${SUBJ}/ses-01/reg/${SUBJ}_sbref.nii.gz -o ${tmp_dir}/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz \
-          -n Multilabel -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
-          -t [/Data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
+					-r /data/${SUBJ}/ses-01/reg/${SUBJ}_sbref.nii.gz -o ${tmp_dir}/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz \
+          -n Multilabel -t [/data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
+          -t [/data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
          -v
 
-cp ${tmp_dir}/Yeo_atlas2${SUBJ}_FUNC.nii.gz /Data/${SUBJ}/ses-01/atlas/Yeo_atlas2${SUBJ}_FUNC.nii.gz
-cp ${tmp_dir}/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz  /Data/${SUBJ}/ses-01/atlas/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz
-cp ${tmp_dir}/ATTbasedFlowTerritories2${SUBJ}_FUNC.nii.gz /Data/${SUBJ}/ses-01/atlas/ATTbasedFlowTerritories2${SUBJ}_FUNC.nii.gz
+cp ${tmp_dir}/Yeo_atlas2${SUBJ}_FUNC.nii.gz /data/${SUBJ}/ses-01/atlas/Yeo_atlas2${SUBJ}_FUNC.nii.gz
+cp ${tmp_dir}/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz  /data/${SUBJ}/ses-01/atlas/${SUBJ}_aparc.a2009s+aseg_FUNC.nii.gz
+cp ${tmp_dir}/ATTbasedFlowTerritories2${SUBJ}_FUNC.nii.gz /data/${SUBJ}/ses-01/atlas/ATTbasedFlowTerritories2${SUBJ}_FUNC.nii.gz

@@ -1,7 +1,7 @@
 #$ -S /bin/bash
 #$ -cwd
 #$ -m be
-#$ -M v.ferrer@bcbl.eu
+#$ -M s.moia@bcbl.eu
 #$ -q long.q
 
 if [[ -z "${PRJDIR}" ]]; then

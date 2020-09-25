@@ -3,7 +3,7 @@
 #$ -o out.txt
 #$ -e err.txt
 #$ -m be
-#$ -M v.ferrer@bcbl.eu
+#$ -M s.moia@bcbl.eu
 #$ -N mni2func
 #$ -S /bin/bash
 if [[ -z "${SUBJ}" ]]; then

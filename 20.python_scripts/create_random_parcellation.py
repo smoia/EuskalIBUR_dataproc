@@ -14,7 +14,7 @@ from itertools import compress
 
 os.chdir('../90.template')
 os.makedirs('rand_atlas')
-mni_img = nib.load('MNI152_T1_1mm_GM_resamp_2.5mm.nii.gz')
+mni_img = nib.load('MNI152_T1_1mm_GM_resamp_2.5mm_dil.nii.gz')
 mni_data = mni_img.get_fdata()
 
 # Flatten mni_data

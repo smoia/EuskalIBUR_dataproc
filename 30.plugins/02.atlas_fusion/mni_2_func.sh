@@ -61,7 +61,7 @@ for parc in $( seq 2 120 )
 do
 	antsApplyTransforms -d 3 -i /scripts/90.template/rand_atlas/${parc}-parc.nii.gz \
 						-r /data/${SUBJ}/ses-01/reg/${SUBJ}_sbref.nii.gz -o /data/${SUBJ}/ses-01/atlas/${SUBJ}_rand-${parc}.nii.gz \
-						-n Multilabel -t [/data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
+						-n NearestNeighbor -t [/data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_sbref0GenericAffine.mat] \
 						-t [/data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_T2w2${SUBJ}_ses-01_acq-uni_T1w0GenericAffine.mat,1] \
 						-t [/data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std0GenericAffine.mat ,1] \
 						-t /data/${SUBJ}/ses-01/reg/${SUBJ}_ses-01_acq-uni_T1w2std1InverseWarp.nii.gz -v

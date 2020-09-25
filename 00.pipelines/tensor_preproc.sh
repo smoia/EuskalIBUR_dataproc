@@ -35,36 +35,36 @@ echo "${printline} " "$@"
 #########    Task preproc    #########
 ######################################
 
-# for e in  $( seq 1 ${nTE} )
-# do
-# 	echo "************************************"
-# 	echo "*** Func correct motor BOLD echo ${e}"
-# 	echo "************************************"
-# 	echo "************************************"
+for e in  $( seq 1 ${nTE} )
+do
+	echo "************************************"
+	echo "*** Func correct motor BOLD echo ${e}"
+	echo "************************************"
+	echo "************************************"
 
-# 	bold=${flpr}_task-motor_echo-${e}_bold
-# 	/scripts/02.func_preproc/01.func_correct.sh ${bold} ${fdir} ${vdsc} ${dspk} ${siot}
-# done
+	bold=${flpr}_task-motor_echo-${e}_bold
+	/scripts/02.func_preproc/01.func_correct.sh ${bold} ${fdir} ${vdsc} ${dspk} ${siot}
+done
 
-# echo "************************************"
-# echo "*** Func spacecomp motor echo 1"
-# echo "************************************"
-# echo "************************************"
+echo "************************************"
+echo "*** Func spacecomp motor echo 1"
+echo "************************************"
+echo "************************************"
 
-# fmat=${flpr}_task-motor_echo-1_bold
+fmat=${flpr}_task-motor_echo-1_bold
 
-# /scripts/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} none ${sbrf}
+/scripts/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} none ${sbrf}
 
-# for e in $( seq 1 ${nTE} )
-# do
-# 	echo "************************************"
-# 	echo "*** Func realign motor BOLD echo ${e}"
-# 	echo "************************************"
-# 	echo "************************************"
+for e in $( seq 1 ${nTE} )
+do
+	echo "************************************"
+	echo "*** Func realign motor BOLD echo ${e}"
+	echo "************************************"
+	echo "************************************"
 
-# 	bold=${flpr}_task-motor_echo-${e}_bold_cr
-# 	/scripts/02.func_preproc/04.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf}
-# done
+	bold=${flpr}_task-motor_echo-${e}_bold_cr
+	/scripts/02.func_preproc/04.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf}
+done
 
 echo "************************************"
 echo "*** Func MEICA motor BOLD"
@@ -73,43 +73,43 @@ echo "************************************"
 
 /scripts/02.func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}"
 
-# # As it's motor, don't skip smoothing and denoising!
-# for e in $( seq 1 ${nTE} )
-# do
-# 	bold=${flpr}_task-motor_echo-${e}_bold
+# As it's motor, don't skip smoothing and denoising!
+for e in $( seq 1 ${nTE} )
+do
+	bold=${flpr}_task-motor_echo-${e}_bold
 	
-# 	echo "************************************"
-# 	echo "*** Func Nuiscomp motor BOLD echo ${e}"
-# 	echo "************************************"
-# 	echo "************************************"
+	echo "************************************"
+	echo "*** Func Nuiscomp motor BOLD echo ${e}"
+	echo "************************************"
+	echo "************************************"
 
-# 	/scripts/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none
+	/scripts/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none
 	
-# 	echo "************************************"
-# 	echo "*** Func Pepolar motor BOLD echo ${e}"
-# 	echo "************************************"
-# 	echo "************************************"
+	echo "************************************"
+	echo "*** Func Pepolar motor BOLD echo ${e}"
+	echo "************************************"
+	echo "************************************"
 
-# 	/scripts/02.func_preproc/02.func_pepolar.sh ${bold}_den ${fdir} ${sbrf}_topup
+	/scripts/02.func_preproc/02.func_pepolar.sh ${bold}_den ${fdir} ${sbrf}_topup
 
-# 	echo "************************************"
-# 	echo "*** Func smoothing motor BOLD echo ${e}"
-# 	echo "************************************"
-# 	echo "************************************"
+	echo "************************************"
+	echo "*** Func smoothing motor BOLD echo ${e}"
+	echo "************************************"
+	echo "************************************"
 
-# 	/scripts/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 3 ${mask}
+	/scripts/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 3 ${mask}
 
-# 	echo "************************************"
-# 	echo "*** Func SPC motor BOLD echo ${e}"
-# 	echo "************************************"
-# 	echo "************************************"
+	echo "************************************"
+	echo "*** Func SPC motor BOLD echo ${e}"
+	echo "************************************"
+	echo "************************************"
 
-# 	/scripts/02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir}
+	/scripts/02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir}
 
-# 	# Rename output
-# 	immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
+	# Rename output
+	immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
-# done
+done
 
 # Repeat part of it for optcom
 bold=${flpr}_task-motor_optcom_bold

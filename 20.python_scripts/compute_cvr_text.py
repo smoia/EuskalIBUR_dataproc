@@ -6,14 +6,25 @@ import os
 import numpy as np
 
 stats_dir = sys.argv[1]
-step = sys.argv[2]
-lag = sys.argv[3]
-freq = sys.argv[4]
-t_thr = sys.argv[5]
+step = int(sys.argv[2])
+lag = int(sys.argv[3])
+freq = int(sys.argv[4])
+t_thr = float(sys.argv[5])
 prefix = sys.argv[6]
 out_dir = sys.argv[7]
 atlas_nvx = sys.argv[8]
-atlas_labels = sys.argv[9]
+# atlas_labels = sys.argv[9]
+atlas_labels=''
+
+print(f'stats_dir=\'{stats_dir}\'')
+print(f'step={step}')
+print(f'lag={lag}')
+print(f'freq={freq}')
+print(f't_thr={t_thr}')
+print(f'prefix=\'{prefix}\'')
+print(f'out_dir=\'{out_dir}\'')
+print(f'atlas_nvx=\'{atlas_nvx}\'')
+print(f'atlas_labels=\'{atlas_labels}\'')
 
 lag_samples = lag * freq
 n_iter = lag_samples * 2
@@ -25,7 +36,7 @@ data = dict.fromkeys(range(0, n_iter, step))
 for i in data.keys():
     # Read last three columns of stats files
     # This is possible only in optcom because first and last columns are the same
-    data[i] = np.genfromtxt(os.path.join(stats_dir, f'stats_{i}.1D'),
+    data[i] = np.genfromtxt(os.path.join(stats_dir, f'stats_{i:04d}.1D'),
                             skip_header=9)[:, 2:]  # check axis
 
 # Concatenate and find index of max value and max value
@@ -40,10 +51,11 @@ dout['cvr_lag'] = (dout['cvr_idx'] * step - lag_samples) * (1/freq)
 
 # Correct the lag by the median of the GM
 if atlas_nvx:
-    nvx = np.genfromtxt(f'{atlas_nvx}_vx.1D')
+    nvx = np.genfromtxt(f'{atlas_nvx}_vx.1D')[:, 0]
     tot_lag = []
     for n, i in enumerate(nvx):
-        tot_lag = tot_lag + [dout['cvr_lag'][n]] * i
+        print(i)
+        tot_lag = tot_lag + [dout['cvr_lag'][n]] * int(i)
 
     dout['cvr_lag'] = dout['cvr_lag'] - np.median(tot_lag)
 
@@ -78,7 +90,10 @@ if atlas_nvx and atlas_labels:
             for k in dout.keys():
                 dout[k] = np.insert(dout[k], n+1, 0)
 
-os.makedirs(out_dir)
+try:
+    os.makedirs(out_dir)
+except:
+    print('Folder exists')
 # export everything
 for k in dout.keys():
     np.savetxt(os.path.join(out_dir, f'{prefix}_{k}.1D'), dout[k], fmt="%0.6f")

@@ -27,7 +27,7 @@ do
 		continue
 	fi
 
-      atlas=${wdr}/sub-${sub}/ses-01/atlases/sub-${sub}_${parc}_labels.1D
+      atlas=${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}_labels.1D
 
 	echo "%%% Working on subject ${sub} %%%"
 

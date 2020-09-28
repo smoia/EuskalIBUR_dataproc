@@ -16,7 +16,7 @@ wdr=${5:-/data}
 scriptdir=${6:-/scripts}
 tmp=${7:-/tmp}
 
-atlas=${wdr}/sub-${sub}/ses-01/atlases/sub-${sub}_${parc}
+atlas=${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}
 
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 
@@ -44,6 +44,7 @@ anat=sub-${sub}_ses-01_acq-uni_T1w
 
 if [ ! -e sub-${sub}_GM_native.nii.gz ]
 then
+	echo "Move GM in functional space"
 	antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-01/anat_preproc/${anat}_GM.nii.gz \
 						-r ${wdr}/sub-${sub}/ses-${ses}/reg/${mref}.nii.gz \
 						-o sub-${sub}_GM_native.nii.gz -n MultiLabel \
@@ -51,6 +52,7 @@ then
 						-t [${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${anat}0GenericAffine.mat,1]
 fi
 
+echo ""
 fslmaths ${atlas} -mas sub-${sub}_GM_native ${atlas}_masked
 
 # Extract timeseries, label number, and number of voxels in each label

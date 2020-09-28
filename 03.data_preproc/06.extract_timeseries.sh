@@ -62,8 +62,8 @@ fslmeants -i ${atlas}_masked --label=${atlas}_masked --transpose > ${atlas}_labe
 touch ${atlas}_vx.1D
 for n in $(cat ${atlas}_labels.1D)
 do
-	let l=n-1
-	let u=n+1
+	let l=${n%.*}-1
+	let u=${n%.*}+1
 	fslstats ${atlas}_masked -l ${l} -u ${u} -V >> ${atlas}_vx.1D
 done
 

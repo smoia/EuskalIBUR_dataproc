@@ -20,12 +20,15 @@ then
 	mkdir ../LogFiles
 fi
 
-for sub in 001 002 003 004 005 006 007 008 009 010
-do
-	rm ${wdr}/../LogFiles/${sub}_motor_pipe
-	qsub -q long.q -N "m_${sub}_01_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_motor_pipe -e ${wdr}/../LogFiles/${sub}_motor_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} 01
-	qsub -q long.q -N "m_${sub}_01_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_motor_pipe -e ${wdr}/../LogFiles/${sub}_motor_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} 02
-done
+rm ${wdr}/../LogFiles/cvr_parc_pipe
+qsub -q short.q -N "cvr_parc_EuskalIBUR" -o ${wdr}/../LogFiles/cvr_parc_pipe -e ${wdr}/../LogFiles/cvr_parc_pipe ${wdr}/98.hcp/run_cvrparc_pipeline.sh
+
+# for sub in 001 002 003 004 005 006 007 008 009 010
+# do
+# 	rm ${wdr}/../LogFiles/${sub}_motor_pipe
+# 	qsub -q long.q -N "m_${sub}_01_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_motor_pipe -e ${wdr}/../LogFiles/${sub}_motor_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} 01
+# 	qsub -q long.q -N "m_${sub}_01_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_motor_pipe -e ${wdr}/../LogFiles/${sub}_motor_pipe ${wdr}/98.hcp/run_subject_pipeline.sh ${sub} 02
+# done
 
 # joblist=""
 

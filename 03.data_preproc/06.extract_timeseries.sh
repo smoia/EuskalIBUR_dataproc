@@ -40,11 +40,11 @@ mkdir ${tmp}/tmp.${flpr}_${parc}_06et
 
 mref=sub-${sub}_sbref
 aref=sub-${sub}_ses-01_T2w
-anat=sub-${sub}_ses-01_acq-uni_T1w_GM
+anat=sub-${sub}_ses-01_acq-uni_T1w
 
 if [ ! -e sub-${sub}_GM_native.nii.gz ]
 then
-	antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-01/anat_preproc/${anat}.nii.gz \
+	antsApplyTransforms -d 3 -i ${wdr}/sub-${sub}/ses-01/anat_preproc/${anat}_GM.nii.gz \
 						-r ${wdr}/sub-${sub}/ses-${ses}/reg/${mref}.nii.gz \
 						-o sub-${sub}_GM_native.nii.gz -n MultiLabel \
 						-t ${wdr}/sub-${sub}/ses-${ses}/reg/${aref}2${mref}0GenericAffine.mat \

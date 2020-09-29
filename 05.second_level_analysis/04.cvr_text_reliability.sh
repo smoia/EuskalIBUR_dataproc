@@ -4,6 +4,7 @@ parc=${1}
 lastses=${2:-10}
 lastsub=${3:-10}
 wdr=${4:-/data}
+scriptdir=${5:-/scripts}
 
 ### Main ###
 cwd=$( pwd )

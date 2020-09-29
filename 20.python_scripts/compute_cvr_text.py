@@ -13,8 +13,8 @@ t_thr = float(sys.argv[5])
 prefix = sys.argv[6]
 out_dir = sys.argv[7]
 atlas_nvx = sys.argv[8]
-# atlas_labels = sys.argv[9]
-atlas_labels=''
+atlas_labels = int(sys.argv[9])
+# atlas_labels=''
 
 print(f'stats_dir=\'{stats_dir}\'')
 print(f'step={step}')
@@ -82,18 +82,31 @@ dout['cvr_masked'] = dout['cvr_masked_physio_only'] * mask_t
 # If this info is provided, also "complete" the atlas by inserting missing parcels.
 if atlas_nvx and atlas_labels:
     sub_labels = np.genfromtxt(f'{atlas_nvx}_labels.1D')
-    tot_labels = np.genfromtxt(atlas_labels)
+    tot_labels = atlas_labels
 
-    for n, l in enumerate(tot_labels):
-        if sub_labels[n] < l:
-            sub_labels = np.insert(sub_labels, n+1, l)
+    for n in range(tot_labels):
+        if sub_labels[n] > n+1:
+            sub_labels = np.insert(sub_labels, n, n+1)
             for k in dout.keys():
-                dout[k] = np.insert(dout[k], n+1, 0)
+                dout[k] = np.insert(dout[k], n, 0)
 
+# Check that all dout have the same size (why not?) and that it's > 20
+# Then export
 try:
     os.makedirs(out_dir)
 except:
     print('Folder exists')
-# export everything
+
+tot_size = 0
 for k in dout.keys():
-    np.savetxt(os.path.join(out_dir, f'{prefix}_{k}.1D'), dout[k], fmt="%0.6f")
+    if dout[k].size > tot_size:
+        tot_size = dout[k].size
+for k in dout.keys():
+    if dout[k].size != tot_size:
+        raise Exception('CVR maps don\'t have same size. Why?!?')
+    else:
+        if tot_size < 20:
+            dout[k] = np.append(dout[k], [0]*(20-tot_size))
+
+        np.savetxt(os.path.join(out_dir, f'{prefix}_{k}.1D'), dout[k],
+                   fmt="%0.6f")

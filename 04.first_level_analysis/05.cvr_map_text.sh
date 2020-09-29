@@ -17,6 +17,7 @@ wdr=${5:-/data}
 scriptdir=${6:-/scripts}
 tmp=${7:-/tmp}
 
+flpr=sub-${sub}_ses-${ses}
 shiftdir=${flpr}_GM_optcom_avg_regr_shift
 step=12
 lag=9
@@ -24,8 +25,8 @@ freq=40
 tr=1.5
 
 # Number of voxel in atlas
-anvx=${wdr}/sub-${sub}/ses-01/atlases/sub-${sub}_${parc}
-alabel=${scriptdir}/90.template/${parc}.nii.gz
+anvx=${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}
+# alabel=${scriptdir}/90.template/${parc}.nii.gz
 
 ### Main ###
 
@@ -34,7 +35,6 @@ cwd=$( pwd )
 let poslag=lag*freq
 let miter=poslag*2
 
-flpr=sub-${sub}_ses-${ses}
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 func=${fdir}/00.${flpr}_task-breathhold_optcom_bold_parc-${parc}
 
@@ -63,7 +63,7 @@ do
 	then
 		# Simply add motparams and polorts ( = N )
 		# Prepare matrix
-		3dDeconvolve -input ${func}.1D\' -jobs 6 \
+		3dDeconvolve -force_TR ${tr} -input ${func}.1D\' -jobs 6 \
 					 -float -num_stimts 1 \
 					 -polort 4 \
 					 -ortvec ${flpr}_motpar_demean.par motdemean \
@@ -71,7 +71,7 @@ do
 					 -stim_file 1 ${shiftdir}/shift_${i}.1D -stim_label 1 PetCO2 \
 					 -x1D ${matdir}/mat.1D \
 					 -xjpeg ${matdir}/mat.jpg \
-					 -rout -tout -force_TR ${tr} \
+					 -rout -tout \
 					 -bucket ${tmp}/tmp.${flpr}_${parc}_05cmt_res/stats_${i}.1D
 
 	fi
@@ -92,6 +92,13 @@ let ndof=ndim-nreg-1
 # Get equivalent in t value
 tscore=$( cdf -p2t fitt ${pval} ${ndof} )
 tscore=${tscore##* }
+
+alabel=0
+case ${parc} in
+	flowterritories ) alabel=9 ;;
+	aparc ) exit ;;
+	schaefer-* | rand-* ) alabel=${parc#*-} ;;
+esac
 
 python3 ${scriptdir}/20.python_scripts/compute_cvr_text.py \
 		${tmp}/tmp.${flpr}_${parc}_05cmt_res ${step} ${lag} \

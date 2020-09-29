@@ -43,7 +43,7 @@ do
     		      echo "Adjusting files for 3dICC call"
                   flpr=sub-${sub}_ses-${ses}
                   3dROIstats -mask ${atlas} -1Dformat \
-                             ${wdr}/CVR/${flpr}_${parc}_map_cvr/${flpr}_${parc}_${inmap} > parcels/${sub}_${ses}_${parc}_${map}
+                             ${wdr}/CVR/${flpr}_${parc}_map_cvr/${flpr}_${parc}_${inmap}.1D > parcels/${sub}_${ses}_${parc}_${map}.1D
 		done
       done
 done	

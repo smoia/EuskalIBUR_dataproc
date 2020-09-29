@@ -62,7 +62,7 @@ echo "*** Compute ICC ${parc}"
 echo "************************************"
 echo "************************************"
 
-/scripts/05.second_level_analysis/04.cvr_text_reliability.sh ${parc} 3 2
+/scripts/05.second_level_analysis/04.cvr_text_reliability.sh ${parc}
 
 echo ""
 echo ""

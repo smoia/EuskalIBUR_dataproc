@@ -34,28 +34,28 @@ echo "************************************"
 echo ""
 echo ""
 
-for sub in 001 002 003 004 007 008 009
-do
-	rm ${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}_labels.1D
-	rm ${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}_vx.1D
-	rm ${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}_masked.nii.gz
+# for sub in 001 002 003 004 007 008 009
+# do
+# 	rm ${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}_labels.1D
+# 	rm ${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}_vx.1D
+# 	rm ${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}_masked.nii.gz
 
-	for ses in $( seq -f %02g 1 ${lastses} )
-	do
+# 	for ses in $( seq -f %02g 1 ${lastses} )
+# 	do
 
-		echo "************************************"
-		echo "*** Extract timeseries sub ${sub} ses ${ses} parc ${parc}"
-		echo "************************************"
-		echo "************************************"
-		/scripts/03.data_preproc/06.extract_timeseries.sh ${sub} ${ses} ${parc}
+# 		echo "************************************"
+# 		echo "*** Extract timeseries sub ${sub} ses ${ses} parc ${parc}"
+# 		echo "************************************"
+# 		echo "************************************"
+# 		/scripts/03.data_preproc/06.extract_timeseries.sh ${sub} ${ses} ${parc}
 
-		echo "************************************"
-		echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
-		echo "************************************"
-		echo "************************************"
-		/scripts/04.first_level_analysis/05.cvr_map_text.sh ${sub} ${ses} ${parc} 
-	done
-done
+# 		echo "************************************"
+# 		echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
+# 		echo "************************************"
+# 		echo "************************************"
+# 		/scripts/04.first_level_analysis/05.cvr_map_text.sh ${sub} ${ses} ${parc} 
+# 	done
+# done
 
 echo "************************************"
 echo "*** Compute ICC ${parc}"

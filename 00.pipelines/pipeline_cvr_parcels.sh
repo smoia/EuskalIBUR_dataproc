@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
+parc=${1}
 wdr=${1:-/data}
 # lastses=${2:-10}
-lastses=3
+lastses=10
 
 logname=pipeline_cvr_parcels_log
 
@@ -27,41 +28,41 @@ echo "************************************"
 cwd=$(pwd)
 
 echo "************************************"
-echo "***    CVR mapping"
+echo "***    CVR mapping ${parc}"
 echo "************************************"
 echo "************************************"
 echo ""
 echo ""
 
-
-for parc in aparc # flowterritories schaefer-100
+for sub in 001 002 003 004 007 008 009
 do
-	for sub in 001 002 # 003 004 007 008 009
+	rm ${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}_labels.1D
+	rm ${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}_vx.1D
+	rm ${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}_masked.nii.gz
+
+	for ses in $( seq -f %02g 1 ${lastses} )
 	do
-		for ses in $( seq -f %02g 1 ${lastses} )
-		do
 
-			echo "************************************"
-			echo "*** Extract timeseries sub ${sub} ses ${ses} parc ${parc}"
-			echo "************************************"
-			echo "************************************"
-			/scripts/03.data_preproc/06.extract_timeseries.sh ${sub} ${ses} ${parc}
+		echo "************************************"
+		echo "*** Extract timeseries sub ${sub} ses ${ses} parc ${parc}"
+		echo "************************************"
+		echo "************************************"
+		/scripts/03.data_preproc/06.extract_timeseries.sh ${sub} ${ses} ${parc}
 
-			echo "************************************"
-			echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
-			echo "************************************"
-			echo "************************************"
-			/scripts/04.first_level_analysis/05.cvr_map_text.sh ${sub} ${ses} ${parc} 
-		done
+		echo "************************************"
+		echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
+		echo "************************************"
+		echo "************************************"
+		/scripts/04.first_level_analysis/05.cvr_map_text.sh ${sub} ${ses} ${parc} 
 	done
-
-	echo "************************************"
-	echo "*** Compute ICC ${parc}"
-	echo "************************************"
-	echo "************************************"
-
-	/scripts/10.visualisation/01.plot_cvr_maps.sh ${parc} 3 2
 done
+
+echo "************************************"
+echo "*** Compute ICC ${parc}"
+echo "************************************"
+echo "************************************"
+
+/scripts/05.second_level_analysis/04.cvr_text_reliability.sh ${parc} 3 2
 
 echo ""
 echo ""

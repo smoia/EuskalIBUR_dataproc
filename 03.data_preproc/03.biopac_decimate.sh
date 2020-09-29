@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-wdr=${1:-/data}
-scriptdir=${2:-/scripts}
+sub=${1}
+wdr=${2:-/data}
+scriptdir=${3:-/scripts}
 
 ### Main ###
 
@@ -11,6 +12,6 @@ cd ${wdr} || exit
 
 echo "Decimating biopac traces"
 
-python3 ${scriptdir}/20.python_scripts/biopac_decimate.py ${wdr}
+python3 ${scriptdir}/20.python_scripts/new_biopac_decimate.py ${wdr} ${sub}
 
 cd ${cwd}

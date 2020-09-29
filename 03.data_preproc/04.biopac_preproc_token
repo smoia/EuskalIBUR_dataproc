@@ -3,18 +3,29 @@ import biopac_preproc as bio
 import matplotlib.pyplot as plt
 import numpy as np
 
-
+TASKS = ['motor', 'simon', 'pinel', 'rest_run-01', 'rest_run-02', 'rest_run-03', 'rest_run-04']
 # # # # # # # # # # #
 #  # # # # # # # # #
 # # # # # # # # # #
-sub = 1
-ses = 1
+sub = 1  # up to 10
+ses = 1  # up to 10 or 11 (sub-004 & sub-010)
+task = 0  # 'motor', 'simon', 'pinel', 'rest_run-01', 'rest_run-02', 'rest_run-03', 'rest_run-04'
 
-print(f'{sub:03g} {ses:02g}')
-filename = f'sub-{sub:03g}/ses-{ses:02g}/func_phys/sub-{sub:03g}_ses-{ses:02g}_task-breathhold_physio'
+print(f'{sub:03g} {ses:02g} {TASKS[task]}')
+filename = f'sub-{sub:03g}/ses-{ses:02g}/func_phys/sub-{sub:03g}_ses-{ses:02g}_task-{TASKS[task]}_physio'
 
-co = np.genfromtxt(f'{filename}_co_orig.1D')
-pidx = np.genfromtxt(f'{filename}_autopeaks.1D').astype('int')
+if ses >= 7:
+    ch = 5
+else:
+    ch = 4
+
+data_filt = np.genfromtxt(f'{filename}_filt.tsv.gz')
+# If you see that not enough peaks get selected, you might tune the next function with thr=x, d_min=y
+[co, pidx] = bio.get_peaks(data_filt[:, ch], filename=f'{filename}_co2peaks')
+
+np.savetxt(f'{filename}_autopeaks.1D', pidx)
+np.savetxt(f'{filename}_co_orig.1D', co)
+
 
 reject_list = np.array([])
 # init def try import from
@@ -23,11 +34,11 @@ def onpick_manualedit(event):
     xdata = thisline.get_xdata()
     ind = event.ind
     xdataind = xdata[ind]
-    print('onpick xind:',xdata[ind])
-    plt.plot(xdataind,co[xdata[ind]],'ro')
+    print('onpick xind:', xdata[ind])
+    plt.plot(xdataind, co[xdata[ind]], 'ro')
 
     global reject_list
-    reject_list = np.append(reject_list,xdataind)
+    reject_list = np.append(reject_list, xdataind)
 
 
 # prepare interactive picking
@@ -42,9 +53,19 @@ line, = ax.plot(pidx, co_y, 'm*', picker=5)
 fig.canvas.mpl_connect('pick_event', onpick_manualedit)
 
 npidx = bio.manualchange(filename, pidx, reject_list)
-if ses < 10:
-	ses +=1
-else:
-	ses = 1
-	sub += 1
 
+if ses < 10:
+    ses +=1
+elif sub < 10:
+    ses = 1
+    sub += 1
+elif task < (len(TASKS) - 1):
+    ses = 1
+    sub = 1
+    task += 1
+else:
+    print('**************')
+    print('**************')
+    print('THAT\'S ALL!!!')
+    print('**************')
+    print('**************')

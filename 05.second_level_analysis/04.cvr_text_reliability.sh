@@ -27,7 +27,12 @@ do
 		continue
 	fi
 
-      atlas=${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}_labels.1D
+      atlas=${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}_labels
+
+      if [ ! -e ${atlas}_check.1D ]
+      then
+            python3 ${scriptdir}/20.python_scripts/check_labels_20.py ${atlas}.1D ${atlas}_check.1D
+      fi
 
 	echo "%%% Working on subject ${sub} %%%"
 
@@ -42,7 +47,7 @@ do
             do
     		      echo "Adjusting files for 3dICC call"
                   flpr=sub-${sub}_ses-${ses}
-                  3dROIstats -mask ${atlas} -1Dformat \
+                  3dROIstats -mask ${atlas}_check.1D -1Dformat \
                              ${wdr}/CVR/${flpr}_${parc}_map_cvr/${flpr}_${parc}_${inmap}.1D > parcels/${sub}_${ses}_${parc}_${map}.1D
 		done
       done

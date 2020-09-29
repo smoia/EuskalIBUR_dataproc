@@ -20,18 +20,25 @@ then
 	mkdir ../LogFiles
 fi
 
-for parc in flowterritories schaefer-100 # aparc flowterritories schaefer-100
+for sub in 001 002 003 004 005 006 007 008 009 010
 do
-	rm ${wdr}/../LogFiles/cvr_${parc}_pipe
-	qsub -q veryshort.q -N "cvr_${parc}_EuskalIBUR" -o ${wdr}/../LogFiles/cvr_${parc}_pipe -e ${wdr}/../LogFiles/cvr_${parc}_pipe ${wdr}/98.hcp/run_cvrparc_pipeline.sh ${parc}
+	rm ${wdr}/../LogFiles/${sub}_biopac_pipe
+	qsub -q long.q -N "bio_${sub}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_biopac_pipe -e ${wdr}/../LogFiles/${sub}_biopac_pipe ${wdr}/98.hcp/run_biopac_decimate.sh ${sub}
 done
 
-for r in $(seq 2 2 120)
-do
-	parc=rand-${r}
-	rm ${wdr}/../LogFiles/cvr_${parc}_pipe
-	qsub -q veryshort.q -N "cvr_${parc}_EuskalIBUR" -o ${wdr}/../LogFiles/cvr_${parc}_pipe -e ${wdr}/../LogFiles/cvr_${parc}_pipe ${wdr}/98.hcp/run_cvrparc_pipeline.sh ${parc}
-done
+
+# for parc in flowterritories schaefer-100 # aparc flowterritories schaefer-100
+# do
+# 	rm ${wdr}/../LogFiles/cvr_${parc}_pipe
+# 	qsub -q veryshort.q -N "cvr_${parc}_EuskalIBUR" -o ${wdr}/../LogFiles/cvr_${parc}_pipe -e ${wdr}/../LogFiles/cvr_${parc}_pipe ${wdr}/98.hcp/run_cvrparc_pipeline.sh ${parc}
+# done
+
+# for r in $(seq 2 2 120)
+# do
+# 	parc=rand-${r}
+# 	rm ${wdr}/../LogFiles/cvr_${parc}_pipe
+# 	qsub -q veryshort.q -N "cvr_${parc}_EuskalIBUR" -o ${wdr}/../LogFiles/cvr_${parc}_pipe -e ${wdr}/../LogFiles/cvr_${parc}_pipe ${wdr}/98.hcp/run_cvrparc_pipeline.sh ${parc}
+# done
 
 # for sub in 001 002 003 004 005 006 007 008 009 010
 # do

@@ -128,12 +128,15 @@ def filter_signal(data_dec, channel=4):
     return resp_filt
 
 
-def get_peaks(co):
+def get_peaks(co, thr=0.5, d_min=120, filename=None):
     # Finding peaks
-    pidx = pk.peak.indexes(co, thres=0.5, min_dist=120).tolist()
+    pidx = pk.peak.indexes(co, thres=thr, min_dist=d_min).tolist()
     plt.figure()
     plt.plot(co)
     plt.plot(co, 'm*', markevery=pidx)
+    if filename:
+        plt.savefig(f'{filename}.png', dpi=SET_DPI, figsize=FIGSIZE)
+        plt.close('all')
     # pidx = np.delete(pidx,[56])
     return co, pidx
 

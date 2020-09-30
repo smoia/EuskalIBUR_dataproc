@@ -48,7 +48,7 @@ for map in ['cvr']:  #, 'lag']:
     plt.xlabel('Number of parcels')
     plt.xlim(0, 120)
     plt.ylabel('ICC')
-    plt.ylim(0, 1)
+    # plt.ylim(0, 1)
 
     # Import ICC values and populate plot #!# Check axes
     for i, parc in enumerate(all_parcs):
@@ -72,10 +72,10 @@ for map in ['cvr']:  #, 'lag']:
 for map in ['cvr']:  #, 'lag']:
     # Setup plot
     plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
-    plt.xlabel('Number of parcels')
+    plt.xlabel('Number of voxels in MNI')
     # plt.xlim(0, 120)
     plt.ylabel('ICC')
-    plt.ylim(0, 1)
+    # plt.ylim(0, 1)
 
     for i, parc in enumerate(all_parcs):
         plt.plot(parcel_nvoxels[parc], icc[map][parc], '.', color=all_colours[i])

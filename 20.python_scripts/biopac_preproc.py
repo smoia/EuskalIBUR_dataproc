@@ -305,7 +305,7 @@ def manualchange(filename, pidx, reject_list):
     pidx = np.array(pidx)
     pmask = np.in1d(pidx, reject_list)
     npidx = list(pidx[~pmask])
-    textname = filename + '_manualpeaks.1D'
+    textname = filename + '_co_manualpeaks.1D'
     np.savetxt(textname, npidx)
     return npidx
 

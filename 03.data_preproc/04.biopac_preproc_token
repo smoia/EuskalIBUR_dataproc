@@ -28,16 +28,18 @@ print(f'subject: {sub:03g}; session:{ses:02g}; task:{TASKS[task]}')
 filename = f'sub-{sub:03g}/ses-{ses:02g}/func_phys/sub-{sub:03g}_ses-{ses:02g}_task-{TASKS[task]}_physio'
 
 if ses >= 7:
-    ch = 2  # 4 is PPG 2 is Belt
+    ch = 2  # 4 is PPG; 2 is Belt
 else:
-    ch = 1  # 3 is PPG 1 is Belt
+    ch = 1  # 3 is PPG; 1 is Belt
 
 dist = 0
 
 if ch == 4 or ch == 3:
     dist = 30
+    ch_name = 'ppg'
 if ch == 1 or ch == 2:
     dist = 100
+    ch_name = 'belt'
 
 data_filt = np.genfromtxt(f'{filename}_filt.tsv.gz')
 
@@ -52,7 +54,7 @@ phys = pk.operations.peakfind_physio(phys, thresh=0.02, dist=dist)
 phys = pk.operations.edit_physio(phys)
 
 # And finally this line (export file)
-path = pk.save_physio(f'{filename}_peaks_ch-{ch}.phys', phys)
+path = pk.save_physio(f'{filename}_peaks_ch-{ch_name}.phys', phys)
 
 # This automates the passage to the next session
 if ses < 10:

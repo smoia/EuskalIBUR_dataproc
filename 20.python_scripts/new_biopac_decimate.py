@@ -23,12 +23,16 @@ def decimate_data(filename, newfreq=40):
     return data_dec
 
 
-def filter_signal(data_dec):
+def filter_signal(data_dec, bw_ppg=[0.5/20, 8/20], bw=2/20):
     ba = sgn.butter(7, 2/20, 'lowpass')
+    ba_ppg = sgn.butter(7, bw_ppg, 'bandpass')
     data_filt = np.empty(data_dec.shape)
     data_filt[:, 0] = data_dec[:, 0]
     for ch in range(1, data_filt.shape[1]):
-        data_filt[:, ch] = sgn.filtfilt(ba[0], ba[1], data_dec[:, ch])
+        if ch == data_filt.shape[1] - 3:
+            data_filt[:, ch] = sgn.filtfilt(ba_ppg[0], ba_ppg[1], data_dec[:, ch])
+        else:
+            data_filt[:, ch] = sgn.filtfilt(ba[0], ba[1], data_dec[:, ch])
 
     np.savetxt(filename + '_filt.tsv.gz', data_filt)
     return data_filt

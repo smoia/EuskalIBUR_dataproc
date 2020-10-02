@@ -45,7 +45,7 @@ echo  -e "\e[34m +++ ===========================================================
 echo  -e "\e[34m +++ ------------> CONVERTING FREESURFER OUTPUT TO NII and GII <------------\e[39m"
 echo  -e "\e[34m +++ =======================================================================\e[39m"
 mkdir /Data/${SUBJ}/ses-01/atlas
-mri_convert -i ${SUBJECTS_DIR}/sub-001/mri/aparc.a2009s+aseg.mgz -o /Data/${SUBJ}/ses-01/atlas/${SUBJ}_aparc.a2009s+aseg.nii.gz
+mri_convert -i ${SUBJECTS_DIR}/sub-001/mri/aparc.a2009s+aseg.mgz -o /Data/${SUBJ}/ses-01/atlas/${SUBJ}_aparc.nii.gz
 rm -r ${SUBJECTS_DIR}/${SUBJ}
 echo  -e "\e[34m +++ ====================================================================================\e[39m"
 echo  -e "\e[34m +++ ------------> END OF SCRIPT: FREESURFER PREPROCESSING FINISHED   <------------------\e[39m"

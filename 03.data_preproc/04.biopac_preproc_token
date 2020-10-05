@@ -34,7 +34,7 @@ else:
 
 dist = 0
 
-if ch == 4 or ch == 3:
+if ch == 3 or ch == 4:
     dist = 30
     ch_name = 'ppg'
 if ch == 1 or ch == 2:

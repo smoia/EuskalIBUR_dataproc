@@ -24,7 +24,7 @@ def decimate_data(filename, newfreq=40):
 
 
 def filter_signal(data_dec, bw_ppg=[0.5/20, 8/20], bw=2/20):
-    ba = sgn.butter(7, 2/20, 'lowpass')
+    ba = sgn.butter(7, bw, 'lowpass')
     ba_ppg = sgn.butter(7, bw_ppg, 'bandpass')
     data_filt = np.empty(data_dec.shape)
     data_filt[:, 0] = data_dec[:, 0]

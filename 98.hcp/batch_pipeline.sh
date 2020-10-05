@@ -20,10 +20,19 @@ then
 	mkdir ../LogFiles
 fi
 
+# for sub in 001 002 003 004 005 006 007 008 009 010
+# do
+# 	rm ${wdr}/../LogFiles/${sub}_biopac_pipe
+# 	qsub -q long.q -N "bio_${sub}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_biopac_pipe -e ${wdr}/../LogFiles/${sub}_biopac_pipe ${wdr}/98.hcp/run_biopac_decimate.sh ${sub}
+# done
+
 for sub in 001 002 003 004 005 006 007 008 009 010
 do
-	rm ${wdr}/../LogFiles/${sub}_biopac_pipe
-	qsub -q long.q -N "bio_${sub}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_biopac_pipe -e ${wdr}/../LogFiles/${sub}_biopac_pipe ${wdr}/98.hcp/run_biopac_decimate.sh ${sub}
+	for rep in $(seq 0 4)
+	do
+		rm ${wdr}/../LogFiles/${sub}_${rep}_randatlas_pipe
+		qsub -q long.q -N "ra_${sub}_${rep}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_${rep}_randatlas_pipe -e ${wdr}/../LogFiles/${sub}_${rep}_randatlas_pipe ${wdr}/98.hcp/run_tmp_func_atlas.sh ${sub} ${rep}
+	done
 done
 
 

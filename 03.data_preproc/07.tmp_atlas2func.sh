@@ -31,7 +31,7 @@ do
 	for size in $(seq 3 15)
 	do
 		parc=rand-${pnum}p-${size}s-${rep}r
-		atlas=${scriptdir}/rand_atlas/${parc}
+		atlas=${scriptdir}/90.template/rand_atlas/${parc}
 		afunc=${wdr}/sub-${sub}/ses-01/atlas/sub-${sub}_${parc}
 		echo "Move atlas ${parc} in sub-${sub} functional space"
 		# transfrom vessels territories atlas from MNI to func space

@@ -5,7 +5,7 @@ wdr=${2:-/data}
 # lastses=${2:-10}
 lastses=10
 
-logname=pipeline_cvr_parcels_log
+logname=pipeline_cvr_parcels_${parc}_log
 
 ######################################
 ######### Script starts here #########

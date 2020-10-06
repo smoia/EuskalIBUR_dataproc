@@ -22,7 +22,7 @@ for n in $(seq 2 120)
 do
 	echo "----------------------"
 	echo "$rep $n $size"
-	parc=rand-${n}p-${size}s-${rep}r.nii.gz
+	parc=rand-${n}p-${size}s-${rep}r
 
 	singularity exec -e --no-home \
 				-B /bcbl/home/public/PJMASK_2/preproc:/data \

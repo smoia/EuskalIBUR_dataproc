@@ -26,30 +26,36 @@ fi
 # 	qsub -q long.q -N "bio_${sub}_EuskalIBUR" -o ${wdr}/../LogFiles/${sub}_biopac_pipe -e ${wdr}/../LogFiles/${sub}_biopac_pipe ${wdr}/98.hcp/run_biopac_decimate.sh ${sub}
 # done
 
-# for sub in 001 002 003 004 005 006 007 008 009 010
-# do
-# 	for rep in $(seq 0 4)
-# 	do
-# 		rm ${wdr}/../LogFiles/${sub}_${rep}_randatlas_pipe
-# 		qsub -q long.q -N "ra_${sub}_${rep}_EuskalIBUR" \
-# 			 -o ${wdr}/../LogFiles/${sub}_${rep}_randatlas_pipe \
-# 			 -e ${wdr}/../LogFiles/${sub}_${rep}_randatlas_pipe \
-# 			 ${wdr}/98.hcp/run_tmp_func_atlas.sh ${sub} ${rep}
-# 	done
-# done
+joblist=""
 
-for size in $(seq 3 15)
+for sub in 001 002 003 004 005 006 007 008 009 010
 do
 	for rep in $(seq 0 4)
 	do
+		rm ${wdr}/../LogFiles/${sub}_${rep}_randatlas_pipe
+		qsub -q long.q -N "ra_${sub}_${rep}_EuskalIBUR" \
+			 -o ${wdr}/../LogFiles/${sub}_${rep}_randatlas_pipe \
+			 -e ${wdr}/../LogFiles/${sub}_${rep}_randatlas_pipe \
+			 ${wdr}/98.hcp/run_tmp_func_atlas.sh ${sub} ${rep}
+		joblist=ra_${sub}_${rep}_EuskalIBUR,
+	done
+done
+
+joblist=${joblist::-1}
+
+for size in $(seq 3 15)
+do
+	for rep in $(seq 0 3)
+	do
 		rm ${wdr}/../LogFiles/cvr_rand_${size}_${rep}
 		qsub -q long.q -N "cvr_${size}_${rep}_EuskalIBUR" \
+			 -hold_jid "${joblist}" \
 			 -o ${wdr}/../LogFiles/cvr_rand_${size}_${rep} \
 			 -e ${wdr}/../LogFiles/cvr_rand_${size}_${rep} \
 			 ${wdr}/98.hcp/run_cvrparc_pipeline.sh ${size} ${rep}
 	done
 done
-
+# #!# Remember to send the last repetition!
 
 # for parc in flowterritories schaefer-100 # aparc flowterritories schaefer-100
 # do

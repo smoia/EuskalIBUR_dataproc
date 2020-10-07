@@ -21,7 +21,7 @@ do
 				3dmask_tool -inputs tmp/${i}.nii.gz -dilate_inputs $o -prefix tmp/${i}.nii.gz -overwrite
 				fslmaths tmp/$i -mul $i tmp/$i
 			done
-			fslmaths tmp/$i rand_atlas/rand-${n}p-${o}s-${m}r 
+			fslmaths tmp/1 rand_atlas/rand-${n}p-${o}s-${m}r 
 			for i in `seq 2 $n`
 			do
 				fslmaths tmp/$i -mas rand_atlas/rand-${n}p-${o}s-${m}r -sub tmp/$i -mul -1 -add rand_atlas/rand-${n}p-${o}s-${m}r rand_atlas/rand-${n}p-${o}s-${m}r

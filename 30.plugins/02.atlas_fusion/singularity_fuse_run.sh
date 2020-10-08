@@ -1,7 +1,7 @@
 #$ -S /bin/bash
 #$ -cwd
 #$ -m be
-#$ -M v.ferrer@bcbl.eu
+#$ -M s.moia@bcbl.eu
 #$ -q long.q
 
 if [[ -z "${PRJDIR}" ]]; then
@@ -40,5 +40,5 @@ date
 # SUBJ=sub-001
 cd ${wdir}
 
-singularity exec -e --no-home -B $PRJDIR/preproc:/Data -B ${wdir}/EuskalIBUR_dataproc:/scripts ${PRJDIR}/EuskalIBUR_dataproc/euskalibur.sif\
+singularity exec -e --no-home -B $PRJDIR/preproc:/data -B ${wdir}/EuskalIBUR_dataproc:/scripts ${PRJDIR}/EuskalIBUR_dataproc/euskalibur.sif\
  ${wdir}/EuskalIBUR_dataproc/30.plugins/02.atlas_fusion/mni_2_func.sh $SUBJ

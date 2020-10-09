@@ -49,6 +49,7 @@ do
 	do
 		rm ${wdr}/../LogFiles/cvr_rand_${size}_${rep}
 		qsub -q long.q -N "cvr_${size}_${rep}_EuskalIBUR" \
+			 -pe smp 12 \
 			 -o ${wdr}/../LogFiles/cvr_rand_${size}_${rep} \
 			 -e ${wdr}/../LogFiles/cvr_rand_${size}_${rep} \
 			 ${wdr}/98.hcp/run_cvrparc_pipeline.sh ${size} ${rep}

@@ -97,7 +97,8 @@ alabel=0
 case ${parc} in
 	flowterritories ) alabel=9 ;;
 	aparc ) exit ;;
-	schaefer-* | rand-* ) alabel=${parc#*-} ;;
+	schaefer-* ) alabel=${parc#*-} ;;
+	rand-* ) alabel=${parc#*-}; alabel=${alabel%p*} ;;
 esac
 
 python3 ${scriptdir}/20.python_scripts/compute_cvr_text.py \

@@ -15,10 +15,6 @@ import nibabel as nib
 os.chdir('../90.template')
 os.makedirs('rand_parc')
 mni_img = nib.load('MNI152_T1_1mm_GM_resamp_2.5mm.nii.gz')
-mni_data = mni_img.get_fdata()
-
-# Flatten mni_data
-mni_res = mni_data.reshape(np.prod(mni_data.shape[:3]), order='F')
 # Extract mni_data = 1, give it indexes and shuffle
 mask = mni_res == 1
 mni_masked = mni_res[mask]

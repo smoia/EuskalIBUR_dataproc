@@ -10,17 +10,19 @@
 # files
 func_in=$1
 fmat=$2
-anat=$3
-aref=$4
+anat=$3  # If "none", it won't run average tissue
+aref=$4  # If "none", it won't run average tissue
 mref=$5
 # folders
 fdir=$6
-adir=$7
+adir=$7  # If "none", it won't run average tissue
 # action
 dprj=${8:-yes}
 # thresholds
 mthr=${9:-0.3}
 othr=${10:-0.05}
+no_motreg=${11:-no}
+no_detrend=${12:-no}
 
 ######################################
 ######### Script starts here #########
@@ -60,21 +62,38 @@ echo "Preparing censoring"
 
 # 04.2. Create matrix
 echo "Preparing nuisance matrix"
-3dDeconvolve -input ${func_in}.nii.gz \
--polort 5 -float \
--num_stimts  2 \
--stim_file 1 ${func}_avg_tissue.1D'[0]' -stim_base 1 -stim_label 1 CSF \
--stim_file 2 ${func}_avg_tissue.1D'[2]' -stim_base 2 -stim_label 2 WM \
--ortvec ${fmat}_mcf_demean.par motdemean \
--ortvec ${fmat}_mcf_deriv1.par motderiv1 \
--ortvec ${fmat}_rej_ort.1D meica \
--censor ${func}_censors.1D \
--x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
--x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
--x1D_stop
-# -cenmode ZERO \
 
+run3dDeconvolve="3dDeconvolve -input ${func_in}.nii.gz -float \
+				 -censor ${func}_censors.1D \
+				 -x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
+				 -x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
+				 -x1D_stop"
+				
 
+if [[ "${no_detrend}" != "yes" ]]
+then
+	run3dDeconvolve="${run3dDeconvolve} -polort 5"
+fi
+
+if [[ "${no_motreg}" != "yes" ]]
+then
+	run3dDeconvolve="${run3dDeconvolve} -ortvec ${fmat}_mcf_demean.par motdemean \
+				 						-ortvec ${fmat}_mcf_deriv1.par motderiv1"
+fi
+
+if [ -e "${fmat}_rej_ort.1D" ]
+then
+	run3dDeconvolve="${run3dDeconvolve} -ortvec ${fmat}_rej_ort.1D meica"
+fi
+if [ -e "${func}_avg_tissue.1D" ]
+then
+	run3dDeconvolve="${run3dDeconvolve} -num_stimts  2 \
+	-stim_file 1 ${func}_avg_tissue.1D'[0]' -stim_base 1 -stim_label 1 CSF \
+	-stim_file 2 ${func}_avg_tissue.1D'[2]' -stim_base 2 -stim_label 2 WM"
+	# -cenmode ZERO \
+fi
+
+${run3dDeconvolve}
 ## 06. Nuisance
 
 if [[ "${dprj}" != "none" ]]

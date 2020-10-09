@@ -55,7 +55,7 @@ then
 	echo "Computing outlier fraction in ${func_optcom}"
 	fslmaths ${func_optcom} -Tmean ${func_optcom}_avg
 	bet ${func_optcom}_avg ${func_optcom}_brain -R -f 0.5 -g 0 -n -m
-	3dToutcount -mask ${func_optcom}_brain_mask.nii.gz -fraction -polort 5 -legendre ${func_optcom}.nii.gz > ${func_optcom}_outcount.1D
+	3dToutcount -mask ${func_optcom}_brain_mask.nii.gz -fraction -polort 5 -legendre ${func_optcom}.nii.gz > ${func_optcom%_bet}_outcount.1D
 	imrm ${func_optcom}_avg ${func_optcom}_brain ${func_optcom}_brain_mask
 fi
 

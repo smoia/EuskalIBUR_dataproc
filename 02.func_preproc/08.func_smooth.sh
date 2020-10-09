@@ -30,7 +30,7 @@ func=${func_in%_*}
 ## 01. Smooth
 
 echo "Smoothing ${func}"
-3dBlurInMask -input ${func_in} -prefix ${func}_sm.nii.gz -mask ${mask}.nii.gz \
+3dBlurInMask -input ${func_in}.nii.gz -prefix ${func}_sm.nii.gz -mask ${mask}.nii.gz \
 -preserve -FWHM ${fwhm} -overwrite
 
 cd ${cwd}

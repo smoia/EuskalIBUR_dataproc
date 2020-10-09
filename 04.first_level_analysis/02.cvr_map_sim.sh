@@ -327,13 +327,13 @@ else
 fi
 
 # Extract degrees of freedom
-n=$( head -n 2 ${mat} | tail -n 1 - )
-n=${n#*\"}
-n=${n%\**}
-m=$( head -n 2 ${mat} | tail -n 1 - )
-m=${m#*\"}
-m=${m%\"*}
-let ndof=m-n-1
+nreg=$( cat ${mat} | grep ni_type )
+nreg=${nreg#*\"}
+nreg=${nreg%\**}
+ndim=$( cat ${mat} | grep ni_dimen )
+ndim=${ndim#*\"}
+ndim=${ndim%\"*}
+let ndof=ndim-nreg-1
 
 # Get equivalent in t value
 tscore=$( cdf -p2t fitt ${pval} ${ndof} )
@@ -365,6 +365,7 @@ echo "Getting masked maps"
 for map in cvr cvr_lag tmap
 do
 	fslmaths ${flpr}_${ftype}_${map} -mas ${flpr}_${ftype}_cvr_idx_mask ${flpr}_${ftype}_${map}_masked
+	fslmaths ${flpr}_${ftype}_${map} -mas ${flpr}_${ftype}_cvr_idx_physio_constrained ${flpr}_${ftype}_${map}_masked_physio_only
 done
 
 # # Momentarily retrieving tmap #30

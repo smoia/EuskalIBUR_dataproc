@@ -2,7 +2,11 @@ Data processing for EuskalIBUR
 ==============================
 
 This library is meant to run the data processing on the dataset *EuskalIBUR* (currently available on request).
+It is meant to run in the container [*EuskalIBUR_Container*](https://git.bcbl.eu/smoia/euskalibur_container).
 
+Warning
+-------
+At the moment, the container might not support graphic libraries and virtual screens, so some of the scripts that create figures (i.e. those using fsleyes or interactive matplotlib sessions) might not work properly in it. 
 
 Scripts
 -------

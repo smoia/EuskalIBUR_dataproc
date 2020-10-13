@@ -56,12 +56,15 @@ done
 
 cd parcels
 
+# Force number of threads to 1
+export OMP_NUM_THREADS=1
+
 for map in cvr lag
 do
 # Compute ICC
 rm ../ICC2_${map}_${parc}.1D
 
-3dICC -prefix ../ICC2_${map}_${parc}.1D -jobs 10                       \
+3dICC -prefix ../ICC2_${map}_${parc}.1D -jobs 1                            \
       -model  '1+(1|session)+(1|Subj)'                                     \
       -tStat 'tFile'                                                       \
       -dataTable                                                           \

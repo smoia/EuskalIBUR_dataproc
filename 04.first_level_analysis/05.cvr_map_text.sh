@@ -57,13 +57,16 @@ then
 fi
 mkdir ${matdir}
 
+# Force number of threads to 1
+export OMP_NUM_THREADS=1
+
 for i in $( seq -f %04g 0 ${step} ${miter} )
 do
 	if [ -e ${shiftdir}/shift_${i}.1D ] && [ -e ${func}.1D ]
 	then
 		# Simply add motparams and polorts ( = N )
 		# Prepare matrix
-		3dDeconvolve -force_TR ${tr} -input ${func}.1D\' -jobs 6 \
+		3dDeconvolve -force_TR ${tr} -input ${func}.1D\' -jobs 1 \
 					 -float -num_stimts 1 \
 					 -polort 4 \
 					 -ortvec ${flpr}_motpar_demean.par motdemean \

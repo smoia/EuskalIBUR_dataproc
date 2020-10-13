@@ -10,7 +10,7 @@ data$ses <- as.factor(data$ses)
 data$ftype <- as.factor(data$ftype)
 
 # Run model
-model <- lmer(dvars ~ fd * ftype + ((1+fd*ftype)|ses) + ((1+fd*ftype)|sub), data)
+model <- lmer(dvars ~ fd * ftype + ((1+fd)|ses) + ((1+fd)|sub), data)
 summary(model)
 anova_table <- anova(model)
 
@@ -44,7 +44,7 @@ print(combinations[1, i])
 print(combinations[2, i])
 print("\n")
 subset_data <- subset(data, ftype == combinations[1, i] | ftype == combinations[2, i])
-model_subset[[i]] <- lmer(dvars ~ fd * ftype + ((1+fd*ftype)|ses) + ((1+fd*ftype)|sub), subset_data)
+model_subset[[i]] <- lmer(dvars ~ fd * ftype + ((1+fd)|ses) + ((1+fd)|sub), subset_data)
 anova_table_subset[[i]] <- anova(model_subset[[i]])
 model_subset[[i]]
 print("\n\n")

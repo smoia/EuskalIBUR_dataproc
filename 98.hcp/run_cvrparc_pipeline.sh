@@ -18,7 +18,7 @@ cd ${wdir}
 size=$1
 rep=$2
 
-for n in $(seq 2 120)
+for n in $(seq 2 4 120)
 do
 	echo "----------------------"
 	echo "$rep $n $size"

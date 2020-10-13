@@ -43,7 +43,7 @@ fi
 
 # joblist=${joblist::-1}
 
-for size in $(seq 3 15)
+for size in $(seq 3 2 15)
 do
 	for rep in $(seq 0 4)
 	do

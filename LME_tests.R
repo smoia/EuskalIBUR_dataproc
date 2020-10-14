@@ -37,9 +37,9 @@ writeLines("\n------------------\n\n\n\n")
 
 for(i in 1:n_comb) {
 writeLines(sprintf("Pairwise comparison: %s vs %s\n", combinations[1, i], combinations[2, i]))
-# subset_data <- subset(data, ftype == combinations[1, i] | ftype == combinations[2, i])
-# model_subset[[i]] <- lmer(dvars ~ fd * ftype + ((1+fd)|ses) + ((1+fd)|sub), subset_data)
-# anova_table_subset[[i]] <- anova(model_subset[[i]])
+subset_data <- subset(data, ftype == combinations[1, i] | ftype == combinations[2, i])
+model_subset[[i]] <- lmer(dvars ~ fd * ftype + ((1+fd)|ses) + ((1+fd)|sub), subset_data)
+anova_table_subset[[i]] <- anova(model_subset[[i]])
 writeLines("Summary\n")
 print(model_subset[[i]])
 writeLines("\nANOVA table\n")

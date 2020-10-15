@@ -36,11 +36,11 @@ do
 					--gamma 0.0 --cmapResolution 256 --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 \
 					--numInnerSteps 10 --volume 0 \
 					ICC2_${map}_${ftype}.nii.gz --name "ICC(2,1)_${map}" --overlayType volume \
-					--alpha 40.0 --brightness 50.0 --contrast 50.0 --cmap brain_colours_1hot_iso --displayRange 0.4 1.0 \
+					--alpha 40.0 --brightness 50.0 --contrast 50.0 --cmap brain_colours_1hot_iso --displayRange 0 1.0 \
 					--clippingRange 0 100 --gamma 0.0 --cmapResolution 256 --numSteps 100 --blendFactor 0.1 --smoothing 0 \
 					--resolution 100 --numInnerSteps 10 --volume 0 \
 					ICC2_${map}_${ftype}.nii.gz --name "ICC(2,1)_${map}" --overlayType volume \
-					--alpha 100.0 --brightness 50.0 --contrast 50.0 --cmap brain_colours_1hot_iso --displayRange 0.4 1.0 \
+					--alpha 100.0 --brightness 50.0 --contrast 50.0 --cmap brain_colours_1hot_iso --displayRange 0 1.0 \
 					--clippingRange 0.4 100 --gamma 0.0 --cmapResolution 256 --numSteps 100 --blendFactor 0.1 --smoothing 0 \
 					--resolution 100 --numInnerSteps 10 --volume 0 \
 					ICC2_${map}_${ftype}.nii.gz --name "ICC(2,1)_${map}" --overlayType mask \

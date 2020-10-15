@@ -29,6 +29,7 @@ do
 			--useNegativeCmap --displayRange 0.0 0.6 --clippingRange 0.0 10.0 --gamma 0.0 --cmapResolution 256 --interpolation none \
 			--numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
 			
+			# In order: unthresholded semitransparent, thresholded, thresholded borders, thresholded tansparent (for colorbar)
 			fsleyes render -of ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_masked \
 			--size 1400 500 --scene lightbox --sliceSpacing 18 --zrange 21 131 \
 			--ncols 6 --nrows 1 --hideCursor --bgColour 0.0 0.0 0.0 --fgColour 1.0 1.0 1.0 --showColourBar --colourBarLocation top \
@@ -43,8 +44,12 @@ do
 			--numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
 			${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_masked.nii.gz \
 			--name "CVR" --overlayType mask --alpha 100.0 --brightness 50.0 --contrast 50.0 --maskColour 0.0 0.0 0.0 \
-			--threshold 0.0 0.6 --outline --outlineWidth 2 --interpolation none --volume 0
-			
+			--threshold 0.0 10 --outline --outlineWidth 1 --interpolation none --volume 0 \
+			${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_masked.nii.gz \
+			--name "CVR" --overlayType volume --alpha 0.0 --cmap red-yellow --negativeCmap blue-lightblue \
+			--useNegativeCmap --displayRange 0.0 0.6 --clippingRange 0.0 10.0 --gamma 0.0 --cmapResolution 256 --interpolation none \
+			--numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
+
 			fsleyes render -of ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_corrected \
 			--size 1400 500 --scene lightbox --sliceSpacing 18 --zrange 21 131 \
 			--ncols 6 --nrows 1 --hideCursor --bgColour 0.0 0.0 0.0 --fgColour 1.0 1.0 1.0 --showColourBar --colourBarLocation top \

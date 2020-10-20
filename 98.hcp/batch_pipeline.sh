@@ -43,18 +43,18 @@ fi
 
 # joblist=${joblist::-1}
 
-for size in $(seq 3 2 15)
-do
-	for rep in $(seq 0 4)
-	do
-		rm ${wdr}/../LogFiles/cvr_rand_${size}_${rep}
-		qsub -q long.q -N "cvr_${size}_${rep}_EuskalIBUR" \
-			 -o ${wdr}/../LogFiles/cvr_rand_${size}_${rep} \
-			 -e ${wdr}/../LogFiles/cvr_rand_${size}_${rep} \
-			 ${wdr}/98.hcp/run_cvrparc_pipeline.sh ${size} ${rep}
-			 # -hold_jid "${joblist}" \
-	done
-done
+# for size in $(seq 3 2 15)
+# do
+# 	for rep in $(seq 0 4)
+# 	do
+# 		rm ${wdr}/../LogFiles/cvr_rand_${size}_${rep}
+# 		qsub -q long.q -N "cvr_${size}_${rep}_EuskalIBUR" \
+# 			 -o ${wdr}/../LogFiles/cvr_rand_${size}_${rep} \
+# 			 -e ${wdr}/../LogFiles/cvr_rand_${size}_${rep} \
+# 			 ${wdr}/98.hcp/run_cvrparc_pipeline.sh ${size} ${rep}
+# 			 # -hold_jid "${joblist}" \
+# 	done
+# done
 # #!# Remember to send the last repetition!
 
 # for parc in flowterritories schaefer-100 # aparc flowterritories schaefer-100
@@ -128,6 +128,6 @@ done
 
 # qsub -q short.q -N "s_010_11_prep" -o ${wdr}/../LogFiles/010_11_pipe -e ${wdr}/../LogFiles/010_11_pipe ${wdr}/tmp.preproc_10.sh
 
-# rm ${wdr}/../LogFiles/third_level_pipe
-# qsub -q short.q -N "third_level_EuskalIBUR" -o ${wdr}/../LogFiles/third_level_pipe -e ${wdr}/../LogFiles/third_level_pipe ${wdr}/98.hcp/run_third_level_pipe.sh
+rm ${wdr}/../LogFiles/third_level_pipe
+qsub -q short.q -N "third_level_EuskalIBUR" -o ${wdr}/../LogFiles/third_level_pipe -e ${wdr}/../LogFiles/third_level_pipe ${wdr}/98.hcp/run_third_level_pipe.sh
 # qsub -q short.q -hold_jid "${old_ftype}_EuskalIBUR" -N "third_level_EuskalIBUR" -o ${wdr}/../LogFiles/third_level_pipe -e ${wdr}/../LogFiles/third_level_pipe ${wdr}/98.hcp/run_third_level_pipe.sh

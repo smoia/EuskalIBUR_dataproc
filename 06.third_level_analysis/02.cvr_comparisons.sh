@@ -103,7 +103,7 @@ for inmap in cvr lag
 do
 # Compute ICC
 inmap=${inmap}_${map}
-rm ../ICC2_${inmap}_${ftype}.nii.gz
+rm ../LMEr_${inmap}_${ftype}.nii.gz
 
  
 3dLMEr -prefix ../LMEr_${inmap}_${ftype}.nii.gz -jobs 1                \

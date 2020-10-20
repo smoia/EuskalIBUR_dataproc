@@ -106,7 +106,7 @@ inmap=${inmap}_${map}
 rm ../LMEr_${inmap}.nii.gz
 
  
-3dLMEr -prefix ../LMEr_${inmap}.nii.gz -jobs 1                \
+3dLMEr -prefix ../LMEr_${inmap}.nii.gz -jobs 10                \
        -mask ../reg/MNI_T1_brain_mask.nii.gz                           \
        -model  'model+(1|session)+(1|Subj)'                            \
        -gltCode echo-2_vs_optcom  'model : 1*echo-2 -1*optcom'         \

@@ -15,7 +15,7 @@ wdir=/bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc
 
 cd ${wdir}
 
-logname = third_level_pipe
+logname=third_level_pipe
 
 # Preparing log folder and log file, removing the previous one
 if [[ ! -d "${wdir}/log" ]]; then mkdir ${wdir}/log; fi

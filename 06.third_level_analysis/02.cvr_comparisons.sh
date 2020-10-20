@@ -97,6 +97,8 @@ do
 	done
 done
 
+cd normalised
+
 for map in masked_physio_only # corrected
 do
 for inmap in cvr lag

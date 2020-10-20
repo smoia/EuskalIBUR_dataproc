@@ -1,0 +1,3 @@
+[submodule "90.template/EuskalIBUR_atlases"]
+	path = 90.template/EuskalIBUR_atlases
+	url = git@github.com:smoia/EuskalIBUR_atlases.git

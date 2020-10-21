@@ -10,7 +10,6 @@ data$sub <- as.factor(data$sub)
 data$ses <- as.factor(data$ses)
 data$ftype <- as.factor(data$ftype)
 data$fd <- scale(data$fd, scale=FALSE) # Centering
-data$dvars <- scale(data$dvars, scale=FALSE) # Centering
 
 # Run model
 model <- lmer(dvars ~ fd * ftype + (1|ses) + (1|sub), data)

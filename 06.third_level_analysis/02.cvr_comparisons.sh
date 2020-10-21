@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+if_missing_do() {
+if [ ! -e $3 ]
+then
+	printf "%s is missing, " "$3"
+	case $1 in
+		copy ) echo "copying $2"; cp $2 $3 ;;
+		mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
+		* ) "and you shouldn't see this"; exit ;;
+	esac
+fi
+}
+
 lastses=${1:-10}
 wdr=${2:-/data}
 scriptdir=${2:-/scripts}
@@ -21,15 +33,9 @@ cd CVR_reliability
 mkdir reg normalised cov
 
 # Copy files for transformation & create mask
-if [ ! -e ./reg/MNI_T1_brain.nii.gz ]
-then
-	cp ${scriptdir}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
-fi
-if [ ! -e ./reg/MNI_T1_brain_mask.nii.gz ]
-then
-	fslmaths ./reg/MNI_T1_brain.nii.gz -bin ./reg/MNI_T1_brain_mask.nii.gz
-fi
+if_missing_do copy ${scriptdir}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
 
+if_missing_do mask ./reg/MNI_T1_brain.nii.gz ./reg/MNI_T1_brain_mask.nii.gz
 
 # Copy & normalising
 for ftype in echo-2 optcom meica-aggr meica-orth meica-cons
@@ -44,54 +50,40 @@ do
 		echo "%%% Working on subject ${sub} %%%"
 
 		echo "Preparing transformation"
-		if [ ! -e ${sub}_T1w2std1Warp.nii.gz ]
-		then
-			imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std1Warp.nii.gz \
-				 ./reg/${sub}_T1w2std1Warp.nii.gz
-		fi
-		if [ ! -e ./reg/${sub}_T1w2std0GenericAffine.mat ]
-		then
-			cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std0GenericAffine.mat \
-			   ./reg/${sub}_T1w2std0GenericAffine.mat
-		fi
-		if [ ! -e ./reg/${sub}_T2w2sbref0GenericAffine.mat ]
-		then
-			cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat \
-			   ./reg/${sub}_T2w2sbref0GenericAffine.mat
-		fi
-		if [ ! -e ./reg/${sub}_T2w2T1w0GenericAffine.mat ]
-		then
-			cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat \
-			   ./reg/${sub}_T2w2T1w0GenericAffine.mat
-		fi
+		if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std1Warp.nii.gz \
+					  ./reg/${sub}_T1w2std1Warp.nii.gz
+		if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std0GenericAffine.mat \
+					  ./reg/${sub}_T1w2std0GenericAffine.mat
+		if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat \
+					  ./reg/${sub}_T2w2sbref0GenericAffine.mat
+		if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat \
+					  ./reg/${sub}_T2w2T1w0GenericAffine.mat
 
 		for map in masked_physio_only # corrected
 		do
 			for ses in $( seq -f %02g 1 ${lastses} )
 			do
-				echo "Copying session ${ses} ${map}"
-				if [[ ! -e ./normalised/std_${ftype}_cvr_${map}_${sub}_${ses}.nii.gz ||  ! -e ./normalised/std_${ftype}_lag_${map}_${sub}_${ses}.nii.gz ||  ! -e ./normalised/std_${ftype}_tmap_${map}_${sub}_${ses}.nii.gz ]]
-				then
-					imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_${map}.nii.gz \
-						 ./${sub}_${ses}_${ftype}_cvr_${map}.nii.gz
-					imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag_${map}.nii.gz \
-						 ./${sub}_${ses}_${ftype}_lag_${map}.nii.gz
-					imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap_${map}.nii.gz \
-						 ./${sub}_${ses}_${ftype}_tmap_${map}.nii.gz
+				echo "Check if normalisation is needed for session ${ses} ${map}"
 
-					for inmap in cvr lag tmap  # cvr_idx_mask tstat_mask
-					do
-						inmap=${inmap}_${map}
+				for inmap in cvr lag tmap
+				do
+					if [ ${inmap} == "lag" ]; then origmap=cvr_lag; else origmap=${inmap}; fi
+					inmap=${inmap}_${map}
+					if [ ! -e ./normalised/std_${ftype}_${inmap}_${sub}_${ses}.nii.gz ]
+					then
+						imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_${origmap}_${map}.nii.gz \
+							 ./${sub}_${ses}_${ftype}_${inmap}.nii.gz
+
 						echo "Transforming ${inmap} maps of session ${ses} to MNI"
-						antsApplyTransforms -d 3 -i ${sub}_${ses}_${ftype}_${inmap}.nii.gz -r ./reg/MNI_T1_brain.nii.gz \
+						antsApplyTransforms -d 3 -i ./${sub}_${ses}_${ftype}_${inmap}.nii.gz -r ./reg/MNI_T1_brain.nii.gz \
 											-o ./normalised/std_${ftype}_${inmap}_${sub}_${ses}.nii.gz -n NearestNeighbor \
 											-t ./reg/${sub}_T1w2std1Warp.nii.gz \
 											-t ./reg/${sub}_T1w2std0GenericAffine.mat \
 											-t ./reg/${sub}_T2w2T1w0GenericAffine.mat \
 											-t [./reg/${sub}_T2w2sbref0GenericAffine.mat,1]
 						imrm ${sub}_${ses}_${ftype}_${inmap}.nii.gz
-					done
-				fi
+					fi
+				done
 			done
 		done
 	done

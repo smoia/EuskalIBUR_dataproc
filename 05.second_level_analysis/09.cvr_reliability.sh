@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+if_missing_do() {
+if [ ! -e $3 ]
+then
+      printf "%s is missing, " "$3"
+      case $1 in
+            copy ) echo "copying $2"; cp $2 $3 ;;
+            mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
+            * ) "and you shouldn't see this"; exit ;;
+      esac
+fi
+}
+
 ftype=${1:-optcom}
 lastses=${2:-10}
 wdr=${3:-/data}
@@ -20,14 +32,8 @@ cd CVR_reliability
 mkdir reg normalised cov
 
 # Copy files for transformation & create mask
-if [ ! -e ./reg/MNI_T1_brain.nii.gz ]
-then
-	cp /scripts/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
-fi
-if [ ! -e ./reg/MNI_T1_brain_mask.nii.gz ]
-then
-	fslmaths ./reg/MNI_T1_brain.nii.gz -bin ./reg/MNI_T1_brain_mask.nii.gz
-fi
+if_missing_do copy /scripts/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
+if_missing_do mask ./reg/MNI_T1_brain.nii.gz -bin ./reg/MNI_T1_brain_mask.nii.gz
 
 # Copy
 for sub in $( seq -f %03g 1 10 )
@@ -40,26 +46,14 @@ do
 	echo "%%% Working on subject ${sub} %%%"
 
 	echo "Preparing transformation"
-	if [ ! -e ${sub}_T1w2std1Warp.nii.gz ]
-	then
-		imcp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std1Warp.nii.gz \
-			 ./reg/${sub}_T1w2std1Warp.nii.gz
-	fi
-	if [ ! -e ./reg/${sub}_T1w2std0GenericAffine.mat ]
-	then
-		cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std0GenericAffine.mat \
-		   ./reg/${sub}_T1w2std0GenericAffine.mat
-	fi
-	if [ ! -e ./reg/${sub}_T2w2sbref0GenericAffine.mat ]
-	then
-		cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat \
-		   ./reg/${sub}_T2w2sbref0GenericAffine.mat
-	fi
-	if [ ! -e ./reg/${sub}_T2w2T1w0GenericAffine.mat ]
-	then
-		cp ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat \
-		   ./reg/${sub}_T2w2T1w0GenericAffine.mat
-	fi
+	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std1Warp.nii.gz \
+			  ./reg/${sub}_T1w2std1Warp.nii.gz
+	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std0GenericAffine.mat \
+	              ./reg/${sub}_T1w2std0GenericAffine.mat
+	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat \
+	              ./reg/${sub}_T2w2sbref0GenericAffine.mat
+	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat \
+	              ./reg/${sub}_T2w2T1w0GenericAffine.mat
 
 	for map in masked_physio_only # corrected
 	do

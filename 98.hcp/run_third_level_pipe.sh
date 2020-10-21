@@ -11,7 +11,7 @@ module load singularity/3.3.0
 
 date
 
-wdir=/bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc
+wdir=/bcbl/home/public/PJMASK_2/preproc
 
 cd ${wdir}
 

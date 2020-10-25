@@ -16,6 +16,9 @@ os.chdir('../90.template')
 os.makedirs('rand_parc')
 mni_img = nib.load('MNI152_T1_1mm_GM_resamp_2.5mm.nii.gz')
 # Extract mni_data = 1, give it indexes and shuffle
+mni_data = mni_img.get_data()
+new_shape = (np.prod(mni_data.shape[-1]), mni_data.shape[-1])
+mni_res = mni_data.reshape(new_shape, order='F')
 mask = mni_res == 1
 mni_masked = mni_res[mask]
 mni_indexed = mni_masked * range(mni_masked.size)

@@ -8,6 +8,8 @@ tmp=${3:-/tmp}
 
 cwd=$( pwd )
 
+if [ -e ${tmp}/tmp.05pcc ]; then rm -rf ${tmp}/tmp.05pcc; fi
+
 mkdir ${tmp}/tmp.05pcc
 
 cd ${tmp}/tmp.05pcc
@@ -19,7 +21,7 @@ let nbuck--
 for map in cvr lag
 do
 	# Separate buckets
-	for i in $(seq -f %02g 0 ${nbuck})
+	for i in $(seq 0 ${nbuck})
 	do
 		echo "Extract bucket ${i}"
 		3dbucket -prefix ${map}_buck${i}.nii.gz -abuc ${wdr}/CVR_reliability/LMEr_${map}_masked_physio_only.nii.gz[$i]
@@ -27,21 +29,20 @@ do
 
 	# Threshold model chi square and mask
 	# Chi 5.991 = p 0.05
-	fslmaths ${map}_buck00 -thr 5.991 -bin ${map}_buck00
+	fslmaths ${map}_buck0 -abs -thr 5.991 -bin ${map}_buck0
 	# Threshold all Z maps
 	# Z 2.807 = p 0.005 (0.5 Sidak corrected for 10 comparisons) 
-	for i in $(seq -f %02g 2 2 ${nbuck})
+	for i in $(seq 2 2 ${nbuck})
 	do
-		fslmaths ${map}_buck${i}.nii.gz -thr 2.807 -bin ${map}_buck${i}.nii.gz
+		fslmaths ${map}_buck${i}.nii.gz -abs -thr 2.807 -bin ${map}_buck${i}.nii.gz
 	done
 
 	# Plot
 	appending="convert -append"
 
-	for i in $(seq -f %02g 1 2 ${nbuck})
+	for i in $(seq 1 2 ${nbuck})
 	do
 		let j=i+1
-		j=$(printf %02d ${j})
 		# case ${i} in
 		# 	01 ) name=echo-2_vs_optcom ;;
 		# 	03 ) name=echo-2_vs_meica-aggr ;;
@@ -60,6 +61,7 @@ do
 			appending="${appending} LMEr_${map}${i}_res.png"
 			dr=5
 		else
+			j=0
 			dr=100
 		fi
 

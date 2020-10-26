@@ -74,11 +74,6 @@ do
 				--clippingRange 0.0 8420.37 --gamma 0.0 --cmapResolution 256 --numSteps 100 --blendFactor 0.1 \
 				--smoothing 0 --resolution 100 --numInnerSteps 10 --volume 0 \
 				${map}_buck${i}.nii.gz --name "${map}_buck${i}" --overlayType volume \
-				--alpha 30.0 --brightness 50.0 --contrast 50.0 --cmap brain_colours_1hot_iso \
-				--negativeCmap cool --useNegativeCmap \
-				--displayRange 0 ${dr} --clippingRange 0 100 --gamma 0.0 --cmapResolution 256 \
-				--numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --volume 0 \
-				${map}_buck${i}.nii.gz --name "${map}_buck${i}" --overlayType volume \
 				--alpha 100.0 --brightness 50.0 --contrast 50.0 --cmap brain_colours_1hot_iso \
 				--negativeCmap cool --useNegativeCmap --clipImage cvr_buck${j}.nii.gz \
 				--unlinkLowRanges --displayRange 0 ${dr} --clippingRange 0 100 --gamma 0.0 \
@@ -93,6 +88,11 @@ do
 				--unlinkLowRanges --displayRange 0 ${dr} --clippingRange 0 100 --gamma 0.0 \
 				--cmapResolution 256 --numSteps 100 --blendFactor 0.1 --smoothing 0 \
 				--resolution 100 --numInnerSteps 10 --volume 0
+				# ${map}_buck${i}.nii.gz --name "${map}_buck${i}" --overlayType volume \
+				# --alpha 30.0 --brightness 50.0 --contrast 50.0 --cmap brain_colours_1hot_iso \
+				# --negativeCmap cool --useNegativeCmap \
+				# --displayRange 0 ${dr} --clippingRange 0 100 --gamma 0.0 --cmapResolution 256 \
+				# --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --volume 0 \
 
 		convert LMEr_${map}${i}.png -filter Point -resize 1035x370 +repage -crop 920x212+15+70 +repage LMEr_${map}${i}_res.png
 

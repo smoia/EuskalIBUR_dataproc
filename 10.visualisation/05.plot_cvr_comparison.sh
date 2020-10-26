@@ -12,24 +12,25 @@ mkdir ${tmp}/tmp.05pcc
 
 cd ${tmp}/tmp.05pcc
 
-nbuck=$(fslval LMEr_cvr_masked_physio_only.nii.gz dim5)
+nbuck=$(fslval ${wdr}/CVR_reliability/LMEr_cvr_masked_physio_only.nii.gz dim5)
 
 let nbuck--
 
 for map in cvr lag
 do
 	# Separate buckets
-	for i in $(seq -f %04g 0 ${nbuck})
+	for i in $(seq -f %02g 0 ${nbuck})
 	do
+		echo "Extract bucket ${i}"
 		3dbucket -prefix ${map}_buck${i}.nii.gz -abuc ${wdr}/CVR_reliability/LMEr_${map}_masked_physio_only.nii.gz[$i]
 	done
 
 	# Threshold model chi square and mask
 	# Chi 5.991 = p 0.05
-	fslmaths ${map}_buck0000 -thr 5.991 -bin ${map}_buck0000
+	fslmaths ${map}_buck00 -thr 5.991 -bin ${map}_buck00
 	# Threshold all Z maps
 	# Z 2.807 = p 0.005 (0.5 Sidak corrected for 10 comparisons) 
-	for i in $(seq -f %04g 2 2 ${nbuck})
+	for i in $(seq -f %02g 2 2 ${nbuck})
 	do
 		fslmaths ${map}_buck${i}.nii.gz -thr 2.807 -bin ${map}_buck${i}.nii.gz
 	done
@@ -37,21 +38,22 @@ do
 	# Plot
 	appending="convert -append"
 
-	for i in $(seq -f %04g 1 2 ${nbuck})
+	for i in $(seq -f %02g 1 2 ${nbuck})
 	do
 		let j=i+1
+		j=$(printf %02d ${j})
 		# case ${i} in
-		# 	0001 ) name=echo-2_vs_optcom ;;
-		# 	0003 ) name=echo-2_vs_meica-aggr ;;
-		# 	0005 ) name=echo-2_vs_meica-orth ;;
-		# 	0007 ) name=echo-2_vs_meica-cons ;;
-		# 	0009 ) name=optcom_vs_meica-aggr ;;
-		# 	0011 ) name=optcom_vs_meica-orth ;;
-		# 	0013 ) name=optcom_vs_meica-cons ;;
-		# 	0015 ) name=meica-aggr_vs_meica-orth ;;
-		# 	0017 ) name=meica-aggr_vs_meica-cons ;;
-		# 	0019 ) name=meica-orth_vs_meica-cons ;;
-		# 	0021 ) name=all_models ;;
+		# 	01 ) name=echo-2_vs_optcom ;;
+		# 	03 ) name=echo-2_vs_meica-aggr ;;
+		# 	05 ) name=echo-2_vs_meica-orth ;;
+		# 	07 ) name=echo-2_vs_meica-cons ;;
+		# 	09 ) name=optcom_vs_meica-aggr ;;
+		# 	11 ) name=optcom_vs_meica-orth ;;
+		# 	13 ) name=optcom_vs_meica-cons ;;
+		# 	15 ) name=meica-aggr_vs_meica-orth ;;
+		# 	17 ) name=meica-aggr_vs_meica-cons ;;
+		# 	19 ) name=meica-orth_vs_meica-cons ;;
+		# 	21 ) name=all_models ;;
 		# esac
 		if [ ${i} -lt 20 ]
 		then

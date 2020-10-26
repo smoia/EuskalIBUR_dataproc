@@ -88,7 +88,7 @@ for k in data.keys():
 
     plt.suptitle(f'Subject {sub}, {k} values across approaches')
 
-    for n, ftype in FTYPE_LIST:
+    for n, ftype in enumerate(FTYPE_LIST):
         pal = sns.color_palette(f'light:{COLOURS[n]}', n_colors=3)
         sns.violinplot(data=data[k][f'{ses:02d}{ftype}'], x=k, y='ftype',
                        hue='tissue', split=True, inner='quartile',
@@ -109,7 +109,7 @@ fig, ax = plt.subplots(1, len(FTYPE_LIST), figsize=FIGSIZE_1, dpi=SET_DPI,
                        sharey=True)
 plt.suptitle(f'Subject {sub}, number of ')
 
-for n, ftype in FTYPE_LIST:
+for n, ftype in enumerate(FTYPE_LIST):
     pal = sns.color_palette(f'light:{COLOURS[n]}', n_colors=3)
     sns.countplot(data=data[k][f'{ses:02d}{ftype}'], x='ftype', hue='tissue',
                   palette=pal[::-1], ax=ax[n])

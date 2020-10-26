@@ -64,7 +64,7 @@ do
 		fi
 
 		# In order: MNI, unthresholded semitransparent, thresholded, thresholded borders, thresholded tansparent (for colorbar)
-		fsleyes render -of LMEr_${map}${i} --size 1400 500 --scene lightbox \
+		fsleyes render -of LMEr_${map}${i}.png --size 1400 500 --scene lightbox \
 				--displaySpace ${wdr}/CVR_reliability/reg/MNI_T1_brain.nii.gz \
 				--zaxis 2 --sliceSpacing 21.4 --zrange 15.55 178.75 --ncols 6 --nrows 1 \
 				--hideCursor --showColourBar --colourBarLocation right --colourBarLabelSide bottom-right \
@@ -80,7 +80,7 @@ do
 				--numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --volume 0 \
 				${map}_buck${i}.nii.gz --name "${map}_buck${i}" --overlayType volume \
 				--alpha 100.0 --brightness 50.0 --contrast 50.0 --cmap brain_colours_1hot_iso \
-				--negativeCmap cool --useNegativeCmap \
+				--negativeCmap cool --useNegativeCmap --clipImage cvr_buck${j}.nii.gz \
 				--unlinkLowRanges --displayRange 0 ${dr} --clippingRange 0 100 --gamma 0.0 \
 				--cmapResolution 256 --numSteps 100 --blendFactor 0.1 --smoothing 0 \
 				--resolution 100 --numInnerSteps 10 --volume 0 \

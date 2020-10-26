@@ -62,10 +62,9 @@ for k in MAPS:  # equivalent to icc.keys():
         parcel_nlabels[k][parc] = np.asarray([icc[k][parc].shape[0]] *
                                              icc[k][parc].shape[0])
         plt.plot(parcel_nlabels[k][parc], icc[k][parc], '.', color=all_colours[k][i])
-    
+
     for i, parc in enumerate(all_parcs[k][:2]):
         plt.plot(parcel_nlabels[k][parc], icc[k][parc], '.', color=all_colours[k][i])
-
 
     plt.legend(PARC_DICT.values())
     plt.tight_layout()

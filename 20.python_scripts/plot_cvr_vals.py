@@ -57,7 +57,7 @@ patch = patch + [mpatches.Patch(color=pal[-1], label='Grey Matter'),
                  mpatches.Patch(color=pal[-2], label='White Matter')]
 
 for k in data.keys():
-    for ses in range(0, LAST_SES):
+    for ses in range(1, LAST_SES):
         for ftype in FTYPE_LIST:
             data[k][f'{ses:02d}{ftype}'] = pd.DataFrame(columns=[k, 'tissue', 'ftype'])
             # Load maps

@@ -76,8 +76,8 @@ do
 				--clippingRange 0.0 8420.37 --gamma 0.0 --cmapResolution 256 --numSteps 100 --blendFactor 0.1 \
 				--smoothing 0 --resolution 100 --numInnerSteps 10 --volume 0 \
 				${map}_buck${i}.nii.gz --name "${map}_buck${i}" --overlayType volume \
-				--alpha 100.0 --brightness 50.0 --contrast 50.0 --cmap brain_colours_1hot_iso \
-				--negativeCmap cool --useNegativeCmap --clipImage cvr_buck${j}.nii.gz \
+				--alpha 100.0 --brightness 50.0 --contrast 50.0 --cmap copper \
+				--negativeCmap brain_colours_bluegray --useNegativeCmap --clipImage cvr_buck${j}.nii.gz \
 				--unlinkLowRanges --displayRange 0 ${dr} --clippingRange 0 100 --gamma 0.0 \
 				--cmapResolution 256 --numSteps 100 --blendFactor 0.1 --smoothing 0 \
 				--resolution 100 --numInnerSteps 10 --volume 0 \
@@ -85,8 +85,8 @@ do
 				--alpha 100.0 --brightness 50.0 --contrast 50.0 --maskColour 0.0 0.0 0.0 \
 				--threshold 0.4 100 --outline --outlineWidth 1 --interpolation none --volume 0 \
 				${map}_buck${i}.nii.gz --name "${map}_buck${i}" --overlayType volume \
-				--alpha 0.0 --brightness 50.0 --contrast 50.0 --cmap brain_colours_1hot_iso \
-				--negativeCmap cool --useNegativeCmap \
+				--alpha 0.0 --brightness 50.0 --contrast 50.0 --cmap copper \
+				--negativeCmap brain_colours_bluegray --useNegativeCmap \
 				--unlinkLowRanges --displayRange 0 ${dr} --clippingRange 0 100 --gamma 0.0 \
 				--cmapResolution 256 --numSteps 100 --blendFactor 0.1 --smoothing 0 \
 				--resolution 100 --numInnerSteps 10 --volume 0

@@ -52,7 +52,7 @@ patch = []
 for n, ftype in enumerate(FTYPE_LIST):
     patch = patch + [mpatches.Patch(color=COLOURS[n], label=FTYPE_DICT[ftype])]
 
-pal = sns.color_palette('light:black', n_colors=3)
+pal = sns.color_palette('light:#000000ff', n_colors=3)
 patch = patch + [mpatches.Patch(color=pal[-1], label='Grey Matter'),
                  mpatches.Patch(color=pal[-2], label='White Matter')]
 

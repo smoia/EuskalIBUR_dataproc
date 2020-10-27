@@ -16,7 +16,7 @@ LAST_SES = 10  # 10
 
 SET_DPI = 100
 FIGSIZE_1 = (9, 10)
-FIGSIZE_2 = (9, 5)
+FIGSIZE_2 = (15, 8)
 
 FTYPE_LIST = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth',
               'meica-cons']
@@ -74,9 +74,11 @@ for k in data.keys():
             d = {'gm': img_data[seg == 2], 'wm': img_data[seg == 3]}
 
             for dk in d.keys():
-                d[dk] = np.abs(d[dk])
+                if k == 'CVR':
+                    d[dk] = np.abs(d[dk])
+                    d[dk] = d[dk][d[dk] < 5]
+
                 d[dk] = d[dk][d[dk] != 0]
-                d[dk] = d[dk][d[dk] < 5]
 
                 df = pd.DataFrame({k: d[dk], 'tissue': [dk]*d[dk].size,
                                   'ftype': [FTYPE_DICT[ftype]]*d[dk].size})
@@ -101,13 +103,16 @@ for k in data.keys():
         ax[n].legend().remove()
         if n == 0:
             plt.legend(handles=patch)
-        ax[n].set_xlim([0, 1.5])
+        if k == 'CVR':
+            ax[n].set_xlim([0, 1])
+        else:
+            ax[n].set_xlim([-9, 9])
 
     plt.savefig(f'plots/sub-{sub}_{k}_vals.png', dpi=SET_DPI)
 
-fig, ax = plt.subplots(1, len(FTYPE_LIST), figsize=FIGSIZE_1, dpi=SET_DPI,
+fig, ax = plt.subplots(1, len(FTYPE_LIST), figsize=FIGSIZE_2, dpi=SET_DPI,
                        sharey=True)
-plt.suptitle(f'Subject {sub}, number of ')
+plt.suptitle(f'Subject {sub}, number of significant voxels')
 
 for n, ftype in enumerate(FTYPE_LIST):
     pal = sns.color_palette(f'light:{COLOURS[n]}', n_colors=3)

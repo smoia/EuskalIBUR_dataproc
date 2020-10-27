@@ -103,7 +103,7 @@ for k in data.keys():
             plt.legend(handles=patch)
         ax[n].set_xlim([0, 1.5])
 
-    plt.savefig(f'sub-{sub}_{k}_vals.png', dpi=SET_DPI)
+    plt.savefig(f'plots/sub-{sub}_{k}_vals.png', dpi=SET_DPI)
 
 fig, ax = plt.subplots(1, len(FTYPE_LIST), figsize=FIGSIZE_1, dpi=SET_DPI,
                        sharey=True)
@@ -123,4 +123,4 @@ for n, ftype in enumerate(FTYPE_LIST):
     if n == len(FTYPE_LIST)-1:
         plt.legend(handles=patch)
 
-plt.savefig(f'sub-{sub}_{k}_count.png', dpi=SET_DPI)
+plt.savefig(f'plots/sub-{sub}_{k}_count.png', dpi=SET_DPI)

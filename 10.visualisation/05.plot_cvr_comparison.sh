@@ -59,7 +59,12 @@ do
 		if [ ${i} -lt 20 ]
 		then
 			appending="${appending} LMEr_${map}${i}_res.png"
-			dr=1
+			if [ ${map} == "cvr" ]
+			then
+				dr=1
+			else
+				dr=5
+			fi
 		else
 			j=0
 			dr=100

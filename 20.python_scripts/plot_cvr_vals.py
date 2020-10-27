@@ -128,4 +128,4 @@ for n, ftype in enumerate(FTYPE_LIST):
     if n == len(FTYPE_LIST)-1:
         plt.legend(handles=patch)
 
-plt.savefig(f'plots/sub-{sub}_{k}_count.png', dpi=SET_DPI)
+plt.savefig(f'plots/sub-{sub}_count.png', dpi=SET_DPI)

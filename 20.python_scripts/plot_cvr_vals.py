@@ -77,6 +77,7 @@ for k in data.keys():
                 if k == 'CVR':
                     # d[dk] = np.abs(d[dk])
                     d[dk] = d[dk][d[dk] < 5]
+                    d[dk] = d[dk][d[dk] > -5]
 
                 d[dk] = d[dk][d[dk] != 0]
 
@@ -104,7 +105,7 @@ for k in data.keys():
         if n == 0:
             plt.legend(handles=patch)
         if k == 'CVR':
-            ax[n].set_xlim([0, 1])
+            ax[n].set_xlim([-1, 1])
         else:
             ax[n].set_xlim([-9, 9])
 

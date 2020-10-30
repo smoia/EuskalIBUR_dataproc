@@ -75,7 +75,7 @@ for k in data.keys():
 
             for dk in d.keys():
                 if k == 'CVR':
-                    d[dk] = np.abs(d[dk])
+                    # d[dk] = np.abs(d[dk])
                     d[dk] = d[dk][d[dk] < 5]
 
                 d[dk] = d[dk][d[dk] != 0]

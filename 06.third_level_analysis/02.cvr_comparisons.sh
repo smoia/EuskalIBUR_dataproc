@@ -59,7 +59,7 @@ do
 		if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat \
 					  ./reg/${sub}_T2w2T1w0GenericAffine.mat
 
-		for map in masked_physio_only # corrected
+		for map in masked  # _physio_only # corrected
 		do
 			for ses in $( seq -f %02g 1 ${lastses} )
 			do
@@ -91,7 +91,7 @@ done
 
 cd normalised
 
-for map in masked_physio_only # corrected
+for map in masked  # _physio_only # corrected
 do
 for inmap in cvr lag
 do

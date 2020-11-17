@@ -96,11 +96,11 @@ for n, k in enumerate(data_avg.keys()):
                     else:
                         val = d[dk].mean()
 
-                    df = pd.DataFrame({'val': val,
-                                       'tissue': SEG_DICT[dk],
-                                       'ftype': FTYPE_DICT[ftype],
-                                       'ses': f'{ses:02d}',
-                                       'sub': sub})
+                    df = pd.DataFrame.from_dict({'val': val,
+                                                 'tissue': SEG_DICT[dk],
+                                                 'ftype': FTYPE_DICT[ftype],
+                                                 'ses': f'{ses:02d}',
+                                                 'sub': sub})
 
                     data_avg[k] = data_avg[k].append(df, ignore_index=True)
 

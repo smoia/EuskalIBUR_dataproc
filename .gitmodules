@@ -3,4 +3,4 @@
 	url = git@github.com:smoia/EuskalIBUR_atlases.git
 [submodule "80.virtual_environments/fsleyes_venv"]
 	path = 80.virtual_environments/fsleyes_venv
-	url = git@github.com:smoia/fsleyes_venv.git
+	url = git@git.bcbl.eu:smoia/euskalibur_fsleyes_venv.git

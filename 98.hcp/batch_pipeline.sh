@@ -129,10 +129,10 @@ fi
 # qsub -q short.q -hold_jid "${joblist}" -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
 
 ### Plot pipeline for subjects parallel
-rm ${wdr}/../LogFiles/plot_${sub}_pipe
+rm ${wdr}/../LogFiles/plot_cvrval_pipe
 qsub -q short.q -N "plot_EuskalIBUR" \
--o ${wdr}/../LogFiles/plot_${sub}_pipe \
--e ${wdr}/../LogFiles/plot_${sub}_pipe \
+-o ${wdr}/../LogFiles/plot_cvrval_pipe \
+-e ${wdr}/../LogFiles/plot_cvrval_pipe \
 ${wdr}/98.hcp/run_plot_pipeline.sh
 
 

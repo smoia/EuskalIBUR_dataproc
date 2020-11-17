@@ -27,6 +27,9 @@ echo "************************************"
 # saving the current wokdir
 cwd=$(pwd)
 
+# Make LME maps
+${scriptdir}/10.visualisation/05.plot_cvr_comparison.sh ${wdr} ${scriptdir} ${tmp}
+
 # Make session maps chart
 ${scriptdir}/10.visualisation/01.plot_cvr_maps.sh ${wdr} ${scriptdir}
 
@@ -35,9 +38,6 @@ ${scriptdir}/10.visualisation/01.plot_cvr_maps.sh ${wdr} ${scriptdir}
 
 # Make ICC maps
 # ${scriptdir}/10.visualisation/06.plot_icc_maps.sh ${wdr} ${scriptdir} ${tmp}
-
-# Make LME maps
-${scriptdir}/10.visualisation/05.plot_cvr_comparison.sh ${wdr} ${scriptdir} ${tmp}
 
 echo ""
 echo ""

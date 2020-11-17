@@ -134,7 +134,7 @@ do
 			convert +append tmp.01pcm_${sub}_??_${ftype}_${map}.png +repage tmp.01pcm_${sub}_${ftype}_${map}.png
 			appending="${appending} tmp.01pcm_${sub}_${ftype}_${map}.png"
 		done
-		# Append colourbar and
+		# Append colourbar
 		appending="${appending} tmp.01pcm_${sub}_colourbar_${map}.png +repage tmp.01pcm_sub-${sub}_alltypes_${map}.png"
 		${appending}
 		composite -geometry +60+40 tmp.01pcm_sub-${sub}_alltypes_${map}.png ${scriptdir}/10.visualisation/canvas/Alltypes_canvas.png +repage sub-${sub}_alltypes_${map}.png

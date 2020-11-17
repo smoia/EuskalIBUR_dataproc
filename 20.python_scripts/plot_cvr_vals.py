@@ -28,8 +28,7 @@ FTYPE_DICT = {'echo-2': 'SE-MPR', 'optcom': 'OC-MPR',
 
 LAST_SES += 1
 
-sub = sys.argv[1]
-wdr = sys.argv[2]
+wdr = sys.argv[1]
 
 os.chdir(wdr)
 try:
@@ -48,7 +47,7 @@ data = {'CVR': {}, 'Lag': {}}
 dmean = {'CVR': {}, 'Lag': {}}
 
 # Prepare legends for plots
-
+ 
 patch = []
 for n, ftype in enumerate(FTYPE_LIST):
     patch = patch + [mpatches.Patch(color=COLOURS[n], label=FTYPE_DICT[ftype])]

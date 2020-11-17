@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-sub=${1}
 wdr=${2:-/data}
 scriptdir=${3:-/scripts}
 
@@ -14,7 +13,7 @@ echo "Plotting motion outliers"
 
 if [ ! -d ${wdr}/plots ]; then mkdir ${wdr}/plots; fi
 
-python3 ${scriptdir}/20.python_scripts/plot_cvr_vals.py ${sub} ${wdr} ${scriptdir}
+python3 ${scriptdir}/20.python_scripts/plot_cvr_vals.py ${wdr}
 
 # Go on modifying plots
 if [ -e ${tmp}/tmp.04pcv_${sub} ]; then rm -rf ${tmp}/tmp.04pcv_${sub}; fi

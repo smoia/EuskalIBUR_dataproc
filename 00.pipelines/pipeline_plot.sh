@@ -30,11 +30,14 @@ cwd=$(pwd)
 # Make session maps chart
 ${scriptdir}/10.visualisation/01.plot_cvr_maps.sh ${wdr} ${scriptdir}
 
-# Normally these two do not have to be run
 # Plot FD vs DVARS
 # ${scriptdir}/10.visualisation/02.plot_motion_denoise.sh ${wdr}
+
 # Make ICC maps
-${scriptdir}/10.visualisation/06.plot_icc_maps.sh ${wdr} ${scriptdir} ${tmp}
+# ${scriptdir}/10.visualisation/06.plot_icc_maps.sh ${wdr} ${scriptdir} ${tmp}
+
+# Make LME maps
+${scriptdir}/10.visualisation/05.plot_cvr_comparison.sh ${wdr} ${scriptdir} ${tmp}
 
 echo ""
 echo ""

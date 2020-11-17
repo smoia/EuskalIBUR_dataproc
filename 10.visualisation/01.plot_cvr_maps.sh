@@ -78,7 +78,7 @@ do
 			--clippingRange 0.0 1.01 --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 \
 			--smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
 			${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag.nii.gz \
-			--name "CVR_lag" --overlayType volume --alpha 100.0 --cmap ${scriptdir}/10.visualisation/colourmaps/viridis.cmap --invert \
+			--name "CVR_lag" --overlayType volume --alpha 100.0 --cmap viridis --invert \
 			--clipImage ${mask} --displayRange -5.0 5.0 --clippingRange 0.0 1.01 \
 			--gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 \
 			--blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
@@ -91,7 +91,7 @@ do
 			--clippingRange 0.0 1.01 --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 \
 			--smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
 			${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag_corrected.nii.gz \
-			--name "CVR_lag_(corrected)" --overlayType volume --alpha 100.0 --cmap ${scriptdir}/10.visualisation/colourmaps/viridis.cmap --invert \
+			--name "CVR_lag_(corrected)" --overlayType volume --alpha 100.0 --cmap viridis --invert \
 			--clipImage ${mask} --displayRange -5.0 5.0 --clippingRange 0.0 1.01 \
 			--gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 \
 			--blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0

@@ -122,4 +122,4 @@ mv LMEr.png ${wdr}/plots/.
 
 cd ${cwd}
 
-# rm -rf ${tmp}/tmp.05pcc*
+rm -rf ${tmp}/tmp.05pcc*

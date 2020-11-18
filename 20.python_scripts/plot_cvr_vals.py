@@ -57,6 +57,7 @@ for sub in SUB_LIST:
 # Prepare plot
 fig, ax = plt.subplots(nrows=2, ncols=2, figsize=FIGSIZE, dpi=SET_DPI,
                        sharex=True)
+ax = ax.flatten()
 plt.suptitle('Average values of all subjects, all sessions, across strategies')
 
 for n, k in enumerate(data_avg.keys()):

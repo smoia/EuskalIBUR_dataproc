@@ -116,7 +116,7 @@ composite -geometry +0+353 LMEr_cvr_app.png LMEr_cvr_oncanvas_2.png +repage LMEr
 composite -geometry +990+353 LMEr_lag_app.png LMEr_cvr_oncanvas_3.png +repage LMEr.png
 
 
-# if [ ! -d ${wdr}/plots ]; then mkdir ${wdr}/plots; fi
+if [ ! -d ${wdr}/plots ]; then mkdir ${wdr}/plots; fi
 
 mv LMEr.png ${wdr}/plots/.
 

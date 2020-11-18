@@ -106,7 +106,7 @@ for n, k in enumerate(data_avg.keys()):
 
     # Plot!
     sns.barplot(data=data_avg[k], x='tissue', y='val',
-                hue='ftype', capsize=.2, ci='sd',
+                hue='ftype', capsize=.2, ci='sd', orient='v',
                 palette=sns.color_palette(COLOURS), ax=ax[n])
 
     # Some little tweaks for prettier plots

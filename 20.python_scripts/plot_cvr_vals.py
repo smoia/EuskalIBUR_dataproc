@@ -55,8 +55,7 @@ for sub in SUB_LIST:
     # GM = 2, WM = 3
 
 # Prepare plot
-fig, ax = plt.subplots(nrows=2, ncols=2, figsize=FIGSIZE, dpi=SET_DPI,
-                       sharex=True)
+fig, ax = plt.subplots(nrows=2, ncols=2, figsize=FIGSIZE, dpi=SET_DPI)
 ax = ax.flatten()
 plt.suptitle('Average values of all subjects, all sessions, across strategies')
 
@@ -107,7 +106,7 @@ for n, k in enumerate(data_avg.keys()):
 
     # Plot!
     sns.barplot(data=data_avg[k], x='tissue', y='val',
-                hue='ftype', capsize=.2, ci='sd', orient='v',
+                hue='ftype', ci='sd', orient='v',
                 palette=sns.color_palette(COLOURS), ax=ax[n])
 
     # Some little tweaks for prettier plots
@@ -118,6 +117,9 @@ for n, k in enumerate(data_avg.keys()):
     ax[n].yaxis.set_label_text(k)
     ax[n].xaxis.set_label_text('')
 
-# Final tweaks and export
+    # Export dataframe to play with it
+    data_avg[k].to_csv(f'plots/Dataframe_{k}.csv')
+
+# Final tweaks and exports
 plt.tight_layout()
 plt.savefig('plots/CVR_values.png', dpi=SET_DPI)

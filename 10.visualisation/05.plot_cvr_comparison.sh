@@ -110,13 +110,15 @@ do
 done
 
 ## Adding to canvas
-composite LMEr_cvr_app.png ${scriptdir}/10.visualisation/canvas/LMEr_canvas.png +repage LMEr_cvr_oncanvas.png
-composite -geometry +990+0 LMEr_lag_app.png LMEr_cvr_oncanvas.png +repage LMEr.png
+composite LMEr_cvr21_res.png ${scriptdir}/10.visualisation/canvas/LMEr_canvas.png +repage LMEr_cvr_oncanvas_1.png
+composite -geometry +990+0 LMEr_lag21_res.png LMEr_cvr_oncanvas_1.png +repage LMEr_cvr_oncanvas_2.png
+composite -geometry +0+353 LMEr_cvr_app.png LMEr_cvr_oncanvas_2.png +repage LMEr_cvr_oncanvas_3.png
+composite -geometry +990+353 LMEr_lag_app.png LMEr_cvr_oncanvas_3.png +repage LMEr.png
 
 
 # if [ ! -d ${wdr}/plots ]; then mkdir ${wdr}/plots; fi
 
-# mv LMEr.png ${wdr}/plots/.
+mv LMEr.png ${wdr}/plots/.
 
 cd ${cwd}
 

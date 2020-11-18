@@ -105,10 +105,9 @@ for n, k in enumerate(data_avg.keys()):
                     data_avg[k] = data_avg[k].append(df, ignore_index=True)
 
     # Plot!
-    sns.violinplot(data=data_avg[k], x='tissue', y='val',
-                   hue='ftype', split=True, inner='quartile',
-                   palette=sns.color_palette(COLOURS), ax=ax[n],
-                   gridsize=10000, cut=0)
+    sns.barplot(data=data_avg[k], x='tissue', y='val',
+                hue='ftype', capsize=.2, ci='sd',
+                palette=sns.color_palette(COLOURS), ax=ax[n])
 
     # Some little tweaks for prettier plots
     if n != 0:

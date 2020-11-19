@@ -42,7 +42,7 @@ df_columns = ['val', 'tissue', 'ftype', 'ses', 'sub']
 data_avg = {'CVR': pd.DataFrame(columns=df_columns),
             'Lag': pd.DataFrame(columns=df_columns),
             'T values': pd.DataFrame(columns=df_columns),
-            '%% significant voxels': pd.DataFrame(columns=df_columns)}
+            '% significant voxels': pd.DataFrame(columns=df_columns)}
 # Subjects segmentations
 seg_data = dict.fromkeys(SUB_LIST)
 

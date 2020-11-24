@@ -20,6 +20,8 @@ anat=${3:-none}
 mref=${4:-none}
 # Joint transform Flag
 jstr=${5:-none}
+# Anat used for segmentation
+aseg=${6:-none}
 
 ######################################
 ######### Script starts here #########
@@ -85,7 +87,15 @@ then
 	${anat}2${mref}_fsl.mat -fsl2ras -oitk ${anat}2${mref}0GenericAffine.mat
 	mv ${anat}2${mref}* ../reg/.
 fi
-
+if [[ "${aseg}" != "none" && -e "../anat_preproc/${seg}_seg.nii.gz" && -e "../reg/${anat}2${aseg}0GenericAffine.mat" && ! -e "../anat_preproc/${seg}_seg2mref.nii.gz" ]]
+then
+	echo "Coregistering anatomical segmentation to ${func}"
+	antsApplyTransforms -d 3 -i ../anat_preproc/${aseg}_seg.nii.gz \
+						-r ../reg/${mref}.nii.gz -o ../anat_preproc/${aseg}_seg2mref.nii.gz \
+						-n Multilabel -v \
+						-t ../reg/${anat}2${mref}0GenericAffine.mat \
+						-t [../reg/${anat}2${aseg}0GenericAffine.mat,1]
+fi
 ## 03. Split and affine to ANTs if required
 if [[ "${jstr}" != "none" ]]
 then

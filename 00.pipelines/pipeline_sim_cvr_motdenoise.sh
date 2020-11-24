@@ -62,35 +62,24 @@ echo ""
 
 for ftype in optcom meica-aggr meica-orth meica-cons echo-2
 do
-	# echo "************************************"
-	# echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
-	# echo "************************************"
-	# echo "************************************"
-	# /scripts/04.first_level_analysis/02.cvr_map_sim.sh ${sub} ${ses} ${ftype}
-
 	echo "************************************"
-	echo "*** Motion outliers sub ${sub} ses ${ses} ${ftype}"
+	echo "*** CVR map sub ${sub} ses ${ses} ${ftype}"
 	echo "************************************"
 	echo "************************************"
-	/scripts/04.first_level_analysis/04.cvr_motion_outliers_sim.sh ${sub} ${ses} ${ftype} 
+	/scripts/04.first_level_analysis/02.cvr_map_sim.sh ${sub} ${ses} ${ftype}
 
-
-	# case ${ftype} in
-	# 	meica-aggr | meica-orth | meica-cons )
-	# 	echo "************************************"
-	# 	echo "*** Motion outliers sub ${sub} ses ${ses} ${ftype}-twosteps"
-	# 	echo "************************************"
-	# 	echo "************************************"
-	# 	/scripts/04.first_level_analysis/04.cvr_motion_outliers_sim.sh ${sub} ${ses} ${ftype}-twosteps 
-	# 	;;
-	# esac
+	# echo "************************************"
+	# echo "*** Motion outliers sub ${sub} ses ${ses} ${ftype}"
+	# echo "************************************"
+	# echo "************************************"
+	# /scripts/04.first_level_analysis/04.cvr_motion_outliers_sim.sh ${sub} ${ses} ${ftype} 
 done
 
-echo "************************************"
-echo "*** Motion outliers sub ${sub} ses ${ses} pre-preproc"
-echo "************************************"
-echo "************************************"
-/scripts/04.first_level_analysis/03.compute_motion_outliers.sh ${sub} ${ses}
+# echo "************************************"
+# echo "*** Motion outliers sub ${sub} ses ${ses} pre-preproc"
+# echo "************************************"
+# echo "************************************"
+# /scripts/04.first_level_analysis/03.compute_motion_outliers.sh ${sub} ${ses}
 
 echo ""
 echo ""

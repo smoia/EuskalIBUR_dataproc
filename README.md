@@ -2,7 +2,11 @@ Data processing for EuskalIBUR
 ==============================
 
 This library is meant to run the data processing on the dataset *EuskalIBUR* (currently available on request).
+It is meant to run in the container [*EuskalIBUR_Container*](https://git.bcbl.eu/smoia/euskalibur_container).
 
+Warning
+-------
+At the moment, the container might not support graphic libraries and virtual screens, so some of the scripts that create figures (i.e. those using fsleyes or interactive matplotlib sessions) might not work properly in it. 
 
 Scripts
 -------
@@ -70,7 +74,7 @@ A series of python scripts are included:
 
 Singularity container
 ---------------------
-To run this scripts in a reproducible manner, a Singularity container has been created. It can be obtained on request. For the moment, it has to be placed in the same folder as the scripts.
+To run this scripts in a reproducible manner, a Singularity container has been created. It can found [here](https://git.bcbl.eu/smoia/euskalibur_container). For the moment, it has to be placed in the same folder as the scripts.
 
 
 Preprocessing for BreathHold data
@@ -78,7 +82,7 @@ Preprocessing for BreathHold data
 `00.preproc.sh` has to be run on each subject and each session. Session 01 has to be run first.
 
 To run it in the associated singularity container, e.g. for subject 003, first run session 01:
-`singularity exec -B /path/to/data:/data -B /path/to/scripts:/scripts euskalibur.sif 00.preproc.sh 003 01`
+`singularity exec -B /path/to/data:/data -B /path/to/scripts:/scripts -B /path/to/tmp:/tmp euskalibur.sif 00.preproc.sh 003 01`
 Then, the other sessions can be run in parallel.
 
 

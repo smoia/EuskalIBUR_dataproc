@@ -27,13 +27,36 @@ echo "************************************"
 # saving the current wokdir
 cwd=$(pwd)
 
-# Make session maps chart
-# ${scriptdir}/10.visualisation/01.plot_cvr_maps.sh ${wdr} ${scriptdir}
+echo "************************************"
+echo "*** Start virtualenv"
+echo "************************************"
+echo "************************************"
+${scriptdir}/80.virtual_environments/fsleyes_venv/bin/activate
 
-# Normally these two do not have to be run
-# Plot FD vs DVARS
-${scriptdir}/10.visualisation/02.plot_motion_denoise.sh ${wdr}
-# Make ICC maps
+echo "************************************"
+echo "*** Make LME maps"
+echo "************************************"
+echo "************************************"
+${scriptdir}/10.visualisation/05.plot_cvr_comparison.sh ${wdr} ${scriptdir} ${tmp}
+
+echo "************************************"
+echo "*** Make session maps chart"
+echo "************************************"
+echo "************************************"
+${scriptdir}/10.visualisation/01.plot_cvr_maps.sh ${wdr} ${scriptdir}
+
+# echo "************************************"
+# echo "*** Plot FD vs DVARS"
+# echo "************************************"
+# echo "************************************"
+
+# ${scriptdir}/10.visualisation/02.plot_motion_denoise.sh ${wdr}
+
+# echo "************************************"
+# echo "*** Make ICC maps"
+# echo "************************************"
+# echo "************************************"
+
 # ${scriptdir}/10.visualisation/06.plot_icc_maps.sh ${wdr} ${scriptdir} ${tmp}
 
 echo ""

@@ -1,0 +1,6 @@
+[submodule "90.template/EuskalIBUR_atlases"]
+	path = 90.template/EuskalIBUR_atlases
+	url = git@github.com:smoia/EuskalIBUR_atlases.git
+[submodule "80.virtual_environments/fsleyes_venv"]
+	path = 80.virtual_environments/fsleyes_venv
+	url = git@git.bcbl.eu:smoia/euskalibur_fsleyes_venv.git

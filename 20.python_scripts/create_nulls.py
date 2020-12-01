@@ -30,6 +30,9 @@ ATLAS_DICT = {'Mutsaerts2015': 'Mutsaerts (vascular)',
 ATLAS_FOLDER = os.path.join('CVR_reliability', 'Atlas_comparison')
 LAST_SES += 1
 
+DISTMAP = '/home/nemo/Scrivania/Test_workbench/CVR_reliability/Atlas_comparison/mmdist/distmat.npy'
+INDEX = '/home/nemo/Scrivania/Test_workbench/CVR_reliability/Atlas_comparison/mmdist/index.npy'
+
 
 #########
 # Utils #
@@ -156,7 +159,7 @@ def generate_atlas_dictionary(wdr, scriptdir, overwrite=False):
         # Export atlases
         export_file(wdr, 'atlases', atlases)
     else:
-        print(f'Found eisting atlases dictionary in {wdr}, '
+        print(f'Found existing atlases dictionary in {wdr}, '
               'loading instead of generating.')
         atlases = load_file(args.wdr, 'atlases.npz')
 
@@ -165,16 +168,21 @@ def generate_atlas_dictionary(wdr, scriptdir, overwrite=False):
 
 def compute_distances(wdr, atlases, overwrite=False):
     # Check that you really need to do this
-    distmap = os.path.join(args.wdr, ATLAS_FOLDER, 'mmdist', 'distmap.npy')
-    index = os.path.join(args.wdr, ATLAS_FOLDER, 'mmdist', 'index.npy')
-    if overwrite is True or check_file(wdr, distmap) is False:
+    # distmap = os.path.join('mmdist', 'distmap.npy')
+    distmap = DISTMAP
+    # if overwrite is True or check_file(wdr, distmap) is False:
+    if overwrite is True or os.path.isfile(distmap) is False:
         coord_dir = os.path.join(wdr, ATLAS_FOLDER, 'mmdist')
         # Create folders
         os.makedirs(coord_dir, exist_ok=True)
+        print('Computing volume distance')
         # Get position of the voxels in the atlas intersection
         coordinates = np.asarray(np.where(atlases['intersect'] > 0)).transpose()
         dist_fname = volume(coordinates, coord_dir)
     else:
+        # distmap = os.path.join(wdr, ATLAS_FOLDER, distmap)
+        # index = os.path.join(wdr, ATLAS_FOLDER, 'mmdist', 'index.npy')
+        index = INDEX
         print('Distance memory mapped file already exists. Skip computation!')
         dist_fname = {'D': distmap, 'index': index}
 

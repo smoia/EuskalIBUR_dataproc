@@ -14,7 +14,7 @@ from brainsmash.mapgen.sampled import Sampled
 
 
 LAST_SES = 10  # 10
-ATLAS_LIST = ['Mutsaerts2015', 'Schaefer2018-100']
+ATLAS_LIST = ['Mutsaerts2015', 'Mutsaerts2015-sub', 'Schaefer2018-100']
 
 SET_DPI = 100
 FIGSIZE = (18, 10)
@@ -23,8 +23,10 @@ COLOURS = ['#2ca02cff', '#d62728ff']  # , '#1f77b4ff']
 # COLOURS = ['#d62728ff', '#2ca02cff', '#ff7f0eff', '#1f77b4ff',
 #            '#ff33ccff']
 ATLAS_FILE = {'Mutsaerts2015': 'ATTbasedFlowTerritories_resamp_2.5mm',
+              'Mutsaerts2015-sub': 'ATTbasedFlowTerritories_resamp_2.5mm_sub_ceb',
               'Schaefer2018-100': 'Schaefer2018_100Parcels_7Networks_order_FSLMNI152_2.5mm'}
 ATLAS_DICT = {'Mutsaerts2015': 'Mutsaerts (vascular)',
+              'Mutsaerts2015-sub': 'Mutsaerts (vascular) + subcortical',
               'Schaefer2018-100': 'Schaefer (functional)'}
 
 ATLAS_FOLDER = os.path.join('CVR_reliability', 'Atlas_comparison')

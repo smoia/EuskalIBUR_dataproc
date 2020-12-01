@@ -14,7 +14,7 @@ from brainsmash.mapgen.sampled import Sampled
 
 
 LAST_SES = 10  # 10
-ATLAS_LIST = ['Mutsaerts', 'Schaefer-100']
+ATLAS_LIST = ['Mutsaerts2015', 'Schaefer2018-100']
 
 SET_DPI = 100
 FIGSIZE = (18, 10)
@@ -22,7 +22,10 @@ FIGSIZE = (18, 10)
 COLOURS = ['#2ca02cff', '#d62728ff']  # , '#1f77b4ff']
 # COLOURS = ['#d62728ff', '#2ca02cff', '#ff7f0eff', '#1f77b4ff',
 #            '#ff33ccff']
-ATLAS_DICT = {'empty': ''}
+ATLAS_FILE = {'Mutsaerts2015': 'ATTbasedFlowTerritories_resamp_2.5mm',
+              'Schaefer2018-100': 'Schaefer2018_100Parcels_7Networks_order_FSLMNI152_2.5mm'}
+ATLAS_DICT = {'Mutsaerts2015': 'Mutsaerts (vascular)',
+              'Schaefer2018-100': 'Schaefer (functional)'}
 
 ATLAS_FOLDER = os.path.join('CVR_reliability', 'Atlas_comparison')
 LAST_SES += 1
@@ -136,7 +139,8 @@ def generate_atlas_dictionary(wdr, scriptdir, overwrite=False):
 
         # Read atlases
         for atlas in ATLAS_LIST:
-            atlas_img = nib.load(f'{scriptdir}/90.template/{atlas}.nii.gz')
+            atlas_img = nib.load(os.path.join(scriptdir, '90.template',
+                                              f'{ATLAS_FILE[atlas]}.nii.gz'))
             atlases[atlas] = atlas_img.get_fdata()
 
         # Create intersection of atlases

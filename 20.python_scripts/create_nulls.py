@@ -85,7 +85,7 @@ def _get_parser():
                         help='Compute distance and create memory-mapped file.',
                         default=False)
     parser.add_argument('-ev', '--evalvars',
-                        dest='avalvars',
+                        dest='evalvars',
                         action='store_true',
                         help='Evaluate variograms.',
                         default=False)
@@ -118,9 +118,16 @@ def load_file(wdr, fname):
     read_in = np.load(in_file, allow_pickle=True)['arr_0']
     return read_in[..., np.newaxis][0]
 
+
 def load_and_mask_nifti(data_fname, atlases):
     data_img = nib.load(f'{data_fname}.nii.gz')
     data = data_img.get_fdata()
+    if len(data.shape) == 5:
+        data = data[:, :, :, 0, 0]
+    elif len(data.shape) == 4:
+        data = data[:, :, :, 0]
+    elif len(data.shape) > 5:
+        raise Exception('Something is wrong with the nifti dimensions')
     return data[atlases['intersect'] > 0]
 
 
@@ -133,6 +140,7 @@ def generate_atlas_dictionary(wdr, scriptdir, overwrite=False):
         # Create data dictionary
         atlases = dict.fromkeys(ATLAS_LIST)
 
+        print('Read and intersect atlases')
         # Read atlases
         for atlas in ATLAS_LIST:
             atlas_img = nib.load(os.path.join(scriptdir, '90.template',
@@ -176,7 +184,7 @@ def compute_distances(wdr, atlases, overwrite=False):
 def evaluate_variograms(data_fname, atlases, dist_fname, wdr, **kwargs):
     # Read data and feed surrogate maps
     data_masked = load_and_mask_nifti(data_fname, atlases)
-
+    print(f'Evaluating variogram for {data_fname}')
     sampled_fit(x=data_masked, D=dist_fname['D'], index=dist_fname['index'],
                 nsurr=50, **kwargs)
 
@@ -188,6 +196,7 @@ def evaluate_variograms(data_fname, atlases, dist_fname, wdr, **kwargs):
 def generate_surrogates(data_fname, atlases, dist_fname, null_maps, wdr):
     # Read data and feed surrogate maps
     data_masked = load_and_mask_nifti(data_fname, atlases)
+    print(f'Start surrogates for {data_fname}')
 
     gen = Sampled(x=data_masked, D=dist_fname['D'], index=dist_fname['index'])
     surrogate_maps = gen(n=null_maps)
@@ -249,8 +258,19 @@ def plot_parcels(null_maps, data_content, atlases, surrogate_maps, data_masked, 
     plt.close('all')
 
 
+########
+# MAIN #
+########
 if __name__ == '__main__':
     args = _get_parser().parse_args(sys.argv[1:])
+
+    # Check that data_fname doesn't end for nii.gz
+    data_fname = args.data_fname
+
+    if data_fname.endswith('.nii.gz'):
+        data_fname = data_fname[:-7]
+    elif data_fname.endswith('.nii'):
+        data_fname = data_fname[:-4]
 
     if args.genatlas is True:
         # Check if atlases was already computed
@@ -262,12 +282,24 @@ if __name__ == '__main__':
     elif args.compdist is True:
 
         atlases = generate_atlas_dictionary(args.wdr, args.scriptdir)
-        dist_fname = compute_distances(args.wdr, atlases)
+        dist_fname = compute_distances(args.wdr, atlases, args.overwrite)
+
+    elif args.evalvars is True:
+        atlases = generate_atlas_dictionary(args.wdr, args.scriptdir)
+        dist_fname = compute_distances(args.wdr, atlases, args.overwrite)
+        # kwargs = {'ns': 500,
+        #   'knn': 1500,
+        #   'pv': 70
+        #   }
+        evaluate_variograms(data_fname,
+                            atlases,
+                            dist_fname,
+                            args.wdr)
 
     elif args.gensurr is True:
         atlases = generate_atlas_dictionary(args.wdr, args.scriptdir)
-        dist_fname = compute_distances(args.wdr, atlases)
-        surrogate_maps, data_masked = generate_surrogates(args.data_fname,
+        dist_fname = compute_distances(args.wdr, atlases, args.overwrite)
+        surrogate_maps, data_masked = generate_surrogates(data_fname,
                                                           atlases,
                                                           dist_fname,
                                                           args.null_maps,
@@ -279,21 +311,9 @@ if __name__ == '__main__':
                      data_masked,
                      args.plot_name)
 
-    elif args.evalvars is True:
-        atlases = generate_atlas_dictionary(args.wdr, args.scriptdir)
-        dist_fname = compute_distances(args.wdr, atlases)
-        # kwargs = {'ns': 500,
-        #   'knn': 1500,
-        #   'pv': 70
-        #   }
-        evaluate_variograms(args.data_fname,
-                            atlases,
-                            dist_fname,
-                            args.wdr)
-
     elif args.plotparc is True:
         # Check if surrogates exists, otherwise stop
-        surrogate_fname = f'surrogates_{args.data_fname}'
+        surrogate_fname = f'surrogates_{data_fname}'
         if check_file(args.wdr, surrogate_fname) is False:
             raise Exception('Cannot find surrogate maps: '
                             f'{surrogate_fname} in '
@@ -302,7 +322,7 @@ if __name__ == '__main__':
             atlases = generate_atlas_dictionary(args.wdr, args.scriptdir)
             surrogate_maps = load_file(args.wdr, surrogate_fname)
             # Read and extract data
-            data_masked = load_and_mask_nifti(args.data_fname, atlases)
+            data_masked = load_and_mask_nifti(data_fname, atlases)
 
             plot_parcels(args.null_maps,
                          args.data_content,

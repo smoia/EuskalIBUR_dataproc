@@ -115,8 +115,8 @@ def check_file(wdr, fname):
 
 def load_file(wdr, fname):
     in_file = os.path.join(wdr, ATLAS_FOLDER, fname)
-    return np.load(in_file, allow_pickle=True)
-
+    read_in = np.load(in_file, allow_pickle=True)['arr_0']
+    return read_in[..., np.newaxis][0]
 
 def load_and_mask_nifti(data_fname, atlases):
     data_img = nib.load(f'{data_fname}.nii.gz')
@@ -129,11 +129,7 @@ def load_and_mask_nifti(data_fname, atlases):
 #############
 def generate_atlas_dictionary(wdr, scriptdir, overwrite=False):
     # Check that you really need to do this
-    if overwrite is False or check_file(wdr, 'atlases.npz') is True:
-        print(f'Found eisting atlases dictionary in {wdr}, '
-              'loading instead of generating.')
-        atlases = load_file(args.wdr, 'atlases.npz')
-    else:
+    if overwrite is True or check_file(wdr, 'atlases.npz') is False:
         # Create data dictionary
         atlases = dict.fromkeys(ATLAS_LIST)
 
@@ -151,6 +147,10 @@ def generate_atlas_dictionary(wdr, scriptdir, overwrite=False):
 
         # Export atlases
         export_file(wdr, 'atlases', atlases)
+    else:
+        print(f'Found eisting atlases dictionary in {wdr}, '
+              'loading instead of generating.')
+        atlases = load_file(args.wdr, 'atlases.npz')
 
     return atlases
 
@@ -159,16 +159,16 @@ def compute_distances(wdr, atlases, overwrite=False):
     # Check that you really need to do this
     distmap = os.path.join(args.wdr, ATLAS_FOLDER, 'mmdist', 'distmap.npy')
     index = os.path.join(args.wdr, ATLAS_FOLDER, 'mmdist', 'index.npy')
-    if overwrite is False or check_file(wdr, distmap) is True:
-        print('Distance memory mapped file already exists. Skip computation!')
-        dist_fname = {'D': distmap, 'index': index}
-    else:
+    if overwrite is True or check_file(wdr, distmap) is False:
         coord_dir = os.path.join(wdr, ATLAS_FOLDER, 'mmdist')
         # Create folders
         os.makedirs(coord_dir, exist_ok=True)
         # Get position of the voxels in the atlas intersection
         coordinates = np.asarray(np.where(atlases['intersect'] > 0)).transpose()
         dist_fname = volume(coordinates, coord_dir)
+    else:
+        print('Distance memory mapped file already exists. Skip computation!')
+        dist_fname = {'D': distmap, 'index': index}
 
     return dist_fname
 

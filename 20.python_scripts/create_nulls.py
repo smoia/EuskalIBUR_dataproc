@@ -237,7 +237,7 @@ def plot_parcels(null_maps, data_content, atlases, surrogate_maps, data_masked, 
             plt.plot(occurrencies[i], label_avg, '.', color=COLOURS[j])
 
         # Add a patch for the current atlas
-        patch = patch + [mpatches.Patch(color=COLOURS[j], label=atlas)]
+        patch = patch + [mpatches.Patch(color=COLOURS[j], label=ATLAS_DICT[atlas])]
 
     # Adjust legend and layout
     patch = patch + [mpatches.Patch(color='#bbbbbbff', label='Surrogates')]

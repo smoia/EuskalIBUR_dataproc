@@ -4,11 +4,13 @@ import argparse
 import os
 import sys
 
+import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import nibabel as nib
 import numpy as np
 from brainsmash.workbench.geo import volume
-from brainsmash.mapgen import Sampled
+from brainsmash.mapgen.eval import sampled_fit
+from brainsmash.mapgen.sampled import Sampled
 
 
 LAST_SES = 10  # 10
@@ -41,7 +43,7 @@ def _get_parser():
                         type=str,
                         help='The type of data represented in the map you want '
                              'to scramble',
-                        required=True)
+                        default='')
     parser.add_argument('-wdr', '--workdir',
                         dest='wdr',
                         type=str,
@@ -79,6 +81,11 @@ def _get_parser():
                         action='store_true',
                         help='Compute distance and create memory-mapped file.',
                         default=False)
+    parser.add_argument('-ev', '--evalvars',
+                        dest='avalvars',
+                        action='store_true',
+                        help='Evaluate variograms.',
+                        default=False)
     parser.add_argument('-gs', '--gensurr',
                         dest='gensurr',
                         action='store_true',
@@ -108,17 +115,18 @@ def load_file(wdr, fname):
     return np.load(in_file, allow_pickle=True)
 
 
-def load_nifti(data_fname):
+def load_and_mask_nifti(data_fname, atlases):
     data_img = nib.load(f'{data_fname}.nii.gz')
-    return data_img.get_fdata()
+    data = data_img.get_fdata()
+    return data[atlases['intersect'] > 0]
 
 
 #############
 # Workflows #
 #############
-def generate_atlas_dictionary(wdr, scriptdir):
+def generate_atlas_dictionary(wdr, scriptdir, overwrite=False):
     # Check that you really need to do this
-    if args.overwrite is False or check_file(wdr, 'atlases.npz') is True:
+    if overwrite is False or check_file(wdr, 'atlases.npz') is True:
         print(f'Found eisting atlases dictionary in {wdr}, '
               'loading instead of generating.')
         atlases = load_file(args.wdr, 'atlases.npz')
@@ -143,11 +151,11 @@ def generate_atlas_dictionary(wdr, scriptdir):
     return atlases
 
 
-def compute_distances(wdr, atlases):
+def compute_distances(wdr, atlases, overwrite=False):
     # Check that you really need to do this
     distmap = os.path.join(args.wdr, ATLAS_FOLDER, 'mmdist', 'distmap.npy')
     index = os.path.join(args.wdr, ATLAS_FOLDER, 'mmdist', 'index.npy')
-    if args.overwrite is False or check_file(args.wdr, distmap) is True:
+    if overwrite is False or check_file(wdr, distmap) is True:
         print('Distance memory mapped file already exists. Skip computation!')
         dist_fname = {'D': distmap, 'index': index}
     else:
@@ -161,12 +169,21 @@ def compute_distances(wdr, atlases):
     return dist_fname
 
 
-def generate_surrogates(data_fname, atlases, dist_fname, null_maps, wdr):
-    # Read data
-    data = load_nifti(data_fname)
+def evaluate_variograms(data_fname, atlases, dist_fname, wdr, **kwargs):
+    # Read data and feed surrogate maps
+    data_masked = load_and_mask_nifti(data_fname, atlases)
 
-    # Extract data and feed surrogate maps
-    data_masked = data[atlases['intersect'] > 0]
+    sampled_fit(x=data_masked, D=dist_fname['D'], index=dist_fname['index'],
+                nsurr=50, **kwargs)
+
+    ex_file = os.path.join(wdr, ATLAS_FOLDER, f'{data_fname}_variogram.png')
+    plt.savefig(ex_file)
+    plt.close('all')
+
+
+def generate_surrogates(data_fname, atlases, dist_fname, null_maps, wdr):
+    # Read data and feed surrogate maps
+    data_masked = load_and_mask_nifti(data_fname, atlases)
 
     gen = Sampled(x=data_masked, D=dist_fname['D'], index=dist_fname['index'])
     surrogate_maps = gen(n=null_maps)
@@ -177,7 +194,7 @@ def generate_surrogates(data_fname, atlases, dist_fname, null_maps, wdr):
     return surrogate_maps, data_masked
 
 
-def plot_parcels(null_maps, data_content, atlases, surrogate_maps, data_masked, plot_name):
+def plot_parcels(null_maps, data_content, atlases, surrogate_maps, data_masked, plot_name=''):
     # Plot parcel value against voxel size
     # Setup plot
     plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
@@ -186,6 +203,7 @@ def plot_parcels(null_maps, data_content, atlases, surrogate_maps, data_masked, 
     # #!# ylabel has to reflect data
     plt.ylabel(data_content)
     # plt.ylim(0, 1)
+    patch = []
 
     for atlas in ATLAS_LIST:
         # Mask atlas to match data_masked
@@ -214,8 +232,12 @@ def plot_parcels(null_maps, data_content, atlases, surrogate_maps, data_masked, 
             label_avg = data_masked[atlas_masked == label].mean()
             plt.plot(occurrencies[i], label_avg, '.', color=COLOURS[j])
 
-    # #!# Adjust legend
-    plt.legend(ATLAS_DICT.values())
+        # Add a patch for the current atlas
+        patch = patch + [mpatches.Patch(color=COLOURS[j], label=atlas)]
+
+    # Adjust legend and layout
+    patch = patch + [mpatches.Patch(color='#bbbbbbff', label='Surrogates')]
+    plt.legend(handles=patch)
     plt.tight_layout()
 
     # Save plot
@@ -253,6 +275,18 @@ if __name__ == '__main__':
                      data_masked,
                      args.plot_name)
 
+    elif args.evalvars is True:
+        atlases = generate_atlas_dictionary(args.wdr, args.scriptdir)
+        dist_fname = compute_distances(args.wdr, atlases)
+        # kwargs = {'ns': 500,
+        #   'knn': 1500,
+        #   'pv': 70
+        #   }
+        evaluate_variograms(args.data_fname,
+                            atlases,
+                            dist_fname,
+                            args.wdr)
+
     elif args.plotparc is True:
         # Check if surrogates exists, otherwise stop
         surrogate_fname = f'surrogates_{args.data_fname}'
@@ -264,8 +298,7 @@ if __name__ == '__main__':
             atlases = generate_atlas_dictionary(args.wdr, args.scriptdir)
             surrogate_maps = load_file(args.wdr, surrogate_fname)
             # Read and extract data
-            data = load_nifti(args.data_fname)
-            data_masked = data[atlases['intersect'] > 0]
+            data_masked = load_and_mask_nifti(args.data_fname, atlases)
 
             plot_parcels(args.null_maps,
                          args.data_content,

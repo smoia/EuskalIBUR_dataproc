@@ -5,8 +5,8 @@ for FS_f in ${FS_files[*]}; do
     3dresample -input $FS_f.nii.gz -master $atlas.nii.gz -prefix ${FS_f}_space_ATT.nii.gz
 done
 3dcalc -overwrite -a $atlas.nii.gz -b FS_Rh_mask_space_ATT.nii.gz -expr "a*b" -prefix ${atlas}_Rh.nii.gz
-3dcalc -overwrite -a $atlas.nii.gz -b FS_Lh_mask_space_ATT.nii.gz -expr "a*b" -prefix ${atlas}_Lh.nii.gz
-3dcalc -overwrite -a ${atlas}_Lh.nii.gz -b ${atlas}_Rh.nii.gz -expr "a+(b+10)" -prefix ${atlas}_by_hemis.nii.gz
+3dcalc -overwrite -a $atlas.nii.gz -b FS_Lh_mask_space_ATT.nii.gz -expr "(a+10)*b*(step(a))" -prefix ${atlas}_Lh.nii.gz
+3dcalc -overwrite -a ${atlas}_Lh.nii.gz -b ${atlas}_Rh.nii.gz -expr "a+b" -prefix ${atlas}_by_hemis.nii.gz
 3dcalc -overwrite -a ${atlas}_by_hemis.nii.gz -c aparc.a2009s+aseg_space_ATT.nii.gz -d FS_Subcortical_space_ATT.nii.gz -e FS_Cerebellum_space_ATT.nii.gz  -expr "a+(c+100-a)*d+(c+100-a)*e" -datum short -prefix ${atlas}_sub_ceb.nii.gz
 
 # Now yeo atlas

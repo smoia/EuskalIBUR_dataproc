@@ -34,7 +34,7 @@ LAST_SES += 1
 
 DISTMAP = '/home/nemo/Scrivania/Test_workbench/CVR_reliability/Atlas_comparison/mmdist/distmat.npy'
 INDEX = '/home/nemo/Scrivania/Test_workbench/CVR_reliability/Atlas_comparison/mmdist/index.npy'
-
+SURROGATES_PR = '/home/nemo/Scrivania/Test_workbench/CVR_reliability/Atlas_comparison/surrogates_'
 
 #########
 # Utils #
@@ -121,7 +121,10 @@ def check_file(wdr, fname):
 def load_file(wdr, fname):
     in_file = os.path.join(wdr, ATLAS_FOLDER, fname)
     read_in = np.load(in_file, allow_pickle=True)['arr_0']
-    return read_in[..., np.newaxis][0]
+    if read_in.shape == ():
+        return read_in[..., np.newaxis][0]
+    else:
+        return read_in
 
 
 def load_and_mask_nifti(data_fname, atlases):
@@ -163,7 +166,7 @@ def generate_atlas_dictionary(wdr, scriptdir, overwrite=False):
     else:
         print(f'Found existing atlases dictionary in {wdr}, '
               'loading instead of generating.')
-        atlases = load_file(args.wdr, 'atlases.npz')
+        atlases = load_file(wdr, 'atlases.npz')
 
     return atlases
 
@@ -203,16 +206,26 @@ def evaluate_variograms(data_fname, atlases, dist_fname, wdr, **kwargs):
     plt.close('all')
 
 
-def generate_surrogates(data_fname, atlases, dist_fname, null_maps, wdr):
-    # Read data and feed surrogate maps
+def generate_surrogates(data_fname, atlases, dist_fname, null_maps, wdr, overwrite=False):
     data_masked = load_and_mask_nifti(data_fname, atlases)
-    print(f'Start surrogates for {data_fname}')
+    # Check that data_fname doesn't contain folders.
+    data_fname = os.path.basename(data_fname)
 
-    gen = Sampled(x=data_masked, D=dist_fname['D'], index=dist_fname['index'])
-    surrogate_maps = gen(n=null_maps)
+    surrogate_fname = f'surrogates_{data_fname}'
 
-    # Export atlases
-    export_file(wdr, f'surrogates_{data_fname}', surrogate_maps)
+    # if overwrite is True or os.path.isfile(f'{surrogate_fname}.npz') is False:
+    if overwrite is True or check_file(wdr, f'{surrogate_fname}.npz') is False:
+        # Read data and feed surrogate maps
+        print(f'Start surrogates for {data_fname}')
+
+        gen = Sampled(x=data_masked, D=dist_fname['D'], index=dist_fname['index'])
+        surrogate_maps = gen(n=null_maps)
+
+        # Export atlases
+        export_file(wdr, surrogate_fname, surrogate_maps)
+    else:
+        print(f'Surrogates found at {surrogate_fname}.npz. Loading.')
+        surrogate_maps = load_file(wdr, f'{surrogate_fname}.npz')
 
     return surrogate_maps, data_masked
 
@@ -243,7 +256,7 @@ def plot_parcels(null_maps, data_content, atlases, surrogate_maps, data_masked, 
                 plt.plot(occurrencies[i], label_avg, '.', color='#bbbbbbff')
 
     # New loop to be sure that real data appear on top of surrogates
-    for j, atlas in ATLAS_LIST:
+    for j, atlas in enumerate(ATLAS_LIST):
         # Mask atlas to match data_masked
         atlas_masked = atlases[atlas][atlases['intersect'] > 0]
         # Find unique values (labels) and occurrencies (label size)
@@ -313,13 +326,19 @@ if __name__ == '__main__':
                                                           atlases,
                                                           dist_fname,
                                                           args.null_maps,
-                                                          args.wdr)
+                                                          args.wdr,
+                                                          args.overwrite)
+
+        plot_name = args.plot_name
+        if plot_name == '':
+            plot_name = data_fname
+
         plot_parcels(args.null_maps,
                      args.data_content,
                      atlases,
                      surrogate_maps,
                      data_masked,
-                     args.plot_name)
+                     plot_name)
 
     elif args.plotparc is True:
         # Check if surrogates exists, otherwise stop
@@ -334,12 +353,16 @@ if __name__ == '__main__':
             # Read and extract data
             data_masked = load_and_mask_nifti(data_fname, atlases)
 
+            plot_name = args.plot_name
+            if plot_name == '':
+                plot_name = data_fname
+
             plot_parcels(args.null_maps,
                          args.data_content,
                          atlases,
                          surrogate_maps,
                          data_masked,
-                         args.plot_name)
+                         plot_name)
 
     else:
         raise Exception('No workflow flag specified!')

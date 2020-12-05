@@ -144,11 +144,11 @@ ${wdr}/98.hcp/run_plot_pipeline.sh
 # qsub -q short.q -N "s_010_11_prep" -o ${wdr}/../LogFiles/010_11_pipe -e ${wdr}/../LogFiles/010_11_pipe ${wdr}/tmp.preproc_10.sh
 
 
-# ### Third level pipeline
-# rm ${wdr}/../LogFiles/third_level_pipe
-# qsub -q long.q -N "third_level_EuskalIBUR" \
-# -o ${wdr}/../LogFiles/third_level_pipe \
-# -e ${wdr}/../LogFiles/third_level_pipe \
-# ${wdr}/98.hcp/run_third_level_pipe.sh
-# # -hold_jid "${joblist}" \
-# # -hold_jid "${old_ftype}_EuskalIBUR" \
+### Third level pipeline
+rm ${wdr}/../LogFiles/third_level_pipe
+qsub -q long.q -N "third_level_EuskalIBUR" \
+-o ${wdr}/../LogFiles/third_level_pipe \
+-e ${wdr}/../LogFiles/third_level_pipe \
+${wdr}/98.hcp/run_third_level_pipe.sh
+# -hold_jid "${joblist}" \
+# -hold_jid "${old_ftype}_EuskalIBUR" \

@@ -110,8 +110,8 @@ rm ../LMEr_${inmap}.nii.gz
        -gltCode optcom_vs_meica-aggr  'model : 1*optcom -1*meica-aggr' \
        -gltCode optcom_vs_meica-orth  'model : 1*optcom -1*meica-orth' \
        -gltCode optcom_vs_meica-cons  'model : 1*optcom -1*meica-cons' \
-       -gltCode meica-aggr_vs_meica-orth  'model : 1*meica-aggr -1*meica-orth' \
-       -gltCode meica-aggr_vs_meica-cons  'model : 1*meica-aggr -1*meica-cons' \
+       -gltCode meica-orth_vs_meica-aggr  'model : 1*meica-orth -1*meica-aggr' \
+       -gltCode meica-cons_vs_meica-aggr  'model : 1*meica-cons -1*meica-aggr' \
        -gltCode meica-orth_vs_meica-cons  'model : 1*meica-orth -1*meica-cons' \
        -glfCode all_vs_echo-2  'model : 1*echo-2 -1*optcom & 1*echo-2 -1*meica-aggr & 1*echo-2 -1*meica-orth & 1*echo-2 -1*meica-cons' \
        -dataTable                                                      \

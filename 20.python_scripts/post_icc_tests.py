@@ -11,8 +11,8 @@ import seaborn as sns
 
 FTYPE_LIST = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth', 'meica-cons']
 
-SET_DPI = 100
-FIGSIZE = (38.6, 4)
+SET_DPI = 200
+FIGSIZE = (19.2, 2)
 
 COLOURS = ['#d62728ff', '#2ca02cff', '#ff7f0eff', '#1f77b4ff',
            '#ff33ccff']

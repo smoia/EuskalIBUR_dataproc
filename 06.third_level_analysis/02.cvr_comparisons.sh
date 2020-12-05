@@ -104,15 +104,15 @@ rm ../LMEr_${inmap}.nii.gz
        -mask ../reg/MNI_T1_brain_mask.nii.gz                           \
        -model  'model+(1|session)+(1|Subj)'                            \
        -gltCode echo-2_vs_optcom  'model : 1*echo-2 -1*optcom'         \
-       -gltCode echo-2_vs_meica-aggr  'model : 1*echo-2 -1*meica-aggr' \
-       -gltCode echo-2_vs_meica-orth  'model : 1*echo-2 -1*meica-orth' \
        -gltCode echo-2_vs_meica-cons  'model : 1*echo-2 -1*meica-cons' \
-       -gltCode optcom_vs_meica-aggr  'model : 1*optcom -1*meica-aggr' \
-       -gltCode optcom_vs_meica-orth  'model : 1*optcom -1*meica-orth' \
+       -gltCode echo-2_vs_meica-orth  'model : 1*echo-2 -1*meica-orth' \
+       -gltCode echo-2_vs_meica-aggr  'model : 1*echo-2 -1*meica-aggr' \
        -gltCode optcom_vs_meica-cons  'model : 1*optcom -1*meica-cons' \
-       -gltCode meica-orth_vs_meica-aggr  'model : 1*meica-orth -1*meica-aggr' \
+       -gltCode optcom_vs_meica-orth  'model : 1*optcom -1*meica-orth' \
+       -gltCode optcom_vs_meica-aggr  'model : 1*optcom -1*meica-aggr' \
+       -gltCode meica-cons_vs_meica-orth  'model : 1*meica-cons -1*meica-orth' \
        -gltCode meica-cons_vs_meica-aggr  'model : 1*meica-cons -1*meica-aggr' \
-       -gltCode meica-orth_vs_meica-cons  'model : 1*meica-orth -1*meica-cons' \
+       -gltCode meica-orth_vs_meica-aggr  'model : 1*meica-orth -1*meica-aggr' \
        -glfCode all_vs_echo-2  'model : 1*echo-2 -1*optcom & 1*echo-2 -1*meica-aggr & 1*echo-2 -1*meica-orth & 1*echo-2 -1*meica-cons' \
        -dataTable                                                      \
        Subj session  model       InputFile                             \

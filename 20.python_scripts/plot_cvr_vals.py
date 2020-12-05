@@ -12,8 +12,8 @@ import seaborn as sns
 SUB_LIST = ['001', '002', '003', '004', '007', '008', '009']
 LAST_SES = 10  # 10
 
-SET_DPI = 100
-FIGSIZE = (18, 10)
+SET_DPI = 200
+FIGSIZE = (9, 2.5)
 
 FTYPE_LIST = ['echo-2', 'optcom', 'meica-aggr', 'meica-orth',
               'meica-cons']
@@ -39,10 +39,9 @@ os.makedirs('plots', exist_ok=True)
 # Create data dictionaries
 # Dataframe dictionary
 df_columns = ['val', 'tissue', 'ftype', 'ses', 'sub']
-data_avg = {'CVR': pd.DataFrame(columns=df_columns),
-            'Lag': pd.DataFrame(columns=df_columns),
-            'T values': pd.DataFrame(columns=df_columns),
-            '% significant voxels': pd.DataFrame(columns=df_columns)}
+data_avg = {'CVR [%BOLD/mmHg]': pd.DataFrame(columns=df_columns),
+            'Lag [s]': pd.DataFrame(columns=df_columns),
+            'Percentage of significant voxels': pd.DataFrame(columns=df_columns)}
 # Subjects segmentations
 seg_data = dict.fromkeys(SUB_LIST)
 
@@ -55,7 +54,7 @@ for sub in SUB_LIST:
     # GM = 2, WM = 3
 
 # Prepare plot
-fig, ax = plt.subplots(nrows=2, ncols=2, figsize=FIGSIZE, dpi=SET_DPI)
+fig, ax = plt.subplots(nrows=1, ncols=3, figsize=FIGSIZE, dpi=SET_DPI)
 ax = ax.flatten()
 plt.suptitle('Average values of all subjects, all sessions, across strategies')
 
@@ -66,13 +65,10 @@ for n, k in enumerate(data_avg.keys()):
             for ftype in FTYPE_LIST:
                 # Load maps
                 f_prefix = f'sub-{sub}_ses-{ses:02d}_{ftype}'
-                if k == 'Lag':
+                if k == 'Lag [s]':
                     img = nib.load(f'CVR/{f_prefix}_map_cvr/'
                                    f'{f_prefix}_cvr_lag_masked.nii.gz')
-                elif k == 'T values':
-                    # Doubtfully this could be masked physio only?
-                    img = nib.load(f'CVR/{f_prefix}_map_cvr/'
-                                   f'{f_prefix}_tmap_masked.nii.gz')
+
                 else:
                     img = nib.load(f'CVR/{f_prefix}_map_cvr/'
                                    f'{f_prefix}_cvr_masked.nii.gz')
@@ -90,7 +86,7 @@ for n, k in enumerate(data_avg.keys()):
                     # remove zeroes
                     d[dk] = d[dk][d[dk] != 0]
 
-                    if k == '%% significant voxels':
+                    if k == 'Percentage of significant voxels':
                         val = (d[dk].size * 100 /
                                (seg_data[sub] == SEG_CODE[dk]).size)
                     else:

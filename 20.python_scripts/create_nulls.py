@@ -14,14 +14,13 @@ from brainsmash.mapgen.sampled import Sampled
 
 
 LAST_SES = 10  # 10
-ATLAS_LIST = ['Mutsaerts2015', 'Mutsaerts2015-sub', 'Schaefer2018-100']
+ATLAS_LIST = ['Mutsaerts2015-sub', 'Mutsaerts2015', 'Schaefer2018-100']
 
 SET_DPI = 100
 FIGSIZE = (18, 10)
 
-COLOURS = ['#2ca02cff', '#d62728ff']  # , '#1f77b4ff']
-# COLOURS = ['#d62728ff', '#2ca02cff', '#ff7f0eff', '#1f77b4ff',
-#            '#ff33ccff']
+COLOURS = ['#1f77b4ff', '#2ca02cff', '#d62728ff', '#ff7f0eff', '#ff33ccff']
+
 ATLAS_FILE = {'Mutsaerts2015': 'ATTbasedFlowTerritories_resamp_2.5mm',
               'Mutsaerts2015-sub': 'ATTbasedFlowTerritories_resamp_2.5mm_sub_ceb',
               'Schaefer2018-100': 'Schaefer2018_100Parcels_7Networks_order_FSLMNI152_2.5mm'}
@@ -233,6 +232,7 @@ def generate_surrogates(data_fname, atlases, dist_fname, null_maps, wdr, overwri
 def plot_parcels(null_maps, data_content, atlases, surrogate_maps, data_masked, plot_name=''):
     # Plot parcel value against voxel size
     # Setup plot
+    print('Plot some values')
     plt.figure(figsize=FIGSIZE, dpi=SET_DPI)
     plt.xlabel('Number of voxels in MNI')
 
@@ -263,7 +263,7 @@ def plot_parcels(null_maps, data_content, atlases, surrogate_maps, data_masked, 
         unique, occurrencies = np.unique(atlas_masked, return_counts=True)
 
         # Populate the plot
-        for i, label in unique[unique > 0]:
+        for i, label in enumerate(unique[unique > 0]):
             # Continue with real maps
             label_avg = data_masked[atlas_masked == label].mean()
             plt.plot(occurrencies[i], label_avg, '.', color=COLOURS[j])

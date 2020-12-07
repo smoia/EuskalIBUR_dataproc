@@ -34,5 +34,5 @@ echo "************************************"
 singularity exec -e --no-home -B ${wdir}:/data -B ${scriptdir}:/scripts \
 -B /export/home/smoia/scratch:/tmp euskalibur.sif 06.third_level_analysis/01.cvr_post_icc_tests.sh
 
-singularity exec -e --no-home -B ${wdir}:/data -B ${scriptdir}:/scripts \
--B /export/home/smoia/scratch:/tmp euskalibur.sif 06.third_level_analysis/02.cvr_comparisons.sh
+# singularity exec -e --no-home -B ${wdir}:/data -B ${scriptdir}:/scripts \
+# -B /export/home/smoia/scratch:/tmp euskalibur.sif 06.third_level_analysis/02.cvr_comparisons.sh

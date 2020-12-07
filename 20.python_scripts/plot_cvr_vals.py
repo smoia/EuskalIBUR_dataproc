@@ -114,7 +114,7 @@ for n, k in enumerate(data_avg.keys()):
     ax[n].xaxis.set_label_text('')
 
     # Export dataframe to play with it
-    data_avg[k].to_csv(f'plots/Dataframe_{k}.csv')
+    data_avg[k].to_csv(f'plots/Dataframe_{k.split()[0]}.csv')
 
 # Final tweaks and exports
 plt.tight_layout()

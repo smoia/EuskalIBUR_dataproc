@@ -14,7 +14,8 @@ mkdir ${tmp}/tmp.05pcc
 
 cd ${tmp}/tmp.05pcc
 
-nbuck=$(fslval ${wdr}/CVR_reliability/LMEr_cvr_masked_physio_only.nii.gz dim5)
+nbuck=$(fslval ${wdr}/CVR_reliability/LMEr_cvr_masked.nii.gz dim5)
+# nbuck=$(fslval ${wdr}/CVR_reliability/LMEr_cvr_masked_physio_only.nii.gz dim5)
 
 let nbuck--
 
@@ -24,7 +25,8 @@ do
 	for i in $(seq 0 ${nbuck})
 	do
 		echo "Extract bucket ${i}"
-		3dbucket -prefix ${map}_buck${i}.nii.gz -abuc ${wdr}/CVR_reliability/LMEr_${map}_masked_physio_only.nii.gz[$i]
+		3dbucket -prefix ${map}_buck${i}.nii.gz -abuc ${wdr}/CVR_reliability/LMEr_${map}_masked.nii.gz[$i]
+		# 3dbucket -prefix ${map}_buck${i}.nii.gz -abuc ${wdr}/CVR_reliability/LMEr_${map}_masked_physio_only.nii.gz[$i]
 	done
 
 	# Threshold model chi square and mask

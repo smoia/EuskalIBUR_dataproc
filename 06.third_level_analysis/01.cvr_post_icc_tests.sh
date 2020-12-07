@@ -15,7 +15,7 @@ mkdir tests tests/val tests/stats
 fslmaths ${scriptdir}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm -bin mask
 fslmaths ${scriptdir}/90.template/MNI152_T1_1mm_GM_resamp_2.5mm -bin GM
 
-for map in masked_physio_only # masked # corrected
+for map in masked # _physio_only # masked # corrected
 do
 	for inmap in cvr lag
 	do

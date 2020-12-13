@@ -8,6 +8,7 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import nibabel as nib
 import numpy as np
+import pandas as pd
 from brainsmash.workbench.geo import volume
 from brainsmash.mapgen.eval import sampled_fit
 from brainsmash.mapgen.sampled import Sampled
@@ -102,6 +103,11 @@ def _get_parser():
                         dest='plotparc',
                         action='store_true',
                         help='Generate plots.',
+                        default=False)
+    parser.add_argument('-pa', '--parseavg',
+                        dest='parseavg',
+                        action='store_true',
+                        help='parse averages.',
                         default=False)
     return parser
 
@@ -217,16 +223,73 @@ def generate_surrogates(data_fname, atlases, dist_fname, null_maps, wdr, overwri
         # Read data and feed surrogate maps
         print(f'Start surrogates for {data_fname}')
 
-        gen = Sampled(x=data_masked, D=dist_fname['D'], index=dist_fname['index'])
+        gen = Sampled(x=data_masked, D=dist_fname['D'],
+                      index=dist_fname['index'], seed=42)
         surrogate_maps = gen(n=null_maps)
 
         # Export atlases
         export_file(wdr, surrogate_fname, surrogate_maps)
-    else:
-        print(f'Surrogates found at {surrogate_fname}.npz. Loading.')
-        surrogate_maps = load_file(wdr, f'{surrogate_fname}.npz')
 
-    return surrogate_maps, data_masked
+        print('Normalise surrogates')
+
+        surrogate_normed = np.empty(surrogate_maps.shape)
+        for n in range(null_maps):
+            surrogate_normed[n, :] = ((surrogate_maps[n, :] -
+                                       surrogate_maps[n, :].mean()) /
+                                      surrogate_maps[n, :].std())
+
+        export_file(wdr, f'{surrogate_fname}_normd', surrogate_normed)
+    else:
+        print(f'Surrogates found at {surrogate_fname}_normd.npz. Loading.')
+        surrogate_normed = load_file(wdr, f'{surrogate_fname}_normd.npz')
+
+    return surrogate_normed, data_masked
+
+
+def parse_averages(null_maps, atlases, surrogate_maps, data_masked, wdr, data_fname):
+    # Compute averages and store them in pandas dataframes
+    # Then compute quantiles and store them in other pd.DataFrame
+    # Setup pandas df
+    print('Computing averages')
+    df_dict = dict.fromkeys(ATLAS_LIST)
+    quant_dict = dict.fromkeys(ATLAS_LIST)
+
+    # Normalise data
+    data_demeaned = (data_masked - data_masked.mean()) / data_masked.std()
+
+    for atlas in ATLAS_LIST:
+        # Mask atlas to match data_masked
+        atlas_masked = atlases[atlas][atlases['intersect'] > 0]
+        # Find unique values (labels) and remove zero
+        unique, _ = np.unique(atlas_masked, return_counts=True)
+        unique = unique[unique > 0]
+        # Initialise dataframe and dictionary for series
+        df_dict[atlas] = pd.DataFrame(index=unique)
+        label_dict = dict.fromkeys(unique)
+
+        # Compute averages
+        for label in unique:
+            # Start with real maps
+            label_dict[label] = data_demeaned[atlas_masked == label].mean()
+
+        df_dict[atlas]['real'] = pd.Series(label_dict)
+
+        for n in range(null_maps):
+            # Continue with all surrogates
+            for label in unique:
+                label_dict[label] = surrogate_maps[n][atlas_masked == label].mean()
+
+            df_dict[atlas][f'surrogate_{n}'] = pd.Series(label_dict)
+
+        # Take the argmin of argsort of the dataframe to find the position of the real data
+        quantiles = np.argsort(df_dict[atlas].to_numpy(), axis=-1)
+        quant_dict[atlas] = quantiles.argmin(axis=-1)
+        # Dividing it by (null_maps+1)/100 will give quantiles (percentages)
+        quant_dict[atlas] = quant_dict[atlas] / ((null_maps+1)/100)
+
+    # Export files
+    export_file(wdr, f'{data_fname}_averages', df_dict)
+    export_file(wdr, f'{data_fname}_quantiles', quant_dict)
 
 
 def plot_parcels(null_maps, data_content, atlases, surrogate_maps, data_masked, plot_name=''):
@@ -240,6 +303,9 @@ def plot_parcels(null_maps, data_content, atlases, surrogate_maps, data_masked, 
     plt.ylabel(data_content)
     # plt.ylim(0, 1)
     patch = []
+
+    # Normalise data
+    data_demeaned = (data_masked - data_masked.mean()) / data_masked.std()
 
     for atlas in ATLAS_LIST:
         # Mask atlas to match data_masked
@@ -265,7 +331,7 @@ def plot_parcels(null_maps, data_content, atlases, surrogate_maps, data_masked, 
         # Populate the plot
         for i, label in enumerate(unique[unique > 0]):
             # Continue with real maps
-            label_avg = data_masked[atlas_masked == label].mean()
+            label_avg = data_demeaned[atlas_masked == label].mean()
             plt.plot(occurrencies[i], label_avg, '.', color=COLOURS[j])
 
         # Add a patch for the current atlas
@@ -342,7 +408,7 @@ if __name__ == '__main__':
 
     elif args.plotparc is True:
         # Check if surrogates exists, otherwise stop
-        surrogate_fname = f'surrogates_{data_fname}'
+        surrogate_fname = f'surrogates_{os.path.basename(data_fname)}_normd.npz'
         if check_file(args.wdr, surrogate_fname) is False:
             raise Exception('Cannot find surrogate maps: '
                             f'{surrogate_fname} in '
@@ -363,6 +429,26 @@ if __name__ == '__main__':
                          surrogate_maps,
                          data_masked,
                          plot_name)
+
+    elif args.parseavg is True:
+        # Check if surrogates exists, otherwise stop
+        surrogate_fname = f'surrogates_{os.path.basename(data_fname)}_normd.npz'
+        if check_file(args.wdr, surrogate_fname) is False:
+            raise Exception('Cannot find surrogate maps: '
+                            f'{surrogate_fname} in '
+                            f'{os.path.join(args.wdr, ATLAS_FOLDER)}')
+        else:
+            atlases = generate_atlas_dictionary(args.wdr, args.scriptdir)
+            surrogate_maps = load_file(args.wdr, surrogate_fname)
+            # Read and extract data
+            data_masked = load_and_mask_nifti(data_fname, atlases)
+
+            parse_averages(args.null_maps,
+                           atlases,
+                           surrogate_maps,
+                           data_masked,
+                           args.wdr,
+                           os.path.basename(data_fname))
 
     else:
         raise Exception('No workflow flag specified!')

@@ -21,10 +21,35 @@ cwd=$(pwd)
 
 cd ${fdir} || exit
 
-imrm ${func} ${func}_dsd ${func}_mcf ${func}_bet_concat \
+imrm ${func} ${func}_mcf ${func}_bet ${func}_bet_concat \
 ${func}_mean ${func}_avg ${func}_prj ${func}_RPI_bet_concat \
 ${func}_RPI_bet_OC ${func}_RPI_mcf
 imrm rm.* tmp.*
 if [ -e ${func}_topup/mgdmap.nii.gz ]; then rm ${func}_topup/mgdmap*; fi
 
 cd ${cwd}
+
+
+
+
+
+
+
+## Temp folder
+tmp=${4:-/tmp}
+tmp=${tmp}/01fc_${1}
+
+######################################
+######### Script starts here #########
+######################################
+
+# Start making the tmp folder
+mkdir ${tmp}
+
+
+
+
+${tmp}/
+
+
+rm -rf ${tmp}

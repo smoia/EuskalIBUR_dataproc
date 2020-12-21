@@ -21,7 +21,6 @@ cwd=$(pwd)
 
 cd ${adir} || exit
 
-imrm ${anat} ${anat}_bfc ${anat}_RPI ${anat}_trunc ${anat}_CSF* ${anat}_WM_eroded
-imrm rm.* tmp.*
+imrm ${anat} ${anat}_bfc
 
 cd ${cwd}

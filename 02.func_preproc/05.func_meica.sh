@@ -15,9 +15,17 @@ fdir=$2
 TEs="$3"
 # backup?
 bck=${4:-none}
+
+## Temp folder
+tmp=${5:-/tmp}
+tmp=${tmp}/05fm_${1}
+
 ######################################
 ######### Script starts here #########
 ######################################
+
+# Start making the tmp folder
+mkdir ${tmp}
 
 cwd=$(pwd)
 
@@ -57,8 +65,9 @@ fi
 
 cd ${func}_meica
 
-# 01.3. Moving optcom in parent folder
-fslmaths ts_OC.nii.gz ../${func_optcom} -odt float
+# # 01.3. Moving optcom in parent folder
+# Since it might be different from ts2map, prefer the latter.
+# fslmaths ts_OC.nii.gz ../${func_optcom} -odt float
 
 # 01.4. Orthogonalising good and bad components
 
@@ -70,12 +79,11 @@ nacc=$( cat accepted.1D )
 nrej=$( cat rejected.1D )
 
 1dcat ica_mixing.tsv"[$nacc]" > accepted.1D
-1dcat ica_mixing.tsv"[$nrej]" > tmp.rej.tr.1D
-1dtranspose tmp.rej.tr.1D > rejected.1D
+1dcat ica_mixing.tsv"[$nrej]" > ${tmp}/rej.tr.1D
+1dtranspose ${tmp}/rej.tr.1D > rejected.1D
 
-3dTproject -ort accepted.1D -polort -1 -prefix tmp.tr.1D -input rejected.1D -overwrite
-1dtranspose tmp.tr.1D > ../${func}_rej_ort.1D
+3dTproject -ort accepted.1D -polort -1 -prefix ${tmp}/tr.1D -input rejected.1D -overwrite
+1dtranspose ${tmp}/tr.1D > ../${func}_rej_ort.1D
 
-rm tmp.*
-
+rm -rf ${tmp}
 cd ${cwd}

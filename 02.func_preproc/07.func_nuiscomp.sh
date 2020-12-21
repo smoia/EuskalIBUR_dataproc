@@ -24,9 +24,16 @@ othr=${10:-0.05}
 no_motreg=${11:-no}
 no_detrend=${12:-no}
 
+## Temp folder
+tmp=${13:-/tmp}
+tmp=${tmp}/07fnc_${1}
+
 ######################################
 ######### Script starts here #########
 ######################################
+
+# Start making the tmp folder
+mkdir ${tmp}
 
 cwd=$(pwd)
 
@@ -51,8 +58,8 @@ then
 		-t [../reg/${aref}2${anat}0GenericAffine.mat,1]
 	fi
 	echo "Extracting average WM and CSF in ${func}"
-	3dDetrend -polort 5 -prefix ${func}_dtd.nii.gz ${func_in}.nii.gz -overwrite
-	fslmeants -i ${func}_dtd.nii.gz -o ${func}_avg_tissue.1D --label=${adir}/${anat}_seg_native.nii.gz
+	3dDetrend -polort 5 -prefix ${tmp}/${func}_dtd.nii.gz ${func_in}.nii.gz -overwrite
+	fslmeants -i ${tmp}/${func}_dtd.nii.gz -o ${func}_avg_tissue.1D --label=${adir}/${anat}_seg_native.nii.gz
 fi
 
 ## 04. Nuisance computation
@@ -65,7 +72,7 @@ echo "Preparing nuisance matrix"
 
 run3dDeconvolve="3dDeconvolve -input ${func_in}.nii.gz -float \
 				 -censor ${func}_censors.1D \
-				 -x1D ${func}_nuisreg_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
+				 -x1D ${func}_nuisreg_censored_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
 				 -x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
 				 -x1D_stop"
 				
@@ -99,12 +106,12 @@ ${run3dDeconvolve}
 if [[ "${dprj}" != "none" ]]
 then
 	echo "Actually applying nuisance"
-	fslmaths ${func_in} -Tmean ${func}_avg
+	fslmaths ${func_in} -Tmean ${tmp}/${func}_avg
 	3dTproject -polort 0 -input ${func_in}.nii.gz  -mask ${mref}_brain_mask.nii.gz \
-	-ort ${func}_nuisreg_uncensored_mat.1D -prefix ${func}_prj.nii.gz \
+	-ort ${func}_nuisreg_uncensored_mat.1D -prefix ${tmp}/${func}_prj.nii.gz \
 	-overwrite
-	fslmaths ${func}_prj -add ${func}_avg ${func}_den.nii.gz
+	fslmaths ${tmp}/${func}_prj -add ${tmp}/${func}_avg ${func}_den.nii.gz
 fi
 
-
+rm -rf ${tmp}
 cd ${cwd}

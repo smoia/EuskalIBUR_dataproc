@@ -23,9 +23,16 @@ jstr=${5:-none}
 # Anat used for segmentation
 aseg=${6:-none}
 
+## Temp folder
+tmp=${7:-/tmp}
+tmp=${tmp}/03fsc_${1}
+
 ######################################
 ######### Script starts here #########
 ######################################
+
+# Start making the tmp folder
+mkdir ${tmp}
 
 cwd=$(pwd)
 
@@ -60,9 +67,9 @@ then
 
 	# 01.3. Compute various metrics
 	echo "Computing DVARS and FD for ${func}"
-	fsl_motion_outliers -i ${func}_mcf -o ${func}_mcf_dvars_confounds -s ${func}_dvars_post.par -p ${func}_dvars_post --dvars --nomoco
-	fsl_motion_outliers -i ${func_in} -o ${func}_mcf_dvars_confounds -s ${func}_dvars_pre.par -p ${func}_dvars_pre --dvars --nomoco
-	fsl_motion_outliers -i ${func_in} -o ${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd --fd
+	fsl_motion_outliers -i ${func}_mcf -o ${tmp}/${func}_mcf_dvars_confounds -s ${func}_dvars_post.par -p ${func}_dvars_post --dvars --nomoco
+	fsl_motion_outliers -i ${func_in} -o ${tmp}/${func}_mcf_dvars_confounds -s ${func}_dvars_pre.par -p ${func}_dvars_pre --dvars --nomoco
+	fsl_motion_outliers -i ${func_in} -o ${tmp}/${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd --fd
 fi
 
 if [[ ! -e "${mref}_brain_mask" && "${mref}" != "none" ]]
@@ -116,4 +123,5 @@ fi
 if [[ -d ../reg/${func}_mcf.mat ]]; then rm -r ../reg/${func}_mcf.mat; fi
 mv ${func}_mcf.mat ../reg/.
 
+rm -rf ${tmp}
 cd ${cwd}

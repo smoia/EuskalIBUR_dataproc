@@ -24,15 +24,11 @@ jstr=${5:-none}
 aseg=${6:-none}
 
 ## Temp folder
-tmp=${7:-/tmp}
-tmp=${tmp}/03fsc_${1}
+tmp=${7:-.}
 
 ######################################
 ######### Script starts here #########
 ######################################
-
-# Start making the tmp folder
-mkdir ${tmp}
 
 cwd=$(pwd)
 
@@ -53,23 +49,23 @@ then
 	then
 		echo "Creating a reference for ${func}"
 		mref=${func}_avgref
-		fslmaths ${func_in} -Tmean ${mref}
+		fslmaths ${tmp}/${func_in} -Tmean ${mref}
 	fi
 
 	echo "McFlirting ${func}"
-	if [[ -d ${func}_mcf.mat ]]; then rm -r ${func}_mcf.mat; fi
-	mcflirt -in ${func_in} -r ${mref} -out ${func}_mcf -stats -mats -plots
+	if [[ -d ${tmp}/${func}_mcf.mat ]]; then rm -r ${tmp}/${func}_mcf.mat; fi
+	mcflirt -in ${tmp}/${func_in} -r ${mref} -out ${tmp}/${func}_mcf -stats -mats -plots
 
 	# 01.2. Demean motion parameters
 	echo "Demean and derivate ${func} motion parameters"
-	1d_tool.py -infile ${func}_mcf.par -demean -write ${func}_mcf_demean.par -overwrite
+	1d_tool.py -infile ${tmp}/${func}_mcf.par -demean -write ${func}_mcf_demean.par -overwrite
 	1d_tool.py -infile ${func}_mcf_demean.par -derivative -demean -write ${func}_mcf_deriv1.par -overwrite
 
 	# 01.3. Compute various metrics
 	echo "Computing DVARS and FD for ${func}"
-	fsl_motion_outliers -i ${func}_mcf -o ${tmp}/${func}_mcf_dvars_confounds -s ${func}_dvars_post.par -p ${func}_dvars_post --dvars --nomoco
-	fsl_motion_outliers -i ${func_in} -o ${tmp}/${func}_mcf_dvars_confounds -s ${func}_dvars_pre.par -p ${func}_dvars_pre --dvars --nomoco
-	fsl_motion_outliers -i ${func_in} -o ${tmp}/${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd --fd
+	fsl_motion_outliers -i ${tmp}/${func}_mcf -o ${tmp}/${func}_mcf_dvars_confounds -s ${func}_dvars_post.par -p ${func}_dvars_post --dvars --nomoco
+	fsl_motion_outliers -i ${tmp}/${func_in} -o ${tmp}/${func}_mcf_dvars_confounds -s ${func}_dvars_pre.par -p ${func}_dvars_pre --dvars --nomoco
+	fsl_motion_outliers -i ${tmp}/${func_in} -o ${tmp}/${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd --fd
 fi
 
 if [[ ! -e "${mref}_brain_mask" && "${mref}" != "none" ]]
@@ -80,7 +76,7 @@ fi
 
 # 01.4. Apply mask
 echo "BETting ${func}"
-fslmaths ${func}_mcf -mas ${mref}_brain_mask ${func}_bet
+fslmaths ${tmp}/${func}_mcf -mas ${mref}_brain_mask ${tmp}/${func}_bet
 
 ## 02. Anat Coreg
 
@@ -98,7 +94,7 @@ if [[ "${aseg}" != "none" && -e "../anat_preproc/${seg}_seg.nii.gz" && -e "../re
 then
 	echo "Coregistering anatomical segmentation to ${func}"
 	antsApplyTransforms -d 3 -i ../anat_preproc/${aseg}_seg.nii.gz \
-						-r ../reg/${mref}.nii.gz -o ../anat_preproc/${aseg}_seg2mref.nii.gz \
+						-r ${mref}.nii.gz -o ../anat_preproc/${aseg}_seg2mref.nii.gz \
 						-n Multilabel -v \
 						-t ../reg/${anat}2${mref}0GenericAffine.mat \
 						-t [../reg/${anat}2${aseg}0GenericAffine.mat,1]
@@ -107,21 +103,26 @@ fi
 if [[ "${jstr}" != "none" ]]
 then
 	echo "Splitting ${func}"
-	if [[ ! -d "${func}_split" ]]; then mkdir ${func}_split; fi
+	if [[ ! -d "${tmp}/${func}_split" ]]; then mkdir ${tmp}/${func}_split; fi
 	if [[ ! -d "../reg/${func}_mcf_ants_mat" ]]; then mkdir ../reg/${func}_mcf_ants_mat; fi
-	fslsplit ${func_in} ${func}_split/vol_ -t
+	fslsplit ${tmp}/${func_in} ${tmp}/${func}_split/vol_ -t
 
 	for i in $( seq -f %04g 0 ${nTR} )
 	do
 		echo "Affining volume ${i} of ${nTR} in ${func}"
-		c3d_affine_tool -ref ${mref}_brain_mask -src ${func}_split/vol_${i}.nii.gz \
+		c3d_affine_tool -ref ${mref}_brain_mask -src ${tmp}/${func}_split/vol_${i}.nii.gz \
 		${func}_mcf.mat/MAT_${i} -fsl2ras -oitk ../reg/mcf_ants_mat/v${i}2${func}.mat
 	done
-	rm -r ${func}_split
+	rm -r ${tmp}/${func}_split
 fi
 
+# Moving things around
 if [[ -d ../reg/${func}_mcf.mat ]]; then rm -r ../reg/${func}_mcf.mat; fi
 mv ${func}_mcf.mat ../reg/.
 
-rm -rf ${tmp}
+if [[ "${mref}" == "${func}_avgref" ]]
+then
+	mv ${mref}* ../reg/.
+fi
+
 cd ${cwd}

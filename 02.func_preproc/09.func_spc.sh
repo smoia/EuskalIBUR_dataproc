@@ -13,15 +13,11 @@ func_in=$1
 fdir=$2
 
 ## Temp folder
-tmp=${3:-/tmp}
-tmp=${tmp}/09fspc_${1}
+tmp=${3:-.}
 
 ######################################
 ######### Script starts here #########
 ######################################
-
-# Start making the tmp folder
-mkdir ${tmp}
 
 cwd=$(pwd)
 
@@ -32,8 +28,7 @@ func=${func_in%_*}
 
 echo "Computing SPC of ${func} ( [X-avg(X)]/avg(X) )"
 
-fslmaths ${func_in} -Tmean ${tmp}/${func}_mean
-fslmaths ${func_in} -sub ${tmp}/${func}_mean -div ${tmp}/${func}_mean ${func}_SPC
+fslmaths ${tmp}/${func_in} -Tmean ${tmp}/${func}_mean
+fslmaths ${tmp}/${func_in} -sub ${tmp}/${func}_mean -div ${tmp}/${func}_mean ${tmp}/${func}_SPC
 
-rm -rf ${tmp}
 cd ${cwd}

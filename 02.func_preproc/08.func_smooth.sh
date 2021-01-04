@@ -12,7 +12,7 @@ func_in=$1
 # folders
 fdir=$2
 # FWHM
-fwhm=$3
+fwhm=${3:-5}
 # mask
 mask=$4
 
@@ -30,7 +30,7 @@ func=${func_in%_*}
 ## 01. Smooth
 
 echo "Smoothing ${func}"
-3dBlurInMask -input ${func_in}.nii.gz -prefix ${func}_sm.nii.gz -mask ${mask}.nii.gz \
+3dBlurInMask -input ${tmp}/${func_in}.nii.gz -prefix ${tmp}/${func}_sm.nii.gz -mask ${mask}.nii.gz \
 -preserve -FWHM ${fwhm} -overwrite
 
 cd ${cwd}

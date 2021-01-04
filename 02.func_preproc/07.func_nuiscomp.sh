@@ -25,15 +25,11 @@ no_motreg=${11:-no}
 no_detrend=${12:-no}
 
 ## Temp folder
-tmp=${13:-/tmp}
-tmp=${tmp}/07fnc_${1}
+tmp=${13:-.}
 
 ######################################
 ######### Script starts here #########
 ######################################
-
-# Start making the tmp folder
-mkdir ${tmp}
 
 cwd=$(pwd)
 
@@ -70,7 +66,7 @@ echo "Preparing censoring"
 # 04.2. Create matrix
 echo "Preparing nuisance matrix"
 
-run3dDeconvolve="3dDeconvolve -input ${func_in}.nii.gz -float \
+run3dDeconvolve="3dDeconvolve -input ${tmp}/${func_in}.nii.gz -float \
 				 -censor ${func}_censors.1D \
 				 -x1D ${func}_nuisreg_censored_mat.1D -xjpeg ${func}_nuisreg_mat.jpg \
 				 -x1D_uncensored ${func}_nuisreg_uncensored_mat.1D \
@@ -106,12 +102,11 @@ ${run3dDeconvolve}
 if [[ "${dprj}" != "none" ]]
 then
 	echo "Actually applying nuisance"
-	fslmaths ${func_in} -Tmean ${tmp}/${func}_avg
-	3dTproject -polort 0 -input ${func_in}.nii.gz  -mask ${mref}_brain_mask.nii.gz \
+	fslmaths ${tmp}/${func_in} -Tmean ${tmp}/${func}_avg
+	3dTproject -polort 0 -input ${tmp}/${func_in}.nii.gz  -mask ${mref}_brain_mask.nii.gz \
 	-ort ${func}_nuisreg_uncensored_mat.1D -prefix ${tmp}/${func}_prj.nii.gz \
 	-overwrite
-	fslmaths ${tmp}/${func}_prj -add ${tmp}/${func}_avg ${func}_den.nii.gz
+	fslmaths ${tmp}/${func}_prj -add ${tmp}/${func}_avg ${tmp}/${func}_den.nii.gz
 fi
 
-rm -rf ${tmp}
 cd ${cwd}

@@ -21,15 +21,11 @@ mref=$5
 moio=${6:-none}
 
 ## Temp folder
-tmp=${7:-/tmp}
-tmp=${tmp}/04fr_${1}
+tmp=${7:-.}
 
 ######################################
 ######### Script starts here #########
 ######################################
-
-# Start making the tmp folder
-mkdir ${tmp}
 
 cwd=$(pwd)
 
@@ -49,7 +45,7 @@ echo "Applying McFlirt in ${func}"
 
 if [[ ! -d "${tmp}/${func}_split" ]]; then mkdir ${tmp}/${func}_split; fi
 if [[ ! -d "${tmp}/${func}_merge" ]]; then mkdir ${tmp}/${func}_merge; fi
-fslsplit ${func_in} ${tmp}/${func}_split/vol_ -t
+fslsplit ${tmp}/${func_in} ${tmp}/${func}_split/vol_ -t
 
 for i in $( seq -f %04g 0 ${nTR} )
 do
@@ -59,20 +55,19 @@ do
 done
 
 echo "Merging ${func}"
-fslmerge -tr ${func}_mcf ${tmp}/${func}_merge/vol_* ${TR}
+fslmerge -tr ${tmp}/${func}_mcf ${tmp}/${func}_merge/vol_* ${TR}
 
 # 01.2. Apply mask
 echo "BETting ${func}"
-fslmaths ${func}_mcf -mas ${mask} ${func}_bet
+fslmaths ${tmp}/${func}_mcf -mas ${mask} ${tmp}/${func}_bet
 
 if [[ "${moio}" != "none" ]]
 then
 	echo "Computing DVARS and FD for ${func}"
 	# 01.3. Compute various metrics
-	fsl_motion_outliers -i ${func}_mcf -o ${tmp}/${func}_mcf_dvars_confounds -s ${func}_dvars_post.par -p ${func}_dvars_post --dvars --nomoco
-	fsl_motion_outliers -i ${func}_cr -o ${tmp}/${func}_mcf_dvars_confounds -s ${func}_dvars_pre.par -p ${func}_dvars_pre --dvars --nomoco
-	fsl_motion_outliers -i ${func}_cr -o ${tmp}/${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd --fd
+	fsl_motion_outliers -i ${tmp}/${func}_mcf -o ${tmp}/${func}_mcf_dvars_confounds -s ${func}_dvars_post.par -p ${func}_dvars_post --dvars --nomoco
+	fsl_motion_outliers -i ${tmp}/${func}_cr -o ${tmp}/${func}_mcf_dvars_confounds -s ${func}_dvars_pre.par -p ${func}_dvars_pre --dvars --nomoco
+	fsl_motion_outliers -i ${tmp}/${func}_cr -o ${tmp}/${func}_mcf_fd_confounds -s ${func}_fd.par -p ${func}_fd --fd
 fi
 
-rm -rf ${tmp}
 cd ${cwd}

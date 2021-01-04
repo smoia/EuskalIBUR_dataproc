@@ -17,15 +17,11 @@ TEs="$3"
 bck=${4:-none}
 
 ## Temp folder
-tmp=${5:-/tmp}
-tmp=${tmp}/05fm_${1}
+tmp=${5:-.}
 
 ######################################
 ######### Script starts here #########
 ######################################
-
-# Start making the tmp folder
-mkdir ${tmp}
 
 cwd=$(pwd)
 
@@ -41,9 +37,9 @@ func_optcom=${func_in%_echo-*}_optcom${esffx}
 # 01.1. concat in space
 
 echo "Merging ${func} for MEICA"
-fslmerge -z ${func} $( ls ${eprfx}* | grep ${esffx}.nii.gz )
+fslmerge -z ${tmp}/${func} $( ls ${eprfx}* | grep ${esffx}.nii.gz )
 
-mkdir ${func}_meica
+mkdir ${tmp}/${func}_meica
 
 # Check if there's one or more backups
 bcklist=( $( ls ../*${func}_meica_bck.tar.gz ) )
@@ -52,18 +48,20 @@ if [[ "${bck}" != "none" ]] && [[ ${bcklist[-1]} ]]
 then
 	# If there's a backup, unpack the earnest!
 	echo "Unpacking backup"
-	tar -xzvf ${bcklist[-1]} -C ..
+	tar -xzvf ${bcklist[-1]} -C ${tmp}
 	echo "Running tedana to revert to backed up state"
-	tedana -d ${func}.nii.gz -e ${TEs} \
-	--tedpca mdl --out-dir ${func}_meica \
-	--mix ${func}_meica/ica_mixing.tsv --ctab ${func}_meica/ica_decomposition.json
+	tedana -d ${tmp}/${func}.nii.gz -e ${TEs} \
+	--tedpca mdl --out-dir ${tmp}/${func}_meica \
+	--mix ${tmp}/${func}_meica/ica_mixing.tsv --ctab ${tmp}/${func}_meica/ica_decomposition.json
 else
 	echo "No backup file specified or found!"
 	echo "Running tedana"
-	tedana -d ${func}.nii.gz -e ${TEs} --tedpca mdl --out-dir ${func}_meica
+	tedana -d ${tmp}/${func}.nii.gz -e ${TEs} --tedpca mdl --out-dir ${tmp}/${func}_meica
+	echo "Creating backup"
+	tar -cvf ../$(date +%Y%m%d-%H%M%S)${func}_meica_bck.tar.gz ${tmp}/${func}_meica/ica_mixing.tsv ${tmp}/${func}_meica/ica_decomposition.json
 fi
 
-cd ${func}_meica
+cd ${tmp}/${func}_meica
 
 # # 01.3. Moving optcom in parent folder
 # Since it might be different from ts2map, prefer the latter.
@@ -72,18 +70,17 @@ cd ${func}_meica
 # 01.4. Orthogonalising good and bad components
 
 echo "Extracting good and bad copmonents"
-python3 /scripts/20.python_scripts/00.process_tedana_output.py ${fdir}/${func}_meica
+python3 /scripts/20.python_scripts/00.process_tedana_output.py ${tmp}/${fdir}/${func}_meica
 
 echo "Orthogonalising good and bad components in ${func}"
 nacc=$( cat accepted.1D )
 nrej=$( cat rejected.1D )
 
 1dcat ica_mixing.tsv"[$nacc]" > accepted.1D
-1dcat ica_mixing.tsv"[$nrej]" > ${tmp}/rej.tr.1D
-1dtranspose ${tmp}/rej.tr.1D > rejected.1D
+1dcat ica_mixing.tsv"[$nrej]" > rej.tr.1D
+1dtranspose rej.tr.1D > rejected.1D
 
 3dTproject -ort accepted.1D -polort -1 -prefix ${tmp}/tr.1D -input rejected.1D -overwrite
-1dtranspose ${tmp}/tr.1D > ../${func}_rej_ort.1D
+1dtranspose ${tmp}/tr.1D > ${fdir}/${func}_rej_ort.1D
 
-rm -rf ${tmp}
 cd ${cwd}

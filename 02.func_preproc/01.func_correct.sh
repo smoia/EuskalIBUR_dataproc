@@ -20,15 +20,11 @@ dspk=${4:-none}
 siot=${5:-none}
 
 ## Temp folder
-tmp=${6:-/tmp}
-tmp=${tmp}/01fc_${1}
+tmp=${6:-.}
 
 ######################################
 ######### Script starts here #########
 ######################################
-
-# Start making the tmp folder
-mkdir ${tmp}
 
 cwd=$(pwd)
 
@@ -82,7 +78,6 @@ then
 fi
 
 ## 03. Change name to script output
-immv ${funcsource} ${func}_cr
+immv ${funcsource} ${tmp}/${func}_cr
 
-rm -rf ${tmp}
 cd ${cwd}

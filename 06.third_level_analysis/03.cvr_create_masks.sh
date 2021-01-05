@@ -29,4 +29,9 @@ cd masks
 python3 ${scriptdir}/20.python_scripts/variance_weighted_average.py -ftype cvr -wdr ${wdr}/CVR_reliability/normalised
 python3 ${scriptdir}/20.python_scripts/variance_weighted_average.py -ftype lag -wdr ${wdr}/CVR_reliability/normalised
 
+# Some more prep before calling the nulls generator
+fslmaths wavg_cvr_masked_optcom -thr 6 -uthr -6 wavg_cvr_thr_6_optcom
+3dbucket -prefix ICC2_lag_brick_optcom.nii.gz -abuc ICC2_lag_masked_optcom.nii.gz'[0]' -overwrite
+3dbucket -prefix ICC2_cvr_brick_optcom.nii.gz -abuc ICC2_cvr_masked_optcom.nii.gz'[0]' -overwrite
+
 cd ${cwd}

@@ -47,11 +47,19 @@ mkdir ${tmp}
 for e in $( seq 1 ${nTE} )
 do
 	echo "************************************"
-	echo "*** Func correct ${task} BOLD echo ${e}"
+	echo "*** Copy ${task} BOLD echo ${e}"
 	echo "************************************"
 	echo "************************************"
 
 	bold=${flpr}_task-${task}_echo-${e}_bold
+
+	imcp ${wdr}/sub-${sub}/ses-${ses}/func/${bold} ${tmp}/${bold}
+
+	echo "************************************"
+	echo "*** Func correct ${task} BOLD echo ${e}"
+	echo "************************************"
+	echo "************************************"
+
 	${scriptdir}/02.func_preproc/01.func_correct.sh ${bold} ${fdir} ${vdsc} ${dspk} ${siot} ${tmp}
 done
 

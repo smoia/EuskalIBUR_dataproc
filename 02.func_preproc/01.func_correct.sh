@@ -35,7 +35,7 @@ nTR=$(fslval ${func} dim4)
 ## 01. Corrections
 # 01.1. Discard first volumes if there's more than one TR
 
-funcsource=${func}
+funcsource=${tmp}/${func}
 if [[ "${nTR}" -gt "1" && "${vdsc}" -gt "0" ]]
 then
 	echo "Discarding first ${vdsc} volumes"

@@ -183,8 +183,8 @@ done
 for run in 01 02 03 04
 do
 	/scripts/00.pipelines/rest_full_preproc.sh ${sub} ${ses} ${run} ${wdr} ${flpr} \
-										  ${fdir} ${vdsc} "${TEs}" \
-										  ${nTE} ${siot} ${dspk} /scripts ${tmp}
+										       ${fdir} ${vdsc} "${TEs}" \
+										       ${nTE} ${siot} ${dspk} /scripts ${tmp}
 done
 
 

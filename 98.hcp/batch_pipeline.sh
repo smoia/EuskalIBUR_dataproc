@@ -20,7 +20,7 @@ then
 	mkdir ../LogFiles
 fi
 
-qsub -q long.q -N "001_01_preproc_EuskalIBUR" \
+qsub -q long.q -N "prep_001_EuskalIBUR" \
 	 -o ${wdr}/../LogFiles/001_01_preproc_pipe \
 	 -e ${wdr}/../LogFiles/001_01_preproc_pipe \
 	 ${wdr}/98.hcp/run_full_preproc_pipeline.sh 001 01

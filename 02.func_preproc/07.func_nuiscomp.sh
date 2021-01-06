@@ -21,11 +21,14 @@ dprj=${8:-yes}
 # thresholds
 mthr=${9:-0.3}
 othr=${10:-0.05}
-no_motreg=${11:-no}
-no_detrend=${12:-no}
+polort=${11:-5}
+den_motreg=${12:-yes}
+den_detrend=${13:-yes}
+den_meica=${14:-yes}
+den_tissues=${15:-yes}
 
 ## Temp folder
-tmp=${13:-.}
+tmp=${16:-.}
 
 ######################################
 ######### Script starts here #########
@@ -39,7 +42,7 @@ cd ${fdir} || exit
 func=${func_in%_*}
 
 #!# Maybe this can go in a separate file
-if [ -e "${adir}/${anat}_seg_eroded.nii.gz" ]
+if [[ -e "${adir}/${anat}_seg_eroded.nii.gz" ]] && [[ "${den_tissues}" == "yes" ]]
 then
 	if [[ ! -e "${adir}/${anat}_seg_native.nii.gz" || ! -e "${adir}/${anat}_GM_native.nii.gz" ]]
 	then
@@ -54,7 +57,7 @@ then
 		-t [../reg/${aref}2${anat}0GenericAffine.mat,1]
 	fi
 	echo "Extracting average WM and CSF in ${func}"
-	3dDetrend -polort 5 -prefix ${tmp}/${func}_dtd.nii.gz ${tmp}/${func_in}.nii.gz -overwrite
+	3dDetrend -polort ${polort} -prefix ${tmp}/${func}_dtd.nii.gz ${tmp}/${func_in}.nii.gz -overwrite
 	fslmeants -i ${tmp}/${func}_dtd.nii.gz -o ${func}_avg_tissue.1D --label=${adir}/${anat}_seg_native.nii.gz
 fi
 
@@ -73,28 +76,46 @@ run3dDeconvolve="3dDeconvolve -input ${tmp}/${func_in}.nii.gz -float \
 				 -x1D_stop"
 				
 
-if [[ "${no_detrend}" != "yes" ]]
+if [[ "${den_detrend}" == "yes" ]]
 then
-	run3dDeconvolve="${run3dDeconvolve} -polort 5"
+	run3dDeconvolve="${run3dDeconvolve} -polort ${polort}"
 fi
 
-if [[ "${no_motreg}" != "yes" ]]
+if [[ "${den_motreg}" == "yes" ]]
 then
 	run3dDeconvolve="${run3dDeconvolve} -ortvec ${fmat}_mcf_demean.par motdemean \
 				 						-ortvec ${fmat}_mcf_deriv1.par motderiv1"
 fi
 
-if [ -e "${fmat}_rej_ort.1D" ]
+if [ -e "${fmat}_rej_ort.1D" ] && [[ "${den_meica}" == "yes" ]]
 then
 	run3dDeconvolve="${run3dDeconvolve} -ortvec ${fmat}_rej_ort.1D meica"
 fi
-if [ -e "${func}_avg_tissue.1D" ]
+
+if [ -e "${func}_avg_tissue.1D" ] && [[ "${den_tissues}" == "yes" ]]
 then
 	run3dDeconvolve="${run3dDeconvolve} -num_stimts  2 \
 	-stim_file 1 ${func}_avg_tissue.1D'[0]' -stim_base 1 -stim_label 1 CSF \
 	-stim_file 2 ${func}_avg_tissue.1D'[2]' -stim_base 2 -stim_label 2 WM"
 	# -cenmode ZERO \
 fi
+
+# Report the 3dDeconvolve call
+
+echo "######################################################"
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo "# Running 3d Deconvolve with the following parameters:"
+echo "   + Denoise motion regressors:         ${den_motreg}"
+echo "   + Denoise legendre polynomials:      ${den_detrend}"
+echo "   + Denoise meica rejected components: ${den_meica}"
+echo "   + Denoise average tissues signal:    ${den_tissues}"
+echo ""
+echo "# Generating the command:"
+echo ""
+echo "${run3dDeconvolve}"
+echo ""
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo "######################################################"
 
 ${run3dDeconvolve}
 ## 06. Nuisance

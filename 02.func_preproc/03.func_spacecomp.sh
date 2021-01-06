@@ -37,7 +37,7 @@ cd ${fdir} || exit
 #Read and process input
 func=${func_in%_*}
 
-nTR=$(fslval ${func_in} dim4)
+nTR=$(fslval ${tmp}/${func_in} dim4)
 let nTR--
 
 ## 01. Motion Computation, if more than 1 volume

@@ -19,6 +19,8 @@ bck=${4:-none}
 ## Temp folder
 tmp=${5:-.}
 
+scriptdir=${6:-/scripts}
+
 ######################################
 ######### Script starts here #########
 ######################################
@@ -31,13 +33,12 @@ cd ${fdir} || exit
 eprfx=${func_in%_echo-*}_echo-
 esffx=${func_in#*_echo-?}
 func=${func_in%_echo-*}_concat${esffx}
-func_optcom=${func_in%_echo-*}_optcom${esffx}
 
 ## 01. MEICA
 # 01.1. concat in space
 
 echo "Merging ${func} for MEICA"
-fslmerge -z ${tmp}/${func} $( ls ${eprfx}* | grep ${esffx}.nii.gz )
+fslmerge -z ${tmp}/${func} $( ls ${tmp}/${eprfx}* | grep ${esffx}.nii.gz )
 
 mkdir ${tmp}/${func}_meica
 
@@ -63,14 +64,10 @@ fi
 
 cd ${tmp}/${func}_meica
 
-# # 01.3. Moving optcom in parent folder
-# Since it might be different from ts2map, prefer the latter.
-# fslmaths ts_OC.nii.gz ../${func_optcom} -odt float
-
 # 01.4. Orthogonalising good and bad components
 
 echo "Extracting good and bad copmonents"
-python3 /scripts/20.python_scripts/00.process_tedana_output.py ${tmp}/${fdir}/${func}_meica
+python3 ${scriptdir}/20.python_scripts/00.process_tedana_output.py ${tmp}/${fdir}/${func}_meica
 
 echo "Orthogonalising good and bad components in ${func}"
 nacc=$( cat accepted.1D )

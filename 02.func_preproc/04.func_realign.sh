@@ -34,8 +34,8 @@ cd ${fdir} || exit
 #Read and process input
 func=${func_in%_*}
 
-nTR=$(fslval ${func_in} dim4)
-TR=$(fslval ${func_in} pixdim4)
+nTR=$(fslval ${tmp}/${func_in} dim4)
+TR=$(fslval ${tmp}/${func_in} pixdim4)
 let nTR--
 
 ## 01. Motion Realignment

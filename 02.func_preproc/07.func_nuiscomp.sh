@@ -54,7 +54,7 @@ then
 		-t [../reg/${aref}2${anat}0GenericAffine.mat,1]
 	fi
 	echo "Extracting average WM and CSF in ${func}"
-	3dDetrend -polort 5 -prefix ${tmp}/${func}_dtd.nii.gz ${func_in}.nii.gz -overwrite
+	3dDetrend -polort 5 -prefix ${tmp}/${func}_dtd.nii.gz ${tmp}/${func_in}.nii.gz -overwrite
 	fslmeants -i ${tmp}/${func}_dtd.nii.gz -o ${func}_avg_tissue.1D --label=${adir}/${anat}_seg_native.nii.gz
 fi
 

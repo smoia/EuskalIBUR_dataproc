@@ -35,12 +35,12 @@ func_optcom=${func_in%_echo-*}_optcom${esffx}
 if [[ ! -e ${tmp}/${func}.nii.gz ]];
 then
 	echo "Merging ${func} for MEICA"
-	fslmerge -z ${tmp}/${func} $( ls ${eprfx}* | grep ${esffx}.nii.gz )
+	fslmerge -z ${tmp}/${func} $( ls ${tmp}/${eprfx}* | grep ${esffx}.nii.gz )
 else
 	echo "Merged ${func} found!"
 fi
 
-if [[ ! -e ${func_optcom} ]]
+if [[ ! -e ${tmp}/${func_optcom} ]]
 then
 	echo "Running t2smap"
 	t2smap -d ${tmp}/${func}.nii.gz -e ${TEs}

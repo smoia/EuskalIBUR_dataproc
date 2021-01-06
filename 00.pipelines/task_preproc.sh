@@ -25,7 +25,9 @@ siot=${10}
 
 dspk=${11}
 
-tmp=${12:-/tmp}
+scriptdir=${12:-/scripts}
+
+tmp=${13:-/tmp}
 tmp=${tmp}/${sub}_${ses}_${task}
 
 # This is the absolute sbref. Don't change it.
@@ -42,7 +44,7 @@ echo "${printline} " "$@"
 # Start making the tmp folder
 mkdir ${tmp}
 
-for e in  $( seq 1 ${nTE} )
+for e in $( seq 1 ${nTE} )
 do
 	echo "************************************"
 	echo "*** Func correct ${task} BOLD echo ${e}"
@@ -50,7 +52,7 @@ do
 	echo "************************************"
 
 	bold=${flpr}_task-${task}_echo-${e}_bold
-	/scripts/02.func_preproc/01.func_correct.sh ${bold} ${fdir} ${vdsc} ${dspk} ${siot} ${tmp}
+	${scriptdir}/02.func_preproc/01.func_correct.sh ${bold} ${fdir} ${vdsc} ${dspk} ${siot} ${tmp}
 done
 
 echo "************************************"
@@ -60,7 +62,7 @@ echo "************************************"
 
 fmat=${flpr}_task-${task}_echo-1_bold
 
-/scripts/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} none ${sbrf} none none ${tmp}
+${scriptdir}/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} none ${sbrf} none none ${tmp}
 
 for e in $( seq 1 ${nTE} )
 do

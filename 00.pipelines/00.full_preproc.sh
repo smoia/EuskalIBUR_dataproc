@@ -172,9 +172,20 @@ for task in motor pinel simon
 do
 	/scripts/00.pipelines/task_preproc.sh ${sub} ${ses} ${task} ${wdr} ${flpr} \
 										  ${fdir} ${vdsc} "${TEs}" \
-										  ${nTE} ${siot} ${dspk} ${tmp}
+										  ${nTE} ${siot} ${dspk} /scripts ${tmp}
 done
 
+
+######################################
+#########    Rest preproc    #########
+######################################
+
+for run in 01 02 03 04
+do
+	/scripts/00.pipelines/task_preproc.sh ${sub} ${ses} ${task} ${wdr} ${flpr} \
+										  ${fdir} ${vdsc} "${TEs}" \
+										  ${nTE} ${siot} ${dspk} /scripts ${tmp}
+done
 
 
 date

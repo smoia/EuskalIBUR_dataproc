@@ -85,7 +85,8 @@ ${scriptdir}/02.func_preproc/05.func_meica.sh ${fmat}_bet ${fdir} "${TEs}" check
 # Since t2smap gives different results from tedana, prefer the former for optcom
 ${scriptdir}/02.func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}" ${tmp}
 
-# As it's ${task}, don't skip smoothing and denoising!
+# As it's ${task}, don't skip anything!
+# Also repeat everything twice for meica-denoised and not
 for e in $( seq 1 ${nTE}; echo "optcom" )
 do
 	if [ ${e} != "optcom" ]
@@ -99,13 +100,17 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none no 0.3 0.05 no no ${tmp}
+	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none no 0.3 0.05 5 yes yes yes yes ${tmp}
+	immv ${tmp}/${bold}_den ${tmp}/${bold}_den_meica
+	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none no 0.3 0.05 5 yes yes no yes ${tmp}
 	
 	echo "************************************"
 	echo "*** Func Pepolar ${task} BOLD ${e}"
 	echo "************************************"
 	echo "************************************"
 
+	${scriptdir}/02.func_preproc/02.func_pepolar.sh ${bold}_den_meica ${fdir} ${sbrf}_topup none none ${tmp}
+	immv ${tmp}/${bold}_tpp ${tmp}/${bold}_tpp_meica
 	${scriptdir}/02.func_preproc/02.func_pepolar.sh ${bold}_den ${fdir} ${sbrf}_topup none none ${tmp}
 
 	echo "************************************"
@@ -113,15 +118,20 @@ do
 	echo "************************************"
 	echo "************************************"
 
+	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tpp_meica ${fdir} 5 ${mask} ${tmp}
+	imcp ${tmp}/${bold}_sm ${fdir}/02.${bold}_native_meica_preprocessed
+	immv ${tmp}/${bold}_sm ${tmp}/${bold}_sm_meica
 	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 5 ${mask} ${tmp}
-	imcp ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
+	imcp ${tmp}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 
 	echo "************************************"
 	echo "*** Func SPC ${task} BOLD ${e}"
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir} ${tmp}
+	${scriptdir}/02.func_preproc/09.func_spc.sh ${bold}_sm_meica ${fdir} ${tmp}
+	immv ${tmp}/${bold}_SPC ${fdir}/03.${bold}_native_meica_SPC_preprocessed
+	${scriptdir}/02.func_preproc/09.func_spc.sh ${bold}_sm ${fdir} ${tmp}
 
 	# Rename output
 	immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed

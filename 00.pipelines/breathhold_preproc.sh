@@ -77,19 +77,23 @@ echo "************************************"
 	
 
 # As it's breathhold, skip smoothing and denoising!
-for e in $( seq 1 ${nTE} )
+for e in $( seq 1 ${nTE}; echo "optcom" )
 do
-	bold=${flpr}_task-breathhold_echo-${e}_bold
+	if [ ${e} != "optcom" ]
+	then
+		e=echo-${e}
+	fi
+	bold=${flpr}_task-breathhold_${e}_bold
 	
 	echo "************************************"
-	echo "*** Func Pepolar breathhold BOLD echo ${e}"
+	echo "*** Func Pepolar breathhold BOLD ${e}"
 	echo "************************************"
 	echo "************************************"
 
 	/scripts/02.func_preproc/02.func_pepolar.sh ${bold}_bet ${fdir} ${sbrf}_topup
 
 	echo "************************************"
-	echo "*** Func SPC breathhold BOLD echo ${e}"
+	echo "*** Func SPC breathhold BOLD ${e}"
 	echo "************************************"
 	echo "************************************"
 
@@ -100,26 +104,5 @@ do
 	immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
 done
-
-bold=${flpr}_task-breathhold_optcom_bold
-
-echo "************************************"
-echo "*** Func Pepolar breathhold BOLD optcom"
-echo "************************************"
-echo "************************************"
-
-/scripts/02.func_preproc/02.func_pepolar.sh ${bold}_bet ${fdir} ${sbrf}_topup
-
-echo "************************************"
-echo "*** Func SPC breathhold BOLD optcom"
-echo "************************************"
-echo "************************************"
-
-/scripts/02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir}
-
-# First two outputs
-immv ${fdir}/${bold}_tpp ${fdir}/00.${bold}_native_preprocessed
-immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
-
 
 /scripts/00.pipelines/clearspace.sh ${sub} ${ses} ${wdr} task

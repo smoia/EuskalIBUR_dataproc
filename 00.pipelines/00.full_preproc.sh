@@ -62,9 +62,9 @@ uni_adir=${first_ses_path}/anat_preproc
 
 # Preparing log folder and log file, removing the previous one
 if [[ ! -d "${wdr}/log" ]]; then mkdir ${wdr}/log; fi
-if [[ -e "${wdr}/log/${flpr}_log" ]]; then rm ${wdr}/log/${flpr}_log; fi
+if [[ -e "${wdr}/log/${flpr}_log" ]]; then rm ${wdr}/log/${flpr}_preproc_log; fi
 
-echo "************************************" >> ${wdr}/log/${flpr}_log
+echo "************************************" >> ${wdr}/log/${flpr}_preproc_log
 
 exec 3>&1 4>&2
 
@@ -182,7 +182,7 @@ done
 
 for run in 01 02 03 04
 do
-	/scripts/00.pipelines/task_preproc.sh ${sub} ${ses} ${task} ${wdr} ${flpr} \
+	/scripts/00.pipelines/rest_full_preproc.sh ${sub} ${ses} ${run} ${wdr} ${flpr} \
 										  ${fdir} ${vdsc} "${TEs}" \
 										  ${nTE} ${siot} ${dspk} /scripts ${tmp}
 done

@@ -19,4 +19,4 @@ singularity exec -e --no-home \
 			-B /bcbl/home/public/PJMASK_2/preproc:/data \
 			-B /bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc:/scripts \
 			-B /export/home/smoia/scratch:/tmp \
-			euskalibur.sif 00.pipelines/00.tensor_preproc.sh $1 $2
+			euskalibur.sif 00.pipelines/00.full_preproc.sh $1 $2

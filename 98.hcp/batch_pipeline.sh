@@ -20,6 +20,12 @@ then
 	mkdir ../LogFiles
 fi
 
+qsub -q long.q -N "001_01_preproc_EuskalIBUR" \
+	 -o ${wdr}/../LogFiles/001_01_preproc_pipe \
+	 -e ${wdr}/../LogFiles/001_01_preproc_pipe \
+	 ${wdr}/98.hcp/run_full_preproc_pipeline.sh 001 01
+
+
 # for sub in 001 002 003 004 005 006 007 008 009 010
 # do
 # 	rm ${wdr}/../LogFiles/${sub}_biopac_pipe
@@ -128,12 +134,12 @@ fi
 # qsub -q short.q -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
 # qsub -q short.q -hold_jid "${joblist}" -N "mot_EuskalIBUR" -o ${wdr}/../LogFiles/motion_pipe -e ${wdr}/../LogFiles/motion_pipe ${wdr}/98.hcp/run_motion_plot.sh
 
-### Plot pipeline for subjects parallel
-rm ${wdr}/../LogFiles/plot_cvrval_pipe
-qsub -q short.q -N "plot_EuskalIBUR" \
--o ${wdr}/../LogFiles/plot_cvrval_pipe \
--e ${wdr}/../LogFiles/plot_cvrval_pipe \
-${wdr}/98.hcp/run_plot_pipeline.sh
+# ### Plot pipeline for subjects parallel
+# rm ${wdr}/../LogFiles/plot_cvrval_pipe
+# qsub -q short.q -N "plot_EuskalIBUR" \
+# -o ${wdr}/../LogFiles/plot_cvrval_pipe \
+# -e ${wdr}/../LogFiles/plot_cvrval_pipe \
+# ${wdr}/98.hcp/run_plot_pipeline.sh
 
 
 

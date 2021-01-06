@@ -60,7 +60,7 @@ echo "************************************"
 
 fmat=${flpr}_task-${task}_echo-1_bold
 
-/scripts/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} none ${sbrf}
+/scripts/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} none ${sbrf} none none ${tmp}
 
 for e in $( seq 1 ${nTE} )
 do
@@ -70,7 +70,7 @@ do
 	echo "************************************"
 
 	bold=${flpr}_task-${task}_echo-${e}_bold_cr
-	/scripts/02.func_preproc/04.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf}
+	/scripts/02.func_preproc/04.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf} none ${tmp}
 done
 
 echo "************************************"
@@ -78,7 +78,7 @@ echo "*** Func MEICA ${task} BOLD"
 echo "************************************"
 echo "************************************"
 
-/scripts/02.func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}"
+/scripts/02.func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}" ${tmp}
 
 # As it's ${task}, don't skip smoothing and denoising!
 for e in $( seq 1 ${nTE} )
@@ -90,28 +90,29 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	/scripts/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none
+	/scripts/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none no 0.3 0.05 no no ${tmp}
 	
 	echo "************************************"
 	echo "*** Func Pepolar ${task} BOLD echo ${e}"
 	echo "************************************"
 	echo "************************************"
 
-	/scripts/02.func_preproc/02.func_pepolar.sh ${bold}_den ${fdir} ${sbrf}_topup
+	/scripts/02.func_preproc/02.func_pepolar.sh ${bold}_den ${fdir} ${sbrf}_topup none none ${tmp}
 
 	echo "************************************"
 	echo "*** Func smoothing ${task} BOLD echo ${e}"
 	echo "************************************"
 	echo "************************************"
 
-	/scripts/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 3 ${mask}
+	/scripts/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 5 ${mask} ${tmp}
+	immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
 	echo "************************************"
 	echo "*** Func SPC ${task} BOLD echo ${e}"
 	echo "************************************"
 	echo "************************************"
 
-	/scripts/02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir}
+	/scripts/02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir} ${tmp}
 
 	# Rename output
 	immv ${fdir}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed

@@ -99,7 +99,7 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none no 0.3 0.05 no no ${tmp}
+	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none no 0.3 0.05 5 yes yes yes yes ${tmp}
 	
 	echo "************************************"
 	echo "*** Func Pepolar ${task} BOLD ${e}"
@@ -114,14 +114,14 @@ do
 	echo "************************************"
 
 	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 5 ${mask} ${tmp}
-	imcp ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
+	imcp ${tmp}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 
 	echo "************************************"
 	echo "*** Func SPC ${task} BOLD ${e}"
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/09.func_spc.sh ${bold}_tpp ${fdir} ${tmp}
+	${scriptdir}/02.func_preproc/09.func_spc.sh ${bold}_sm ${fdir} ${tmp}
 
 	# Rename output
 	immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed

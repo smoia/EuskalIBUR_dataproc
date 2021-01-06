@@ -85,7 +85,7 @@ ${scriptdir}/02.func_preproc/05.func_meica.sh ${fmat}_bet ${fdir} "${TEs}" check
 # Since t2smap gives different results from tedana, prefer the former for optcom
 ${scriptdir}/02.func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}" ${tmp}
 
-# As it's ${task}, don't skip smoothing and denoising!
+# As it's ${task}, only skip denoising (but create matrix nonetheless)!
 for e in $( seq 1 ${nTE}; echo "optcom" )
 do
 	if [ ${e} != "optcom" ]
@@ -106,7 +106,7 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/02.func_pepolar.sh ${bold}_den ${fdir} ${sbrf}_topup none none ${tmp}
+	${scriptdir}/02.func_preproc/02.func_pepolar.sh ${bold}_bet ${fdir} ${sbrf}_topup none none ${tmp}
 
 	echo "************************************"
 	echo "*** Func smoothing ${task} BOLD ${e}"
@@ -129,5 +129,3 @@ do
 done
 
 rm -rf ${tmp}
-
-${scriptdir}/00.pipelines/clearspace.sh ${sub} ${ses} ${wdr} task

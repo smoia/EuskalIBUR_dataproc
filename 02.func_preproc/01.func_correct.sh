@@ -30,7 +30,7 @@ cwd=$(pwd)
 
 cd ${fdir} || exit
 
-nTR=$(fslval ${func} dim4)
+nTR=$(fslval ${tmp}/${func} dim4)
 
 ## 01. Corrections
 # 01.1. Discard first volumes if there's more than one TR

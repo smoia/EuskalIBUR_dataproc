@@ -67,7 +67,7 @@ cd ${tmp}/${func}_meica
 # 01.4. Orthogonalising good and bad components
 
 echo "Extracting good and bad copmonents"
-python3 ${scriptdir}/20.python_scripts/00.process_tedana_output.py ${tmp}/${fdir}/${func}_meica
+python3 ${scriptdir}/20.python_scripts/00.process_tedana_output.py ${tmp}/${func}_meica
 
 echo "Orthogonalising good and bad components in ${func}"
 nacc=$( cat accepted.1D )

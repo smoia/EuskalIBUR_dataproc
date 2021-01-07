@@ -55,6 +55,14 @@ do
 
 	imcp ${wdr}/sub-${sub}/ses-${ses}/func/${bold} ${tmp}/${bold}
 
+	if [ ! -e ${tmp}/${bold}.nii.gz ]
+	then
+		echo "Something went wrong with the copy"
+		exit
+	else
+		echo "File copied, start preprocessing"
+	fi
+
 	echo "************************************"
 	echo "*** Func correct rest run ${run} BOLD echo ${e}"
 	echo "************************************"

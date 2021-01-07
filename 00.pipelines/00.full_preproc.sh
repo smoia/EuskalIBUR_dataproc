@@ -168,7 +168,7 @@ fi
 #########    Task preproc    #########
 ######################################
 
-for task in motor pinel simon
+for task in motor # pinel simon
 do
 	/scripts/00.pipelines/task_preproc.sh ${sub} ${ses} ${task} ${wdr} ${flpr} \
 										  ${fdir} ${vdsc} "${TEs}" \
@@ -180,12 +180,12 @@ done
 #########    Rest preproc    #########
 ######################################
 
-for run in 01 02 03 04
-do
-	/scripts/00.pipelines/rest_full_preproc.sh ${sub} ${ses} ${run} ${wdr} ${flpr} \
-										       ${fdir} ${vdsc} "${TEs}" \
-										       ${nTE} ${siot} ${dspk} /scripts ${tmp}
-done
+# for run in 01 02 03 04
+# do
+# 	/scripts/00.pipelines/rest_full_preproc.sh ${sub} ${ses} ${run} ${wdr} ${flpr} \
+# 										       ${fdir} ${vdsc} "${TEs}" \
+# 										       ${nTE} ${siot} ${dspk} /scripts ${tmp}
+# done
 
 
 date

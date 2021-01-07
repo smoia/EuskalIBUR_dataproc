@@ -111,14 +111,14 @@ then
 	do
 		echo "Affining volume ${i} of ${nTR} in ${func}"
 		c3d_affine_tool -ref ${mref}_brain_mask -src ${tmp}/${func}_split/vol_${i}.nii.gz \
-		${func}_mcf.mat/MAT_${i} -fsl2ras -oitk ../reg/mcf_ants_mat/v${i}2${func}.mat
+		${tmp}/${func}_mcf.mat/MAT_${i} -fsl2ras -oitk ../reg/mcf_ants_mat/v${i}2${func}.mat
 	done
 	rm -r ${tmp}/${func}_split
 fi
 
 # Moving things around
 if [[ -d ../reg/${func}_mcf.mat ]]; then rm -r ../reg/${func}_mcf.mat; fi
-mv ${func}_mcf.mat ../reg/.
+mv ${tmp}/${func}_mcf.mat ../reg/.
 
 if [[ "${mref}" == "${func}_avgref" ]]
 then

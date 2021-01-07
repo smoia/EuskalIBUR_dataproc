@@ -20,6 +20,9 @@ anat2=${7:-none}
 
 tmp=${8:-.}
 
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 ######### Script starts here #########
 ######################################

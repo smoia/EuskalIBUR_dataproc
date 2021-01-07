@@ -22,6 +22,9 @@ siot=${5:-none}
 ## Temp folder
 tmp=${6:-.}
 
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 ######### Script starts here #########
 ######################################

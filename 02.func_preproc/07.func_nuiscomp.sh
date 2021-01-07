@@ -30,6 +30,9 @@ den_tissues=${15:-yes}
 ## Temp folder
 tmp=${16:-.}
 
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 ######### Script starts here #########
 ######################################

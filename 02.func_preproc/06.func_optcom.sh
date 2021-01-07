@@ -15,6 +15,10 @@ fdir=$2
 TEs="$3"
 
 tmp=${4:-.}
+
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 ######### Script starts here #########
 ######################################

@@ -21,6 +21,9 @@ tmp=${5:-.}
 
 scriptdir=${6:-/scripts}
 
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 ######### Script starts here #########
 ######################################

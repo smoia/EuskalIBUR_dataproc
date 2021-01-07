@@ -17,6 +17,9 @@ brev=${4:-none}
 bfor=${5:-none}
 tmp=${6:-.}
 
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 ######### Script starts here #########
 ######################################

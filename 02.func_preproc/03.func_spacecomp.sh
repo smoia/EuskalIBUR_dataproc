@@ -26,6 +26,9 @@ aseg=${6:-none}
 ## Temp folder
 tmp=${7:-.}
 
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 ######### Script starts here #########
 ######################################

@@ -15,6 +15,9 @@ fdir=$2
 ## Temp folder
 tmp=${3:-.}
 
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 ######### Script starts here #########
 ######################################

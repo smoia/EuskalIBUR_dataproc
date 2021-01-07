@@ -52,8 +52,10 @@ do
 	echo "************************************"
 
 	bold=${flpr}_task-${task}_echo-${e}_bold
+	echo "bold=${flpr}_task-${task}_echo-${e}_bold"
 
 	imcp ${wdr}/sub-${sub}/ses-${ses}/func/${bold} ${tmp}/${bold}
+	echo "imcp ${wdr}/sub-${sub}/ses-${ses}/func/${bold} ${tmp}/${bold}"
 
 	if [ ! -e ${tmp}/${bold}.nii.gz ]
 	then
@@ -77,6 +79,7 @@ echo "************************************"
 echo "************************************"
 
 fmat=${flpr}_task-${task}_echo-1_bold
+echo "fmat=${flpr}_task-${task}_echo-1_bold"
 
 ${scriptdir}/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} none ${sbrf} none none ${tmp}
 
@@ -88,6 +91,7 @@ do
 	echo "************************************"
 
 	bold=${flpr}_task-${task}_echo-${e}_bold_cr
+	echo "bold=${flpr}_task-${task}_echo-${e}_bold_cr"
 	${scriptdir}/02.func_preproc/04.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf} none ${tmp}
 done
 
@@ -98,6 +102,10 @@ echo "************************************"
 
 ${scriptdir}/02.func_preproc/05.func_meica.sh ${fmat}_bet ${fdir} "${TEs}" none ${tmp} ${scriptdir}
 
+echo "************************************"
+echo "*** Func T2smap ${task} BOLD"
+echo "************************************"
+echo "************************************"
 # Since t2smap gives different results from tedana, prefer the former for optcom
 ${scriptdir}/02.func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}" ${tmp}
 
@@ -109,6 +117,7 @@ do
 		e=echo-${e}
 	fi
 	bold=${flpr}_task-${task}_${e}_bold
+	echo "bold=${flpr}_task-${task}_${e}_bold"
 	
 	echo "************************************"
 	echo "*** Func Nuiscomp ${task} BOLD ${e}"
@@ -131,6 +140,7 @@ do
 
 	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 5 ${mask} ${tmp}
 	imcp ${tmp}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
+	echo "imcp ${tmp}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed"
 
 	echo "************************************"
 	echo "*** Func SPC ${task} BOLD ${e}"
@@ -141,7 +151,9 @@ do
 
 	# Rename output
 	immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
+	echo "immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed"
 
 done
 
 rm -rf ${tmp}
+echo "rm -rf ${tmp}"

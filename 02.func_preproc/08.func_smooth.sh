@@ -19,6 +19,9 @@ mask=$4
 ## Temp folder
 tmp=${5:-.}
 
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 ######### Script starts here #########
 ######################################

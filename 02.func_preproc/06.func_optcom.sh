@@ -46,7 +46,9 @@ then
 	t2smap -d ${tmp}/${func}.nii.gz -e ${TEs}
 
 	echo "Housekeeping"
-	fslmaths ${tmp}/TED.${func}/ts_OC.nii.gz ${tmp}/${func_optcom} -odt float
+	fslmaths TED.${func}/ts_OC.nii.gz ${tmp}/${func_optcom} -odt float
+	# Remove TED folder
+	rm -rf TED.${func}
 fi
 
 # 01.3. Compute outlier fraction if there's more than one TR

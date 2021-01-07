@@ -89,7 +89,7 @@ echo "*** Func MEICA rest run ${run} BOLD"
 echo "************************************"
 echo "************************************"
 
-${scriptdir}/02.func_preproc/05.func_meica.sh ${fmat}_bet ${fdir} "${TEs}" check_bck ${tmp} ${scriptdir}
+${scriptdir}/02.func_preproc/05.func_meica.sh ${fmat}_bet ${fdir} "${TEs}" none ${tmp} ${scriptdir}
 
 # Since t2smap gives different results from tedana, prefer the former for optcom
 ${scriptdir}/02.func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}" ${tmp}

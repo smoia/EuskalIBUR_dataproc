@@ -56,7 +56,7 @@ then
 fi
 
 # 01.3. Compute outlier fraction if there's more than one TR
-nTR=$(fslval ${func_optcom} dim4)
+nTR=$(fslval ${tmp}/${func_optcom} dim4)
 
 if [[ "${nTR}" -gt "1" ]]
 then

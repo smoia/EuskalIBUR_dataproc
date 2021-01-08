@@ -51,11 +51,11 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	bold=${flpr}_task-rest_run-${run}_echo-${e}_bold
 	echo "bold=${flpr}_task-rest_run-${run}_echo-${e}_bold"
+	bold=${flpr}_task-rest_run-${run}_echo-${e}_bold
 
-	imcp ${wdr}/sub-${sub}/ses-${ses}/func/${bold} ${tmp}/${bold}
 	echo "imcp ${wdr}/sub-${sub}/ses-${ses}/func/${bold} ${tmp}/${bold}"
+	imcp ${wdr}/sub-${sub}/ses-${ses}/func/${bold} ${tmp}/${bold}
 
 	if [ ! -e ${tmp}/${bold}.nii.gz ]
 	then
@@ -70,8 +70,8 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	bold=${flpr}_task-rest_run-${run}_echo-${e}_bold
 	echo "bold=${flpr}_task-rest_run-${run}_echo-${e}_bold"
+	bold=${flpr}_task-rest_run-${run}_echo-${e}_bold
 	${scriptdir}/02.func_preproc/01.func_correct.sh ${bold} ${fdir} ${vdsc} ${dspk} ${siot} ${tmp}
 done
 
@@ -80,8 +80,8 @@ echo "*** Func spacecomp rest run ${run} BOLD echo 1"
 echo "************************************"
 echo "************************************"
 
-fmat=${flpr}_task-rest_run-${run}_echo-1_bold
 echo "fmat=${flpr}_task-rest_run-${run}_echo-1_bold"
+fmat=${flpr}_task-rest_run-${run}_echo-1_bold
 
 ${scriptdir}/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} none ${sbrf} none none ${tmp}
 
@@ -92,8 +92,8 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	bold=${flpr}_task-rest_run-${run}_echo-${e}_bold_cr
 	echo "bold=${flpr}_task-rest_run-${run}_echo-${e}_bold_cr"
+	bold=${flpr}_task-rest_run-${run}_echo-${e}_bold_cr
 	${scriptdir}/02.func_preproc/04.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf} none ${tmp}
 done
 
@@ -119,8 +119,8 @@ do
 	then
 		e=echo-${e}
 	fi
-	bold=${flpr}_task-rest_run-${run}_${e}_bold
 	echo "bold=${flpr}_task-rest_run-${run}_${e}_bold"
+	bold=${flpr}_task-rest_run-${run}_${e}_bold
 	
 	echo "************************************"
 	echo "*** Func Nuiscomp rest run ${run} BOLD ${e}"
@@ -128,8 +128,8 @@ do
 	echo "************************************"
 
 	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none yes 0.3 0.05 5 yes yes yes yes ${tmp}
-	immv ${tmp}/${bold}_den ${tmp}/${bold}_den_meica
-	echo "immv ${tmp}/${bold}_den ${tmp}/${bold}_den_meica"
+	echo "immv ${tmp}/${bold}_den ${tmp}/${bold}_denmeica"
+	immv ${tmp}/${bold}_den ${tmp}/${bold}_denmeica
 	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none yes 0.3 0.05 5 yes yes no yes ${tmp}
 	
 	echo "************************************"
@@ -137,9 +137,9 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/02.func_pepolar.sh ${bold}_den_meica ${fdir} ${sbrf}_topup none none ${tmp}
-	immv ${tmp}/${bold}_tpp ${tmp}/${bold}_tpp_meica
-	echo "immv ${tmp}/${bold}_tpp ${tmp}/${bold}_tpp_meica"
+	${scriptdir}/02.func_preproc/02.func_pepolar.sh ${bold}_denmeica ${fdir} ${sbrf}_topup none none ${tmp}
+	echo "immv ${tmp}/${bold}_tpp ${tmp}/${bold}_tppmeica"
+	immv ${tmp}/${bold}_tpp ${tmp}/${bold}_tppmeica
 	${scriptdir}/02.func_preproc/02.func_pepolar.sh ${bold}_den ${fdir} ${sbrf}_topup none none ${tmp}
 
 	echo "************************************"
@@ -147,30 +147,30 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tpp_meica ${fdir} 5 ${mask} ${tmp}
-	imcp ${tmp}/${bold}_sm ${fdir}/02.${bold}_native_meica_preprocessed
+	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tppmeica ${fdir} 5 ${mask} ${tmp}
 	echo "imcp ${tmp}/${bold}_sm ${fdir}/02.${bold}_native_meica_preprocessed"
-	immv ${tmp}/${bold}_sm ${tmp}/${bold}_sm_meica
-	echo "immv ${tmp}/${bold}_sm ${tmp}/${bold}_sm_meica"
+	imcp ${tmp}/${bold}_sm ${fdir}/02.${bold}_native_meica_preprocessed
+	echo "immv ${tmp}/${bold}_sm ${tmp}/${bold}_smmeica"
+	immv ${tmp}/${bold}_sm ${tmp}/${bold}_smmeica
 	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 5 ${mask} ${tmp}
-	imcp ${tmp}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 	echo "imcp ${tmp}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed"
+	imcp ${tmp}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 
 	echo "************************************"
 	echo "*** Func SPC rest run ${run} BOLD ${e}"
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/09.func_spc.sh ${bold}_sm_meica ${fdir} ${tmp}
-	immv ${tmp}/${bold}_SPC ${fdir}/03.${bold}_native_meica_SPC_preprocessed
+	${scriptdir}/02.func_preproc/09.func_spc.sh ${bold}_smmeica ${fdir} ${tmp}
 	echo "immv ${tmp}/${bold}_SPC ${fdir}/03.${bold}_native_meica_SPC_preprocessed"
+	immv ${tmp}/${bold}_SPC ${fdir}/03.${bold}_native_meica_SPC_preprocessed
 	${scriptdir}/02.func_preproc/09.func_spc.sh ${bold}_sm ${fdir} ${tmp}
 
 	# Rename output
-	immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 	echo "immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed"
+	immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
 done
 
-rm -rf ${tmp}
 echo "rm -rf ${tmp}"
+rm -rf ${tmp}

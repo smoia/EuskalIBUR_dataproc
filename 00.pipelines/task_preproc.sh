@@ -51,11 +51,11 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	bold=${flpr}_task-${task}_echo-${e}_bold
 	echo "bold=${flpr}_task-${task}_echo-${e}_bold"
+	bold=${flpr}_task-${task}_echo-${e}_bold
 
-	imcp ${wdr}/sub-${sub}/ses-${ses}/func/${bold} ${tmp}/${bold}
 	echo "imcp ${wdr}/sub-${sub}/ses-${ses}/func/${bold} ${tmp}/${bold}"
+	imcp ${wdr}/sub-${sub}/ses-${ses}/func/${bold} ${tmp}/${bold}
 
 	if [ ! -e ${tmp}/${bold}.nii.gz ]
 	then
@@ -78,8 +78,8 @@ echo "*** Func spacecomp ${task} echo 1"
 echo "************************************"
 echo "************************************"
 
-fmat=${flpr}_task-${task}_echo-1_bold
 echo "fmat=${flpr}_task-${task}_echo-1_bold"
+fmat=${flpr}_task-${task}_echo-1_bold
 
 ${scriptdir}/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} none ${sbrf} none none ${tmp}
 
@@ -90,8 +90,8 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	bold=${flpr}_task-${task}_echo-${e}_bold_cr
 	echo "bold=${flpr}_task-${task}_echo-${e}_bold_cr"
+	bold=${flpr}_task-${task}_echo-${e}_bold_cr
 	${scriptdir}/02.func_preproc/04.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf} none ${tmp}
 done
 
@@ -116,8 +116,8 @@ do
 	then
 		e=echo-${e}
 	fi
-	bold=${flpr}_task-${task}_${e}_bold
 	echo "bold=${flpr}_task-${task}_${e}_bold"
+	bold=${flpr}_task-${task}_${e}_bold
 	
 	echo "************************************"
 	echo "*** Func Nuiscomp ${task} BOLD ${e}"
@@ -139,8 +139,8 @@ do
 	echo "************************************"
 
 	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 5 ${mask} ${tmp}
-	imcp ${tmp}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 	echo "imcp ${tmp}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed"
+	imcp ${tmp}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
 
 	echo "************************************"
 	echo "*** Func SPC ${task} BOLD ${e}"
@@ -150,10 +150,10 @@ do
 	${scriptdir}/02.func_preproc/09.func_spc.sh ${bold}_sm ${fdir} ${tmp}
 
 	# Rename output
-	immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 	echo "immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed"
+	immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
 done
 
-rm -rf ${tmp}
 echo "rm -rf ${tmp}"
+rm -rf ${tmp}

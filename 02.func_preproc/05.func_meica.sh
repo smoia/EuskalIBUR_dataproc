@@ -73,8 +73,16 @@ echo "Extracting good and bad copmonents"
 python3 ${scriptdir}/20.python_scripts/00.process_tedana_output.py ${tmp}/${func}_meica
 
 echo "Orthogonalising good and bad components in ${func}"
-nacc=$( cat accepted.1D )
-nrej=$( cat rejected.1D )
+nacc=$( cat accepted_list.1D )
+nrej=$( cat rejected_list.1D )
+
+# Store some files for data check or later use
+if [[ -d "${fdir}/${func}_meica" ]]; then rm -rf ${fdir}/${func}_meica; fi
+mkdir ${fdir}/${func}_meica ${fdir}/${func}_meica/figures
+
+cp accepted_list.1D rejected_list.1D accepted_list_by_variance.1D rejected_list_by_variance.1D ${fdir}/${func}_meica/.
+cp adaptive_mask.nii.gz ica_decomposition.json ica_mixing_orig.tsv ica_mixing.tsv ${fdir}/${func}_meica/.
+cp -r figures ${fdir}/${func}_meica/figures/.
 
 1dcat ica_mixing.tsv"[$nacc]" > accepted.1D
 1dcat ica_mixing.tsv"[$nrej]" > rej.tr.1D

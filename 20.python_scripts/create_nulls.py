@@ -38,6 +38,8 @@ ATLAS_DICT = {'Mutsaerts2015': 'Mutsaerts (vascular)',
 ATLAS_FOLDER = os.path.join('CVR_reliability', 'Atlas_comparison')
 LAST_SES += 1
 
+CKEYS = ['avg', 'relvar']
+
 DISTMAP = '/home/nemo/Scrivania/Test_workbench/CVR_reliability/Atlas_comparison/mmdist/distmat.npy'
 INDEX = '/home/nemo/Scrivania/Test_workbench/CVR_reliability/Atlas_comparison/mmdist/index.npy'
 SURROGATES_PR = '/home/nemo/Scrivania/Test_workbench/CVR_reliability/Atlas_comparison/surrogates_'
@@ -74,7 +76,7 @@ def _get_parser():
                         help='Overwrite previously computed distances.',
                         default=False)
     parser.add_argument('-nm', '--num-null-maps',
-                        dest='null_maps',
+                        dest='n_maps',
                         type=int,
                         help='Number of surrogate maps to generate. '
                              'Default is 1000.',
@@ -88,6 +90,16 @@ def _get_parser():
                         dest='export_name',
                         type=str,
                         help='Name of nifti quantile export. Default: empty.',
+                        default='')
+    parser.add_argument('-sn', '--surrogate-name',
+                        dest='surrogate_fname',
+                        type=str,
+                        help='Surrogates to import, folder+file basename. Default: empty.',
+                        default='')
+    parser.add_argument('-sen', '--surrogate-export-name',
+                        dest='surrogate_export',
+                        type=str,
+                        help='Name of imported surrogates file export. Default: empty.',
                         default='')
     parser.add_argument('-nj', '--jobnumber',
                         dest='n_jobs',
@@ -115,10 +127,15 @@ def _get_parser():
                         action='store_true',
                         help='Generate surrogates and plots.',
                         default=False)
-    parser.add_argument('-pa', '--parseavg',
-                        dest='parseavg',
+    parser.add_argument('-is', '--importsurr',
+                        dest='importsurr',
                         action='store_true',
-                        help='parse averages.',
+                        help='Import surrogates computed externally.',
+                        default=False)
+    parser.add_argument('-pa', '--computestats',
+                        dest='computestats',
+                        action='store_true',
+                        help='Compute averages & relvars.',
                         default=False)
     parser.add_argument('-pp', '--plotparc',
                         dest='plotparc',
@@ -232,7 +249,7 @@ def evaluate_variograms(data_fname, atlases, dist_fname, wdr, **kwargs):
     plt.close('all')
 
 
-def generate_surrogates(data_fname, atlases, dist_fname, n_jobs, null_maps, wdr, overwrite=False):
+def generate_surrogates(data_fname, atlases, dist_fname, n_jobs, n_maps, wdr, overwrite=False):
     data_masked = load_and_mask_nifti(data_fname, atlases)
     # Check that data_fname doesn't contain folders.
     data_fname = os.path.basename(data_fname)
@@ -246,7 +263,7 @@ def generate_surrogates(data_fname, atlases, dist_fname, n_jobs, null_maps, wdr,
 
         gen = Sampled(x=data_masked, D=dist_fname['D'],
                       index=dist_fname['index'], seed=42, n_jobs=n_jobs)
-        surrogate_maps = gen(n=null_maps)
+        surrogate_maps = gen(n=n_maps)
 
         # Export atlases
         export_file(wdr, surrogate_fname, surrogate_maps)
@@ -265,12 +282,83 @@ def generate_surrogates(data_fname, atlases, dist_fname, n_jobs, null_maps, wdr,
     return surrogate_resamp, data_masked
 
 
-def parse_averages(wdr, data_fname, null_maps, atlases, surrogate_maps, data_masked, overwrite=False):
+def import_surrogates(data_fname, n_maps, surrogate_basename, surrogate_export, wdr):
+    print(f'Importing surrogates from {surrogate_basename}')
+    data_masked = load_and_mask_nifti(data_fname, atlases)
+    surrogate_maps = []
+    for n in range(n_maps):
+        surrogate_fname = f'{surrogate_basename}_{n:03g}'
+        print(f'Import surrogate {os.path.basename(surrogate_fname)}')
+        surrogate_maps = surrogate_maps + [load_and_mask_nifti(surrogate_fname, atlases)]
+
+    surrogate_maps = np.stack(surrogate_maps, axis=0)
+
+    print(f'Export new surrogates to surrogates_import_{surrogate_export}.npz')
+    export_file(wdr, f'surrogates_import_{surrogate_export}', surrogate_maps)
+
+    return surrogate_maps, data_masked
+
+
+def compute_relvars(wdr, data_fname, n_maps, atlases, surrogate_maps, data_masked, overwrite=False):
+    # Compute relative variances and store them in pandas dataframes
+    # Then compute rank and store them in other pd.DataFrame
+
+    # if overwrite is True or os.path.isfile(f'{surrogate_fname}.npz') is False:
+    if overwrite is True or check_file(wdr, f'{data_fname}_relvar.npz') is False:
+        # Setup pandas df
+        print('Computing relative variances')
+        df_dict = dict.fromkeys(ATLAS_LIST)
+        rank_dict = dict.fromkeys(ATLAS_LIST)
+
+        for atlas in ATLAS_LIST:
+            # Mask atlas to match data_masked
+            atlas_masked = atlases[atlas][atlases['intersect'] > 0]
+            # Find unique values (labels) and remove zero
+            unique, _ = np.unique(atlas_masked, return_counts=True)
+            unique = unique[unique > 0]
+            # Initialise dataframe and dictionary for series
+            df_dict[atlas] = pd.DataFrame(index=unique)
+            label_dict = dict.fromkeys(unique)
+
+            # Compute relative variances
+            for label in unique:
+                # Start with real maps
+                label_dict[label] = (data_masked[atlas_masked == label].var() /
+                                     data_masked.var())
+
+            df_dict[atlas]['real'] = pd.Series(label_dict)
+
+            for n in range(n_maps):
+                # Continue with all surrogates
+                for label in unique:
+                    label_dict[label] = (surrogate_maps[n][atlas_masked == label].var() /
+                                         surrogate_maps[n].var())
+
+                df_dict[atlas][f'surrogate_{n}'] = pd.Series(label_dict)
+
+            # Take the argmin of argsort of the dataframe to find the position of the real data
+            rank = np.argsort(df_dict[atlas].to_numpy(), axis=-1)
+            rank_dict[atlas] = rank.argmin(axis=-1)
+            # Dividing it by (n_maps+1)/100 will give rank (percentages)
+            rank_dict[atlas] = (n_maps - rank_dict[atlas]) / (n_maps/100)
+
+        # Export files
+        export_file(wdr, f'{data_fname}_relvar', df_dict)
+        export_file(wdr, f'{data_fname}_relvar_rank', rank_dict)
+    else:
+        print(f'Relative variances found at {data_fname}_relvar.npz. Loading.')
+        df_dict = load_file(wdr, f'{data_fname}_relvar.npz')
+        rank_dict = load_file(wdr, f'{data_fname}_relvar_rank.npz')
+
+    return df_dict, rank_dict
+
+
+def compute_averages(wdr, data_fname, n_maps, atlases, surrogate_maps, data_masked, overwrite=False):
     # Compute averages and store them in pandas dataframes
     # Then compute rank and store them in other pd.DataFrame
 
     # if overwrite is True or os.path.isfile(f'{surrogate_fname}.npz') is False:
-    if overwrite is True or check_file(wdr, f'{data_fname}_relvar_no_resamp.npz') is False:
+    if overwrite is True or check_file(wdr, f'{data_fname}_avg.npz') is False:
         # Setup pandas df
         print('Computing averages')
         df_dict = dict.fromkeys(ATLAS_LIST)
@@ -289,37 +377,35 @@ def parse_averages(wdr, data_fname, null_maps, atlases, surrogate_maps, data_mas
             # Compute averages
             for label in unique:
                 # Start with real maps
-                label_dict[label] = (data_masked[atlas_masked == label].var() /
-                                     data_masked.var())
+                label_dict[label] = data_masked[atlas_masked == label].mean()
 
             df_dict[atlas]['real'] = pd.Series(label_dict)
 
-            for n in range(null_maps):
+            for n in range(n_maps):
                 # Continue with all surrogates
                 for label in unique:
-                    label_dict[label] = (surrogate_maps[n][atlas_masked == label].var() /
-                                         surrogate_maps[n].var())
+                    label_dict[label] = surrogate_maps[n][atlas_masked == label].mean()
 
                 df_dict[atlas][f'surrogate_{n}'] = pd.Series(label_dict)
 
             # Take the argmin of argsort of the dataframe to find the position of the real data
             rank = np.argsort(df_dict[atlas].to_numpy(), axis=-1)
             rank_dict[atlas] = rank.argmin(axis=-1)
-            # Dividing it by (null_maps+1)/100 will give rank (percentages)
-            rank_dict[atlas] = (null_maps - rank_dict[atlas]) / (null_maps/100)
+            # Dividing it by (n_maps+1)/100 will give rank (percentages)
+            rank_dict[atlas] = rank_dict[atlas] / (n_maps/100)
 
         # Export files
-        export_file(wdr, f'{data_fname}_relvar_no_resamp', df_dict)
-        export_file(wdr, f'{data_fname}_relvar_no_resamp_rank', rank_dict)
+        export_file(wdr, f'{data_fname}_avg', df_dict)
+        export_file(wdr, f'{data_fname}_avg_rank', rank_dict)
     else:
-        print(f'Averages found at {data_fname}_relvar_no_resamp.npz. Loading.')
-        df_dict = load_file(wdr, f'{data_fname}_relvar_no_resamp.npz')
-        rank_dict = load_file(wdr, f'{data_fname}_relvar_no_resamp_rank.npz')
+        print(f'Averages found at {data_fname}_avg.npz. Loading.')
+        df_dict = load_file(wdr, f'{data_fname}_avg.npz')
+        rank_dict = load_file(wdr, f'{data_fname}_avg_rank.npz')
 
     return df_dict, rank_dict
 
 
-def plot_parcels(null_maps, data_content, atlases, data_avg, plot_name=''):
+def plot_parcels(data_content, atlases, data_avg, plot_name=''):
     # Plot parcel value against voxel size
     # Setup plot
     print('Plot some values')
@@ -361,7 +447,7 @@ def plot_parcels(null_maps, data_content, atlases, data_avg, plot_name=''):
     # Save plot
     print(f'Saving plot as: {plot_name}_by_voxel.png')
     os.makedirs(os.path.dirname(plot_name), exist_ok=True)
-    plt.savefig(f'{plot_name}_relvar_no_resamp_by_voxel.png', dpi=SET_DPI)
+    plt.savefig(f'{plot_name}_by_voxel.png', dpi=SET_DPI)
     plt.close('all')
 
 
@@ -382,7 +468,7 @@ def rank_to_nifti(scriptdir, rank_dict, wdr, export_fname, overwrite=False):
             data[data == label] = rank_dict[atlas][n]
 
         out_img = nib.Nifti1Image(data, atlas_img.affine, atlas_img.header)
-        out_img.to_filename(f'{export_fname}_{atlas}_relvar_no_resamp.nii.gz')
+        out_img.to_filename(f'{export_fname}_{atlas}.nii.gz')
 
 
 ########
@@ -441,24 +527,63 @@ if __name__ == '__main__':
                                                           atlases,
                                                           dist_fname,
                                                           args.n_jobs,
-                                                          args.null_maps,
+                                                          args.n_maps,
                                                           args.wdr,
                                                           args.overwrite)
 
-        data_avg, _ = parse_averages(args.wdr,
-                                     os.path.basename(data_fname),
-                                     args.null_maps,
-                                     atlases,
-                                     surrogate_maps,
-                                     data_masked,
-                                     args.overwrite)
-        plot_parcels(args.null_maps,
-                     args.data_content,
-                     atlases,
-                     data_avg,
-                     plot_name)
+        data_parsed = dict.fromkeys(CKEYS)
+        data_qnt = dict.fromkeys(CKEYS)
 
-    elif args.parseavg is True:
+        for key, compute in zip(CKEYS, [compute_averages, compute_relvars]):
+            data_parsed[key], data_qnt[key] = compute(args.wdr,
+                                                      os.path.basename(data_fname),
+                                                      args.n_maps,
+                                                      atlases,
+                                                      surrogate_maps,
+                                                      data_masked,
+                                                      args.overwrite)
+            plot_parcels(args.data_content,
+                         atlases,
+                         data_parsed[key],
+                         f'{plot_name}_plot_{key}')
+            rank_to_nifti(args.scriptdir,
+                          data_qnt[key],
+                          args.wdr,
+                          f'{export_name}_{key}')
+
+    elif args.importsurr is True:
+        atlases = generate_atlas_dictionary(args.wdr, args.scriptdir)
+        dist_fname = compute_distances(args.wdr, atlases, args.overwrite)
+        surrogate_maps, data_masked = import_surrogates(data_fname,
+                                                        args.n_maps,
+                                                        args.surrogate_fname,
+                                                        args.surrogate_export,
+                                                        args.wdr)
+
+        data_parsed = dict.fromkeys(CKEYS)
+        data_qnt = dict.fromkeys(CKEYS)
+
+        for key, compute in zip(CKEYS, [compute_averages, compute_relvars]):
+            print(f'Compute {key} using {compute}')
+            data_parsed[key], data_qnt[key] = compute(args.wdr,
+                                                      os.path.basename(data_fname),
+                                                      args.n_maps,
+                                                      atlases,
+                                                      surrogate_maps,
+                                                      data_masked,
+                                                      args.overwrite)
+            print(f'Plot {key}')
+            plot_parcels(args.data_content,
+                         atlases,
+                         data_parsed[key],
+                         f'{plot_name}_{key}')
+            print(f'Export rank {key}')
+            rank_to_nifti(args.scriptdir,
+                          data_qnt[key],
+                          args.wdr,
+                          f'{export_name}_{key}')
+
+    elif args.computestats is True:
         # Check if surrogates exists, otherwise stop
         surrogate_fname = f'surrogates_{os.path.basename(data_fname)}.npz'
         # surrogate_fname = f'surrogates_{os.path.basename(data_fname)}_resamp.npz'
@@ -472,13 +597,25 @@ if __name__ == '__main__':
             # Read and extract data
             data_masked = load_and_mask_nifti(data_fname, atlases)
 
-            parse_averages(args.wdr,
-                           os.path.basename(data_fname),
-                           args.null_maps,
-                           atlases,
-                           surrogate_maps,
-                           data_masked,
-                           args.overwrite)
+            data_parsed = dict.fromkeys(CKEYS)
+            data_qnt = dict.fromkeys(CKEYS)
+
+            for key, compute in zip(CKEYS, [compute_averages, compute_relvars]):
+                data_parsed[key], data_qnt[key] = compute(args.wdr,
+                                                          os.path.basename(data_fname),
+                                                          args.n_maps,
+                                                          atlases,
+                                                          surrogate_maps,
+                                                          data_masked,
+                                                          args.overwrite)
+                plot_parcels(args.data_content,
+                             atlases,
+                             data_parsed[key],
+                             f'{plot_name}_plot_{key}')
+                rank_to_nifti(args.scriptdir,
+                              data_qnt[key],
+                              args.wdr,
+                              f'{export_name}_{key}')
 
     elif args.plotparc is True:
         # Check if surrogates exist, otherwise stop
@@ -495,19 +632,20 @@ if __name__ == '__main__':
             data_masked = load_and_mask_nifti(data_fname, atlases)
 
             # Parse averages
-            data_avg, _ = parse_averages(args.wdr,
-                                         os.path.basename(data_fname),
-                                         args.null_maps,
-                                         atlases,
-                                         surrogate_maps,
-                                         data_masked,
-                                         args.overwrite)
+            data_parsed = dict.fromkeys(CKEYS)
 
-            plot_parcels(args.null_maps,
-                         args.data_content,
-                         atlases,
-                         data_avg,
-                         plot_name)
+            for key, compute in zip(CKEYS, [compute_averages, compute_relvars]):
+                data_parsed[key], _ = compute(args.wdr,
+                                              os.path.basename(data_fname),
+                                              args.n_maps,
+                                              atlases,
+                                              surrogate_maps,
+                                              data_masked,
+                                              args.overwrite)
+                plot_parcels(args.data_content,
+                             atlases,
+                             data_parsed[key],
+                             f'{plot_name}_plot_{key}')
 
     elif args.exportqnt is True:
         # Check if surrogates exist, otherwise stop
@@ -523,19 +661,21 @@ if __name__ == '__main__':
             # Read and extract data
             data_masked = load_and_mask_nifti(data_fname, atlases)
 
-            # Parse averages
-            _, data_qnt = parse_averages(args.wdr,
-                                         os.path.basename(data_fname),
-                                         args.null_maps,
-                                         atlases,
-                                         surrogate_maps,
-                                         data_masked,
-                                         args.overwrite)
+            data_qnt = dict.fromkeys(CKEYS)
 
-            rank_to_nifti(args.scriptdir,
-                          data_qnt,
-                          args.wdr,
-                          export_name)
+            for key, compute in zip(CKEYS, [compute_averages, compute_relvars]):
+                _, data_qnt[key] = compute(args.wdr,
+                                           os.path.basename(data_fname),
+                                           args.n_maps,
+                                           atlases,
+                                           surrogate_maps,
+                                           data_masked,
+                                           args.overwrite)
+
+                rank_to_nifti(args.scriptdir,
+                              data_qnt[key],
+                              args.wdr,
+                              f'{export_name}_{key}')
 
     else:
         raise Exception('No workflow flag specified!')

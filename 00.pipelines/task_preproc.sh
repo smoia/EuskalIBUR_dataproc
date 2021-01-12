@@ -139,19 +139,19 @@ do
 	echo "************************************"
 
 	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 5 ${mask} ${tmp}
-	echo "imcp ${tmp}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed"
-	imcp ${tmp}/${bold}_sm ${fdir}/00.${bold}_native_preprocessed
+	echo "fslmaths ${tmp}/${bold}_sm -mas ${mask} ${fdir}/00.${bold}_native_preprocessed"
+	fslmaths ${tmp}/${bold}_sm -mas ${mask} ${fdir}/00.${bold}_native_preprocessed
 
-	echo "************************************"
-	echo "*** Func SPC ${task} BOLD ${e}"
-	echo "************************************"
-	echo "************************************"
+	# echo "************************************"
+	# echo "*** Func SPC ${task} BOLD ${e}"
+	# echo "************************************"
+	# echo "************************************"
 
-	${scriptdir}/02.func_preproc/09.func_spc.sh ${bold}_sm ${fdir} ${tmp}
+	# ${scriptdir}/02.func_preproc/09.func_spc.sh ${bold}_sm ${fdir} ${tmp}
 
-	# Rename output
-	echo "immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed"
-	immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
+	# # Rename output
+	# echo "immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed"
+	# immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed
 
 done
 

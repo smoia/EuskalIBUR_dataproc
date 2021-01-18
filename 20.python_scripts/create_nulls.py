@@ -15,7 +15,7 @@ from brainsmash.mapgen.sampled import Sampled
 
 
 LAST_SES = 10  # 10
-ATLAS_LIST = ['Mutsaerts2015-hem', 'Yeo2011-7', 'Subcortical']  # 'Mutsaerts2015-sub', 'Mutsaerts2015', 'Schaefer2018-100',
+ATLAS_LIST = ['Mutsaerts2015-hem', 'Schaefer2018-100', 'Yeo2011-7', 'Subcortical']  # 'Mutsaerts2015-sub', 'Mutsaerts2015', 'Schaefer2018-100',
 
 SET_DPI = 100
 FIGSIZE = (18, 10)

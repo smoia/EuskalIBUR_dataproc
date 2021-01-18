@@ -13,6 +13,12 @@ func_in=$1
 fdir=$2
 # echo times
 TEs="$3"
+
+tmp=${4:-.}
+
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 ######### Script starts here #########
 ######################################
@@ -30,35 +36,37 @@ func_optcom=${func_in%_echo-*}_optcom${esffx}
 ## 01. MEICA
 # 01.1. concat in space
 
-if [[ ! -e ${func}.nii.gz ]];
+if [[ ! -e ${tmp}/${func}.nii.gz ]];
 then
 	echo "Merging ${func} for MEICA"
-	fslmerge -z ${func} $( ls ${eprfx}* | grep ${esffx}.nii.gz )
+	fslmerge -z ${tmp}/${func} $( ls ${tmp}/${eprfx}* | grep ${esffx}.nii.gz )
 else
 	echo "Merged ${func} found!"
 fi
 
-if [[ ! -e ${func_optcom} ]]
+if [[ ! -e ${tmp}/${func_optcom} ]]
 then
 	echo "Running t2smap"
-	t2smap -d ${func}.nii.gz -e ${TEs}
+	t2smap -d ${tmp}/${func}.nii.gz -e ${TEs}
 
 	echo "Housekeeping"
-	fslmaths TED.${func}/ts_OC.nii.gz ${func_optcom} -odt float
+	fslmaths TED.${func}/ts_OC.nii.gz ${tmp}/${func_optcom} -odt float
+	# Remove TED folder
+	rm -rf TED.${func}
 fi
 
 # 01.3. Compute outlier fraction if there's more than one TR
-nTR=$(fslval ${func_optcom} dim4)
+nTR=$(fslval ${tmp}/${func_optcom} dim4)
 
 if [[ "${nTR}" -gt "1" ]]
 then
 	echo "Computing outlier fraction in ${func_optcom}"
-	fslmaths ${func_optcom} -Tmean ${func_optcom}_avg
-	bet ${func_optcom}_avg ${func_optcom}_brain -R -f 0.5 -g 0 -n -m
-	3dToutcount -mask ${func_optcom}_brain_mask.nii.gz -fraction -polort 5 -legendre ${func_optcom}.nii.gz > ${func_optcom%_bet}_outcount.1D
-	imrm ${func_optcom}_avg ${func_optcom}_brain ${func_optcom}_brain_mask
+	fslmaths ${tmp}/${func_optcom} -Tmean ${tmp}/${func_optcom}_avg
+	bet ${tmp}/${func_optcom}_avg ${tmp}/${func_optcom}_brain -R -f 0.5 -g 0 -n -m
+	3dToutcount -mask ${tmp}/${func_optcom}_brain_mask.nii.gz -fraction -polort 5 -legendre ${tmp}/${func_optcom}.nii.gz > ${func_optcom%_bet}_outcount.1D
+	imrm ${tmp}/${func_optcom}_avg ${tmp}/${func_optcom}_brain ${tmp}/${func_optcom}_brain_mask
 fi
 
-rm -rf *.${func}
+rm -rf ${tmp}/*.${func}
 
 cd ${cwd}

@@ -132,7 +132,7 @@ def _get_parser():
                         action='store_true',
                         help='Import surrogates computed externally.',
                         default=False)
-    parser.add_argument('-pa', '--computestats',
+    parser.add_argument('-cs', '--computestats',
                         dest='computestats',
                         action='store_true',
                         help='Compute averages & relvars.',

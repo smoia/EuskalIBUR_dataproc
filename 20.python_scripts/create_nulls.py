@@ -553,7 +553,6 @@ if __name__ == '__main__':
 
     elif args.importsurr is True:
         atlases = generate_atlas_dictionary(args.wdr, args.scriptdir)
-        dist_fname = compute_distances(args.wdr, atlases, args.overwrite)
         surrogate_maps, data_masked = import_surrogates(data_fname,
                                                         args.n_maps,
                                                         args.surrogate_fname,

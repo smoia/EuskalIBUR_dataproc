@@ -1,0 +1,31 @@
+{
+    "trial_type" :{
+        "Description": "Color and position of the light displayed",
+        "Levels" :{
+            "greenright" : "A green light is displayed on the right side",
+            "greenleft" : "A green light is displayed on the left side",
+            "redright" : "A red light is displayed on the right side",
+            "redleft" : "A red light is displayed on the left side"
+        } 
+    }, 
+    "value" :{
+        "Description": "Light color",
+        "Levels" :{
+            "2" : "Green",
+            "3" : "Red"
+        } 
+    },
+    "response" :{
+        "Description": "??",
+        "Levels" :{
+
+        } 
+    },
+    "response_is_wrong" :{
+        "Description" : "",
+        "Levels" :{
+            "0": "Answer is correct",
+            "1": "Answer is incorrect"
+        } 
+    } 
+}

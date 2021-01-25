@@ -140,7 +140,7 @@ do
 
 	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 5 ${mask} ${tmp}
 	echo "fslmaths ${tmp}/${bold}_sm -mas ${mask} ${fdir}/00.${bold}_native_preprocessed"
-	fslmaths ${tmp}/${bold}_sm -mas ${mask} ${fdir}/00.${bold}_native_preprocessed
+	fslmaths ${tmp}/${bold}_sm -mas ${mask} ${fdir}/00.${bold}_native_preprocessed -odt short
 
 	# echo "************************************"
 	# echo "*** Func SPC ${task} BOLD ${e}"

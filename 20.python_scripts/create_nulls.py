@@ -94,12 +94,24 @@ def _get_parser():
     parser.add_argument('-sn', '--surrogate-name',
                         dest='surrogate_fname',
                         type=str,
-                        help='Surrogates to import, folder+file basename. Default: empty.',
+                        help=('Surrogates to import (either npz or nifti). '
+                              'folder+file basename for -is, file basename for -es. '
+                              'Default: empty.'),
                         default='')
     parser.add_argument('-sen', '--surrogate-export-name',
                         dest='surrogate_export',
                         type=str,
                         help='Name of imported surrogates file export. Default: empty.',
+                        default='')
+    parser.add_argument('-ef', '--exportfolder',
+                        dest='exp_folder',
+                        type=str,
+                        help='Name of folder where to export surrogates. Default: empty.',
+                        default='')
+    parser.add_argument('-ref', '--reference',
+                        dest='reference',
+                        type=str,
+                        help='Name of file to use as reference when exporting surrogates. Default: empty.',
                         default='')
     parser.add_argument('-nj', '--jobnumber',
                         dest='n_jobs',
@@ -127,7 +139,12 @@ def _get_parser():
                         action='store_true',
                         help='Generate surrogates and plots.',
                         default=False)
-    parser.add_argument('-is', '--importsurr',
+    parser.add_argument('-is', '--exportsurr',
+                        dest='exportsurr',
+                        action='store_true',
+                        help='Export surrogates computed previously.',
+                        default=False)
+    parser.add_argument('-es', '--importsurr',
                         dest='importsurr',
                         action='store_true',
                         help='Import surrogates computed externally.',
@@ -280,6 +297,24 @@ def generate_surrogates(data_fname, atlases, dist_fname, n_jobs, n_maps, wdr, ov
         surrogate_resamp = load_file(wdr, f'{surrogate_fname}_resamp.npz')
 
     return surrogate_resamp, data_masked
+
+
+def export_surrogates(exp_folder, surrogate_fname, wdr, reference, atlases):
+    print(f'Export surrogates to {exp_folder}')
+    surrogate_maps = load_file(wdr, f'{surrogate_fname}.npz')
+
+    img = nib.load(reference)
+    data = img.get_fdata()
+    data[:] = 0
+
+    for n in range(surrogate_maps.shape[0]):
+        surrogate_exname = os.path.join(wdr, exp_folder, f'{surrogate_fname}_{n:04g}')
+        print(f'Export surrogate {os.path.basename(surrogate_exname)}')
+        out = data.copy()
+        out[atlases['intersect'] > 0] = surrogate_maps[n, :]
+
+        out_img = nib.Nifti1Image(out, img.affine, img.header)
+        out_img.to_filename(f'{surrogate_exname}.nii.gz')
 
 
 def import_surrogates(data_fname, n_maps, surrogate_basename, surrogate_export, wdr):
@@ -550,6 +585,14 @@ if __name__ == '__main__':
                           data_qnt[key],
                           args.wdr,
                           f'{export_name}_{key}')
+
+    elif args.exportsurr is True:
+        atlases = generate_atlas_dictionary(args.wdr, args.scriptdir)
+        export_surrogates(args.exp_folder,
+                          args.surrogate_fname,
+                          args.wdr,
+                          args.reference,
+                          atlases)
 
     elif args.importsurr is True:
         atlases = generate_atlas_dictionary(args.wdr, args.scriptdir)

@@ -139,8 +139,8 @@ do
 	echo "************************************"
 
 	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 5 ${mask} ${tmp}
-	echo "fslmaths ${tmp}/${bold}_sm -mas ${mask} ${fdir}/00.${bold}_native_preprocessed"
-	fslmaths ${tmp}/${bold}_sm -mas ${mask} ${fdir}/00.${bold}_native_preprocessed -odt short
+	echo "3dcalc -a ${tmp}/${bold}_sm.nii.gz -b ${mask}.nii.gz -expr 'a*b' -prefix ${fdir}/00.${bold}_native_preprocessed.nii.gz -short -gscale"
+	3dcalc -a ${tmp}/${bold}_sm.nii.gz -b ${mask}.nii.gz -expr 'a*b' -prefix ${fdir}/00.${bold}_native_preprocessed.nii.gz -short -gscale
 
 	# echo "************************************"
 	# echo "*** Func SPC ${task} BOLD ${e}"

@@ -20,44 +20,54 @@ then
 	mkdir ../LogFiles
 fi
 
-qsub -q long.q -N "prep_001_EuskalIBUR" \
-	 -o ${wdr}/../LogFiles/001_01_preproc_pipe \
-	 -e ${wdr}/../LogFiles/001_01_preproc_pipe \
-	 ${wdr}/98.hcp/run_full_preproc_pipeline.sh 001 01
+# # Run full preproc
+# joblist=""
 
-# Run full preproc
-joblist=""
+# for ses in $(seq -f %02g 1 10)
+# do
+# 	rm ${wdr}/../LogFiles/001_${ses}_preproc_pipe
+# 	qsub -q long.q -N "s_001_${ses}_EuskalIBUR" \
+# 	-o ${wdr}/../LogFiles/001_${ses}_preproc_pipe \
+# 	-e ${wdr}/../LogFiles/001_${ses}_preproc_pipe \
+# 	${wdr}/98.hcp/run_full_preproc_pipeline.sh 001 ${ses}
+# 	joblist=${joblist}s_001_${ses}_EuskalIBUR,
+# done
 
-for ses in $(seq -f %02g 1 10)
-do
-	rm ${wdr}/../LogFiles/001_${ses}_preproc_pipe
-	qsub -q long.q -N "s_001_${ses}_EuskalIBUR" \
-	-o ${wdr}/../LogFiles/001_${ses}_preproc_pipe \
-	-e ${wdr}/../LogFiles/001_${ses}_preproc_pipe \
-	${wdr}/98.hcp/run_full_preproc_pipeline.sh 001 ${ses}
-	joblist=${joblist}s_001_${ses}_EuskalIBUR,
-done
+# joblist=${joblist::-1}
 
-joblist=${joblist::-1}
+# for sub in 002 003 004 007 008 009
+# do
+# 	for ses in $(seq -f %02g 1 10)
+# 	do
+# 		rm ${wdr}/../LogFiles/${sub}_${ses}_preproc_pipe
+# 		qsub -q long.q -N "s_${sub}_${ses}_EuskalIBUR" \
+# 		-o ${wdr}/../LogFiles/${sub}_${ses}_preproc_pipe \
+# 		-e ${wdr}/../LogFiles/${sub}_${ses}_preproc_pipe \
+# 		${wdr}/98.hcp/run_full_preproc_pipeline.sh ${sub} ${ses}
+# 		# -hold_jid "${joblist}" \
+# 	done
+# 	joblist=""
+# 	for ses in $(seq -f %02g 1 10)
+# 	do
+# 		joblist=${joblist}s_${sub}_${ses}_EuskalIBUR,
+# 	done
+# 	joblist=${joblist::-1}
+# done
 
-for sub in 002 003 004 007 008 009
+# Run fALFF
+for sub in 001 002 003 004 007 008 009
 do
 	for ses in $(seq -f %02g 1 10)
 	do
-		rm ${wdr}/../LogFiles/${sub}_${ses}_preproc_pipe
-		qsub -q long.q -N "s_${sub}_${ses}_EuskalIBUR" \
-		-o ${wdr}/../LogFiles/${sub}_${ses}_preproc_pipe \
-		-e ${wdr}/../LogFiles/${sub}_${ses}_preproc_pipe \
-		${wdr}/98.hcp/run_full_preproc_pipeline.sh ${sub} ${ses}
+		rm ${wdr}/../LogFiles/${sub}_${ses}_falff_pipe
+		qsub -q short.q -N "falff_${sub}_${ses}_EuskalIBUR" \
+		-o ${wdr}/../LogFiles/${sub}_${ses}_falff_pipe \
+		-e ${wdr}/../LogFiles/${sub}_${ses}_falff_pipe \
+		${wdr}/98.hcp/run_falff.sh ${sub} ${ses}
 		# -hold_jid "${joblist}" \
 	done
-	joblist=""
-	for ses in $(seq -f %02g 1 10)
-	do
-		joblist=${joblist}s_${sub}_${ses}_EuskalIBUR,
-	done
-	joblist=${joblist::-1}
 done
+
 
 # joblist=""
 

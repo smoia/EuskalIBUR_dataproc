@@ -31,8 +31,6 @@ if_missing_do mask ./reg/MNI_T1_brain.nii.gz -bin ./reg/MNI_T1_brain_mask.nii.gz
 if [ -d "ICC" ]; then rm -rf ICC; fi
 mkdir ICC
 
-cd normalised
-
 for n in $(seq -f %04g 0 1000)
 do
     for map in cvr lag
@@ -41,9 +39,9 @@ do
 
         if [ ${n} -eq "1000" ]
         then
-            run3dICC="3dICC -prefix ../ICC/${map}_orig.nii.gz -jobs 10                  "
+            run3dICC="3dICC -prefix ICC/${map}_orig.nii.gz -jobs 10                  "
         else
-            run3dICC="3dICC -prefix ../ICC/${map}_${n}.nii.gz -jobs 10             "
+            run3dICC="3dICC -prefix ICC/${map}_${n}.nii.gz -jobs 10             "
         fi
 
         run3dICC="${run3dICC} -mask ../reg/MNI_T1_brain_mask.nii.gz                        "
@@ -57,9 +55,9 @@ do
             do
                 if [ ${n} -eq "1000" ]
                 then
-                    run3dICC="${run3dICC}       ${sub}  ${ses}   surrogates_std_optcom_${map}_masked_${sub}_${ses}_resamp.nii.gz "
+                    run3dICC="${run3dICC}       ${sub}  ${ses}   normalised/${map}_${sub}_${ses}.nii.gz "
                 else
-                    run3dICC="${run3dICC}       ${sub}  ${ses}   surr/surrogates_std_optcom_${map}_masked_${sub}_${ses}_resamp_${n}.nii.gz "
+                    run3dICC="${run3dICC}       ${sub}  ${ses}   surr/surr_${map}_${sub}_${ses}_${n}.nii.gz "
                 fi
             done
         done

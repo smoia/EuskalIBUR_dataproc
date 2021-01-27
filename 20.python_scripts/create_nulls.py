@@ -139,12 +139,12 @@ def _get_parser():
                         action='store_true',
                         help='Generate surrogates and plots.',
                         default=False)
-    parser.add_argument('-is', '--exportsurr',
+    parser.add_argument('-es', '--exportsurr',
                         dest='exportsurr',
                         action='store_true',
                         help='Export surrogates computed previously.',
                         default=False)
-    parser.add_argument('-es', '--importsurr',
+    parser.add_argument('-is', '--importsurr',
                         dest='importsurr',
                         action='store_true',
                         help='Import surrogates computed externally.',
@@ -303,12 +303,14 @@ def export_surrogates(exp_folder, surrogate_fname, wdr, reference, atlases):
     print(f'Export surrogates to {exp_folder}')
     surrogate_maps = load_file(wdr, f'{surrogate_fname}.npz')
 
+    os.makedirs(os.path.join(wdr, ATLAS_FOLDER, exp_folder), exist_ok=True)
+
     img = nib.load(reference)
     data = img.get_fdata()
     data[:] = 0
 
     for n in range(surrogate_maps.shape[0]):
-        surrogate_exname = os.path.join(wdr, exp_folder, f'{surrogate_fname}_{n:04g}')
+        surrogate_exname = os.path.join(wdr, ATLAS_FOLDER, exp_folder, f'{os.path.basename(surrogate_fname)}_{n:04g}')
         print(f'Export surrogate {os.path.basename(surrogate_exname)}')
         out = data.copy()
         out[atlases['intersect'] > 0] = surrogate_maps[n, :]

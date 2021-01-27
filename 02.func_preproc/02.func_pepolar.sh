@@ -15,7 +15,11 @@ fdir=$2
 pepl=${3:-none}
 brev=${4:-none}
 bfor=${5:-none}
+tmp=${6:-.}
 
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 ######### Script starts here #########
 ######################################
@@ -44,7 +48,7 @@ fi
 
 # 03.2. Applying the warping to the functional volume
 echo "Applying PEPOLAR map on ${func}"
-applytopup --imain=${func_in} --datain=/scripts/acqparam.txt --inindex=1 \
---topup=${pepl}/outtp --out=${func}_tpp --verbose --method=jac
+applytopup --imain=${tmp}/${func_in} --datain=/scripts/acqparam.txt --inindex=1 \
+--topup=${pepl}/outtp --out=${tmp}/${func}_tpp --verbose --method=jac
 
 cd ${cwd}

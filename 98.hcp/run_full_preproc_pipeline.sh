@@ -15,7 +15,8 @@ wdir=/bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc
 
 cd ${wdir}
 
-singularity exec -e --no-home -B /bcbl/home/public/PJMASK_2/preproc:/data \
+singularity exec -e --no-home \
+			-B /bcbl/home/public/PJMASK_2/preproc:/data \
 			-B /bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc:/scripts \
-			-B /export/home/smoia/scratch:/tmp euskalibur.sif \
-			03.data_preproc/07.tmp_atlas2func.sh $1 $2
+			-B /export/home/smoia/scratch:/tmp \
+			euskalibur.sif 00.pipelines/00.full_preproc.sh $1 $2

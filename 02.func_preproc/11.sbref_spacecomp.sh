@@ -15,6 +15,9 @@ anat=${2:-none}
 fdir=$3
 adir=$4
 
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
 ######################################
 ######### Script starts here #########
 ######################################

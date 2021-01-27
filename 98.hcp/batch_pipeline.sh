@@ -63,12 +63,6 @@ fi
 # 	qsub -q veryshort.q -N "cvr_${parc}_EuskalIBUR" -o ${wdr}/../LogFiles/cvr_${parc}_pipe -e ${wdr}/../LogFiles/cvr_${parc}_pipe ${wdr}/98.hcp/run_cvrparc_pipeline.sh ${parc}
 # done
 
-# for r in $(seq 2 2 120)
-# do
-# 	parc=rand-${r}
-# 	rm ${wdr}/../LogFiles/cvr_${parc}_pipe
-# 	qsub -q veryshort.q -N "cvr_${parc}_EuskalIBUR" -o ${wdr}/../LogFiles/cvr_${parc}_pipe -e ${wdr}/../LogFiles/cvr_${parc}_pipe ${wdr}/98.hcp/run_cvrparc_pipeline.sh ${parc}
-# done
 
 # for sub in 001 002 003 004 005 006 007 008 009 010
 # do

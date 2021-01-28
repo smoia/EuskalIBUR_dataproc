@@ -27,9 +27,9 @@ print(f'subject: {sub:03g}; session:{ses:02g}; task:{TASKS[task]}')
 filename = os.path.join(f'sub-{sub:03g}', f'ses-{ses:02g}', 'func_phys', f'sub-{sub:03g}_ses-{ses:02g}_task-{TASKS[task]}_physio')
 
 if ses >= 7:
-    ch = 2  # 4 is PPG; 2 is Belt
+    ch = 4  # 4 is PPG; 2 is Belt
 else:
-    ch = 1  # 3 is PPG; 1 is Belt
+    ch = 3  # 3 is PPG; 1 is Belt
 
 dist = 0
 
@@ -89,7 +89,6 @@ sub = 5  # up to 10
 ses = 1  # up to 10 or 11 (sub-004 & sub-010)
 task = 0  # 0: 'motor', 1: 'simon', 2: 'pinel', 3: 'rest_run-01',
           # 4: 'rest_run-02', 5: 'rest_run-03', 6: 'rest_run-04'
-hrf = bio.create_hrf(40)
 
 # Copy from here...
 print(f'subject: {sub:03g}; session:{ses:02g}; task:{TASKS[task]}')

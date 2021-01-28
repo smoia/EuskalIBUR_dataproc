@@ -60,7 +60,7 @@ do
 	for ses in $(seq -f %02g 1 10)
 	do
 		rm ${wdr}/../LogFiles/${sub}_${ses}_falff_pipe
-		qsub -q short.q -N "falff_${sub}_${ses}_EuskalIBUR" \
+		qsub -q long.q -N "falff_${sub}_${ses}_EuskalIBUR" \
 		-o ${wdr}/../LogFiles/${sub}_${ses}_falff_pipe \
 		-e ${wdr}/../LogFiles/${sub}_${ses}_falff_pipe \
 		${wdr}/98.hcp/run_falff.sh ${sub} ${ses}

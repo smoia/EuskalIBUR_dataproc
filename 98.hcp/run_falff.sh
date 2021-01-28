@@ -34,7 +34,17 @@ exec 1>${wdir}/log/${logname} 2>&1
 date
 echo "************************************"
 
-singularity exec -e --no-home \
--B ${wdir}:/data -B ${scriptdir}:/scripts \
--B /export/home/smoia/scratch:/tmp \
-euskalibur.sif 04.first_level_analysis/07.compute_rsfc.sh ${sub} ${ses} /data /tmp
+# # Run fALFF
+# singularity exec -e --no-home \
+# -B ${wdir}:/data -B ${scriptdir}:/scripts \
+# -B /export/home/smoia/scratch:/tmp \
+# euskalibur.sif 04.first_level_analysis/07.compute_rsfc.sh ${sub} ${ses} /data /tmp
+
+# Run GLMs
+for task in motor simon pinel
+do
+	singularity exec -e --no-home \
+	-B ${wdir}:/data -B ${scriptdir}:/scripts \
+	-B /export/home/smoia/scratch:/tmp \
+	euskalibur.sif 04.first_level_analysis/08.run_task_glm.sh ${sub} ${ses} ${task} /data /tmp
+done

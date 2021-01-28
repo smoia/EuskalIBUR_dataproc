@@ -30,9 +30,11 @@ if [ -d ${tmp}/tmp.${flpr}_07cr ]; then	rm -rf ${tmp}/tmp.${flpr}_07cr; fi
 
 cd ${wdr} || exit
 
-if [[ ! -d "Mennes_replication" ]]
+if [[ ! -d "Mennes_replication" ]]; then mkdir Mennes_replication; fi
+
+if [[ ! -d "Mennes_replication/fALFF" ]]
 then
-	mkdir Mennes_replication Mennes_replication/fALFF Mennes_replication/RSFA
+	mkdir Mennes_replication/fALFF Mennes_replication/RSFA
 fi
 
 cd Mennes_replication

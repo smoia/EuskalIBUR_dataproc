@@ -18,9 +18,11 @@ cwd=$(pwd)
 
 cd ${wdr} || exit
 
-if [[ ! -d "Mennes_replication" ]]
+if [[ ! -d "Mennes_replication" ]]; then mkdir Mennes_replication; fi
+
+if [[ ! -d "Mennes_replication/GLM" ]]
 then
-	mkdir Mennes_replication Mennes_replication/GLM Mennes_replication/GLM/${task} Mennes_replication/GLM/${task}/output
+	mkdir Mennes_replication/GLM Mennes_replication/GLM/${task} Mennes_replication/GLM/${task}/output
 fi
 
 cd Mennes_replication/GLM

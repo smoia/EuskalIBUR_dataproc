@@ -1,14 +1,10 @@
-#!/bin/bash
-#$ -S /bin/bash
-#$ -cwd
-#$ -q short.q
-
+#!/usr/bin/env bash
 
 sub=$1
 ses=$2
 task=${3}
-wdr=${3:/data}
-tmp=${4:.}
+wdr=${4:/data}
+tmp=${5:.}
 
 ### print input
 printline=$( basename -- $0 )

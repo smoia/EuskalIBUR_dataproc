@@ -46,5 +46,5 @@ do
 	singularity exec -e --no-home \
 	-B ${wdir}:/data -B ${scriptdir}:/scripts \
 	-B /export/home/smoia/scratch:/tmp \
-	euskalibur.sif 04.first_level_analysis/08.run_task_glm.sh ${sub} ${ses} ${task} /data /tmp
+	euskalibur.sif 04.first_level_analysis/08.run_task_glm.sh ${sub} ${ses} ${task}
 done

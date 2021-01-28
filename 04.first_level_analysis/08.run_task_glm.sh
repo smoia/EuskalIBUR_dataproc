@@ -84,8 +84,8 @@ case ${task} in
 	* ) echo "    !!! Warning !!! Invalid task: ${task}"; exit ;;
 esac
 
-run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_demean.par"
-run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par"
+run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_demean.par motderiv"
+run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par motdemean"
 run3dDeconvolve="${run3dDeconvolve} -bucket ${cbuck}.nii.gz"
 run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}.1D"
 run3dDeconvolve="${run3dDeconvolve} -x1D_stop"

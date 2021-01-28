@@ -26,11 +26,11 @@ fi
 cd Mennes_replication/GLM
 
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
-flpr=sub-${sub}_ses-${ses}
+flpr=sub-${sub}_ses-${ses}_task-${task}
 mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
-func=${fdir}/00.${flpr}_task-${task}_optcom_bold_native_preprocessed
+func=${fdir}/00.${flpr}_optcom_bold_native_preprocessed
 fout=${wdr}/Mennes_replication/GLM/${task}/output
-ospr=${fdir}/onsets/${sub}_${ses}_task-${task}
+ospr=${fdir}/onsets/${flpr}
 
 # Create Names for output files
 # =============================
@@ -82,8 +82,8 @@ case ${task} in
 	* ) echo "    !!! Warning !!! Invalid task: ${task}"; exit ;;
 esac
 
-run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_task-${task}_echo-1_bold_mcf_demean.par "
-run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_task-${task}_echo-1_bold_mcf_deriv1.par "
+run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_demean.par "
+run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par "
 run3dDeconvolve="${run3dDeconvolve} -bucket ${cbuck}.nii.gz "
 run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}.1D "
 run3dDeconvolve="${run3dDeconvolve} -x1D_stop"
@@ -143,8 +143,8 @@ ${run3dDeconvolve}
 # 	* ) echo "    !!! Warning !!! Invalid task: ${task}"; exit ;;
 # esac
 
-# run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_task-${task}_echo-1_bold_mcf_demean.par "
-# run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_task-${task}_echo-1_bold_mcf_deriv1.par "
+# run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_demean.par "
+# run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par "
 # run3dDeconvolve="${run3dDeconvolve} -bucket ${cbuck}-IM.nii.gz "
 # run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}-IM.1D "
 # run3dDeconvolve="${run3dDeconvolve} -x1D_stop"

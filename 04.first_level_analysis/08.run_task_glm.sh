@@ -28,7 +28,7 @@ cd Mennes_replication/GLM
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 flpr=sub-${sub}_ses-${ses}
 mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
-func=${fdir}/${flpr}_task-${task}_optcom_bold_native_preprocessed.nii.gz
+func=${fdir}/00.${flpr}_task-${task}_optcom_bold_native_preprocessed
 fout=${wdr}/Mennes_replication/GLM/${task}/output
 ospr=${fdir}/onsets/${sub}_${ses}_task-${task}
 

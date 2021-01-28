@@ -3,8 +3,8 @@
 sub=$1
 ses=$2
 task=${3}
-wdr=${4:/data}
-tmp=${5:.}
+wdr=${4:-/data}
+tmp=${5:-.}
 
 ### print input
 printline=$( basename -- $0 )

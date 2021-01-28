@@ -20,7 +20,9 @@ cd ${wdr} || exit
 
 if [[ ! -d "Mennes_replication" ]]; then mkdir Mennes_replication; fi
 
-if [[ ! -d "Mennes_replication/GLM" ]]
+if [[ ! -d "Mennes_replication/GLM" ]]; then mkdir Mennes_replication/GLM; fi
+
+if [[ ! -d "Mennes_replication/GLM/${task}" ]]
 then
 	mkdir Mennes_replication/GLM Mennes_replication/GLM/${task} Mennes_replication/GLM/${task}/output
 fi

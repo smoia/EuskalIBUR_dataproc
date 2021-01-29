@@ -12,17 +12,6 @@ function generate_surrogates(infile,mask,Nsurr,outfolder,prefix)
 %    - prefix: the prefix to give to the surrogate
 %        - Def: same as file basename
 
-% Setting defaults for the varoptin
-optvar = {'help', 'help', 1000, '', ''};
-
-% Reading optional arguments
-if nargin >= 1
-    optvar(1:nargin) = varargin{1:nargin};
-end
-
-% Finally starting with variables
-[infile,mask,Nsurr,outfolder,prefix] = optvar{:};
-
 if nargin < 2
 	disp('Missing required infile and mask!')
 	disp()

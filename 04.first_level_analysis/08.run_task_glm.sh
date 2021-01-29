@@ -61,14 +61,14 @@ case ${task} in
 	;;
 	simon )
 		run3dDeconvolve="${run3dDeconvolve} -num_stimts 8"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 1 congruent -stim_times 1 ${ospr}_left_congruent_correct_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 2 incongruent -stim_times 2 ${ospr}_right_congruent_correct_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 3 left -stim_times 3 ${ospr}_left_incongruent_correct_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 4 right -stim_times 4 ${ospr}_right_incongruent_correct_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 wrong_lc -stim_times 5 ${ospr}_left_congruent_wrong_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 wrong_rc -stim_times 6 ${ospr}_right_congruent_wrong_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 wrong_li -stim_times 7 ${ospr}_left_incongruent_wrong_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 wrong_ri -stim_times 8 ${ospr}_right_incongruent_wrong_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 1 congruent -stim_times_AM1 1 ${ospr}_left_congruent_correct_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 2 incongruent -stim_times_AM1 2 ${ospr}_right_congruent_correct_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 3 left -stim_times_AM1 3 ${ospr}_left_incongruent_correct_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 4 right -stim_times_AM1 4 ${ospr}_right_incongruent_correct_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 wrong_lc -stim_times_AM1 5 ${ospr}_left_congruent_wrong_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 wrong_rc -stim_times_AM1 6 ${ospr}_right_congruent_wrong_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 wrong_li -stim_times_AM1 7 ${ospr}_left_incongruent_wrong_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 wrong_ri -stim_times_AM1 8 ${ospr}_right_incongruent_wrong_onset.1D dmUBLOCK"
 	;;
 	pinel )
 		run3dDeconvolve="${run3dDeconvolve} -num_stimts 10"

@@ -3,68 +3,69 @@
 if_missing_do() {
 if [ ! -e $3 ]
 then
-      printf "%s is missing, " "$3"
-      case $1 in
-            copy ) echo "copying $2"; cp $2 $3 ;;
-            mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
-            * ) "and you shouldn't see this"; exit ;;
-      esac
+	printf "%s is missing, " "$3"
+	case $1 in
+		copy ) echo "copying $2"; cp $2 $3 ;;
+		mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
+		* ) "and you shouldn't see this"; exit ;;
+	esac
 fi
 }
 
-lastses=${1:-10}
-wdr=${2:-/data}
-tmp=${3:-/tmp}
+map=$1
+lastses=${2:-10}
+wdr=${3:-/data}
+sdr=${4:-/scripts}
 
-### Main ###
-cwd=$( pwd )
-cd ${wdr} || exit
+### print input
+printline=$( basename -- $0 )
+echo "${printline} " "$@"
+######################################
+######### Script starts here #########
+######################################
 
-cd CVR_reliability
+cwd=$(pwd)
+
+cd ${wdr}/Surr_reliability || exit
 
 # Copy files for transformation & create mask
-if_missing_do copy /scripts/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz
-if_missing_do mask ./reg/MNI_T1_brain.nii.gz -bin ./reg/MNI_T1_brain_mask.nii.gz
+if_missing_do mask ${sdr}/90.template/MNI152_T1_1mm_GM_resamp_2.5mm_mcorr.nii.gz ./MNI_GM.nii.gz
 
-# Crete folder ICC
+# Create folder ICC
 
-if [ -d "ICC" ]; then rm -rf ICC; fi
-mkdir ICC
+if [ ! -d "ICC" ]; then mkdir ICC ICC/lag ICC/cvr; fi
 
-for n in $(seq -f %04g 0 1000)
+for n in $(seq -f %03g 0 1000)
 do
-    for map in cvr lag
-    do
-        rm ../ICC2_${map}_optcom.nii.gz
+	if [ ${n} -eq "1000" ]
+	then
+		rm ICC/${map}/1000_orig.nii.gz
+		run3dICC="3dICC -prefix ICC/${map}/orig.nii.gz -jobs 10 "
+	else
+		rm ICC/${map}/${n}.nii.gz
+		run3dICC="3dICC -prefix ICC/${map}/${n}.nii.gz -jobs 10 "
+	fi
 
-        if [ ${n} -eq "1000" ]
-        then
-            run3dICC="3dICC -prefix ICC/${map}_orig.nii.gz -jobs 10                  "
-        else
-            run3dICC="3dICC -prefix ICC/${map}_${n}.nii.gz -jobs 10             "
-        fi
+	run3dICC="${run3dICC} -mask ./MNI_GM.nii.gz "
+	run3dICC="${run3dICC} -model '1+(1|session)+(1|Subj)' "
+	run3dICC="${run3dICC} -dataTable "
+	run3dICC="${run3dICC}    Subj  session   InputFile "
 
-        run3dICC="${run3dICC} -mask ../reg/MNI_T1_brain_mask.nii.gz                        "
-        run3dICC="${run3dICC} -model  '1+(1|session)+(1|Subj)'                             "
-        run3dICC="${run3dICC} -dataTable                                                   "
-        run3dICC="${run3dICC}       Subj session                           InputFile       "
+	for sub in 001 002 003 004 007 008 009
+	do
+		for ses in $(seq -f %02g 1 ${lastses})
+		do
+			vol=std_${sub}_${ses}_${map}
+			if [ ${n} -eq "1000" ]
+			then
+				run3dICC="${run3dICC}    ${sub}  ${ses}  norm/${vol}.nii.gz "
+			else
+				run3dICC="${run3dICC}    ${sub}  ${ses}  surr/${vol}/${vol}_Surr_${n}.nii.gz "
+			fi
+		done
+	done
 
-        for sub in 001 002 003 004 007 008 009
-        do
-            for ses in $(seq -f %02g 1 ${lastses})
-            do
-                if [ ${n} -eq "1000" ]
-                then
-                    run3dICC="${run3dICC}       ${sub}  ${ses}   normalised/${map}_${sub}_${ses}.nii.gz "
-                else
-                    run3dICC="${run3dICC}       ${sub}  ${ses}   surr/surr_${map}_${sub}_${ses}_${n}.nii.gz "
-                fi
-            done
-        done
-
-        ${run3dICC}
-
-    done
+	${run3dICC}
 done
 
 echo "End of script!"

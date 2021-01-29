@@ -19,7 +19,6 @@ else
   LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MCRROOT}/sys/os/glnxa64;
   LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MCRROOT}/sys/opengl/lib/glnxa64;
   export LD_LIBRARY_PATH;
-  export MCR_CACHE_ROOT=/tmp;
   echo LD_LIBRARY_PATH is ${LD_LIBRARY_PATH};
   shift 1
   args=

@@ -12,9 +12,7 @@ function generate_surrogates(infile,mask,Nsurr,outfolder,prefix)
 %    - prefix: the prefix to give to the surrogate
 %        - Def: same as file basename
 
-if nargin < 2
-	disp('Missing required infile and mask!')
-	disp()
+if infile == 'help'
 	disp('This script generates surrogate volumes for a certain input. Enjoy a good sleep!')
 	disp('')
 	disp('Required arg:')
@@ -30,7 +28,9 @@ if nargin < 2
 	return
 end
 
-if infile == 'help'
+if nargin < 2
+	disp('Missing required infile and mask!')
+	disp('')
 	disp('This script generates surrogate volumes for a certain input. Enjoy a good sleep!')
 	disp('')
 	disp('Required arg:')

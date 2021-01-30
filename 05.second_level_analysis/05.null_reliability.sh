@@ -40,7 +40,7 @@ do
 	if [ ${n} -eq "1000" ]
 	then
 		rm ICC/${map}/1000_orig.nii.gz
-		run3dICC="3dICC -prefix ICC/${map}/orig.nii.gz -jobs 10 "
+		run3dICC="3dICC -prefix ICC/${map}/1000_orig.nii.gz -jobs 10 "
 	else
 		rm ICC/${map}/${n}.nii.gz
 		run3dICC="3dICC -prefix ICC/${map}/${n}.nii.gz -jobs 10 "
@@ -67,6 +67,9 @@ do
 
 	${run3dICC}
 done
+
+echo "Merge all ICCs together"
+fslmerge -t ICC/ICC_${map}.nii.gz ICC/${map}/* 
 
 echo "End of script!"
 

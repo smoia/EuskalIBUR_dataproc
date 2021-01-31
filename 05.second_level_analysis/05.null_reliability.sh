@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
 if_missing_do() {
-if [ ! -e $3 ]
+if [ $1 == 'mkdir' ]
+then
+	if [ ! -d $2 ]
+	then
+		mkdir "${@:2}"
+	fi
+elif [ ! -e $3 ]
 then
 	printf "%s is missing, " "$3"
 	case $1 in
@@ -33,7 +39,7 @@ if_missing_do mask ${sdr}/90.template/MNI152_T1_1mm_GM_resamp_2.5mm_mcorr.nii.gz
 
 # Create folder ICC
 
-if [ ! -d "ICC" ]; then mkdir ICC ICC/lag ICC/cvr; fi
+if_missing_do mkdir ICC ICC/lag ICC/cvr
 
 for n in $(seq -f %03g 0 1000)
 do

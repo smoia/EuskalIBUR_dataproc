@@ -100,4 +100,6 @@ do
 	done
 done
 
+rm -rf ${tmp}/${task}
+
 cd ${cwd}

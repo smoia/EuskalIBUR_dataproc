@@ -92,7 +92,7 @@ do
 	-hold_jid "${joblist}" \
 	-o ${wdr}/../LogFiles/${map}_surr_pipe \
 	-e ${wdr}/../LogFiles/${map}_surr_pipe \
-	${wdr}/98.hcp/run_surrogates.sh ${map}
+	${wdr}/98.hcp/run_surrogate_icc.sh ${map}
 done
 
 

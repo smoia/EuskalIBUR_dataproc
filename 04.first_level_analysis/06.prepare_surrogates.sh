@@ -59,7 +59,7 @@ lagmap=${wdr}/CVR/sub-${sub}_ses-${ses}_optcom_map_cvr/sub-${sub}_ses-${ses}_opt
 
 vprfx=std_${sub}_${ses}
 
-for vol in ${cvrmap} ${lagmap}  # ${statmask} ${physmask}
+for vol in ${cvrmap}  # ${lagmap}  # ${statmask} ${physmask}
 do
 	case ${vol#*optcom_cvr} in
 		.nii.gz ) outvol=${vprfx}_cvr ;;
@@ -78,6 +78,9 @@ do
 	echo "Copying norm in tmp for surrogate computation"
 	if_missing_do copy ./norm/${outvol}.nii.gz ${tmp}/${outvol}.nii.gz
 done
+
+echo "Threshold CVR outliers"
+fslmaths ${tmp}/${vprfx}_cvr.nii.gz -uthr 3 ${tmp}/${vprfx}_cvr.nii.gz
 
 # for map in cvr lag
 # do

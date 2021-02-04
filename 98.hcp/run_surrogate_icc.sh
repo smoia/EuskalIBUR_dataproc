@@ -42,7 +42,7 @@ echo "************************************"
 singularity exec -e --no-home \
 -B ${wdr}:/data -B ${sdr}:/scripts \
 -B ${tmp}:/tmp \
-euskalibur.sif 05.second_level_analysis/05.null_surrogates.sh ${map}
+euskalibur.sif 05.second_level_analysis/05.null_reliability.sh ${map} $2 $3
 
 echo ""
 echo ""

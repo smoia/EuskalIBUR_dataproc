@@ -68,32 +68,32 @@ fi
 # done
 
 
-joblist=""
-# Run surrogates
-for sub in 001 002 003 004 007 008 009
-do
-	for ses in $(seq -f %02g 1 10)
-	do
-		rm ${wdr}/../LogFiles/${sub}_${ses}_surr_pipe
-		qsub -q long.q -N "surr_${sub}_${ses}_EuskalIBUR" \
-		-o ${wdr}/../LogFiles/${sub}_${ses}_surr_pipe \
-		-e ${wdr}/../LogFiles/${sub}_${ses}_surr_pipe \
-		${wdr}/98.hcp/run_surrogates.sh ${sub} ${ses}
-		joblist=${joblist}surr_${sub}_${ses}_EuskalIBUR,
-	done
-done
+# joblist=""
+# # Run surrogates
+# for sub in 001 002 003 004 007 008 009
+# do
+# 	for ses in $(seq -f %02g 1 10)
+# 	do
+# 		rm ${wdr}/../LogFiles/${sub}_${ses}_surr_pipe
+# 		qsub -q long.q -N "surr_${sub}_${ses}_EuskalIBUR" \
+# 		-o ${wdr}/../LogFiles/${sub}_${ses}_surr_pipe \
+# 		-e ${wdr}/../LogFiles/${sub}_${ses}_surr_pipe \
+# 		${wdr}/98.hcp/run_surrogates.sh ${sub} ${ses}
+# 		joblist=${joblist}surr_${sub}_${ses}_EuskalIBUR,
+# 	done
+# done
 
-joblist=${joblist::-1}
+# joblist=${joblist::-1}
 
 for map in cvr lag
 do
 	rm ${wdr}/../LogFiles/${map}_surr_pipe
 	qsub -q long.q -N "surr_${map}_EuskalIBUR" \
-	-hold_jid "${joblist}" \
 	-o ${wdr}/../LogFiles/${map}_surr_pipe \
 	-e ${wdr}/../LogFiles/${map}_surr_pipe \
 	${wdr}/98.hcp/run_surrogate_icc.sh ${map}
 done
+	# -hold_jid "${joblist}" \
 
 
 

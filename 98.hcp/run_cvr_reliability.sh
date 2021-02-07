@@ -15,4 +15,8 @@ wdir=/bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc
 
 cd ${wdir}
 
-singularity exec -e --no-home -B /bcbl/home/public/PJMASK_2/preproc:/data -B /bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc:/scripts -B /export/home/smoia/scratch:/tmp euskalibur.sif 05.second_level_analysis/09.cvr_reliability.sh $1
+singularity exec -e --no-home \
+			-B /bcbl/home/public/PJMASK_2/preproc:/data \
+			-B /bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc:/scripts \
+			-B /export/home/smoia/scratch:/tmp euskalibur.sif \
+			05.second_level_analysis/09.cvr_reliability.sh $1

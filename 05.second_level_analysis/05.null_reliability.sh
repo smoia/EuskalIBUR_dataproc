@@ -43,7 +43,7 @@ if_missing_do mkdir ICC ICC/lag ICC/cvr
 # Run ICC once for original data
 rm ICC/${map}/1000_orig.nii.gz
 
-3dICC -prefix ICC/${map}/1000_orig.nii.gz -jobs 10  \
+3dICC -prefix ICC/${map}_orig.nii.gz -jobs 10       \
 -mask ./MNI_GM.nii.gz                               \
 -model '1+(1|session)+(1|Subj)'                     \
 -dataTable                                          \
@@ -88,26 +88,36 @@ rm ICC/${map}/1000_orig.nii.gz
     004  08  norm/std_004_08_${map}.nii.gz          \
     004  09  norm/std_004_09_${map}.nii.gz          \
     004  10  norm/std_004_10_${map}.nii.gz          \
-    005  01  norm/std_005_01_${map}.nii.gz          \
-    005  02  norm/std_005_02_${map}.nii.gz          \
-    005  03  norm/std_005_03_${map}.nii.gz          \
-    005  04  norm/std_005_04_${map}.nii.gz          \
-    005  05  norm/std_005_05_${map}.nii.gz          \
-    005  06  norm/std_005_06_${map}.nii.gz          \
-    005  07  norm/std_005_07_${map}.nii.gz          \
-    005  08  norm/std_005_08_${map}.nii.gz          \
-    005  09  norm/std_005_09_${map}.nii.gz          \
-    005  10  norm/std_005_10_${map}.nii.gz          \
-    006  01  norm/std_006_01_${map}.nii.gz          \
-    006  02  norm/std_006_02_${map}.nii.gz          \
-    006  03  norm/std_006_03_${map}.nii.gz          \
-    006  04  norm/std_006_04_${map}.nii.gz          \
-    006  05  norm/std_006_05_${map}.nii.gz          \
-    006  06  norm/std_006_06_${map}.nii.gz          \
-    006  07  norm/std_006_07_${map}.nii.gz          \
-    006  08  norm/std_006_08_${map}.nii.gz          \
-    006  09  norm/std_006_09_${map}.nii.gz          \
-    006  10  norm/std_006_10_${map}.nii.gz
+    007  01  norm/std_007_01_${map}.nii.gz          \
+    007  02  norm/std_007_02_${map}.nii.gz          \
+    007  03  norm/std_007_03_${map}.nii.gz          \
+    007  04  norm/std_007_04_${map}.nii.gz          \
+    007  05  norm/std_007_05_${map}.nii.gz          \
+    007  06  norm/std_007_06_${map}.nii.gz          \
+    007  07  norm/std_007_07_${map}.nii.gz          \
+    007  08  norm/std_007_08_${map}.nii.gz          \
+    007  09  norm/std_007_09_${map}.nii.gz          \
+    007  10  norm/std_007_10_${map}.nii.gz          \
+    008  01  norm/std_008_01_${map}.nii.gz          \
+    008  02  norm/std_008_02_${map}.nii.gz          \
+    008  03  norm/std_008_03_${map}.nii.gz          \
+    008  04  norm/std_008_04_${map}.nii.gz          \
+    008  05  norm/std_008_05_${map}.nii.gz          \
+    008  06  norm/std_008_06_${map}.nii.gz          \
+    008  07  norm/std_008_07_${map}.nii.gz          \
+    008  08  norm/std_008_08_${map}.nii.gz          \
+    008  09  norm/std_008_09_${map}.nii.gz          \
+    008  10  norm/std_008_10_${map}.nii.gz          \
+    009  01  norm/std_009_01_${map}.nii.gz          \
+    009  02  norm/std_009_02_${map}.nii.gz          \
+    009  03  norm/std_009_03_${map}.nii.gz          \
+    009  04  norm/std_009_04_${map}.nii.gz          \
+    009  05  norm/std_009_05_${map}.nii.gz          \
+    009  06  norm/std_009_06_${map}.nii.gz          \
+    009  07  norm/std_009_07_${map}.nii.gz          \
+    009  08  norm/std_009_08_${map}.nii.gz          \
+    009  09  norm/std_009_09_${map}.nii.gz          \
+    009  10  norm/std_009_10_${map}.nii.gz
 
 
 # Repeat for surrogates
@@ -193,7 +203,8 @@ rm ICC/${map}/${n}.nii.gz
 done
 
 echo "Merge all ICCs together"
-fslmerge -t ICC/ICC_${map}.nii.gz ICC/${map}/* 
+fslmerge -t ICC/ICC_${map}_surr.nii.gz ICC/${map}/* 
+fslmerge -t ICC/ICC_${map}.nii.gz ICC/ICC_${map}_surr.nii.gz ICC/${map}_orig.nii.gz
 
 echo "End of script!"
 

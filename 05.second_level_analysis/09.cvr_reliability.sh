@@ -55,29 +55,35 @@ do
 	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat \
 	              ./reg/${sub}_T2w2T1w0GenericAffine.mat
 
-	for map in masked_physio_only # corrected
+	for map in simple # masked_physio_only  # corrected
 	do
 		for ses in $( seq -f %02g 1 ${lastses} )
 		do
 			echo "Copying session ${ses} ${map}"
 			imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_${map}.nii.gz \
 				 ./${sub}_${ses}_${ftype}_cvr_${map}.nii.gz
-			imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag_${map}.nii.gz \
-				 ./${sub}_${ses}_${ftype}_lag_${map}.nii.gz
+			if [ ${map} != "simple" ]
+			then
+				imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_cvr_lag_${map}.nii.gz \
+					 ./${sub}_${ses}_${ftype}_lag_${map}.nii.gz
+			fi
 			imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_${ftype}_map_cvr/sub-${sub}_ses-${ses}_${ftype}_tmap_${map}.nii.gz \
 				 ./${sub}_${ses}_${ftype}_tmap_${map}.nii.gz
 
 			for inmap in cvr lag tmap  # cvr_idx_mask tstat_mask
 			do
 				inmap=${inmap}_${map}
-				echo "Transforming ${inmap} maps of session ${ses} to MNI"
-				antsApplyTransforms -d 3 -i ${sub}_${ses}_${ftype}_${inmap}.nii.gz -r ./reg/MNI_T1_brain.nii.gz \
-									-o ./normalised/std_${ftype}_${inmap}_${sub}_${ses}.nii.gz -n NearestNeighbor \
-									-t ./reg/${sub}_T1w2std1Warp.nii.gz \
-									-t ./reg/${sub}_T1w2std0GenericAffine.mat \
-									-t ./reg/${sub}_T2w2T1w0GenericAffine.mat \
-									-t [./reg/${sub}_T2w2sbref0GenericAffine.mat,1]
-				imrm ${sub}_${ses}_${ftype}_${inmap}.nii.gz
+				if [ ${inmap} != "lag_simple" ]
+				then
+					echo "Transforming ${inmap} maps of session ${ses} to MNI"
+					antsApplyTransforms -d 3 -i ${sub}_${ses}_${ftype}_${inmap}.nii.gz -r ./reg/MNI_T1_brain.nii.gz \
+										-o ./normalised/std_${ftype}_${inmap}_${sub}_${ses}.nii.gz -n NearestNeighbor \
+										-t ./reg/${sub}_T1w2std1Warp.nii.gz \
+										-t ./reg/${sub}_T1w2std0GenericAffine.mat \
+										-t ./reg/${sub}_T2w2T1w0GenericAffine.mat \
+										-t [./reg/${sub}_T2w2sbref0GenericAffine.mat,1]
+					imrm ${sub}_${ses}_${ftype}_${inmap}.nii.gz
+				fi
 			done
 		done
 	done
@@ -85,12 +91,14 @@ done
 
 cd normalised
 
-for map in masked_physio_only # corrected
+for map in simple # masked_physio_only # corrected
 do
 for inmap in cvr lag
 do
 # Compute ICC
 inmap=${inmap}_${map}
+if [ ${inmap} != "lag_simple" ]
+then
 rm ../ICC2_${inmap}_${ftype}.nii.gz
 
 3dICC -prefix ../ICC2_${inmap}_${ftype}.nii.gz -jobs 10                                    \
@@ -169,7 +177,7 @@ rm ../ICC2_${inmap}_${ftype}.nii.gz
       009  08       std_${ftype}_tmap_${map}_009_08.nii.gz    std_${ftype}_${inmap}_009_08.nii.gz \
       009  09       std_${ftype}_tmap_${map}_009_09.nii.gz    std_${ftype}_${inmap}_009_09.nii.gz \
       009  10       std_${ftype}_tmap_${map}_009_10.nii.gz    std_${ftype}_${inmap}_009_10.nii.gz
-
+fi
 done
 done
 

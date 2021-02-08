@@ -46,12 +46,19 @@ def _get_parser():
     return parser
 
 
-def load_nifti_get_mask(fname):
+def load_nifti_get_mask(fname, dim=4):
     if fname.endswith('.nii.gz'):
         fname = fname[:-7]
     img = nib.load(f'{fname}.nii.gz')
     data = img.get_fdata()
-    mask = np.any(data, axis=-1)
+    if len(data.shape) > dim:
+        for ax in range(dim, len(data.shape)):
+            data = np.delete(data, np.s_[1:], axis=ax)
+    data = np.squeeze(data)
+    if len(data.shape) >= 4:
+        mask = np.squeeze(np.any(data, axis=-1))
+    else:
+        mask = (data < 0) + (data > 0)
     return data, mask, img
 
 

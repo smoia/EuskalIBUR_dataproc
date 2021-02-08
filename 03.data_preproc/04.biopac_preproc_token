@@ -14,7 +14,7 @@ TASKS = ['motor', 'simon', 'pinel', 'rest_run-01', 'rest_run-02', 'rest_run-03',
 # PPG & Belt
 
 # Get to the right folder
-os.chdir('G:\PJMASK_2\preproc')  # This should work but I can't check since I'm on Unix
+os.chdir('/bcbl/home/public/PJMASK_2/preproc')  # This should work but I can't check since I'm on Unix
 
 # These are the indexes for subject, session and task
 sub = 1  # up to 10
@@ -82,10 +82,10 @@ else:
 # CO2 pipeline
 
 # Get to the right folder
-os.chdir('G:\PJMASK_2\preproc')  # This should work but I can't check since I'm on Unix
+os.chdir('/bcbl/home/public/PJMASK_2/preproc')  # This should work but I can't check since I'm on Unix
 
 # These are the indexes for subject, session and task
-sub = 5  # up to 10
+sub = 1  # up to 10
 ses = 1  # up to 10 or 11 (sub-004 & sub-010)
 task = 0  # 0: 'motor', 1: 'simon', 2: 'pinel', 3: 'rest_run-01',
           # 4: 'rest_run-02', 5: 'rest_run-03', 6: 'rest_run-04'

@@ -4,7 +4,7 @@ import numpy as np
 import peakdet as pk
 
 
-TASKS = ['motor', 'simon', 'pinel', 'rest_run-01', 'rest_run-02', 'rest_run-03', 'rest_run-04']
+TASKS = ['motor', 'simon', 'pinel', 'rest_run-01', 'rest_run-02', 'rest_run-03', 'rest_run-04', 'breathhold']
 
 
 # # # # # # # # # # #

@@ -95,6 +95,14 @@ do
 	echo "bold=${flpr}_task-${task}_echo-${e}_bold_cr"
 	bold=${flpr}_task-${task}_echo-${e}_bold_cr
 	${scriptdir}/02.func_preproc/04.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf} none ${tmp}
+
+	echo "************************************"
+	echo "*** Func greyplot ${task} BOLD echo ${e} (pre)"
+	echo "************************************"
+	echo "************************************"
+	echo "bold=${flpr}_task-${task}_echo-${e}_bold_bet"
+	bold=${flpr}_task-${task}_echo-${e}_bold_bet
+	${scriptdir}/02.func_preproc/12.func_grayplot.sh ${bold} ${fdir} ${anat} ${sbrf} ${aseg} 4 ${tmp}
 done
 
 echo "************************************"
@@ -143,6 +151,18 @@ do
 	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 5 ${mask} ${tmp}
 	echo "3dcalc -a ${tmp}/${bold}_sm.nii.gz -b ${mask}.nii.gz -expr 'a*b' -prefix ${fdir}/00.${bold}_native_preprocessed.nii.gz -short -gscale"
 	3dcalc -a ${tmp}/${bold}_sm.nii.gz -b ${mask}.nii.gz -expr 'a*b' -prefix ${fdir}/00.${bold}_native_preprocessed.nii.gz -short -gscale
+
+	echo "************************************"
+	echo "*** Func greyplot rest run ${run} BOLD ${e} (post)"
+	echo "************************************"
+	echo "************************************"
+	${scriptdir}/02.func_preproc/12.func_grayplot.sh ${bold}_sm ${fdir} ${anat} ${sbrf} ${aseg} 4 ${tmp}
+	echo "mv ${fdir}/${bold}_sm_gp_PVO.png ${fdir}/00.${bold}_native_preprocessed_gp_PVO.png"
+	mv ${fdir}/${bold}_sm_gp_PVO.png ${fdir}/00.${bold}_native_preprocessed_gp_PVO.png
+	echo "mv ${fdir}/${bold}_sm_gp_IJK.png ${fdir}/00.${bold}_native_preprocessed_gp_IJK.png"
+	mv ${fdir}/${bold}_sm_gp_IJK.png ${fdir}/00.${bold}_native_preprocessed_gp_IJK.png
+	echo "mv ${fdir}/${bold}_sm_gp_peel.png ${fdir}/00.${bold}_native_preprocessed_gp_peel.png"
+	mv ${fdir}/${bold}_sm_gp_peel.png ${fdir}/00.${bold}_native_preprocessed_gp_peel.png
 
 	# echo "************************************"
 	# echo "*** Func SPC ${task} BOLD ${e}"

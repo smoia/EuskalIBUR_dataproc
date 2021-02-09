@@ -168,9 +168,12 @@ fi
 #########    Task preproc    #########
 ######################################
 
+aseg=sub-${sub}_ses-01_acq-uni_T1w 
+anat=sub-${sub}_ses-01_T2w
+
 for task in motor pinel simon
 do
-	/scripts/00.pipelines/task_preproc.sh ${sub} ${ses} ${task} ${wdr} ${flpr} \
+	/scripts/00.pipelines/task_preproc.sh ${sub} ${ses} ${task} ${wdr} ${anat} ${aseg} \
 										  ${fdir} ${vdsc} "${TEs}" \
 										  ${nTE} ${siot} ${dspk} /scripts ${tmp}
 done
@@ -182,7 +185,7 @@ done
 
 for run in 01 02 03 04
 do
-	/scripts/00.pipelines/rest_full_preproc.sh ${sub} ${ses} ${run} ${wdr} ${flpr} \
+	/scripts/00.pipelines/rest_full_preproc.sh ${sub} ${ses} ${run} ${wdr} ${anat} ${aseg} \
 										       ${fdir} ${vdsc} "${TEs}" \
 										       ${nTE} ${siot} ${dspk} /scripts ${tmp}
 done

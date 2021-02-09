@@ -93,7 +93,7 @@ then
 	${anat}2${mref}_fsl.mat -fsl2ras -oitk ${anat}2${mref}0GenericAffine.mat
 	mv ${anat}2${mref}* ../reg/.
 fi
-if [[ "${aseg}" != "none" && -e "../anat_preproc/${seg}_seg.nii.gz" && -e "../reg/${anat}2${aseg}0GenericAffine.mat" && ! -e "../anat_preproc/${seg}_seg2mref.nii.gz" ]]
+if [[ "${aseg}" != "none" && -e "../anat_preproc/${aseg}_seg.nii.gz" && -e "../reg/${anat}2${aseg}0GenericAffine.mat" && ! -e "../anat_preproc/${aseg}_seg2mref.nii.gz" ]]
 then
 	echo "Coregistering anatomical segmentation to ${func}"
 	antsApplyTransforms -d 3 -i ../anat_preproc/${aseg}_seg.nii.gz \

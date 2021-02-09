@@ -21,7 +21,7 @@ dprj=${8:-yes}
 # thresholds
 mthr=${9:-0.3}
 othr=${10:-0.05}
-polort=${11:-5}
+polort=${11:-4}
 den_motreg=${12:-yes}
 den_detrend=${13:-yes}
 den_meica=${14:-yes}
@@ -52,11 +52,11 @@ then
 		echo "Coregistering segmentations to ${func}"
 		antsApplyTransforms -d 3 -i ${adir}/${anat}_seg_eroded.nii.gz -r ${mref}.nii.gz \
 		-o ${adir}/${anat}_seg_eroded2mref.nii.gz -n MultiLabel \
-		-t ../reg/${aref}2${mref}0GenericAffine.mat \
+		-t ../reg/${aref}2${mref##*/}0GenericAffine.mat \
 		-t [../reg/${aref}2${anat}0GenericAffine.mat,1]
 		antsApplyTransforms -d 3 -i ${adir}/${anat}_GM_dilated.nii.gz -r ${mref}.nii.gz \
 		-o ${adir}/${anat}_GM_native.nii.gz -n MultiLabel \
-		-t ../reg/${aref}2${mref}0GenericAffine.mat \
+		-t ../reg/${aref}2${mref##*/}0GenericAffine.mat \
 		-t [../reg/${aref}2${anat}0GenericAffine.mat,1]
 	fi
 	echo "Extracting average WM and CSF in ${func}"

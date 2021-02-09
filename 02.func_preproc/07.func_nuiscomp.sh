@@ -47,11 +47,11 @@ func=${func_in%_*}
 #!# Maybe this can go in a separate file
 if [[ -e "${adir}/${anat}_seg_eroded.nii.gz" ]] && [[ "${den_tissues}" == "yes" ]]
 then
-	if [[ ! -e "${adir}/${anat}_seg_native.nii.gz" || ! -e "${adir}/${anat}_GM_native.nii.gz" ]]
+	if [[ ! -e "${adir}/${anat}_seg_eroded2mref.nii.gz" || ! -e "${adir}/${anat}_GM_native.nii.gz" ]]
 	then
 		echo "Coregistering segmentations to ${func}"
 		antsApplyTransforms -d 3 -i ${adir}/${anat}_seg_eroded.nii.gz -r ${mref}.nii.gz \
-		-o ${adir}/${anat}_seg_native.nii.gz -n MultiLabel \
+		-o ${adir}/${anat}_seg_eroded2mref.nii.gz -n MultiLabel \
 		-t ../reg/${aref}2${mref}0GenericAffine.mat \
 		-t [../reg/${aref}2${anat}0GenericAffine.mat,1]
 		antsApplyTransforms -d 3 -i ${adir}/${anat}_GM_dilated.nii.gz -r ${mref}.nii.gz \
@@ -61,7 +61,7 @@ then
 	fi
 	echo "Extracting average WM and CSF in ${func}"
 	3dDetrend -polort ${polort} -prefix ${tmp}/${func}_dtd.nii.gz ${tmp}/${func_in}.nii.gz -overwrite
-	fslmeants -i ${tmp}/${func}_dtd.nii.gz -o ${func}_avg_tissue.1D --label=${adir}/${anat}_seg_native.nii.gz
+	fslmeants -i ${tmp}/${func}_dtd.nii.gz -o ${func}_avg_tissue.1D --label=${adir}/${anat}_seg_eroded2mref.nii.gz
 fi
 
 ## 04. Nuisance computation

@@ -12,27 +12,29 @@ ses=$2
 run=$3
 wdr=$4
 
-flpr=$5
+anat=${5:-none}
+aseg=${6:-none}
 
-fdir=$6
+fdir=$7
 
-vdsc=$7
+vdsc=$8
 
-TEs="$8"
-nTE=$9
+TEs="$9"
+nTE=${10}
 
-siot=${10}
+siot=${11}
 
-dspk=${11}
+dspk=${12}
 
-scriptdir=${12:-/scripts}
+scriptdir=${13:-/scripts}
 
-tmp=${13:-/tmp}
+tmp=${14:-/tmp}
 tmp=${tmp}/${sub}_${ses}_rest_run-${run}
 
 # This is the absolute sbref. Don't change it.
 sbrf=${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
 mask=${sbrf}_brain_mask
+flpr=sub-${sub}_ses-${ses}
 
 ### print input
 printline=$( basename -- $0 )
@@ -83,7 +85,7 @@ echo "************************************"
 echo "fmat=${flpr}_task-rest_run-${run}_echo-1_bold"
 fmat=${flpr}_task-rest_run-${run}_echo-1_bold
 
-${scriptdir}/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} none ${sbrf} none none ${tmp}
+${scriptdir}/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} ${anat} ${sbrf} none ${aseg} ${tmp}
 
 for e in $( seq 1 ${nTE} )
 do
@@ -127,10 +129,10 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none yes 0.3 0.05 5 yes yes yes yes ${tmp}
+	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} ${anat} ${aseg} ${sbrf} ${fdir} none yes 0.3 0.05 4 yes yes yes yes ${tmp}
 	echo "immv ${tmp}/${bold}_den ${tmp}/${bold}_denmeica"
 	immv ${tmp}/${bold}_den ${tmp}/${bold}_denmeica
-	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none yes 0.3 0.05 5 yes yes no yes ${tmp}
+	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} ${anat} ${aseg} ${sbrf} ${fdir} none yes 0.3 0.05 4 yes yes no yes ${tmp}
 	
 	echo "************************************"
 	echo "*** Func Pepolar rest run ${run} BOLD ${e}"

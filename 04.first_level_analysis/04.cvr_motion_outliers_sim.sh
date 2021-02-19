@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-######### CVR MAPS for PJMASK
-# Author:  Stefano Moia
-# Version: 1.0
-# Date:    15.08.2019
-#########
-
+replace_and() {
+case $1 in
+	mkdir) if [ -d $2 ]; then rm -rf $2; fi; mkdir $2 ;;
+	touch) if [ -d $2 ]; then rm -rf $2; fi; touch $2 ;;
+esac
+}
 
 sub=$1
 ses=$2
@@ -27,14 +27,7 @@ flpr=sub-${sub}_ses-${ses}
 
 matdir=${flpr}_${ftype}_mat
 
-if [ -d ${tmp}/tmp.${flpr}_${ftype}_04cmos ]
-then
-	rm -rf ${tmp}/tmp.${flpr}_${ftype}_04cmos
-fi
-if [ -d ${tmp}/tmp.${flpr}_${ftype} ]
-then
-	rm -rf ${tmp}/tmp.${flpr}_${ftype}
-fi
+replace_and mkdir ${tmp}/tmp.${flpr}_${ftype}
 
 cd ${wdr}/CVR || exit
 
@@ -77,13 +70,6 @@ case ${ftype} in
 					 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 					 -overwrite
 
-		# Create folder for synthesize
-		if [ -d ${tmp}/tmp.${flpr}_${ftype} ]
-		then
-			rm -rf ${tmp}/tmp.${flpr}_${ftype}
-		fi
-		mkdir ${tmp}/tmp.${flpr}_${ftype}
-
 		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
 
 		for i in $( seq -f %g 0 ${maxidx[1]} )
@@ -116,13 +102,6 @@ case ${ftype} in
 					 -select polort motdemean motderiv1 \
 					 -prefix ${tmp}/tmp.${flpr}_${ftype}_04cmos_remove.nii.gz \
 					 -overwrite
-
-		# Create folder for synthesize
-		if [ -d ${tmp}/tmp.${flpr}_${ftype} ]
-		then
-			rm -rf ${tmp}/tmp.${flpr}_${ftype}
-		fi
-		mkdir ${tmp}/tmp.${flpr}_${ftype}
 
 		maxidx=( $( fslstats ${flpr}_${ftype}_map_cvr/${flpr}_${ftype}_cvr_idx -R ) )
 

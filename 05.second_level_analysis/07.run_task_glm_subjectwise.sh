@@ -1,5 +1,30 @@
 #!/usr/bin/env bash
 
+if_missing_do() {
+if [ $1 == 'mkdir' ]
+then
+	if [ ! -d $2 ]
+	then
+		mkdir "${@:2}"
+	fi
+elif [ ! -e $3 ]
+then
+	printf "%s is missing, " "$3"
+	case $1 in
+		copy ) echo "copying $2"; cp $2 $3 ;;
+		mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
+		* ) "and you shouldn't see this"; exit ;;
+	esac
+fi
+}
+
+replace_and() {
+case $1 in
+	mkdir) if [ -d $2 ]; then rm -rf $2; fi; mkdir $2 ;;
+	touch) if [ -d $2 ]; then rm -rf $2; fi; touch $2 ;;
+esac
+}
+
 sub=$1
 task=${2}
 wdr=${3:-/data}
@@ -18,34 +43,45 @@ cwd=$(pwd)
 cd ${wdr} || exit
 
 tmp=${tmp}/tmp.${sub}_${task}_07rtgs
-if [ -d ${tmp} ]; then rm -rf ${tmp}; fi
-mkdir ${tmp}
+replace_and mkdir ${tmp}
 
-if [[ ! -d "Mennes_replication/GLM" ]]; then mkdir Mennes_replication/GLM; fi
+if_missing_do mkdir Mennes_replication/GLM
 
-if [[ ! -d "Mennes_replication/GLM/${task}" ]]
-then
-	mkdir Mennes_replication/GLM/${task} Mennes_replication/GLM/${task}/output
-fi
+if_missing_do mkdir Mennes_replication/GLM/${task} Mennes_replication/GLM/${task}/output
 
 cd Mennes_replication/GLM
 
 #Initialise regressors files
-touch ${tmp}/mot_demean.par ${tmp}/mot_deriv1.par ${tmp}/meica_rej_ort.1D 
+replace_and touch ${tmp}/mot_demean.par
+replace_and touch ${tmp}/mot_deriv1.par
+replace_and touch ${tmp}/meica_rej_ort.1D 
 
 case ${task} in
 	motor )
-		touch ${tmp}/finger_left_onset.1D ${tmp}/finger_right_onset.1D ${tmp}/toe_left_onset.1D \
-			  ${tmp}/toe_right_onset.1D ${tmp}/tongue_onset.1D ${tmp}/star_onset.1D
+		replace_and touch ${tmp}/finger_left_onset
+		replace_and touch ${tmp}/finger_right_onset
+		replace_and touch ${tmp}/toe_left_onset
+		replace_and touch ${tmp}/toe_right_onset
+		replace_and touch ${tmp}/tongue_onset
+		replace_and touch ${tmp}/star_onset.1D
 	;;
 	simon )
-		touch ${tmp}/left_congruent_correct_onset.1D ${tmp}/right_congruent_correct_onset.1D \
-			  ${tmp}/left_incongruent_correct_onset.1D ${tmp}/right_incongruent_correct_onset.1D
+		replace_and touch ${tmp}/left_congruent_correct_onset
+		replace_and touch ${tmp}/right_congruent_correct_onset
+		replace_and touch ${tmp}/left_incongruent_correct_onset
+		replace_and touch ${tmp}/right_incongruent_correct_onset.1D
 	;;
 	pinel )
-		touch ${tmp}/acalc_onset.1D ${tmp}/amot_left_onset.1D ${tmp}/amot_right_onset.1D \
-			  ${tmp}/asent_onset.1D ${tmp}/chbh_onset.1D ${tmp}/chbv_onset.1D ${tmp}/vcalc_onset.1D \
-			  ${tmp}/vmot_left_onset.1D ${tmp}/vmot_right_onset.1D ${tmp}/vsent_onset.1D
+		replace_and touch ${tmp}/acalc_onset
+		replace_and touch ${tmp}/amot_left_onset
+		replace_and touch ${tmp}/amot_right_onset
+		replace_and touch ${tmp}/asent_onset
+		replace_and touch ${tmp}/chbh_onset
+		replace_and touch ${tmp}/chbv_onset
+		replace_and touch ${tmp}/vcalc_onset
+		replace_and touch ${tmp}/vmot_left_onset
+		replace_and touch ${tmp}/vmot_right_onset
+		replace_and touch ${tmp}/vsent_onset.1D
 	;;
 	* ) echo "    !!! Warning !!! Invalid task: ${task}"; exit ;;
 esac

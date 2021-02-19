@@ -45,6 +45,31 @@ echo "\# >" >> ${newmat}
 csvtool drop 15 ${mat} >> ${newmat}
 }
 
+if_missing_do() {
+if [ $1 == 'mkdir' ]
+then
+	if [ ! -d $2 ]
+	then
+		mkdir "${@:2}"
+	fi
+elif [ ! -e $3 ]
+then
+	printf "%s is missing, " "$3"
+	case $1 in
+		copy ) echo "copying $2"; cp $2 $3 ;;
+		mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
+		* ) "and you shouldn't see this"; exit ;;
+	esac
+fi
+}
+
+replace_and() {
+case $1 in
+	mkdir) if [ -d $2 ]; then rm -rf $2; fi; mkdir $2 ;;
+	touch) if [ -d $2 ]; then rm -rf $2; fi; touch $2 ;;
+esac
+}
+
 
 sub=$1
 ses=$2
@@ -94,20 +119,11 @@ matdir=${flpr}_${ftype}_mat
 
 cd ${wdr}/CVR || exit
 
-if [ -d ${tmp}/tmp.${flpr}_${ftype}_02cms_res ]
-then
-	rm -rf ${tmp}/tmp.${flpr}_${ftype}_02cms_res
-fi
-# creating folder
-mkdir ${tmp}/tmp.${flpr}_${ftype}_02cms_res
+replace_and mkdir ${tmp}/tmp.${flpr}_${ftype}_02cms_res
 
 # creating 
 
-if [ -d ${matdir} ]
-then
-	rm -rf ${matdir}
-fi
-mkdir ${matdir}
+replace_and mkdir ${matdir}
 
 # Demean rejected ICAs
 case ${ftype} in
@@ -297,10 +313,7 @@ medianvol=$( printf %04d ${poslag} )
 3dcalc -a ${tmp}/tmp.${flpr}_${ftype}_02cms_res/stats_${medianvol}.nii.gz'[18]' -expr 'a' \
 	   -prefix ${flpr}_${ftype}_tmap_simple.nii.gz
 
-if [ ! -d ${flpr}_${ftype}_map_cvr ]
-then
-	mkdir ${flpr}_${ftype}_map_cvr
-fi
+if_missing_do mkdir ${flpr}_${ftype}_map_cvr
 
 mv ${flpr}_${ftype}_cvr* ${flpr}_${ftype}_map_cvr/.
 mv ${flpr}_${ftype}_spc* ${flpr}_${ftype}_map_cvr/.

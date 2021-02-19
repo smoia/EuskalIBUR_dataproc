@@ -1,11 +1,29 @@
 #!/usr/bin/env bash
 
-######### CVR MAPS for PJMASK
-# Author:  Stefano Moia
-# Version: 1.0
-# Date:    15.08.2019
-#########
+if_missing_do() {
+if [ $1 == 'mkdir' ]
+then
+	if [ ! -d $2 ]
+	then
+		mkdir "${@:2}"
+	fi
+elif [ ! -e $3 ]
+then
+	printf "%s is missing, " "$3"
+	case $1 in
+		copy ) echo "copying $2"; cp $2 $3 ;;
+		mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
+		* ) "and you shouldn't see this"; exit ;;
+	esac
+fi
+}
 
+replace_and() {
+case $1 in
+	mkdir) if [ -d $2 ]; then rm -rf $2; fi; mkdir $2 ;;
+	touch) if [ -d $2 ]; then rm -rf $2; fi; touch $2 ;;
+esac
+}
 
 sub=$1
 ses=$2
@@ -27,17 +45,13 @@ flpr=sub-${sub}_ses-${ses}
 mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
 
 tmp=${tmp}/tmp.${flpr}_07cr
-if [ -d ${tmp} ]; then rm -rf ${tmp}; fi
-mkdir ${tmp}
+replace_and mkdir ${tmp}
 
 cd ${wdr} || exit
 
-if [[ ! -d "Mennes_replication" ]]; then mkdir Mennes_replication; fi
+if_missing_do mkdir Mennes_replication
 
-if [[ ! -d "Mennes_replication/fALFF" ]]
-then
-	mkdir Mennes_replication/fALFF Mennes_replication/RSFA
-fi
+if_missing_do mkdir Mennes_replication/fALFF Mennes_replication/RSFA
 
 cd Mennes_replication
 

@@ -1,5 +1,30 @@
 #!/usr/bin/env bash
 
+if_missing_do() {
+if [ $1 == 'mkdir' ]
+then
+	if [ ! -d $2 ]
+	then
+		mkdir "${@:2}"
+	fi
+elif [ ! -e $3 ]
+then
+	printf "%s is missing, " "$3"
+	case $1 in
+		copy ) echo "copying $2"; cp $2 $3 ;;
+		mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
+		* ) "and you shouldn't see this"; exit ;;
+	esac
+fi
+}
+
+replace_and() {
+case $1 in
+	mkdir) if [ -d $2 ]; then rm -rf $2; fi; mkdir $2 ;;
+	touch) if [ -d $2 ]; then rm -rf $2; fi; touch $2 ;;
+esac
+}
+
 sub=$1
 ses=$2
 task=${3}
@@ -18,15 +43,11 @@ cwd=$(pwd)
 cd ${wdr} || exit
 
 tmp=${tmp}/tmp.${flpr}_08rtg
-if [ -d ${tmp} ]; then rm -rf ${tmp}; fi
-mkdir ${tmp}
+replace_and mkdir ${tmp}
 
-if [[ ! -d "Mennes_replication/GLM" ]]; then mkdir Mennes_replication/GLM; fi
+if_missing_do mkdir Mennes_replication/GLM
 
-if [[ ! -d "Mennes_replication/GLM/${task}" ]]
-then
-	mkdir Mennes_replication/GLM/${task} Mennes_replication/GLM/${task}/output
-fi
+if_missing_do mkdir Mennes_replication/GLM/${task} Mennes_replication/GLM/${task}/output
 
 cd Mennes_replication/GLM
 

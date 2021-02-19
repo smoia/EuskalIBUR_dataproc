@@ -101,7 +101,7 @@ else:
 
 thr = 0.5
 dist = 120
-data_filt = np.genfromtxt(f'{filename}_filt.tsv.gz')
+data_filt = np.genfromtxt(f'{filename}_dec.tsv.gz')
 phys = pk.Physio(data_filt[:, ch], fs=40.0)
 
 # If you see that not enough peaks get selected, you might tune the next function with thr and dist above.

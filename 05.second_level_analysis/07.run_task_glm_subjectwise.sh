@@ -30,6 +30,9 @@ fi
 
 cd Mennes_replication/GLM
 
+#Initialise regressors files
+touch ${tmp}/mot_demean.par ${tmp}/mot_deriv1.par ${tmp}/meica_rej_ort.1D 
+
 case ${task} in
 	motor )
 		touch ${tmp}/finger_left_onset.1D ${tmp}/finger_right_onset.1D ${tmp}/toe_left_onset.1D \
@@ -55,17 +58,25 @@ run3dREMLfit="3dREMLfit -overwrite -input"
 for ses in $( seq -f %03g 1 10 )
 do
 	fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
-	flpr=sub-${sub}_ses-${ses}_task-${task}
-	func=${fdir}/00.${flpr}_optcom_bold_native_preprocessed
-	ospr=${fdir}/onsets/${flpr}
+	sub=_${task}sub-${sub}_ses-${ses}_task-${task}
+	func=${fdir}/00.${sub}_${task}_optcom_bold_native_preprocessed
+	ospr=${fdir}/onsets/${sub}_${task}
 
-	# SPC funcs
-	fslmaths ${func} -Tmean ${tmp}/${flpr}_mean
+	# SPC func
+	fslmaths ${func} -Tmean ${tmp}/${sub}_${task}_mean
 	fslmaths ${func} -sub ${tmp}/${flpr}_mean -div ${tmp}/${flpr}_mean ${tmp}/${flpr}_spc
 
 	# Add input to 3dDeconvolve call
 	run3dDeconvolve="${run3dDeconvolve} ${tmp}/${flpr}_spc.nii.gz"
 	run3dREMLfit="${run3dREMLfit} ${tmp}/${flpr}_spc.nii.gz"
+
+	# Pad noise regressors and concatenate them!
+	1d_tool.py -infile ${fdir}/${flpr}_echo-1_bold_mcf_demean.par -pad_into_many_runs ${ses} 10 -write ${tmp}/${ses}_demean.par
+	1d_tool.py -infile ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par -pad_into_many_runs ${ses} 10 -write ${tmp}/${ses}_deriv1.par
+	1d_tool.py -infile ${fdir}/${flpr}_concat_bold_bet_rej_ort.1D -pad_into_many_runs ${ses} 10 -write ${tmp}/${ses}_rej_ort.1D
+	paste -d ' ' ${tmp}/mot_demean.par ${tmp}/${ses}_demean.par > ${tmp}/mot_demean.par 
+	paste -d ' ' ${tmp}/mot_deriv1.par ${tmp}/${ses}_deriv1.par > ${tmp}/mot_deriv1.par 
+	paste -d ' ' ${tmp}/meica_rej_ort.1D ${tmp}/${ses}_rej_ort.1D > ${tmp}/meica_rej_ort.1D 
 
 	# Concatenate onsets for multirun file
 	case ${task} in
@@ -114,9 +125,9 @@ echo "Compute statistical maps of activation per subject"
 echo "=================================================="
 run3dDeconvolve="${run3dDeconvolve} -mask ${mask}.nii.gz"
 run3dDeconvolve="${run3dDeconvolve} -polort 4"
-# run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_demean.par motderiv"
-# run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par motdemean"
-# run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_concat_bold_bet_rej_ort.1D meica_rej_ort"
+run3dDeconvolve="${run3dDeconvolve} -ortvec ${tmp}/mot_demean.par motderiv"
+run3dDeconvolve="${run3dDeconvolve} -ortvec ${tmp}/mot_deriv1.par motdemean"
+run3dDeconvolve="${run3dDeconvolve} -ortvec ${tmp}/meica_rej_ort.1D meica_rej_ort"
 run3dDeconvolve="${run3dDeconvolve} -bucket ${cbuck}-subj.nii.gz"
 run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}-subj.1D"
 run3dDeconvolve="${run3dDeconvolve} -x1D_stop"

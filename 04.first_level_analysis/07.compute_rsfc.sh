@@ -28,6 +28,8 @@ mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
 
 if [ -d ${tmp}/tmp.${flpr}_07cr ]; then	rm -rf ${tmp}/tmp.${flpr}_07cr; fi
 
+tmp=${tmp}/tmp.${flpr}_07cr
+
 cd ${wdr} || exit
 
 if [[ ! -d "Mennes_replication" ]]; then mkdir Mennes_replication; fi
@@ -49,5 +51,7 @@ do
 	3dresample -input ${tmp}/${input}_fALFF+orig -prefix fALFF/${flpr}_task-rest_run-${run}_fALFF.nii.gz
 	3dresample -input ${tmp}/${input}_RSFA+orig -prefix RSFA/${flpr}_task-rest_run-${run}_RSFA.nii.gz
 done
+
+rm -rf ${tmp}
 
 cd ${cwd}

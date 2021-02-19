@@ -15,8 +15,10 @@ echo "${printline} " "$@"
 
 cwd=$(pwd)
 
-
 cd ${wdr} || exit
+
+if [ -d ${tmp}/tmp.${flpr}_08rtg ]; then	rm -rf ${tmp}/tmp.${flpr}_08rtg; fi
+tmp=${tmp}/tmp.${flpr}_08rtg
 
 if [[ ! -d "Mennes_replication/GLM" ]]; then mkdir Mennes_replication/GLM; fi
 
@@ -206,6 +208,6 @@ eval ${run3dDeconvolve}
 		  -Rfitts ${fitts}-IM.nii.gz		 \
 		  -Rbuck  ${rbuck}-IM.nii.gz
 
-rm ${tmp}/${flpr}_spc.nii.gz ${tmp}/${flpr}_mean.nii.gz
+rm -rf ${tmp}
 
 cd ${cwd}

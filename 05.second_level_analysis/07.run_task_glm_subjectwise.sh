@@ -17,8 +17,9 @@ cwd=$(pwd)
 
 cd ${wdr} || exit
 
-if [ -d ${tmp}/tmp.${flpr}_07rtgs ]; then	rm -rf ${tmp}/tmp.${flpr}_07rtgs; fi
-tmp=${tmp}/tmp.${flpr}_07rtgs
+tmp=${tmp}/tmp.${sub}_${task}_07rtgs
+if [ -d ${tmp} ]; then rm -rf ${tmp}; fi
+mkdir ${tmp}
 
 if [[ ! -d "Mennes_replication/GLM" ]]; then mkdir Mennes_replication/GLM; fi
 

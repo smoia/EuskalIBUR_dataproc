@@ -26,9 +26,9 @@ fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 flpr=sub-${sub}_ses-${ses}
 mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
 
-if [ -d ${tmp}/tmp.${flpr}_07cr ]; then	rm -rf ${tmp}/tmp.${flpr}_07cr; fi
-
 tmp=${tmp}/tmp.${flpr}_07cr
+if [ -d ${tmp} ]; then rm -rf ${tmp}; fi
+mkdir ${tmp}
 
 cd ${wdr} || exit
 

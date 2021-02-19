@@ -35,8 +35,8 @@ fout=${wdr}/Mennes_replication/GLM/${task}/output
 ospr=${fdir}/onsets/${flpr}
 
 # SPC func
-# fslmaths ${func} -Tmean ${tmp}/${flpr}_mean
-# fslmaths ${func} -sub ${tmp}/${flpr}_mean -div ${tmp}/${flpr}_mean ${tmp}/${flpr}_spc
+fslmaths ${func} -Tmean ${tmp}/${flpr}_mean
+fslmaths ${func} -sub ${tmp}/${flpr}_mean -div ${tmp}/${flpr}_mean ${tmp}/${flpr}_spc
 
 
 # Create Names for output files
@@ -206,6 +206,6 @@ eval ${run3dDeconvolve}
 		  -Rfitts ${fitts}-IM.nii.gz		 \
 		  -Rbuck  ${rbuck}-IM.nii.gz
 
-# rm ${tmp}/${flpr}_spc.nii.gz ${tmp}/${flpr}_mean.nii.gz
+rm ${tmp}/${flpr}_spc.nii.gz ${tmp}/${flpr}_mean.nii.gz
 
 cd ${cwd}

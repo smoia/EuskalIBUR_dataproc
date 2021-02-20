@@ -80,8 +80,7 @@ run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_deme
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par motdemean"
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_concat_bold_bet_rej_ort.1D meica_rej_ort"
 run3dDeconvolve="${run3dDeconvolve} -bucket ${cbuck}.nii.gz"
-run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}.1D"
-run3dDeconvolve="${run3dDeconvolve} -x1D_stop"
+run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}.1D -xjpeg ${mat}.jpg -x1D_stop"
 
 case ${task} in
 	motor )
@@ -180,9 +179,7 @@ run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_deme
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par motdemean"
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_concat_bold_bet_rej_ort.1D meica_rej_ort"
 run3dDeconvolve="${run3dDeconvolve} -bucket ${cbuck}-IM.nii.gz"
-run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}-IM.1D"
-run3dDeconvolve="${run3dDeconvolve} -x1D_stop"
-
+run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}-IM.1D -xjpeg ${mat}-IM.jpg -x1D_stop"
 
 case ${task} in
 	motor )
@@ -223,7 +220,7 @@ esac
 
 # Run 3dDeconvolve
 eval ${run3dDeconvolve}
-3dREMLfit -overwrite -matrix ${mat}.1D	\
+3dREMLfit -overwrite -matrix ${mat}-IM.1D	\
 		  -mask	 ${mask}.nii.gz \
 		  -input ${tmp}/${flpr}_spc.nii.gz	\
 		  -tout -verb -GOFORIT				  \

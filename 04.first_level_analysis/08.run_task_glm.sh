@@ -119,7 +119,7 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 1 all_congruent"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 2 all_incongruent"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 3 congruent_vs_incongruent"
-		run3dDeconvolve="${run3dDeconvolve} -glt_label 2 congruent_and_incongruent"
+		run3dDeconvolve="${run3dDeconvolve} -glt_label 4 congruent_and_incongruent"
 		# Since the incorrect onsets might be absent, tell 3dDeconvolve it's ok.
 		run3dDeconvolve="${run3dDeconvolve} -allzero_OK"
 	;;

@@ -53,7 +53,6 @@ if_missing_do mkdir Mennes_replication/GLM/${task} Mennes_replication/GLM/${task
 cd Mennes_replication/GLM
 
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
-flpr=sub-${sub}_ses-${ses}_task-${task}
 mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
 func=${fdir}/00.${flpr}_optcom_bold_native_preprocessed
 fout=${wdr}/Mennes_replication/GLM/${task}/output
@@ -121,6 +120,8 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 2 all_incongruent"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 3 congruent_vs_incongruent"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 2 congruent_and_incongruent"
+		# Since the incorrect onsets might be absent, tell 3dDeconvolve it's ok.
+		run3dDeconvolve="${run3dDeconvolve} -allzero_OK"
 	;;
 	pinel )
 		# Pinel has ten possible conditions (see Pinel 2007)
@@ -201,6 +202,8 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 wrong_rc -stim_times_IM 6 ${ospr}_right_congruent_incorrect_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 wrong_li -stim_times_IM 7 ${ospr}_left_incongruent_incorrect_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 wrong_ri -stim_times_IM 8 ${ospr}_right_incongruent_incorrect_onset.1D dmUBLOCK"
+		# Since the incorrect onsets might be absent, tell 3dDeconvolve it's ok.
+		run3dDeconvolve="${run3dDeconvolve} -allzero_OK"
 	;;
 	pinel )
 		run3dDeconvolve="${run3dDeconvolve} -num_stimts 10"

@@ -46,8 +46,8 @@ flpr=sub-${sub}_ses-${ses}_task-${task}
 tmp=${tmp}/tmp.${flpr}_08rtg
 replace_and mkdir ${tmp}
 
+if_missing_do mkdir Mennes_replication
 if_missing_do mkdir Mennes_replication/GLM
-
 if_missing_do mkdir Mennes_replication/GLM/${task} Mennes_replication/GLM/${task}/output
 
 cd Mennes_replication/GLM

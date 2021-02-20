@@ -94,12 +94,12 @@ run3dREMLfit="3dREMLfit -overwrite -input"
 for ses in $( seq -f %02g 1 10 )
 do
 	fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
-	sub=_${task}sub-${sub}_ses-${ses}_task-${task}
+	flpr=sub-${sub}_ses-${ses}_task-${task}
 	func=${fdir}/00.${sub}_${task}_optcom_bold_native_preprocessed
 	ospr=${fdir}/onsets/${sub}_${task}
 
 	# SPC func
-	fslmaths ${func} -Tmean ${tmp}/${sub}_${task}_mean
+	fslmaths ${func} -Tmean ${tmp}/${flpr}_mean
 	fslmaths ${func} -sub ${tmp}/${flpr}_mean -div ${tmp}/${flpr}_mean ${tmp}/${flpr}_spc
 
 	# Add input to 3dDeconvolve call
@@ -110,9 +110,12 @@ do
 	1d_tool.py -infile ${fdir}/${flpr}_echo-1_bold_mcf_demean.par -pad_into_many_runs ${ses} 10 -write ${tmp}/${ses}_demean.par
 	1d_tool.py -infile ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par -pad_into_many_runs ${ses} 10 -write ${tmp}/${ses}_deriv1.par
 	1d_tool.py -infile ${fdir}/${flpr}_concat_bold_bet_rej_ort.1D -pad_into_many_runs ${ses} 10 -write ${tmp}/${ses}_rej_ort.1D
-	paste -d ' ' ${tmp}/mot_demean.par ${tmp}/${ses}_demean.par > ${tmp}/mot_demean.par 
-	paste -d ' ' ${tmp}/mot_deriv1.par ${tmp}/${ses}_deriv1.par > ${tmp}/mot_deriv1.par 
-	paste -d ' ' ${tmp}/meica_rej_ort.1D ${tmp}/${ses}_rej_ort.1D > ${tmp}/meica_rej_ort.1D 
+	paste -d ' ' ${tmp}/mot_demean.par ${tmp}/${ses}_demean.par > ${tmp}/mot_demean_n.par
+	mv ${tmp}/mot_demean_n.par ${tmp}/mot_demean.par
+	paste -d ' ' ${tmp}/mot_deriv1.par ${tmp}/${ses}_deriv1.par > ${tmp}/mot_deriv1_n.par
+	mv ${tmp}/mot_deriv1_n.par ${tmp}/mot_deriv1.par
+	paste -d ' ' ${tmp}/meica_rej_ort.1D ${tmp}/${ses}_rej_ort.1D > ${tmp}/meica_rej_ort_n.1D
+	mv ${tmp}/meica_rej_ort_n.1D ${tmp}/meica_rej_ort.1D
 
 	# Concatenate onsets for multirun file
 	case ${task} in
@@ -150,11 +153,11 @@ done
 # Other variables to run GLMs
 mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
 fout=${wdr}/Mennes_replication/GLM/${task}/output
-cbuck=${fout}/${sub}_${ses}_task-${task}_spm-cbuck
-rbuck=${fout}/${sub}_${ses}_task-${task}_spm
-fitts=${fout}/${sub}_${ses}_task-${task}_spm-fitts
-ertts=${fout}/${sub}_${ses}_task-${task}_spm-errts
-mat=${fout}/${sub}_${ses}_task-${task}_spm-mat
+cbuck=${fout}/${sub}_allses_task-${task}_spm-cbuck
+rbuck=${fout}/${sub}_allses_task-${task}_spm
+fitts=${fout}/${sub}_allses_task-${task}_spm-fitts
+ertts=${fout}/${sub}_allses_task-${task}_spm-errts
+mat=${fout}/${sub}_allses_task-${task}_spm-mat
 
 # Prepare 3dDeconvolve on the full run
 echo "Compute statistical maps of activation per subject"
@@ -165,7 +168,7 @@ run3dDeconvolve="${run3dDeconvolve} -ortvec ${tmp}/mot_demean.par motderiv"
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${tmp}/mot_deriv1.par motdemean"
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${tmp}/meica_rej_ort.1D meica_rej_ort"
 run3dDeconvolve="${run3dDeconvolve} -bucket ${cbuck}-subj.nii.gz"
-run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}-subj.1D -xjpeg ${mat}-subj.jpg -x1D_stop"
+run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}.1D -xjpeg ${mat}.jpg -x1D_stop"
 run3dDeconvolve="${run3dDeconvolve} -x1D_stop"
 
 case ${task} in
@@ -248,12 +251,12 @@ esac
 echo "${run3dDeconvolve}"
 eval ${run3dDeconvolve}
 
-run3dREMLfit="${run3dREMLfit} -matrix ${mat}-subj.1D"
+run3dREMLfit="${run3dREMLfit} -matrix ${mat}.1D"
 run3dREMLfit="${run3dREMLfit} -mask ${mask}.nii.gz"
 run3dREMLfit="${run3dREMLfit} -tout -verb -GOFORIT"
-run3dREMLfit="${run3dREMLfit} -Rfitts ${fitts}-subj.nii.gz"
-run3dREMLfit="${run3dREMLfit} -Rbuck  ${rbuck}-subj.nii.gz"
-run3dREMLfit="${run3dREMLfit} -Rerrts ${ertts}-subj.nii.gz"
+run3dREMLfit="${run3dREMLfit} -Rfitts ${fitts}.nii.gz"
+run3dREMLfit="${run3dREMLfit} -Rbuck  ${rbuck}.nii.gz"
+run3dREMLfit="${run3dREMLfit} -Rerrts ${ertts}.nii.gz"
 
 # Run 3dREMLfit
 echo "${run3dREMLfit}"

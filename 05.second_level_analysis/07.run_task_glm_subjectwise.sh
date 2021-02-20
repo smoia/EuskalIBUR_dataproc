@@ -45,8 +45,8 @@ cd ${wdr} || exit
 tmp=${tmp}/tmp.${sub}_${task}_07rtgs
 replace_and mkdir ${tmp}
 
+if_missing_do mkdir Mennes_replication
 if_missing_do mkdir Mennes_replication/GLM
-
 if_missing_do mkdir Mennes_replication/GLM/${task} Mennes_replication/GLM/${task}/output
 
 cd Mennes_replication/GLM

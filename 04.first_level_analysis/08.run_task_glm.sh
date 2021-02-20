@@ -41,6 +41,7 @@ echo "${printline} " "$@"
 cwd=$(pwd)
 
 cd ${wdr} || exit
+flpr=sub-${sub}_ses-${ses}_task-${task}
 
 tmp=${tmp}/tmp.${flpr}_08rtg
 replace_and mkdir ${tmp}

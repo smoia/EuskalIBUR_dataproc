@@ -165,7 +165,7 @@ run3dDeconvolve="${run3dDeconvolve} -ortvec ${tmp}/mot_demean.par motderiv"
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${tmp}/mot_deriv1.par motdemean"
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${tmp}/meica_rej_ort.1D meica_rej_ort"
 run3dDeconvolve="${run3dDeconvolve} -bucket ${cbuck}-subj.nii.gz"
-run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}-subj.1D"
+run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}-subj.1D -xjpeg ${mat}-subj.jpg -x1D_stop"
 run3dDeconvolve="${run3dDeconvolve} -x1D_stop"
 
 case ${task} in

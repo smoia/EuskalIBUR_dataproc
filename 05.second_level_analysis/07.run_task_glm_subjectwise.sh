@@ -91,7 +91,7 @@ run3dDeconvolve="3dDeconvolve -overwrite -input"
 run3dREMLfit="3dREMLfit -overwrite -input"
 
 # Prepare inputs
-for ses in $( seq -f %03g 1 10 )
+for ses in $( seq -f %02g 1 10 )
 do
 	fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 	sub=_${task}sub-${sub}_ses-${ses}_task-${task}

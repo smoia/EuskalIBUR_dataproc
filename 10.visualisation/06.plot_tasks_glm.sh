@@ -49,7 +49,7 @@ tmp=${tmp}/tmp.${sub}_${task}_06ptg
 replace_and mkdir ${tmp}
 
 # Set the T1 in native space
-bckimg=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-008_sbref
+bckimg=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref
 
 for sfx in spm spm-IM
 do
@@ -129,20 +129,33 @@ do
 		rbuck=${sub}_${ses}_task-${task}_${sfx}.nii.gz
 		# Find right tstat value
 		ndof=$( 3dinfo -verb ${rbuck} | grep statpar | awk -F " = " '{ print $3 }' )
-		cdf -p2t fitt ${pval} ${ndof[2]}
+		thr=$( cdf -p2t fitt ${pval} ${ndof[2]} )
 
 		for brick in ${tmp}/${sub}_${ses}_${sfx}*_Coef.nii.gz
 		do
-			brickname=${brick%_Coef.nii.gz}
-			# Check if there is no path in $brick, if so add ${picdir} to the png path
-
-			# fsleyes all the way with semitransparent image
-			fsleyes ${brickname}.png ${bckimg} ${brick} ${brickname}_Tstat.nii.gz
+			brickname=${brick%%_Coef.nii.gz}
+			# mask the functional brick with the right tstat
+			fslmaths ${brickname}_Tstat -abs -thr ${thr} -bin -mul ${brick} ${brickname}_fmkd
+			# fsleyes all the way
+			fsleyes render -of ${brickname}_tmp_axial.png --size 1900 200 \
+			--scene lightbox --zaxis 2 --sliceSpacing 12 --zrange 19.3 139.9 --ncols 10 --nrows 1 --hideCursor --showColourBar --colourBarLocation right --colourBarLabelSide bottom-right --colourBarSize 80.0 --labelSize 12 --performance 3 --movieSync \
+			${bckimg}.nii.gz --name "anat" --overlayType volume --alpha 100.0 --brightness 49.75000000000001 --contrast 49.90029860765409 --cmap greyscale --negativeCmap greyscale --displayRange 0.0 631.9035656738281 --clippingRange 0.0 631.9035656738281 --modulateRange 0.0 625.6470947265625 --gamma 0.0 --cmapResolution 256 --interpolation none --invert --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
+			${brickname}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap brain_colours_1hot --negativeCmap cool --useNegativeCmap --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
+			fsleyes render -of ${brickname}_tmp_sagittal.png --size 1900 200 \
+			--scene lightbox --zaxis 0 --sliceSpacing 13 --zrange 39.5 169 --ncols 10 --nrows 1 --hideCursor --showColourBar --colourBarLocation right --colourBarLabelSide bottom-right --colourBarSize 80.0 --labelSize 12 --performance 3 --movieSync \
+			${bckimg}.nii.gz --name "anat" --overlayType volume --alpha 100.0 --brightness 49.75000000000001 --contrast 49.90029860765409 --cmap greyscale --negativeCmap greyscale --displayRange 0.0 631.9035656738281 --clippingRange 0.0 631.9035656738281 --modulateRange 0.0 625.6470947265625 --gamma 0.0 --cmapResolution 256 --interpolation none --invert --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
+			${brickname}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap brain_colours_1hot --negativeCmap cool --useNegativeCmap --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
+			fsleyes render -of ${brickname}_tmp_coronal.png --size 1900 200 \
+			--scene lightbox --zaxis 1 --sliceSpacing 15 --zrange 21 169 --ncols 10 --nrows 1 --hideCursor --showColourBar --colourBarLocation right --colourBarLabelSide bottom-right --colourBarSize 80.0 --labelSize 12 --performance 3 --movieSync \
+			${bckimg}.nii.gz --name "anat" --overlayType volume --alpha 100.0 --brightness 49.75000000000001 --contrast 49.90029860765409 --cmap greyscale --negativeCmap greyscale --displayRange 0.0 631.9035656738281 --clippingRange 0.0 631.9035656738281 --modulateRange 0.0 625.6470947265625 --gamma 0.0 --cmapResolution 256 --interpolation none --invert --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
+			${brickname}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap brain_colours_1hot --negativeCmap cool --useNegativeCmap --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
+			# Mount visions
+			convert -append ${brickname}_tmp_axial.png ${brickname}_tmp_sagittal.png ${brickname}_tmp_coronal.png +repage ${brickname}.png
+			rm ${brickname}_tmp*
 		done
 	done
 done
 
-# Check if there is no path in $brick, if so remove next line
 mv ${tmp}/*.png ${picdir}/.
 
 rm -rf ${tmp}/${task}

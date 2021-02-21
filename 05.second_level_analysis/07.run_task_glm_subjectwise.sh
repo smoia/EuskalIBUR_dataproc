@@ -215,18 +215,19 @@ case ${task} in
 	pinel )
 		# Pinel has ten possible conditions (see Pinel 2007)
 		run3dDeconvolve="${run3dDeconvolve} -num_stimts 10"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 1 acalc -stim_times 1 ${tmp}/acalc_onset.1D 'SPMG1(0)'"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 2 amot_left -stim_times 2 ${tmp}/amot_left_onset.1D 'SPMG1(0)'"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 3 amot_right -stim_times 3 ${tmp}/amot_right_onset.1D 'SPMG1(0)'"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 4 asent -stim_times 4 ${tmp}/asent_onset.1D 'SPMG1(0)'"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 chbh -stim_times 5 ${tmp}/chbh_onset.1D 'SPMG1(0)'"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 chbv -stim_times 6 ${tmp}/chbv_onset.1D 'SPMG1(0)'"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 vcalc -stim_times 7 ${tmp}/vcalc_onset.1D 'SPMG1(0)'"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 vmot_left -stim_times 8 ${tmp}/vmot_left_onset.1D 'SPMG1(0)'"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 9 vmot_right -stim_times 9 ${tmp}/vmot_right_onset.1D 'SPMG1(0)'"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 10 vsent -stim_times 10 ${tmp}/vsent_onset.1D 'SPMG1(0)'"
-		# Pinel models 8 contrasts: right vs left hand, vertical vs horizontal checkers, auditory stims, visual stims, 
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 1 acalc -stim_times 1 ${ospr}_acalc_onset.1D 'SPMG1(0)'"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 2 amot_left -stim_times 2 ${ospr}_amot_left_onset.1D 'SPMG1(0)'"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 3 amot_right -stim_times 3 ${ospr}_amot_right_onset.1D 'SPMG1(0)'"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 4 asent -stim_times 4 ${ospr}_asent_onset.1D 'SPMG1(0)'"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 chbh -stim_times 5 ${ospr}_chbh_onset.1D 'SPMG1(0)'"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 chbv -stim_times 6 ${ospr}_chbv_onset.1D 'SPMG1(0)'"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 vcalc -stim_times 7 ${ospr}_vcalc_onset.1D 'SPMG1(0)'"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 vmot_left -stim_times 8 ${ospr}_vmot_left_onset.1D 'SPMG1(0)'"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 9 vmot_right -stim_times 9 ${ospr}_vmot_right_onset.1D 'SPMG1(0)'"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 10 vsent -stim_times 10 ${ospr}_vsent_onset.1D 'SPMG1(0)'"
+		# Pinel models 8 contrasts in text: right vs left hand, vertical vs horizontal checkers, auditory stims, visual stims, 
 		# auditory calc vs auditory noncalc, visual calc vs visual noncalc, auditory vs visual, visual vs checkerboards.
+		# Added all sentences, all motor, all calculus, all motor vs sentences, all calculus vs sentences.
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +amot_right +vmot_right -amot_left -vmot_left"
 		run3dDeconvolve="${run3dDeconvolve} \\ +chbv -chbh"
 		run3dDeconvolve="${run3dDeconvolve} \\ +acalc +amot_left +amot_right +asent"
@@ -234,7 +235,12 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} \\ +acalc -amot_left -amot_right -asent"
 		run3dDeconvolve="${run3dDeconvolve} \\ +vcalc -vmot_left -vmot_right -vsent"
 		run3dDeconvolve="${run3dDeconvolve} \\ +acalc +amot_left +amot_right +asent -vcalc -vmot_left -vmot_right -vsent"
-		run3dDeconvolve="${run3dDeconvolve} \\ +vcalc +vmot_left +vmot_right +vsent -chbv -chbh'"
+		run3dDeconvolve="${run3dDeconvolve} \\ +vcalc +vmot_left +vmot_right +vsent -chbv -chbh"
+		run3dDeconvolve="${run3dDeconvolve} \\ +asent +vsent"
+		run3dDeconvolve="${run3dDeconvolve} \\ +amot_left +amot_right +vmot_left +vmot_right"
+		run3dDeconvolve="${run3dDeconvolve} \\ +acalc +vcalc"
+		run3dDeconvolve="${run3dDeconvolve} \\ +amot_left +amot_right +vmot_left +vmot_right -asent -vsent"
+		run3dDeconvolve="${run3dDeconvolve} \\ +acalc +vcalc -asent -vsent"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 1 right_vs_left"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 2 vertical_vs_horizontal_cb"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 3 all_auditory"
@@ -243,6 +249,11 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 6 visual_calc_vs_noncalc"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 7 auditory_vs_visual"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 8 visual_vs_cb"
+		run3dDeconvolve="${run3dDeconvolve} -glt_label 9 all_sentences"
+		run3dDeconvolve="${run3dDeconvolve} -glt_label 10 all_motor"
+		run3dDeconvolve="${run3dDeconvolve} -glt_label 11 all_calc"
+		run3dDeconvolve="${run3dDeconvolve} -glt_label 12 all_motor_vs_sentences"
+		run3dDeconvolve="${run3dDeconvolve} -glt_label 13 all_calc_vs_sentences"
 	;;
 	* ) echo "    !!! Warning !!! Invalid task: ${task}"; exit ;;
 esac

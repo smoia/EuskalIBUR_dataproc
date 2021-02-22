@@ -228,6 +228,7 @@ case ${task} in
 		# Pinel models 8 contrasts in text: right vs left hand, vertical vs horizontal checkers, auditory stims, visual stims, 
 		# auditory calc vs auditory noncalc, visual calc vs visual noncalc, auditory vs visual, visual vs checkerboards.
 		# Added all sentences, all motor, all calculus, all motor vs sentences, all calculus vs sentences.
+		run3dDeconvolve="${run3dDeconvolve} -num_glt 13"
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +amot_right +vmot_right -amot_left -vmot_left"
 		run3dDeconvolve="${run3dDeconvolve} \\ +chbv -chbh"
 		run3dDeconvolve="${run3dDeconvolve} \\ +acalc +amot_left +amot_right +asent"
@@ -240,7 +241,7 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} \\ +amot_left +amot_right +vmot_left +vmot_right"
 		run3dDeconvolve="${run3dDeconvolve} \\ +acalc +vcalc"
 		run3dDeconvolve="${run3dDeconvolve} \\ +amot_left +amot_right +vmot_left +vmot_right -asent -vsent"
-		run3dDeconvolve="${run3dDeconvolve} \\ +acalc +vcalc -asent -vsent"
+		run3dDeconvolve="${run3dDeconvolve} \\ +acalc +vcalc -asent -vsent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 1 right_vs_left"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 2 vertical_vs_horizontal_cb"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 3 all_auditory"

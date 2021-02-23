@@ -186,7 +186,7 @@ def generate_regressors(onset_path, onsets, sbj, ses):
 def main():
     """[summary]
     """
-    prj_dir = '/home/eurunuela/public/PJMASK_2/preproc'
+    prj_dir = '/bcbl/home/public/PJMASK_2/preproc'
 
     # Get subject directories
     sbj_dirs = [dirname for dirname in os.listdir(prj_dir) if 'sub' in dirname]

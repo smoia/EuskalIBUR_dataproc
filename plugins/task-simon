@@ -1,31 +1,32 @@
 {
     "trial_type" :{
-        "Description": "Color and position of the light displayed",
+        "Description": "Color and position of the square displayed",
         "Levels" :{
-            "greenright" : "A green light is displayed on the right side",
-            "greenleft" : "A green light is displayed on the left side",
-            "redright" : "A red light is displayed on the right side",
-            "redleft" : "A red light is displayed on the left side"
+            "greenright" : "A green square is displayed on the right side (incongruent)",
+            "greenleft" : "A green square is displayed on the left side (congruent)",
+            "redright" : "A red square is displayed on the right side (congruent)",
+            "redleft" : "A red square is displayed on the left side (incongruent)"
         } 
     }, 
     "value" :{
-        "Description": "Light color",
+        "Description": "Square color",
         "Levels" :{
             "2" : "Green",
             "3" : "Red"
         } 
     },
     "response" :{
-        "Description": "??",
+        "Description": "Side of response",
         "Levels" :{
-
+            "2" : "Left",
+            "3" : "Right"
         } 
     },
-    "response_is_wrong" :{
+    "correct" :{
         "Description" : "",
         "Levels" :{
-            "0": "Answer is correct",
-            "1": "Answer is incorrect"
+            "1": "Answer is correct",
+            "2": "Answer is incorrect"
         } 
     } 
 }

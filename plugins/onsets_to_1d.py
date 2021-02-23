@@ -1,9 +1,15 @@
+#!/usr/bin/env python3
+
 import glob
 import io
 import numpy as np
 import os
 import pandas as pd
 from os.path import join as opj
+
+
+SIMON_TRIALS = {'greenleft': 'left_congruent', 'greenright': 'left_incongruent',
+                'redleft': 'right_congruent', 'redright': 'right_incongruent'}
 
 
 def save_onsets(func_path, onset_path, to_remove):
@@ -38,7 +44,9 @@ def save_onsets(func_path, onset_path, to_remove):
             basename = basename[:basename.rfind('_')]
 
             if 'simon' in file:
-                response_wrong = df['response_is_wrong'].values
+                # In Simon, you don't want the duration but the response time
+                duration = df['response_time']
+                response_correct = df['correct'].values
 
                 correct_filename = opj(onset_path, f'{basename}_correct_onset.1D')
                 incorrect_filename = opj(onset_path, f'{basename}_incorrect_onset.1D')
@@ -47,14 +55,21 @@ def save_onsets(func_path, onset_path, to_remove):
                 onsets = np.round(onset - to_remove, decimals=2)
 
                 # Save correct and incorrect onsets
-                onsets[response_wrong == 0].to_csv(correct_filename, index=False)
-                onsets[response_wrong == 1].to_csv(incorrect_filename, index=False)
+                # This should be transposed into a row (checking that no timepoint is lost)
+                onsets[response_correct == 1].transpose().to_csv(correct_filename,
+                                                                 index=False, header=False, sep=' ')
+                # This should be transposed into a row (checking that no timepoint is lost)
+                onsets[response_correct == 0].transpose().to_csv(incorrect_filename,
+                                                                 index=False, header=False, sep=' ')
 
             # Loop through trials
             for trial in trial_unique:
 
                 # Mask to only use this trial
                 keep = trial_type == trial
+
+                # if 'simon' in file:
+                #     trial = SIMON_TRIALS[trial]
 
                 # Prepare output filename for onsets and duration
                 onsets_filename = opj(onset_path,
@@ -67,11 +82,15 @@ def save_onsets(func_path, onset_path, to_remove):
 
                 if 'pinel' in file or 'motor' in file:
                     # Save onsets file
-                    onsets.to_csv(onsets_filename, index=False)
+                    # This should be transposed into a row (checking that no timepoint is lost)
+                    onsets.transpose().to_csv(onsets_filename,
+                                              index=False, header=False, sep=' ')
 
                 # Save durations
                 durations = duration[keep]
-                durations.to_csv(duration_filename, index=False)
+                # This should be transposed into a row (checking that no timepoint is lost)
+                durations.transpose().to_csv(duration_filename,
+                                             index=False, header=False, sep=' ')
 
                 if 'simon' in file:
                     onsets_duration = []
@@ -79,16 +98,17 @@ def save_onsets(func_path, onset_path, to_remove):
                         onsets_duration.append(f'{onsets.values[i]}:{durations.values[i]}')
 
                     onsets_duration_df = pd.read_csv(io.StringIO('\n'.join(onsets_duration)),
-                                                     delim_whitespace=True)
-
-                    onsets_duration_df.to_csv(onsets_filename, index=False)
-
+                                                     delim_whitespace=True,
+                                                     names=['col'])
+                    # This is correctly transposed into a row
+                    onsets_duration_df.transpose().to_csv(onsets_filename,
+                                                          index=False, header=False, sep=' ')
 
 
 def main():
     """[summary]
     """
-    prj_dir = '/home/eurunuela/public/PJMASK_2/preproc'
+    prj_dir = '/bcbl/home/public/PJMASK_2/preproc'
     to_remove = 15
 
     # Get subject directories
@@ -115,8 +135,7 @@ def main():
 
                 try:
                     # Create onset directory if it doesn't exist
-                    if not os.path.isdir(onset_path):
-                        os.mkdir(onset_path)
+                    os.makedirs(onset_path, exist_ok=True)
 
                     # Save onsets of all three tasks
                     save_onsets(func_path, onset_path, to_remove)

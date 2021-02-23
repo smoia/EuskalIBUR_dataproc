@@ -67,24 +67,6 @@ do
 			3dbucket -prefix ${tmp}/${sub}_congruent_vs_incongruent_${ses}.nii.gz -abuc ${rbuck}'[21]' -overwrite
 			3dbucket -prefix ${tmp}/${sub}_congruent_and_incongruent_${ses}.nii.gz -abuc ${rbuck}'[23]' -overwrite
 		;;
-		pinel )
-			# Pinel models 8 contrasts: right vs left hand, vertical vs horizontal checkers, auditory stims, visual stims, 
-			# auditory calc vs auditory noncalc, visual calc vs visual noncalc, auditory vs visual, visual vs checkerboards.
-			# Added all sentences, all motor, all calculus, all motor vs sentences, all calculus vs sentences.
-			3dbucket -prefix ${tmp}/${sub}_right_vs_left_${ses}.nii.gz -abuc ${rbuck}'[21]' -overwrite
-			3dbucket -prefix ${tmp}/${sub}_vertical_vs_horizontal_cb_${ses}.nii.gz -abuc ${rbuck}'[23]' -overwrite
-			3dbucket -prefix ${tmp}/${sub}_all_auditory_${ses}.nii.gz -abuc ${rbuck}'[25]' -overwrite
-			3dbucket -prefix ${tmp}/${sub}_all_visual_${ses}.nii.gz -abuc ${rbuck}'[27]' -overwrite
-			3dbucket -prefix ${tmp}/${sub}_auditory_calc_vs_noncalc_${ses}.nii.gz -abuc ${rbuck}'[29]' -overwrite
-			3dbucket -prefix ${tmp}/${sub}_visual_calc_vs_noncalc_${ses}.nii.gz -abuc ${rbuck}'[31]' -overwrite
-			3dbucket -prefix ${tmp}/${sub}_auditory_vs_visual_${ses}.nii.gz -abuc ${rbuck}'[33]' -overwrite
-			3dbucket -prefix ${tmp}/${sub}_visual_vs_cb_${ses}.nii.gz -abuc ${rbuck}'[35]' -overwrite
-			3dbucket -prefix ${tmp}/${sub}_all_sentences_${ses}.nii.gz -abuc ${rbuck}'[37]' -overwrite
-			3dbucket -prefix ${tmp}/${sub}_all_motor_${ses}.nii.gz -abuc ${rbuck}'[39]' -overwrite
-			3dbucket -prefix ${tmp}/${sub}_all_calc_${ses}.nii.gz -abuc ${rbuck}'[41]' -overwrite
-			3dbucket -prefix ${tmp}/${sub}_all_motor_vs_sentences_${ses}.nii.gz -abuc ${rbuck}'[43]' -overwrite
-			3dbucket -prefix ${tmp}/${sub}_all_calc_vs_sentences_${ses}.nii.gz -abuc ${rbuck}'[45]' -overwrite
-		;;
 		* ) echo "    !!! Warning !!! Invalid task: ${task}"; exit ;;
 	esac
 done

@@ -98,9 +98,12 @@ do
 		pinel )
 			rm ${tmp}/${sub}_${ses}_spm_*#1*.nii.gz ${tmp}/${sub}_${ses}_spm_*#2*.nii.gz ${tmp}/${sub}_${ses}_spm_*#3*.nii.gz
 			rm ${tmp}/${sub}_${ses}_spm_*#4*.nii.gz ${tmp}/${sub}_${ses}_spm_*#5*.nii.gz ${tmp}/${sub}_${ses}_spm_*#6*.nii.gz
-			rm ${tmp}/${sub}_${ses}_spm_*#7*.nii.gz ${tmp}/${sub}_${ses}_spm_*#8*.nii.gz
+			rm ${tmp}/${sub}_${ses}_spm_*#7*.nii.gz ${tmp}/${sub}_${ses}_spm_*#8*.nii.gz ${tmp}/${sub}_${ses}_spm_*#9*.nii.gz
+			rm ${tmp}/${sub}_${ses}_spm_*#10*.nii.gz ${tmp}/${sub}_${ses}_spm_*#11*.nii.gz ${tmp}/${sub}_${ses}_spm_*#12*.nii.gz
+			rm ${tmp}/${sub}_${ses}_spm_*#13*.nii.gz
 			# Pinel models 8 contrasts: right vs left hand, vertical vs horizontal checkers, auditory stims, visual stims, 
 			# auditory calc vs auditory noncalc, visual calc vs visual noncalc, auditory vs visual, visual vs checkerboards.
+			# Added all sentences, all motor, all calculus, all motor vs sentences, all calculus vs sentences.
 			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_right_vs_left#0_Coef.nii.gz -abuc ${rbuck}'[21]' -overwrite
 			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_right_vs_left#0_Tstat.nii.gz -abuc ${rbuck}'[22]' -overwrite
 			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_vertical_vs_horizontal_cb#0_Coef.nii.gz -abuc ${rbuck}'[23]' -overwrite
@@ -117,6 +120,16 @@ do
 			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_auditory_vs_visual#0_Tstat.nii.gz -abuc ${rbuck}'[34]' -overwrite
 			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_visual_vs_cb#0_Coef.nii.gz -abuc ${rbuck}'[35]' -overwrite
 			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_visual_vs_cb#0_Tstat.nii.gz -abuc ${rbuck}'[36]' -overwrite
+			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_all_sentences#0_Coef.nii.gz -abuc ${rbuck}'[37]' -overwrite
+			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_all_sentences#0_Tstat.nii.gz -abuc ${rbuck}'[38]' -overwrite
+			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_all_motor#0_Coef.nii.gz -abuc ${rbuck}'[39]' -overwrite
+			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_all_motor#0_Tstat.nii.gz -abuc ${rbuck}'[40]' -overwrite
+			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_all_calc#0_Coef.nii.gz -abuc ${rbuck}'[41]' -overwrite
+			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_all_calc#0_Tstat.nii.gz -abuc ${rbuck}'[42]' -overwrite
+			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_all_motor_vs_sentences#0_Coef.nii.gz -abuc ${rbuck}'[43]' -overwrite
+			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_all_motor_vs_sentences#0_Tstat.nii.gz -abuc ${rbuck}'[44]' -overwrite
+			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_all_calc_vs_sentences#0_Coef.nii.gz -abuc ${rbuck}'[45]' -overwrite
+			3dbucket -prefix ${tmp}/${sub}_${ses}_spm_all_calc_vs_sentences#0_Tstat.nii.gz -abuc ${rbuck}'[46]' -overwrite
 		;;
 		* ) echo "    !!! Warning !!! Invalid task: ${task}"; exit ;;
 	esac

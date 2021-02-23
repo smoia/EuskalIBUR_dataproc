@@ -17,9 +17,7 @@ def read_1d(fname):
     [type]
         [description]
     """
-    with open(fname) as f:
-        content = f.readlines()
-    content = [x.strip() for x in content]
+    content = pd.read_csv(fname, delim_whitespace=True, names=['col'])
 
     return content
 
@@ -35,8 +33,8 @@ def write_1d(fname, output):
         [description]
     """
     df = pd.read_csv(io.StringIO('\n'.join(output)),
-                                 delim_whitespace=True)
-    df.to_csv(fname, index=False)
+                     delim_whitespace=True, names=['col'])
+    df.transpose().to_csv(fname, index=False, header=False, sep=' ')
 
 
 def read_onsets(onset_path, sbj, ses):
@@ -128,21 +126,21 @@ def check_save_regressors(onset_path, task_fname, correct_fname,
 
     if not correct:
         # Correct onsets file is empty
-        correct_onsets = ['-1']
+        correct_onsets = ['-1:0.0']
     else:
         correct_onsets = extract_onsets(task, correct)
         # If correct does not belong to task
         if not correct_onsets:
-            correct_onsets = ['-1']
+            correct_onsets = ['-1:0.0']
 
     if not incorrect:
         # Incorrect onsets file is empty
-        incorrect_onsets = ['-1']
+        incorrect_onsets = ['-1:0.0']
     else:
         incorrect_onsets = extract_onsets(task, incorrect)
         # If incorrect does not belong to task
         if not incorrect_onsets:
-            incorrect_onsets = ['-1']
+            incorrect_onsets = ['-1:0.0']
 
     # Save correct onsets
     write_1d(correct_out_fname, output=correct_onsets)
@@ -188,7 +186,7 @@ def generate_regressors(onset_path, onsets, sbj, ses):
 def main():
     """[summary]
     """
-    prj_dir = '/home/eurunuela/public/PJMASK_2/preproc'
+    prj_dir = '/bcbl/home/public/PJMASK_2/preproc'
 
     # Get subject directories
     sbj_dirs = [dirname for dirname in os.listdir(prj_dir) if 'sub' in dirname]

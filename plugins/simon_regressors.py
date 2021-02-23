@@ -126,21 +126,21 @@ def check_save_regressors(onset_path, task_fname, correct_fname,
 
     if not correct:
         # Correct onsets file is empty
-        correct_onsets = ['-1']
+        correct_onsets = ['-1:0.0']
     else:
         correct_onsets = extract_onsets(task, correct)
         # If correct does not belong to task
         if not correct_onsets:
-            correct_onsets = ['-1']
+            correct_onsets = ['-1:0.0']
 
     if not incorrect:
         # Incorrect onsets file is empty
-        incorrect_onsets = ['-1']
+        incorrect_onsets = ['-1:0.0']
     else:
         incorrect_onsets = extract_onsets(task, incorrect)
         # If incorrect does not belong to task
         if not incorrect_onsets:
-            incorrect_onsets = ['-1']
+            incorrect_onsets = ['-1:0.0']
 
     # Save correct onsets
     write_1d(correct_out_fname, output=correct_onsets)

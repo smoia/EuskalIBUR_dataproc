@@ -39,7 +39,7 @@ echo "${printline} " "$@"
 
 cwd=$(pwd)
 
-cd ${wdr}/Mennes_replication/GLM/${task}/output || exit
+cd ${wdr}/Mennes_replication || exit
 
 tmp=${tmp}/tmp.${sub}_${task}_06qcm
 replace_and mkdir ${tmp}

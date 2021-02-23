@@ -35,8 +35,8 @@ def write_1d(fname, output):
         [description]
     """
     df = pd.read_csv(io.StringIO('\n'.join(output)),
-                                 delim_whitespace=True)
-    df.to_csv(fname, index=False)
+                     delim_whitespace=True, names=['col'])
+    df.transpose().to_csv(fname, index=False, header=False, sep=' ')
 
 
 def read_onsets(onset_path, sbj, ses):

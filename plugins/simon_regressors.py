@@ -17,9 +17,7 @@ def read_1d(fname):
     [type]
         [description]
     """
-    with open(fname) as f:
-        content = f.readlines()
-    content = [x.strip() for x in content]
+    content = pd.read_csv(fname, delim_whitespace=True, names=['col'])
 
     return content
 

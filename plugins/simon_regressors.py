@@ -2,7 +2,8 @@ import io
 import os
 import pandas as pd
 from os.path import join as opj
-
+import pdb
+import numpy as np
 
 def read_1d(fname):
     """[summary]
@@ -17,7 +18,10 @@ def read_1d(fname):
     [type]
         [description]
     """
-    content = pd.read_csv(fname, delim_whitespace=True, names=['col'])
+    try:
+        content = pd.read_csv(fname, delim_whitespace=True, header=None)
+    except:
+        content = pd.DataFrame({'A': []})
 
     return content
 
@@ -34,7 +38,7 @@ def write_1d(fname, output):
     """
     df = pd.read_csv(io.StringIO('\n'.join(output)),
                      delim_whitespace=True, names=['col'])
-    df.transpose().to_csv(fname, index=False, header=False, sep=' ')
+    pd.DataFrame(df.values.reshape(1, len(df.values))).to_csv(fname, index=False, header=False, sep=' ')
 
 
 def read_onsets(onset_path, sbj, ses):
@@ -84,10 +88,11 @@ def extract_onsets(task, performance):
         [description]
     """
     onsets = []
-    for i in range(len(task)):
+    task_squeezed = np.squeeze(task.values)
+    for i in range(len(task_squeezed)):
         # Only save if onset is in correct list
-        if task[i].split(':')[0] in performance:
-            onsets.append(task[i])
+        if float(task_squeezed[i].split(':')[0]) in performance.values:
+            onsets.append(task_squeezed[i])
 
     return onsets
 
@@ -124,7 +129,7 @@ def check_save_regressors(onset_path, task_fname, correct_fname,
     incorrect_out_fname = opj(onset_path,
                               f'{sbj}_{ses}_task-simon_{out_fname}_incorrect_onset.1D')
 
-    if not correct:
+    if correct.empty:
         # Correct onsets file is empty
         correct_onsets = ['-1:0.0']
     else:
@@ -133,7 +138,7 @@ def check_save_regressors(onset_path, task_fname, correct_fname,
         if not correct_onsets:
             correct_onsets = ['-1:0.0']
 
-    if not incorrect:
+    if incorrect.empty:
         # Incorrect onsets file is empty
         incorrect_onsets = ['-1:0.0']
     else:
@@ -186,7 +191,8 @@ def generate_regressors(onset_path, onsets, sbj, ses):
 def main():
     """[summary]
     """
-    prj_dir = '/bcbl/home/public/PJMASK_2/preproc'
+    # prj_dir = '/bcbl/home/public/PJMASK_2/preproc'
+    prj_dir = '/home/eurunuela/public/PJMASK_2/preproc'
 
     # Get subject directories
     sbj_dirs = [dirname for dirname in os.listdir(prj_dir) if 'sub' in dirname]

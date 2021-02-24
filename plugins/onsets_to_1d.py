@@ -6,7 +6,7 @@ import numpy as np
 import os
 import pandas as pd
 from os.path import join as opj
-import pdb
+
 
 SIMON_TRIALS = {'greenleft': 'left_congruent', 'greenright': 'left_incongruent',
                 'redleft': 'right_congruent', 'redright': 'right_incongruent'}
@@ -26,7 +26,7 @@ def save_onsets(func_path, onset_path, to_remove):
     """
     # Get tsv files with onsets
     found_files = glob.glob(func_path + '/*.tsv')
-    keep_keyword = ['simon'] #, 'motor', 'pinel']
+    keep_keyword = ['simon', 'motor', 'pinel']
     keep_list = [i for i in found_files if keep_keyword[0] in i]
     # keep_list.append([i for i in found_files if keep_keyword[1] in i][0])
     # keep_list.append([i for i in found_files if keep_keyword[2] in i][0])
@@ -46,7 +46,7 @@ def save_onsets(func_path, onset_path, to_remove):
             if 'simon' in file:
                 # In Simon, you don't want the duration but the response time
                 duration = df['response_time']
-                response_correct = np.logical_not(df['response_is_wrong'].values)
+                response_correct = df['correct'].values
 
                 correct_filename = opj(onset_path, f'{basename}_correct_onset.1D')
                 incorrect_filename = opj(onset_path, f'{basename}_incorrect_onset.1D')
@@ -58,11 +58,11 @@ def save_onsets(func_path, onset_path, to_remove):
                 # This should be transposed into a row (checking that no timepoint is lost)
                 correct_out = onsets[response_correct == 1]
                 pd.DataFrame(correct_out.values.reshape(1, len(correct_out))).to_csv(correct_filename,
-                                                                 index=False, header=False, sep=' ')
+                                                                                     index=False, header=False, sep=' ')
                 # This should be transposed into a row (checking that no timepoint is lost)
                 incorrect_out = onsets[response_correct == 0]
                 pd.DataFrame(incorrect_out.values.reshape(1, len(incorrect_out))).to_csv(incorrect_filename,
-                                                                 index=False, header=False, sep=' ')
+                                                                                         index=False, header=False, sep=' ')
 
             # Loop through trials
             for trial in trial_unique:
@@ -97,7 +97,7 @@ def save_onsets(func_path, onset_path, to_remove):
                 if 'simon' in file:
                     onsets_duration = []
                     for i in range(len(onsets)):
-                        onsets_duration.append(f'{onsets.values[i]}:{durations.values[i]}')
+                        onsets_duration.append(f'{onsets.values[i]}:{np.nan_to_num(durations.values[i])}')
 
                     onsets_duration_df = pd.read_csv(io.StringIO('\n'.join(onsets_duration)),
                                                      delim_whitespace=True,
@@ -110,9 +110,8 @@ def save_onsets(func_path, onset_path, to_remove):
 def main():
     """[summary]
     """
-    # prj_dir = '/bcbl/home/public/PJMASK_2/preproc'
-    prj_dir = '/home/eurunuela/public/PJMASK_2/preproc'
-    
+    prj_dir = '/bcbl/home/public/PJMASK_2/preproc'
+
     to_remove = 15
 
     # Get subject directories
@@ -120,7 +119,6 @@ def main():
 
     # Loop through all subject directories
     for sbj_dir in sbj_dirs:
-        pdb.set_trace()
 
         sbj_path = opj(prj_dir, sbj_dir)
 

@@ -6,7 +6,7 @@ import numpy as np
 import os
 import pandas as pd
 from os.path import join as opj
-
+import pdb
 
 SIMON_TRIALS = {'greenleft': 'left_congruent', 'greenright': 'left_incongruent',
                 'redleft': 'right_congruent', 'redright': 'right_incongruent'}
@@ -46,7 +46,7 @@ def save_onsets(func_path, onset_path, to_remove):
             if 'simon' in file:
                 # In Simon, you don't want the duration but the response time
                 duration = df['response_time']
-                response_correct = df['correct'].values
+                response_correct = np.logical_not(df['response_is_wrong'].values)
 
                 correct_filename = opj(onset_path, f'{basename}_correct_onset.1D')
                 incorrect_filename = opj(onset_path, f'{basename}_incorrect_onset.1D')
@@ -56,10 +56,12 @@ def save_onsets(func_path, onset_path, to_remove):
 
                 # Save correct and incorrect onsets
                 # This should be transposed into a row (checking that no timepoint is lost)
-                onsets[response_correct == 1].transpose().to_csv(correct_filename,
+                correct_out = onsets[response_correct == 1]
+                pd.DataFrame(correct_out.values.reshape(1, len(correct_out))).to_csv(correct_filename,
                                                                  index=False, header=False, sep=' ')
                 # This should be transposed into a row (checking that no timepoint is lost)
-                onsets[response_correct == 0].transpose().to_csv(incorrect_filename,
+                incorrect_out = onsets[response_correct == 0]
+                pd.DataFrame(incorrect_out.values.reshape(1, len(incorrect_out))).to_csv(incorrect_filename,
                                                                  index=False, header=False, sep=' ')
 
             # Loop through trials
@@ -108,7 +110,9 @@ def save_onsets(func_path, onset_path, to_remove):
 def main():
     """[summary]
     """
-    prj_dir = '/bcbl/home/public/PJMASK_2/preproc'
+    # prj_dir = '/bcbl/home/public/PJMASK_2/preproc'
+    prj_dir = '/home/eurunuela/public/PJMASK_2/preproc'
+    
     to_remove = 15
 
     # Get subject directories
@@ -116,6 +120,7 @@ def main():
 
     # Loop through all subject directories
     for sbj_dir in sbj_dirs:
+        pdb.set_trace()
 
         sbj_path = opj(prj_dir, sbj_dir)
 
@@ -128,7 +133,6 @@ def main():
             for ses_dir in ses_dirs:
 
                 print(f'Extracting onsets of {sbj_dir} and {ses_dir}...')
-
                 ses_path = opj(sbj_path, ses_dir)
                 func_path = opj(ses_path, 'func')
                 onset_path = opj(ses_path, 'func_preproc/onsets')

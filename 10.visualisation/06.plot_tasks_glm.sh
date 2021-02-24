@@ -26,10 +26,11 @@ esac
 }
 
 sub=$1
-task=$2
-pval=${3:-0.01}
-wdr=${4:-/data}
-tmp=${5:-.}
+lastses=$2
+task=$3
+pval=${4:-0.01}
+wdr=${5:-/data}
+tmp=${6:-.}
 
 ### print input
 printline=$( basename -- $0 )
@@ -56,7 +57,7 @@ do
 	# Check number of bricks and remove one cause 0-index
 	lastbrick=$( fslval ${sub}_01_task-${task}_${sfx} dim5 )
 	let lastbrick--
-	for ses in $( seq -f %02g 1 10; echo "allses" )
+	for ses in $( seq -f %02g 1 ${lastses}; echo "allses" )
 	do
 		rbuck=${sub}_${ses}_task-${task}_${sfx}.nii.gz
 		if [ ! -e ${rbuck} ]; then continue; else echo "Exploding ${rbuck}"; fi
@@ -70,7 +71,7 @@ do
 done
 
 # Until it is not fixed, correctly rename GLT contrasts bricks
-for ses in $( seq -f %02g 1 10; echo "allses" )
+for ses in $( seq -f %02g 1 ${lastses}; echo "allses" )
 do
 	rbuck=${sub}_${ses}_task-${task}_${sfx}.nii.gz
 	if [ ! -e ${rbuck} ]; then continue; else echo "Exploding ${rbuck}"; fi
@@ -137,7 +138,7 @@ done
 
 for sfx in spm spm-IM
 do
-	for ses in $( seq -f %02g 1 10; echo "allses" )
+	for ses in $( seq -f %02g 1 ${lastses}; echo "allses" )
 	do
 		rbuck=${sub}_${ses}_task-${task}_${sfx}.nii.gz
 		# Find right tstat value

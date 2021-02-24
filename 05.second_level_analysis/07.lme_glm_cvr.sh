@@ -25,10 +25,10 @@ case $1 in
 esac
 }
 
-task=$2
-wdr=${3:-/data}
-sdr=${4:-/scripts}
-tmp=${5:-.}
+task=$1
+wdr=${2:-/data}
+sdr=${3:-/scripts}
+tmp=${4:-.}
 
 ### print input
 printline=$( basename -- $0 )

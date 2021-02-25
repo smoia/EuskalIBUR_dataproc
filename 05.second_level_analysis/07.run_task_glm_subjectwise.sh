@@ -88,7 +88,7 @@ esac
 
 # Start preparing calls to programs
 run3dDeconvolve="3dDeconvolve -overwrite -input"
-run3dREMLfit="3dREMLfit -overwrite -input"
+run3dREMLfit="3dREMLfit -overwrite -input \""
 
 # Prepare inputs
 for ses in $( seq -f %02g 1 10 )
@@ -104,7 +104,7 @@ do
 
 	# Add input to 3dDeconvolve call
 	run3dDeconvolve="${run3dDeconvolve} ${tmp}/${flpr}_spc.nii.gz"
-	run3dREMLfit="${run3dREMLfit} ${tmp}/${flpr}_spc.nii.gz"
+	run3dREMLfit="${run3dREMLfit}${tmp}/${flpr}_spc.nii.gz "
 
 	# Pad noise regressors and concatenate them!
 	1d_tool.py -infile ${fdir}/${flpr}_echo-1_bold_mcf_demean.par -pad_into_many_runs ${ses} 10 -write ${tmp}/${ses}_demean.par
@@ -283,7 +283,7 @@ esac
 echo "${run3dDeconvolve}"
 eval ${run3dDeconvolve}
 
-run3dREMLfit="${run3dREMLfit} -matrix ${mat}.1D"
+run3dREMLfit="${run3dREMLfit::-1}\" -matrix ${mat}.1D"
 run3dREMLfit="${run3dREMLfit} -mask ${mask}.nii.gz"
 run3dREMLfit="${run3dREMLfit} -tout -verb -GOFORIT"
 run3dREMLfit="${run3dREMLfit} -Rfitts ${fitts}.nii.gz"

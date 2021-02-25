@@ -28,8 +28,8 @@ def save_onsets(func_path, onset_path, to_remove):
     found_files = glob.glob(func_path + '/*.tsv')
     keep_keyword = ['simon', 'motor', 'pinel']
     keep_list = [i for i in found_files if keep_keyword[0] in i]
-    # keep_list.append([i for i in found_files if keep_keyword[1] in i][0])
-    # keep_list.append([i for i in found_files if keep_keyword[2] in i][0])
+    keep_list.append([i for i in found_files if keep_keyword[1] in i][0])
+    keep_list.append([i for i in found_files if keep_keyword[2] in i][0])
 
     for file in keep_list:
 

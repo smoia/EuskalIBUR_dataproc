@@ -73,15 +73,15 @@ for sub in 001 # 002 003 004 007 008 009
 do
 	for task in motor pinel simon
 	do
-		for ses in 01 #$(seq -f %02g 1 10)
-		do
-			rm ${wdr}/../LogFiles/${sub}_${ses}_${task}_glm_pipe
-			qsub -q short.q -N "glm_${sub}_${ses}_${task}_EuskalIBUR" \
-			-o ${wdr}/../LogFiles/${sub}_${ses}_${task}_glm_pipe \
-			-e ${wdr}/../LogFiles/${sub}_${ses}_${task}_glm_pipe \
-			${wdr}/98.hcp/run_ses_glm.sh ${sub} ${ses} ${task}
-			# -hold_jid "${joblist}" \
-		done
+		# for ses in 01 #$(seq -f %02g 1 10)
+		# do
+		# 	rm ${wdr}/../LogFiles/${sub}_${ses}_${task}_glm_pipe
+		# 	qsub -q short.q -N "glm_${sub}_${ses}_${task}_EuskalIBUR" \
+		# 	-o ${wdr}/../LogFiles/${sub}_${ses}_${task}_glm_pipe \
+		# 	-e ${wdr}/../LogFiles/${sub}_${ses}_${task}_glm_pipe \
+		# 	${wdr}/98.hcp/run_ses_glm.sh ${sub} ${ses} ${task}
+		# 	# -hold_jid "${joblist}" \
+		# done
 
 		rm ${wdr}/../LogFiles/${sub}_allses_${task}_glm_pipe
 		qsub -q short.q -N "glm_${sub}_allses_${task}_EuskalIBUR" \

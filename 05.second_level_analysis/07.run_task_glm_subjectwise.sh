@@ -96,7 +96,7 @@ do
 	fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 	flpr=sub-${sub}_ses-${ses}_task-${task}
 	func=${fdir}/00.${flpr}_optcom_bold_native_preprocessed
-	ospr=${fdir}/onsets/${sub}_${task}
+	ospr=${fdir}/onsets/${flpr}
 
 	# SPC func
 	fslmaths ${func} -Tmean ${tmp}/${flpr}_mean

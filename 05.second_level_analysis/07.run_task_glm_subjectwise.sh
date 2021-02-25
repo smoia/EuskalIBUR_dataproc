@@ -58,29 +58,29 @@ replace_and touch ${tmp}/meica_rej_ort.1D
 
 case ${task} in
 	motor )
-		replace_and touch ${tmp}/finger_left_onset
-		replace_and touch ${tmp}/finger_right_onset
-		replace_and touch ${tmp}/toe_left_onset
-		replace_and touch ${tmp}/toe_right_onset
-		replace_and touch ${tmp}/tongue_onset
+		replace_and touch ${tmp}/finger_left_onset.1D
+		replace_and touch ${tmp}/finger_right_onset.1D
+		replace_and touch ${tmp}/toe_left_onset.1D
+		replace_and touch ${tmp}/toe_right_onset.1D
+		replace_and touch ${tmp}/tongue_onset.1D
 		replace_and touch ${tmp}/star_onset.1D
 	;;
 	simon )
-		replace_and touch ${tmp}/left_congruent_correct_onset
-		replace_and touch ${tmp}/right_congruent_correct_onset
-		replace_and touch ${tmp}/left_incongruent_correct_onset
+		replace_and touch ${tmp}/left_congruent_correct_onset.1D
+		replace_and touch ${tmp}/right_congruent_correct_onset.1D
+		replace_and touch ${tmp}/left_incongruent_correct_onset.1D
 		replace_and touch ${tmp}/right_incongruent_correct_onset.1D
 	;;
 	pinel )
-		replace_and touch ${tmp}/acalc_onset
-		replace_and touch ${tmp}/amot_left_onset
-		replace_and touch ${tmp}/amot_right_onset
-		replace_and touch ${tmp}/asent_onset
-		replace_and touch ${tmp}/chbh_onset
-		replace_and touch ${tmp}/chbv_onset
-		replace_and touch ${tmp}/vcalc_onset
-		replace_and touch ${tmp}/vmot_left_onset
-		replace_and touch ${tmp}/vmot_right_onset
+		replace_and touch ${tmp}/acalc_onset.1D
+		replace_and touch ${tmp}/amot_left_onset.1D
+		replace_and touch ${tmp}/amot_right_onset.1D
+		replace_and touch ${tmp}/asent_onset.1D
+		replace_and touch ${tmp}/chbh_onset.1D
+		replace_and touch ${tmp}/chbv_onset.1D
+		replace_and touch ${tmp}/vcalc_onset.1D
+		replace_and touch ${tmp}/vmot_left_onset.1D
+		replace_and touch ${tmp}/vmot_right_onset.1D
 		replace_and touch ${tmp}/vsent_onset.1D
 	;;
 	* ) echo "    !!! Warning !!! Invalid task: ${task}"; exit ;;
@@ -95,7 +95,7 @@ for ses in $( seq -f %02g 1 10 )
 do
 	fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 	flpr=sub-${sub}_ses-${ses}_task-${task}
-	func=${fdir}/00.${sub}_${task}_optcom_bold_native_preprocessed
+	func=${fdir}/00.${flpr}_optcom_bold_native_preprocessed
 	ospr=${fdir}/onsets/${sub}_${task}
 
 	# SPC func
@@ -120,50 +120,50 @@ do
 	# Concatenate onsets for multirun file
 	case ${task} in
 		motor )
-			cat ${tmp}/finger_left_onset.1D ${ospr}_finger_left_onset.1D > ${ospr}_finger_left_onset_n.1D
-			mv ${ospr}_finger_left_onset_n.1D ${ospr}_finger_left_onset.1D
-			cat ${tmp}/finger_right_onset.1D ${ospr}_finger_right_onset.1D > ${ospr}_finger_right_onset_n.1D
-			mv ${ospr}_finger_right_onset_n.1D ${ospr}_finger_right_onset.1D
-			cat ${tmp}/toe_left_onset.1D ${ospr}_toe_left_onset.1D > ${ospr}_toe_left_onset_n.1D
-			mv ${ospr}_toe_left_onset_n.1D ${ospr}_toe_left_onset.1D
-			cat ${tmp}/toe_right_onset.1D ${ospr}_toe_right_onset.1D > ${ospr}_toe_right_onset_n.1D
-			mv ${ospr}_toe_right_onset_n.1D ${ospr}_toe_right_onset.1D
-			cat ${tmp}/tongue_onset.1D ${ospr}_tongue_onset.1D > ${ospr}_tongue_onset_n.1D
-			mv ${ospr}_tongue_onset_n.1D ${ospr}_tongue_onset.1D
-			cat ${tmp}/star_onset.1D ${ospr}_star_onset.1D > ${ospr}_star_onset_n.1D
-			mv ${ospr}_star_onset_n.1D ${ospr}_star_onset.1D
+			cat ${tmp}/finger_left_onset.1D ${ospr}_finger_left_onset.1D > ${tmp}/finger_left_onset_n.1D
+			mv ${tmp}/finger_left_onset_n.1D ${tmp}/finger_left_onset.1D
+			cat ${tmp}/finger_right_onset.1D ${ospr}_finger_right_onset.1D > ${tmp}/finger_right_onset_n.1D
+			mv ${tmp}/finger_right_onset_n.1D ${tmp}/finger_right_onset.1D
+			cat ${tmp}/toe_left_onset.1D ${ospr}_toe_left_onset.1D > ${tmp}/toe_left_onset_n.1D
+			mv ${tmp}/toe_left_onset_n.1D ${tmp}/toe_left_onset.1D
+			cat ${tmp}/toe_right_onset.1D ${ospr}_toe_right_onset.1D > ${tmp}/toe_right_onset_n.1D
+			mv ${tmp}/toe_right_onset_n.1D ${tmp}/toe_right_onset.1D
+			cat ${tmp}/tongue_onset.1D ${ospr}_tongue_onset.1D > ${tmp}/tongue_onset_n.1D
+			mv ${tmp}/tongue_onset_n.1D ${tmp}/tongue_onset.1D
+			cat ${tmp}/star_onset.1D ${ospr}_star_onset.1D > ${tmp}/star_onset_n.1D
+			mv ${tmp}/star_onset_n.1D ${tmp}/star_onset.1D
 		;;
 		simon )
-			cat ${tmp}/left_congruent_correct_onset.1D ${ospr}_left_congruent_correct_onset.1D > ${ospr}_left_congruent_correct_onset_n.1D
-			mv ${ospr}_left_congruent_correct_onset_n.1D ${ospr}_left_congruent_correct_onset.1D
-			cat ${tmp}/right_congruent_correct_onset.1D ${ospr}_right_congruent_correct_onset.1D > ${ospr}_right_congruent_correct_onset_n.1D
-			mv ${ospr}_right_congruent_correct_onset_n.1D ${ospr}_right_congruent_correct_onset.1D
-			cat ${tmp}/left_incongruent_correct_onset.1D ${ospr}_left_incongruent_correct_onset.1D > ${ospr}_left_incongruent_correct_onset_n.1D
-			mv ${ospr}_left_incongruent_correct_onset_n.1D ${ospr}_left_incongruent_correct_onset.1D
-			cat ${tmp}/right_incongruent_correct_onset.1D ${ospr}_right_incongruent_correct_onset.1D > ${ospr}_right_incongruent_correct_onset_n.1D
-			mv ${ospr}_right_incongruent_correct_onset_n.1D ${ospr}_right_incongruent_correct_onset.1D
+			cat ${tmp}/left_congruent_correct_onset.1D ${ospr}_left_congruent_correct_onset.1D > ${tmp}/left_congruent_correct_onset_n.1D
+			mv ${tmp}/left_congruent_correct_onset_n.1D ${tmp}/left_congruent_correct_onset.1D
+			cat ${tmp}/right_congruent_correct_onset.1D ${ospr}_right_congruent_correct_onset.1D > ${tmp}/right_congruent_correct_onset_n.1D
+			mv ${tmp}/right_congruent_correct_onset_n.1D ${tmp}/right_congruent_correct_onset.1D
+			cat ${tmp}/left_incongruent_correct_onset.1D ${ospr}_left_incongruent_correct_onset.1D > ${tmp}/left_incongruent_correct_onset_n.1D
+			mv ${tmp}/left_incongruent_correct_onset_n.1D ${tmp}/left_incongruent_correct_onset.1D
+			cat ${tmp}/right_incongruent_correct_onset.1D ${ospr}_right_incongruent_correct_onset.1D > ${tmp}/right_incongruent_correct_onset_n.1D
+			mv ${tmp}/right_incongruent_correct_onset_n.1D ${tmp}/right_incongruent_correct_onset.1D
 		;;
 		pinel )
-			cat ${tmp}/acalc_onset.1D ${ospr}_acalc_onset.1D > ${ospr}_acalc_onset_n.1D
-			mv ${ospr}_acalc_onset_n.1D ${ospr}_acalc_onset.1D
-			cat ${tmp}/amot_left_onset.1D ${ospr}_amot_left_onset.1D > ${ospr}_amot_left_onset_n.1D
-			mv ${ospr}_amot_left_onset_n.1D ${ospr}_amot_left_onset.1D
-			cat ${tmp}/amot_right_onset.1D ${ospr}_amot_right_onset.1D > ${ospr}_amot_right_onset_n.1D
-			mv ${ospr}_amot_right_onset_n.1D ${ospr}_amot_right_onset.1D
-			cat ${tmp}/asent_onset.1D ${ospr}_asent_onset.1D > ${ospr}_asent_onset_n.1D
-			mv ${ospr}_asent_onset_n.1D ${ospr}_asent_onset.1D
-			cat ${tmp}/chbh_onset.1D ${ospr}_chbh_onset.1D > ${ospr}_chbh_onset_n.1D
-			mv ${ospr}_chbh_onset_n.1D ${ospr}_chbh_onset.1D
-			cat ${tmp}/chbv_onset.1D ${ospr}_chbv_onset.1D > ${ospr}_chbv_onset_n.1D
-			mv ${ospr}_chbv_onset_n.1D ${ospr}_chbv_onset.1D
-			cat ${tmp}/vcalc_onset.1D ${ospr}_vcalc_onset.1D > ${ospr}_vcalc_onset_n.1D
-			mv ${ospr}_vcalc_onset_n.1D ${ospr}_vcalc_onset.1D
-			cat ${tmp}/vmot_left_onset.1D ${ospr}_vmot_left_onset.1D > ${ospr}_vmot_left_onset_n.1D
-			mv ${ospr}_vmot_left_onset_n.1D ${ospr}_vmot_left_onset.1D
-			cat ${tmp}/vmot_right_onset.1D ${ospr}_vmot_right_onset.1D > ${ospr}_vmot_right_onset_n.1D
-			mv ${ospr}_vmot_right_onset_n.1D ${ospr}_vmot_right_onset.1D
-			cat ${tmp}/vsent_onset.1D ${ospr}_vsent_onset.1D > ${ospr}_vsent_onset_n.1D
-			mv ${ospr}_vsent_onset_n.1D ${ospr}_vsent_onset.1D
+			cat ${tmp}/acalc_onset.1D ${ospr}_acalc_onset.1D > ${tmp}/acalc_onset_n.1D
+			mv ${tmp}/acalc_onset_n.1D ${tmp}/acalc_onset.1D
+			cat ${tmp}/amot_left_onset.1D ${ospr}_amot_left_onset.1D > ${tmp}/amot_left_onset_n.1D
+			mv ${tmp}/amot_left_onset_n.1D ${tmp}/amot_left_onset.1D
+			cat ${tmp}/amot_right_onset.1D ${ospr}_amot_right_onset.1D > ${tmp}/amot_right_onset_n.1D
+			mv ${tmp}/amot_right_onset_n.1D ${tmp}/amot_right_onset.1D
+			cat ${tmp}/asent_onset.1D ${ospr}_asent_onset.1D > ${tmp}/asent_onset_n.1D
+			mv ${tmp}/asent_onset_n.1D ${tmp}/asent_onset.1D
+			cat ${tmp}/chbh_onset.1D ${ospr}_chbh_onset.1D > ${tmp}/chbh_onset_n.1D
+			mv ${tmp}/chbh_onset_n.1D ${tmp}/chbh_onset.1D
+			cat ${tmp}/chbv_onset.1D ${ospr}_chbv_onset.1D > ${tmp}/chbv_onset_n.1D
+			mv ${tmp}/chbv_onset_n.1D ${tmp}/chbv_onset.1D
+			cat ${tmp}/vcalc_onset.1D ${ospr}_vcalc_onset.1D > ${tmp}/vcalc_onset_n.1D
+			mv ${tmp}/vcalc_onset_n.1D ${tmp}/vcalc_onset.1D
+			cat ${tmp}/vmot_left_onset.1D ${ospr}_vmot_left_onset.1D > ${tmp}/vmot_left_onset_n.1D
+			mv ${tmp}/vmot_left_onset_n.1D ${tmp}/vmot_left_onset.1D
+			cat ${tmp}/vmot_right_onset.1D ${ospr}_vmot_right_onset.1D > ${tmp}/vmot_right_onset_n.1D
+			mv ${tmp}/vmot_right_onset_n.1D ${tmp}/vmot_right_onset.1D
+			cat ${tmp}/vsent_onset.1D ${ospr}_vsent_onset.1D > ${tmp}/vsent_onset_n.1D
+			mv ${tmp}/vsent_onset_n.1D ${tmp}/vsent_onset.1D
 		;;
 		* ) echo "    !!! Warning !!! Invalid task: ${task}"; exit ;;
 	esac

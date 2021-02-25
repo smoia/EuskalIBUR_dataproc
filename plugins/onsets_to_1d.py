@@ -85,14 +85,16 @@ def save_onsets(func_path, onset_path, to_remove):
                 if 'pinel' in file or 'motor' in file:
                     # Save onsets file
                     # This should be transposed into a row (checking that no timepoint is lost)
-                    onsets.transpose().to_csv(onsets_filename,
-                                              index=False, header=False, sep=' ')
+                    onsets_transposed = onsets.transpose()
+                    onsets_transposed.to_csv(onsets_filename,
+                                             index=False, header=False, sep=' ')
 
                 # Save durations
                 durations = duration[keep]
                 # This should be transposed into a row (checking that no timepoint is lost)
-                durations.transpose().to_csv(duration_filename,
-                                             index=False, header=False, sep=' ')
+                durations_transposed = durations.transpose()
+                durations_transposed.to_csv(duration_filename,
+                                            index=False, header=False, sep=' ')
 
                 if 'simon' in file:
                     onsets_duration = []

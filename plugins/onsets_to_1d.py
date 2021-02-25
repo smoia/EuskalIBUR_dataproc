@@ -85,14 +85,14 @@ def save_onsets(func_path, onset_path, to_remove):
                 if 'pinel' in file or 'motor' in file:
                     # Save onsets file
                     # This should be transposed into a row (checking that no timepoint is lost)
-                    onsets_transposed = onsets.transpose()
+                    onsets_transposed = pd.DataFrame(onsets.values.reshape(1, len(onsets.values)))
                     onsets_transposed.to_csv(onsets_filename,
                                              index=False, header=False, sep=' ')
 
                 # Save durations
                 durations = duration[keep]
                 # This should be transposed into a row (checking that no timepoint is lost)
-                durations_transposed = durations.transpose()
+                durations_transposed = pd.DataFrame(durations.values.reshape(1, len(durations.values)))
                 durations_transposed.to_csv(duration_filename,
                                             index=False, header=False, sep=' ')
 

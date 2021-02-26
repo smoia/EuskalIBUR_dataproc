@@ -81,12 +81,12 @@ replace_and mkdir ${tmp}
 # Set the T1 in native space
 bckimg=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref
 
-for sfx in spm spm-IM
+for sfx in spm #spm-IM
 do
 	# Check number of bricks and remove one cause 0-index
 	lastbrick=$( fslval ${sub}_01_task-${task}_${sfx} dim5 )
 	let lastbrick--
-	for ses in $( seq -f %02g 1 ${lastses}; echo "allses" )
+	for ses in $( seq -f %02g 1 ${lastses}) #; echo "allses" )
 	do
 		rbuck=${sub}_${ses}_task-${task}_${sfx}.nii.gz
 		if [ ! -e ${rbuck} ]; then continue; else echo "Exploding ${rbuck}"; fi
@@ -100,7 +100,7 @@ do
 done
 
 # Until it is not fixed, correctly rename GLT contrasts bricks
-for ses in $( seq -f %02g 1 ${lastses}; echo "allses" )
+for ses in $( seq -f %02g 1 ${lastses}) #; echo "allses" )
 do
 	rbuck=${sub}_${ses}_task-${task}_${sfx}.nii.gz
 	if [ ! -e ${rbuck} ]; then continue; else echo "Exploding ${rbuck}"; fi
@@ -165,9 +165,9 @@ do
 	esac
 done
 
-for sfx in spm spm-IM
+for sfx in spm #spm-IM
 do
-	for ses in $( seq -f %02g 1 ${lastses}; echo "allses" )
+	for ses in $( seq -f %02g 1 ${lastses}) #; echo "allses" )
 	do
 		rbuck=${sub}_${ses}_task-${task}_${sfx}.nii.gz
 		[ ! -e ${rbuck} ] && continue || echo "Plot ${rbuck}"

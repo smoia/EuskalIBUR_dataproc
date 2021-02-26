@@ -193,7 +193,7 @@ run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_deme
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par motdemean"
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_concat_bold_bet_rej_ort.1D meica_rej_ort"
 run3dDeconvolve="${run3dDeconvolve} -bucket ${cbuck}-IM.nii.gz"
-run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}-IM.1D -xjpeg ${mat}-IM.jpg -x1D_stop"
+run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}-IM.1D -xjpeg ${mat}-IM.jpg" #-x1D_stop"
 
 case ${task} in
 	motor )
@@ -205,15 +205,19 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 tongue -stim_times_IM 5 ${ospr}_tongue_onset.1D 'SPMG1(15)'"
 	;;
 	simon )
+		echo "9999" > ${tmp}/${ospr}_left_congruent_incorrect_onset.1D
+		echo "9999" > ${tmp}/${ospr}_right_congruent_incorrect_onset.1D
+		echo "9999" > ${tmp}/${ospr}_left_incongruent_incorrect_onset.1D
+		echo "9999" > ${tmp}/${ospr}_right_incongruent_incorrect_onset.1D
 		run3dDeconvolve="${run3dDeconvolve} -num_stimts 8"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 1 congruent -stim_times_IM 1 ${ospr}_left_congruent_correct_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 2 incongruent -stim_times_IM 2 ${ospr}_right_congruent_correct_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 3 left -stim_times_IM 3 ${ospr}_left_incongruent_correct_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 4 right -stim_times_IM 4 ${ospr}_right_incongruent_correct_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 wrong_lc -stim_times 5 ${ospr}_left_congruent_incorrect_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 wrong_rc -stim_times 6 ${ospr}_right_congruent_incorrect_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 wrong_li -stim_times 7 ${ospr}_left_incongruent_incorrect_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 wrong_ri -stim_times 8 ${ospr}_right_incongruent_incorrect_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 wrong_lc -stim_times 5 ${tmp}/${ospr}_left_congruent_incorrect_onset.1D SPMG1"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 wrong_rc -stim_times 6 ${tmp}/${ospr}_right_congruent_incorrect_onset.1D SPMG1"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 wrong_li -stim_times 7 ${tmp}/${ospr}_left_incongruent_incorrect_onset.1D SPMG1"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 wrong_ri -stim_times 8 ${tmp}/${ospr}_right_incongruent_incorrect_onset.1D SPMG1"
 		# Since the incorrect onsets might be absent, tell 3dDeconvolve it's ok.
 		run3dDeconvolve="${run3dDeconvolve} -allzero_OK"
 	;;

@@ -294,6 +294,6 @@ run3dREMLfit="${run3dREMLfit} -Rerrts ${ertts}.nii.gz"
 echo "${run3dREMLfit}"
 eval ${run3dREMLfit}
 
-rm -rf ${tmp}
+# rm -rf ${tmp}
 
 cd ${cwd}

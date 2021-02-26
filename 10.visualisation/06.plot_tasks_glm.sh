@@ -64,7 +64,7 @@ do
 		for brick in $(seq 0 ${lastbrick})
 		do
 			# Break bricks
-			brickname=$( 3dinfo -verb ${rbuck} | grep 'brick #${brick} ' | awk -F "'" '{ print $2 }' )
+			brickname=$( 3dinfo -label 001_01_task-motor_spm.nii.gz[${brick}] )
 			3dbucket -prefix ${tmp}/${sub}_${ses}_${sfx}_${brickname}.nii.gz -abuc "${rbuck}[${brick}]" -overwrite
 		done
 	done

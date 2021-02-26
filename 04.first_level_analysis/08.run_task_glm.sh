@@ -210,10 +210,10 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 2 incongruent -stim_times_IM 2 ${ospr}_right_congruent_correct_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 3 left -stim_times_IM 3 ${ospr}_left_incongruent_correct_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 4 right -stim_times_IM 4 ${ospr}_right_incongruent_correct_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 wrong_lc -stim_times_IM 5 ${ospr}_left_congruent_incorrect_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 wrong_rc -stim_times_IM 6 ${ospr}_right_congruent_incorrect_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 wrong_li -stim_times_IM 7 ${ospr}_left_incongruent_incorrect_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 wrong_ri -stim_times_IM 8 ${ospr}_right_incongruent_incorrect_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 wrong_lc -stim_times 5 ${ospr}_left_congruent_incorrect_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 wrong_rc -stim_times 6 ${ospr}_right_congruent_incorrect_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 wrong_li -stim_times 7 ${ospr}_left_incongruent_incorrect_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 wrong_ri -stim_times 8 ${ospr}_right_incongruent_incorrect_onset.1D dmUBLOCK"
 		# Since the incorrect onsets might be absent, tell 3dDeconvolve it's ok.
 		run3dDeconvolve="${run3dDeconvolve} -allzero_OK"
 	;;

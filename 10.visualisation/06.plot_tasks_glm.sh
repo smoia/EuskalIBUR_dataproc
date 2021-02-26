@@ -64,7 +64,7 @@ do
 		for brick in $(seq 0 ${lastbrick})
 		do
 			# Break bricks
-			brickname=$( 3dinfo -label 001_01_task-motor_spm.nii.gz[${brick}] )
+			brickname=$( 3dinfo -label "${rbuck}[${brick}]" )
 			3dbucket -prefix ${tmp}/${sub}_${ses}_${sfx}_${brickname}.nii.gz -abuc "${rbuck}[${brick}]" -overwrite
 		done
 	done
@@ -148,8 +148,9 @@ do
 		echo ""
 		dof="${ndof[3]}"
 		echo "DoF selected: ${dof}"
-		thr=$( cdf -p2t fitt ${pval} ${dof} )
+		thr=$( cdf -p2t fitt ${pval} ${dof} | awk -F " = " '{ print $2 }' )
 		echo "thr: ${thr}"
+		set -x
 
 		for brick in $(ls ${tmp}/${sub}_${ses}_${sfx}*_Coef.nii.gz)
 		do

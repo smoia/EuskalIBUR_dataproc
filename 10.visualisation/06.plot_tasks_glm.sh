@@ -143,7 +143,7 @@ do
 		rbuck=${sub}_${ses}_task-${task}_${sfx}.nii.gz
 		if [ ! -e ${rbuck} ]; then continue; else echo "Plot ${rbuck}"; fi
 		# Find right tstat value
-		ndof=$( 3dinfo -verb ${rbuck} | grep statpar | awk -F " = " '{ print $3 }' )
+		ndof=($( 3dinfo -verb ${rbuck} | grep statpar | awk -F " = " '{ print $3 }' ))
 		printf "%s " "DoF found:" "${ndof[@]}"
 		echo ""
 		dof="${ndof[3]}"

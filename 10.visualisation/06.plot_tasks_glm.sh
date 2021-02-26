@@ -65,7 +65,7 @@ do
 		do
 			# Break bricks
 			brickname=$( 3dinfo -verb ${rbuck} | grep 'brick #${brick} ' | awk -F "'" '{ print $2 }' )
-			3dbucket -prefix ${tmp}/${sub}_${ses}_${sfx}_${brickname}.nii.gz -abuc ${rbuck}'[${brick}]' -overwrite
+			3dbucket -prefix ${tmp}/${sub}_${ses}_${sfx}_${brickname}.nii.gz -abuc "${rbuck}[${brick}]" -overwrite
 		done
 	done
 done

@@ -44,9 +44,9 @@ cwd=$(pwd)
 cd ${wdr}/Mennes_replication/GLM/${task}/output || exit
 
 picdir=${wdr}/Mennes_replication/GLM/${task}/pics
-if_missing_do mkdir ${picdir}
+if_missing_do mkdir ${picdir} ${picdir}/p-${pval}
 
-tmp=${tmp}/tmp.${sub}_${task}_06ptg
+tmp=${tmp}/tmp.${sub}_${task}_p-${pval}_06ptg
 replace_and mkdir ${tmp}
 
 # Set the T1 in native space
@@ -150,9 +150,8 @@ do
 		echo "DoF selected: ${dof}"
 		thr=$( cdf -p2t fitt ${pval} ${dof} | awk -F " = " '{ print $2 }' )
 		echo "thr: ${thr}"
-		set -x
 
-		for brick in $(ls ${tmp}/${sub}_${ses}_${sfx}*_Coef.nii.gz)
+		for brick in ${tmp}/${sub}_${ses}_${sfx}_*_Coef.nii.gz
 		do
 			echo ${brick}
 			brickname=${brick%%_Coef.nii.gz}
@@ -172,13 +171,13 @@ do
 			${bckimg}.nii.gz --name "anat" --overlayType volume --alpha 100.0 --brightness 49.75000000000001 --contrast 49.90029860765409 --cmap greyscale --negativeCmap greyscale --displayRange 0.0 631.9035656738281 --clippingRange 0.0 631.9035656738281 --modulateRange 0.0 625.6470947265625 --gamma 0.0 --cmapResolution 256 --interpolation none --invert --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
 			${brickname}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap brain_colours_1hot --negativeCmap cool --useNegativeCmap --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
 			# Mount visions
-			convert -append ${brickname}_tmp_axial.png ${brickname}_tmp_sagittal.png ${brickname}_tmp_coronal.png +repage ${brickname}.png
+			convert -append ${brickname}_tmp_axial.png ${brickname}_tmp_sagittal.png ${brickname}_tmp_coronal.png +repage ${brickname}_p-${pval}.png
 			rm ${brickname}_tmp*
 		done
 	done
 done
 
-mv ${tmp}/*.png ${picdir}/.
+mv ${tmp}/*.png ${picdir}/p-${pval}/.
 
 # rm -rf ${tmp}/${task}
 

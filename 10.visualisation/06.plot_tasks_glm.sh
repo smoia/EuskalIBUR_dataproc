@@ -144,9 +144,11 @@ do
 		if [ ! -e ${rbuck} ]; then continue; else echo "Plot ${rbuck}"; fi
 		# Find right tstat value
 		ndof=$( 3dinfo -verb ${rbuck} | grep statpar | awk -F " = " '{ print $3 }' )
-		echo "DoF found:"
-		echo "${ndof[@]}"
-		thr=$( cdf -p2t fitt ${pval} ${ndof[2]} )
+		printf "%s " "DoF found:" "${ndof[@]}"
+		echo ""
+		dof=${ndof[2]}
+		echo "DoF selected: ${dof}"
+		thr=$( cdf -p2t fitt ${pval} ${dof} )
 		echo "thr: ${thr}"
 
 		for brick in ${tmp}/${sub}_${ses}_${sfx}*_Coef.nii.gz

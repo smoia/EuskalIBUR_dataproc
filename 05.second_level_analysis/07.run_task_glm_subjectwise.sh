@@ -70,6 +70,10 @@ case ${task} in
 		replace_and touch ${tmp}/right_congruent_correct_onset.1D
 		replace_and touch ${tmp}/left_incongruent_correct_onset.1D
 		replace_and touch ${tmp}/right_incongruent_correct_onset.1D
+		replace_and touch ${tmp}/left_congruent_incorrect_onset.1D
+		replace_and touch ${tmp}/right_congruent_incorrect_onset.1D
+		replace_and touch ${tmp}/left_incongruent_incorrect_onset.1D
+		replace_and touch ${tmp}/right_incongruent_incorrect_onset.1D
 	;;
 	pinel )
 		replace_and touch ${tmp}/acalc_onset.1D
@@ -142,6 +146,14 @@ do
 			mv ${tmp}/left_incongruent_correct_onset_n.1D ${tmp}/left_incongruent_correct_onset.1D
 			cat ${tmp}/right_incongruent_correct_onset.1D ${ospr}_right_incongruent_correct_onset.1D > ${tmp}/right_incongruent_correct_onset_n.1D
 			mv ${tmp}/right_incongruent_correct_onset_n.1D ${tmp}/right_incongruent_correct_onset.1D
+			cat ${tmp}/left_congruent_incorrect_onset.1D ${ospr}_left_congruent_incorrect_onset.1D > ${tmp}/left_congruent_incorrect_onset_n.1D
+			mv ${tmp}/left_congruent_incorrect_onset_n.1D ${tmp}/left_congruent_incorrect_onset.1D
+			cat ${tmp}/right_congruent_incorrect_onset.1D ${ospr}_right_congruent_incorrect_onset.1D > ${tmp}/right_congruent_incorrect_onset_n.1D
+			mv ${tmp}/right_congruent_incorrect_onset_n.1D ${tmp}/right_congruent_incorrect_onset.1D
+			cat ${tmp}/left_incongruent_incorrect_onset.1D ${ospr}_left_incongruent_incorrect_onset.1D > ${tmp}/left_incongruent_incorrect_onset_n.1D
+			mv ${tmp}/left_incongruent_incorrect_onset_n.1D ${tmp}/left_incongruent_incorrect_onset.1D
+			cat ${tmp}/right_incongruent_incorrect_onset.1D ${ospr}_right_incongruent_incorrect_onset.1D > ${tmp}/right_incongruent_incorrect_onset_n.1D
+			mv ${tmp}/right_incongruent_incorrect_onset_n.1D ${tmp}/right_incongruent_incorrect_onset.1D
 		;;
 		pinel )
 			cat ${tmp}/acalc_onset.1D ${ospr}_acalc_onset.1D > ${tmp}/acalc_onset_n.1D

@@ -179,6 +179,6 @@ done
 
 mv ${tmp}/*.png ${picdir}/p-${pval}/.
 
-# rm -rf ${tmp}/${task}
+rm -rf ${tmp}/${task}
 
 cd ${cwd}

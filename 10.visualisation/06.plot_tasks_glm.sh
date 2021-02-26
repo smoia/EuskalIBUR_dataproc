@@ -141,9 +141,13 @@ do
 	for ses in $( seq -f %02g 1 ${lastses}; echo "allses" )
 	do
 		rbuck=${sub}_${ses}_task-${task}_${sfx}.nii.gz
+		if [ ! -e ${rbuck} ]; then continue; else echo "Plot ${rbuck}"; fi
 		# Find right tstat value
 		ndof=$( 3dinfo -verb ${rbuck} | grep statpar | awk -F " = " '{ print $3 }' )
+		echo "DoF found:"
+		echo "${ndof[@]}"
 		thr=$( cdf -p2t fitt ${pval} ${ndof[2]} )
+		echo "thr: ${thr}"
 
 		for brick in ${tmp}/${sub}_${ses}_${sfx}*_Coef.nii.gz
 		do

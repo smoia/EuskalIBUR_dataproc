@@ -153,6 +153,7 @@ do
 
 		for brick in ${tmp}/${sub}_${ses}_${sfx}*_Coef.nii.gz
 		do
+			echo ${brick}
 			brickname=${brick%%_Coef.nii.gz}
 			# mask the functional brick with the right tstat
 			fslmaths ${brickname}_Tstat -abs -thr ${thr} -bin -mul ${brick} ${brickname}_fmkd

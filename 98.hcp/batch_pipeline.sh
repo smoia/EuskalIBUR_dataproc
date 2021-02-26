@@ -71,7 +71,7 @@ fi
 # # Run GLMs
 for sub in 001 # 002 003 004 007 008 009
 do
-	for task in motor pinel simon
+	for task in simon  # motor pinel simon
 	do
 		# for ses in 01 #$(seq -f %02g 1 10)
 		# do

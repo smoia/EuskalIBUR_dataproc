@@ -36,8 +36,9 @@ echo "************************************"
 
 singularity exec -e --no-home \
 -B ${wdr}:/data -B ${sdr}:/scripts \
--B /export/home/smoia/scratch:/tmp \
+-B /bcbl/home/public/PJMASK_2/tmp:/tmp \
 euskalibur.sif 05.second_level_analysis/07.run_task_glm_subjectwise.sh ${sub} ${task} /data /tmp
+# -B /export/home/smoia/scratch:/tmp \
 
 # echo "************************************"
 # echo "************************************"

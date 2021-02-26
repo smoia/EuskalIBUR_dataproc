@@ -151,7 +151,7 @@ do
 		thr=$( cdf -p2t fitt ${pval} ${dof} )
 		echo "thr: ${thr}"
 
-		for brick in ${tmp}/${sub}_${ses}_${sfx}*_Coef.nii.gz
+		for brick in $(ls ${tmp}/${sub}_${ses}_${sfx}*_Coef.nii.gz)
 		do
 			echo ${brick}
 			brickname=${brick%%_Coef.nii.gz}

@@ -48,14 +48,15 @@ replace_and mkdir ${tmp}
 
 if_missing_do mkdir Mennes_replication
 if_missing_do mkdir Mennes_replication/GLM
-if_missing_do mkdir Mennes_replication/GLM/${task} Mennes_replication/GLM/${task}/output
+if_missing_do mkdir Mennes_replication/GLM/${task}
+if_missing_do mkdir Mennes_replication/GLM/${task}/${sub}
 
 cd Mennes_replication/GLM
 
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
 func=${fdir}/00.${flpr}_optcom_bold_native_preprocessed
-fout=${wdr}/Mennes_replication/GLM/${task}/output
+fout=${wdr}/Mennes_replication/GLM/${task}/${sub}
 ospr=${fdir}/onsets/${flpr}
 
 # SPC func

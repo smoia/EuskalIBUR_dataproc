@@ -65,12 +65,12 @@ do
 	for ses in $( seq -f %02g 1 10; echo "allses" )
 	do
 		# Consider only contrasts of interest
-		rbuck=GLM/${task}/output/${sub}_${ses}_task-${task}_spm.nii.gz
+		rbuck=GLM/${task}/${sub}/${sub}_${ses}_task-${task}_spm.nii.gz
 		case ${task} in
 			motor )
 				# Two GLT are coded: all motor activations, and all motor activations against the sham to remove visual stimuli"
-				3dbucket -prefix ${tmp}/${sub}_${ses}_allmotors.nii.gz -abuc ${rbuck}'[13]' -overwrite
-				3dbucket -prefix ${tmp}/${sub}_${ses}_motors_vs_sham.nii.gz -abuc ${rbuck}'[15]' -overwrite
+				3dbucket -prefix ${tmp}/${sub}_${ses}_allmotors.nii.gz -abuc ${rbuck}'[23]' -overwrite
+				3dbucket -prefix ${tmp}/${sub}_${ses}_motors_vs_sham.nii.gz -abuc ${rbuck}'[25]' -overwrite
 				bricks=$( allmotors motors_vs_sham )
 			;;
 			simon )

@@ -47,7 +47,11 @@ replace_and mkdir ${tmp}
 
 if_missing_do mkdir Mennes_replication
 if_missing_do mkdir Mennes_replication/GLM
-if_missing_do mkdir Mennes_replication/GLM/${task} Mennes_replication/GLM/${task}/output
+if_missing_do mkdir Mennes_replication/GLM/${task}
+if_missing_do mkdir Mennes_replication/GLM/${task}/${sub}
+
+fout=${wdr}/Mennes_replication/GLM/${task}/${sub}
+
 
 cd Mennes_replication/GLM
 
@@ -184,7 +188,7 @@ done
 
 # Other variables to run GLMs
 mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
-fout=${wdr}/Mennes_replication/GLM/${task}/output
+fout=${wdr}/Mennes_replication/GLM/${task}/${sub}
 cbuck=${fout}/${sub}_allses_task-${task}_spm-cbuck
 rbuck=${fout}/${sub}_allses_task-${task}_spm
 fitts=${fout}/${sub}_allses_task-${task}_spm-fitts

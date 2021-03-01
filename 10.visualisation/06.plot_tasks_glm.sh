@@ -41,9 +41,8 @@ ${2}.nii.gz --name "anat" --overlayType volume --alpha 100.0 --brightness 49.750
 ${1}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap brain_colours_1hot --negativeCmap cool --useNegativeCmap --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
 # Mount visions
 convert -append ${1}_tmp_axial.png ${1}_tmp_sagittal.png ${1}_tmp_coronal.png +repage ${1}_${3}-${4}.png
-rm ${brickname}_tmp*
-mv ${brickname}_${3}-${4}.png ${5}/${3}-${4}/.
-
+rm ${1}_tmp*
+mv ${1}_${3}-${4}.png ${5}/${3}-${4}/.
 }
 
 # Declare z-value

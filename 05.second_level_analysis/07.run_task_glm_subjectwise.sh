@@ -115,9 +115,15 @@ do
 	run3dREMLfit="${run3dREMLfit}${tmp}/${flpr}_spc.nii.gz "
 
 	# Pad noise regressors and concatenate them!
-	1d_tool.py -infile ${fdir}/${flpr}_echo-1_bold_mcf_demean.par -pad_into_many_runs ${ses} 10 -write ${tmp}/${ses}_demean.par
-	1d_tool.py -infile ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par -pad_into_many_runs ${ses} 10 -write ${tmp}/${ses}_deriv1.par
-	1d_tool.py -infile ${fdir}/${flpr}_concat_bold_bet_rej_ort.1D -pad_into_many_runs ${ses} 10 -write ${tmp}/${ses}_rej_ort.1D
+	1d_tool.py -infile ${fdir}/${flpr}_echo-1_bold_mcf_demean.par -pad_into_many_runs ${ses} 10 \
+			   -write ${tmp}/${ses}_demean.par -overwrite
+	1d_tool.py -infile ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par -pad_into_many_runs ${ses} 10 \
+			   -write ${tmp}/${ses}_deriv1.par -overwrite
+	# Also demean rejected components
+	1d_tool.py -infile ${fdir}/${flpr}_concat_bold_bet_rej_ort.1D -demean \
+			   -write ${tmp}/${flpr}_concat_bold_bet_rej_ort.1D -overwrite
+	1d_tool.py -infile ${tmp}/${flpr}_concat_bold_bet_rej_ort.1D -pad_into_many_runs ${ses} 10 \
+			   -write ${tmp}/${ses}_rej_ort.1D -overwrite
 	paste -d ' ' ${tmp}/mot_demean.par ${tmp}/${ses}_demean.par > ${tmp}/mot_demean_n.par
 	mv ${tmp}/mot_demean_n.par ${tmp}/mot_demean.par
 	paste -d ' ' ${tmp}/mot_deriv1.par ${tmp}/${ses}_deriv1.par > ${tmp}/mot_deriv1_n.par

@@ -63,6 +63,9 @@ ospr=${fdir}/onsets/${flpr}
 fslmaths ${func} -Tmean ${tmp}/${flpr}_mean
 fslmaths ${func} -sub ${tmp}/${flpr}_mean -div ${tmp}/${flpr}_mean ${tmp}/${flpr}_spc
 
+# Demean rejected components
+1d_tool.py -infile ${fdir}/${flpr}_concat_bold_bet_rej_ort.1D -demean \
+		   -write ${tmp}/${flpr}_concat_bold_bet_rej_ort.1D -overwrite
 
 # Create Names for output files
 # =============================
@@ -79,7 +82,7 @@ run3dDeconvolve="3dDeconvolve -overwrite -input ${tmp}/${flpr}_spc.nii.gz -mask 
 run3dDeconvolve="${run3dDeconvolve} -polort 4"
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_demean.par motderiv"
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par motdemean"
-run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_concat_bold_bet_rej_ort.1D meica_rej_ort"
+run3dDeconvolve="${run3dDeconvolve} -ortvec ${tmp}/${flpr}_concat_bold_bet_rej_ort.1D meica_rej_ort"
 run3dDeconvolve="${run3dDeconvolve} -bucket ${cbuck}.nii.gz"
 run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}.1D -xjpeg ${mat}.jpg -x1D_stop"
 
@@ -203,7 +206,7 @@ run3dDeconvolve="3dDeconvolve -overwrite -input ${tmp}/${flpr}_spc.nii.gz -mask 
 run3dDeconvolve="${run3dDeconvolve} -polort 4"
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_demean.par motderiv"
 run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_echo-1_bold_mcf_deriv1.par motdemean"
-run3dDeconvolve="${run3dDeconvolve} -ortvec ${fdir}/${flpr}_concat_bold_bet_rej_ort.1D meica_rej_ort"
+run3dDeconvolve="${run3dDeconvolve} -ortvec ${tmp}/${flpr}_concat_bold_bet_rej_ort.1D meica_rej_ort"
 run3dDeconvolve="${run3dDeconvolve} -bucket ${cbuck}-IM.nii.gz"
 run3dDeconvolve="${run3dDeconvolve} -x1D ${mat}-IM.1D -xjpeg ${mat}-IM.jpg" #-x1D_stop"
 

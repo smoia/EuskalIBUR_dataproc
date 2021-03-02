@@ -27,16 +27,16 @@ esac
 
 
 slice_coeffs() {
-# $1:brickname $2:bckimg $3:[p/q] $4:pval $5:picdir
-singularity exec -e --no-home -B ${1%/*}:/tmp fsleyes render -of /tmp/${1##*/}_tmp_axial.png --size 1900 200 \
+# $1:brickname $2:bckimg $3:[p/q] $4:pval $5:picdir $6:sdr
+singularity exec -e --no-home -B ${1%/*}:/tmp ${6}/fsleyes.sif fsleyes render -of /tmp/${1##*/}_tmp_axial.png --size 1900 200 \
 --scene lightbox --zaxis 2 --sliceSpacing 12 --zrange 19.3 139.9 --ncols 10 --nrows 1 --hideCursor --showColourBar --colourBarLocation right --colourBarLabelSide bottom-right --colourBarSize 80.0 --labelSize 12 --performance 3 --movieSync \
 ${2}.nii.gz --name "anat" --overlayType volume --alpha 100.0 --brightness 49.75000000000001 --contrast 49.90029860765409 --cmap greyscale --negativeCmap greyscale --displayRange 0.0 631.9035656738281 --clippingRange 0.0 631.9035656738281 --modulateRange 0.0 625.6470947265625 --gamma 0.0 --cmapResolution 256 --interpolation none --invert --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
 /tmp/${1##*/}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap brain_colours_1hot --negativeCmap cool --useNegativeCmap --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
-singularity exec -e --no-home -B ${1%/*}:/tmp fsleyes render -of /tmp/${1##*/}_tmp_sagittal.png --size 1900 200 \
+singularity exec -e --no-home -B ${1%/*}:/tmp ${6}/fsleyes.sif fsleyes render -of /tmp/${1##*/}_tmp_sagittal.png --size 1900 200 \
 --scene lightbox --zaxis 0 --sliceSpacing 13 --zrange 39.5 169 --ncols 10 --nrows 1 --hideCursor --showColourBar --colourBarLocation right --colourBarLabelSide bottom-right --colourBarSize 80.0 --labelSize 12 --performance 3 --movieSync \
 ${2}.nii.gz --name "anat" --overlayType volume --alpha 100.0 --brightness 49.75000000000001 --contrast 49.90029860765409 --cmap greyscale --negativeCmap greyscale --displayRange 0.0 631.9035656738281 --clippingRange 0.0 631.9035656738281 --modulateRange 0.0 625.6470947265625 --gamma 0.0 --cmapResolution 256 --interpolation none --invert --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
 /tmp/${1##*/}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap brain_colours_1hot --negativeCmap cool --useNegativeCmap --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
-singularity exec -e --no-home -B ${1%/*}:/tmp fsleyes render -of /tmp/${1##*/}_tmp_coronal.png --size 1900 200 \
+singularity exec -e --no-home -B ${1%/*}:/tmp ${6}/fsleyes.sif fsleyes render -of /tmp/${1##*/}_tmp_coronal.png --size 1900 200 \
 --scene lightbox --zaxis 1 --sliceSpacing 15 --zrange 21 169 --ncols 10 --nrows 1 --hideCursor --showColourBar --colourBarLocation right --colourBarLabelSide bottom-right --colourBarSize 80.0 --labelSize 12 --performance 3 --movieSync \
 ${2}.nii.gz --name "anat" --overlayType volume --alpha 100.0 --brightness 49.75000000000001 --contrast 49.90029860765409 --cmap greyscale --negativeCmap greyscale --displayRange 0.0 631.9035656738281 --clippingRange 0.0 631.9035656738281 --modulateRange 0.0 625.6470947265625 --gamma 0.0 --cmapResolution 256 --interpolation none --invert --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
 /tmp/${1##*/}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap brain_colours_1hot --negativeCmap cool --useNegativeCmap --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
@@ -67,6 +67,10 @@ echo "${printline} " "$@"
 
 cwd=$(pwd)
 
+# See if I can find the script folder
+sdr=$(readlink -f ${0})
+sdr=$(dirname ${sdr})
+
 cd ${wdr}/Mennes_replication/GLM/${task}/output || exit
 
 picdir=${wdr}/Mennes_replication/GLM/${task}/pics
@@ -80,7 +84,7 @@ replace_and mkdir ${tmp}
 
 # Set the T1 in native space
 bckimg=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref
-if_missing_do cp ${bckimg} ${tmp}/${bckimg##*/}.nii.gz
+if_missing_do copy ${bckimg} ${tmp}/${bckimg##*/}.nii.gz
 
 for sfx in spm spm-IM
 do
@@ -114,13 +118,13 @@ do
 			# mask the functional brick with the right tstat
 			fslmaths ${brickname}_Tstat -abs -thr ${thr} -bin -mul ${brick} ${brickname}_fmkd
 			# fsleyes all the way
-			slice_coeffs ${brickname} ${bckimg} p ${pval} ${picdir}
+			slice_coeffs ${brickname} ${bckimg} p ${pval} ${picdir} ${sdr}
 
 			[ -z "${zvals[${pval}]}" ] && continue || echo "Computing FDR with z=${zvals[${pval}]}"
 			if_missing_do mkdir ${picdir}/q-${pval}
 			3dFDR -input ${brickname}_Tstat.nii.gz -prefix ${brickname}_FDR.nii.gz
 			fslmaths ${brickname}_FDR -thr ${zvals[${pval}]} -bin -mul ${brick} ${brickname}_fmkd
-			slice_coeffs ${brickname} ${bckimg} q ${pval} ${picdir}
+			slice_coeffs ${brickname} ${bckimg} q ${pval} ${picdir} ${sdr}
 		done
 	done
 done

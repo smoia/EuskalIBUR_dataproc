@@ -13,7 +13,7 @@ then
       case $1 in
             copy ) echo "copying $2"; cp $2 $3 ;;
             mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
-            * ) "and you shouldn't see this"; exit ;;
+            * ) echo "and you shouldn't see this"; exit ;;
       esac
 fi
 }

@@ -71,7 +71,7 @@ cwd=$(pwd)
 sdr=$(readlink -f ${0})
 sdr=$(dirname ${sdr})
 
-cd ${wdr}/Mennes_replication/GLM/${task}/output || exit
+cd ${wdr}/Mennes_replication/GLM/${task}/${sub} || exit
 
 picdir=${wdr}/Mennes_replication/GLM/${task}/pics
 if_missing_do mkdir ${picdir}

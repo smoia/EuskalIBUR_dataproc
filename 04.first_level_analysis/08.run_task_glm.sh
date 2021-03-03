@@ -108,10 +108,11 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 4 toe_right_vs_sham"
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +tongue -sham'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 5 tongue_vs_sham"
-		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +finger_left +finger_right +toe_left +toe_right +tongue'"
+		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +finger_left \\ +finger_right \\ +toe_left \\ +toe_right \\ +tongue'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 6 allmotors"
-		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +finger_left +finger_right +toe_left +toe_right +tongue -5*sham'"
-		run3dDeconvolve="${run3dDeconvolve} -glt_label 7 allmotors_vs_sham"
+		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +finger_left -sham \\ +finger_right -sham"
+		run3dDeconvolve="${run3dDeconvolve} \\ +toe_left -sham \\ +toe_right -sham \\ +tongue -sham'"
+		run3dDeconvolve="${run3dDeconvolve} -glt_label 7 motors_vs_sham"
 	;;
 	simon )
 		# Simon has four conditions, congruent/incongruent and left/right
@@ -121,20 +122,22 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 2 right_congruent -stim_times_AM1 2 ${ospr}_right_congruent_correct_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 3 left_incongruent -stim_times_AM1 3 ${ospr}_left_incongruent_correct_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 4 right_incongruent -stim_times_AM1 4 ${ospr}_right_incongruent_correct_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 wrong_lc -stim_times_AM1 5 ${ospr}_left_congruent_incorrect_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 wrong_rc -stim_times_AM1 6 ${ospr}_right_congruent_incorrect_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 wrong_li -stim_times_AM1 7 ${ospr}_left_incongruent_incorrect_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 wrong_ri -stim_times_AM1 8 ${ospr}_right_incongruent_incorrect_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 wrong_lc -stim_times 5 ${ospr}_left_congruent_incorrect_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 wrong_rc -stim_times 6 ${ospr}_right_congruent_incorrect_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 wrong_li -stim_times 7 ${ospr}_left_incongruent_incorrect_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 wrong_ri -stim_times 8 ${ospr}_right_incongruent_incorrect_onset.1D dmUBLOCK"
 		# Four GLTs are coded, good congruents, good incongruents, good congruents vs good incongruents and good congruents + good incongruents
 		# See Mennes et al. 2010 or 2011 for details.
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +left_congruent +right_congruent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 1 all_congruent"
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +left_incongruent +right_incongruent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 2 all_incongruent"
-		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +left_congruent +right_congruent -left_incongruent -right_incongruent'"
+		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +left_congruent -left_incongruent +right_congruent -right_incongruent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 3 congruent_vs_incongruent"
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +left_congruent +right_congruent +left_incongruent +right_incongruent'"
-		run3dDeconvolve="${run3dDeconvolve} -glt_label 4 congruent_and_incongruent"
+		run3dDeconvolve="${run3dDeconvolve} -glt_label 4 congruent_and_incongruent_t"
+		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +left_congruent +right_congruent \\ +left_incongruent +right_incongruent'"
+		run3dDeconvolve="${run3dDeconvolve} -glt_label 5 congruent_and_incongruent_f"
 		# Since the incorrect onsets might be absent, tell 3dDeconvolve it's ok.
 		run3dDeconvolve="${run3dDeconvolve} -allzero_OK"
 	;;
@@ -163,9 +166,9 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 3 all_auditory"
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +vcalc +vmot_left +vmot_right +vsent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 4 all_visual"
-		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +acalc -amot_left -amot_right -asent'"
+		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +3*acalc -amot_left -amot_right -asent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 5 auditory_calc_vs_noncalc"
-		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +vcalc -vmot_left -vmot_right -vsent'"
+		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +3*vcalc -vmot_left -vmot_right -vsent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 6 visual_calc_vs_noncalc"
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +acalc +amot_left +amot_right +asent -vcalc -vmot_left -vmot_right -vsent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 7 auditory_vs_visual"
@@ -193,7 +196,7 @@ eval ${run3dDeconvolve}
 3dREMLfit -overwrite -matrix ${mat}.1D \
 		  -mask ${mask}.nii.gz         \
 		  -input ${tmp}/${flpr}_spc.nii.gz        \
-		  -tout -verb -GOFORIT         \
+		  -tout -fout -verb -GOFORIT         \
 		  -Rfitts ${fitts}.nii.gz      \
 		  -Rbuck  ${rbuck}.nii.gz      \
 		  -Rerrts ${ertts}.nii.gz
@@ -220,19 +223,19 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 tongue -stim_times_IM 5 ${ospr}_tongue_onset.1D 'SPMG1(15)'"
 	;;
 	simon )
-		echo "9999" > ${tmp}/${ospr}_left_congruent_incorrect_onset.1D
-		echo "9999" > ${tmp}/${ospr}_right_congruent_incorrect_onset.1D
-		echo "9999" > ${tmp}/${ospr}_left_incongruent_incorrect_onset.1D
-		echo "9999" > ${tmp}/${ospr}_right_incongruent_incorrect_onset.1D
+		echo "9999" > ${tmp}/${flpr}_left_congruent_incorrect_onset.1D
+		echo "9999" > ${tmp}/${flpr}_right_congruent_incorrect_onset.1D
+		echo "9999" > ${tmp}/${flpr}_left_incongruent_incorrect_onset.1D
+		echo "9999" > ${tmp}/${flpr}_right_incongruent_incorrect_onset.1D
 		run3dDeconvolve="${run3dDeconvolve} -num_stimts 8"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 1 left_congruent -stim_times_IM 1 ${ospr}_left_congruent_correct_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 2 right_congruent -stim_times_IM 2 ${ospr}_right_congruent_correct_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 3 left_incongruent -stim_times_IM 3 ${ospr}_left_incongruent_correct_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 4 right_incongruent -stim_times_IM 4 ${ospr}_right_incongruent_correct_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 wrong_lc -stim_times 5 ${tmp}/${ospr}_left_congruent_incorrect_onset.1D SPMG1"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 wrong_rc -stim_times 6 ${tmp}/${ospr}_right_congruent_incorrect_onset.1D SPMG1"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 wrong_li -stim_times 7 ${tmp}/${ospr}_left_incongruent_incorrect_onset.1D SPMG1"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 wrong_ri -stim_times 8 ${tmp}/${ospr}_right_incongruent_incorrect_onset.1D SPMG1"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 wrong_lc -stim_times 5 ${tmp}/${flpr}_left_congruent_incorrect_onset.1D SPMG1"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 wrong_rc -stim_times 6 ${tmp}/${flpr}_right_congruent_incorrect_onset.1D SPMG1"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 wrong_li -stim_times 7 ${tmp}/${flpr}_left_incongruent_incorrect_onset.1D SPMG1"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 wrong_ri -stim_times 8 ${tmp}/${flpr}_right_incongruent_incorrect_onset.1D SPMG1"
 		# Since the incorrect onsets might be absent, tell 3dDeconvolve it's ok.
 		run3dDeconvolve="${run3dDeconvolve} -allzero_OK"
 	;;
@@ -258,7 +261,7 @@ eval ${run3dDeconvolve}
 3dREMLfit -overwrite -matrix ${mat}-IM.1D	\
 		  -mask	 ${mask}.nii.gz \
 		  -input ${tmp}/${flpr}_spc.nii.gz	\
-		  -tout -verb -GOFORIT				  \
+		  -tout -fout -verb -GOFORIT				  \
 		  -Rfitts ${fitts}-IM.nii.gz		 \
 		  -Rbuck  ${rbuck}-IM.nii.gz
 

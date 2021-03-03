@@ -122,10 +122,10 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 2 right_congruent -stim_times_AM1 2 ${ospr}_right_congruent_correct_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 3 left_incongruent -stim_times_AM1 3 ${ospr}_left_incongruent_correct_onset.1D dmUBLOCK"
 		run3dDeconvolve="${run3dDeconvolve} -stim_label 4 right_incongruent -stim_times_AM1 4 ${ospr}_right_incongruent_correct_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 wrong_lc -stim_times 5 ${ospr}_left_congruent_incorrect_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 wrong_rc -stim_times 6 ${ospr}_right_congruent_incorrect_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 wrong_li -stim_times 7 ${ospr}_left_incongruent_incorrect_onset.1D dmUBLOCK"
-		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 wrong_ri -stim_times 8 ${ospr}_right_incongruent_incorrect_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 5 wrong_lc -stim_times_AM1 5 ${ospr}_left_congruent_incorrect_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 6 wrong_rc -stim_times_AM1 6 ${ospr}_right_congruent_incorrect_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 7 wrong_li -stim_times_AM1 7 ${ospr}_left_incongruent_incorrect_onset.1D dmUBLOCK"
+		run3dDeconvolve="${run3dDeconvolve} -stim_label 8 wrong_ri -stim_times_AM1 8 ${ospr}_right_incongruent_incorrect_onset.1D dmUBLOCK"
 		# Four GLTs are coded, good congruents, good incongruents, good congruents vs good incongruents and good congruents + good incongruents
 		# See Mennes et al. 2010 or 2011 for details.
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +left_congruent +right_congruent'"

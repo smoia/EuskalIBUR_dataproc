@@ -234,10 +234,11 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 4 toe_right_vs_sham"
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +tongue -sham'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 5 tongue_vs_sham"
-		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +finger_left +finger_right +toe_left +toe_right +tongue'"
+		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +finger_left \\ +finger_right \\ +toe_left \\ +toe_right \\ +tongue'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 6 allmotors"
-		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +finger_left +finger_right +toe_left +toe_right +tongue -5*sham'"
-		run3dDeconvolve="${run3dDeconvolve} -glt_label 7 allmotors_vs_sham"
+		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +finger_left -sham \\ +finger_right -sham"
+		run3dDeconvolve="${run3dDeconvolve} \\ +toe_left -sham \\ +toe_right -sham \\ +tongue -sham'"
+		run3dDeconvolve="${run3dDeconvolve} -glt_label 7 motors_vs_sham"
 	;;
 	simon )
 		# Simon has four conditions, congruent/incongruent and left/right
@@ -257,10 +258,12 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 1 all_congruent"
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +left_incongruent +right_incongruent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 2 all_incongruent"
-		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +left_congruent +right_congruent -left_incongruent -right_incongruent'"
+		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +left_congruent -left_incongruent +right_congruent -right_incongruent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 3 congruent_vs_incongruent"
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +left_congruent +right_congruent +left_incongruent +right_incongruent'"
-		run3dDeconvolve="${run3dDeconvolve} -glt_label 4 congruent_and_incongruent"
+		run3dDeconvolve="${run3dDeconvolve} -glt_label 4 congruent_and_incongruent_t"
+		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +left_congruent +right_congruent \\ +left_incongruent +right_incongruent'"
+		run3dDeconvolve="${run3dDeconvolve} -glt_label 5 congruent_and_incongruent_f"
 		# Since the incorrect onsets might be absent, tell 3dDeconvolve it's ok.
 		run3dDeconvolve="${run3dDeconvolve} -allzero_OK"
 	;;
@@ -289,9 +292,9 @@ case ${task} in
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 3 all_auditory"
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +vcalc +vmot_left +vmot_right +vsent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 4 all_visual"
-		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +acalc -amot_left -amot_right -asent'"
+		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +3*acalc -amot_left -amot_right -asent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 5 auditory_calc_vs_noncalc"
-		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +vcalc -vmot_left -vmot_right -vsent'"
+		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +3*vcalc -vmot_left -vmot_right -vsent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 6 visual_calc_vs_noncalc"
 		run3dDeconvolve="${run3dDeconvolve} -gltsym 'SYM: +acalc +amot_left +amot_right +asent -vcalc -vmot_left -vmot_right -vsent'"
 		run3dDeconvolve="${run3dDeconvolve} -glt_label 7 auditory_vs_visual"

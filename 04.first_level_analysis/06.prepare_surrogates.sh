@@ -53,7 +53,7 @@ T22T1lreg=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_a
 T22fnclreg=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat
 
 cvrmap=${wdr}/CVR/sub-${sub}_ses-${ses}_optcom_map_cvr/sub-${sub}_ses-${ses}_optcom_cvr.nii.gz
-lagmap=${wdr}/CVR/sub-${sub}_ses-${ses}_optcom_map_cvr/sub-${sub}_ses-${ses}_optcom_cvr_lag.nii.gz
+# lagmap=${wdr}/CVR/sub-${sub}_ses-${ses}_optcom_map_cvr/sub-${sub}_ses-${ses}_optcom_cvr_lag.nii.gz
 # statmask=${wdr}/CVR/sub-${sub}_ses-${ses}_optcom_map_cvr/sub-${sub}_ses-${ses}_optcom_cvr_idx_mask.nii.gz
 # physmask=${wdr}/CVR/sub-${sub}_ses-${ses}_optcom_map_cvr/sub-${sub}_ses-${ses}_optcom_cvr_idx_physio_constrained.nii.gz
 
@@ -80,7 +80,8 @@ do
 done
 
 echo "Threshold CVR outliers"
-fslmaths ${tmp}/${vprfx}_cvr.nii.gz -uthr 3 ${tmp}/${vprfx}_cvr.nii.gz
+fslmaths ${tmp}/${vprfx}_cvr -thr 2 -bin -mul 2 ${tmp}/${vprfx}_maxed_cvr
+fslmaths ${tmp}/${vprfx}_cvr -uthr 2 -add ${tmp}/${vprfx}_maxed_cvr ${tmp}/${vprfx}_cvr
 
 # for map in cvr lag
 # do

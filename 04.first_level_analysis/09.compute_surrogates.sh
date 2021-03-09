@@ -52,9 +52,13 @@ do
 									  ${tmp}/${vol}.nii.gz \
 									  ${tmp}/${sub}_${ses}/MNI_GM.nii.gz \
 									  1000 \
-									  surr/${vol} \
-									  ${vol}
+									  surr/${vol} #\
+									  #${vol}
 	rm ${tmp}/${vol}.nii.gz ${tmp}/${vol}.nii
+	for n in $(seq 0 999)
+	do
+		mv surr/${vol}/${tmp}${vol}_Surr_${n}.nii.gz surr/${vol}/${vol}_Surr_${n}.nii.gz
+	done
 done
 
 cd ${cwd}

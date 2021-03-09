@@ -45,7 +45,7 @@ mkdir ${tmp}/${sub}_${ses}_mcroot
 
 export MCR_CACHE_ROOT=${tmp}/${sub}_${ses}_mcroot
 
-for map in cvr lag
+for map in cvr #lag
 do
 	vol=${vprfx}_${map}
 	${sdr}/run_generate_surrogates.sh /opt/mcr/v84 \

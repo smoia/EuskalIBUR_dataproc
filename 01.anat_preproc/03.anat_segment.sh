@@ -46,8 +46,8 @@ echo "Splitting the segmented files, eroding and dilating"
 3dcalc -a ${anat}_seg.nii.gz -expr 'equals(a,3)' -prefix ${anat}_WM.nii.gz -overwrite
 3dcalc -a ${anat}_seg.nii.gz -expr 'equals(a,2)' -prefix ${anat}_GM.nii.gz -overwrite
 
-dicsf=-3
-diwm=-4
+dicsf=-2
+diwm=-3
 
 3dmask_tool -input ${tmp}/${anat}_CSF.nii.gz -prefix ${tmp}/${anat}_CSF_eroded.nii.gz -dilate_input ${dicsf} -overwrite
 3dmask_tool -input ${anat}_WM.nii.gz -prefix ${tmp}/${anat}_WM_eroded.nii.gz -fill_holes -dilate_input ${diwm} -overwrite

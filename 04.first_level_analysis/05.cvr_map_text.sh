@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-######### CVR MAPS for PJMASK
-# Author:  Stefano Moia
-# Version: 1.0
-# Date:    15.08.2019
-#########
+replace_and() {
+case $1 in
+	mkdir) if [ -d $2 ]; then rm -rf $2; fi; mkdir $2 ;;
+	touch) if [ -d $2 ]; then rm -rf $2; fi; touch $2 ;;
+esac
+}
 
 sub=$1
 ses=$2
@@ -42,20 +43,11 @@ matdir=${flpr}_${parc}_mat
 
 cd ${wdr}/CVR || exit
 
-if [ -d ${tmp}/tmp.${flpr}_${parc}_05cmt_res ]
-then
-	rm -rf ${tmp}/tmp.${flpr}_${parc}_05cmt_res
-fi
-# creating folder
-mkdir ${tmp}/tmp.${flpr}_${parc}_05cmt_res
+replace_and mkdir ${tmp}/tmp.${flpr}_${parc}_05cmt_res
 
 # creating matdir if nonexistent
 
-if [ -d ${matdir} ]
-then
-	rm -rf ${matdir}
-fi
-mkdir ${matdir}
+replace_and mkdir ${matdir}
 
 # Force number of threads to 1
 export OMP_NUM_THREADS=1

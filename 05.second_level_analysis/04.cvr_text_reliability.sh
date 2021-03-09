@@ -1,5 +1,23 @@
 #!/usr/bin/env bash
 
+if_missing_do() {
+if [ $1 == 'mkdir' ]
+then
+      if [ ! -d $2 ]
+      then
+            mkdir "${@:2}"
+      fi
+elif [ ! -e $3 ]
+then
+      printf "%s is missing, " "$3"
+      case $1 in
+            copy ) echo "copying $2"; cp $2 $3 ;;
+            mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
+            * ) echo "and you shouldn't see this"; exit ;;
+      esac
+fi
+}
+
 parc=${1}
 lastses=${2:-10}
 lastsub=${3:-10}
@@ -11,10 +29,7 @@ cwd=$( pwd )
 cd ${wdr} || exit
 
 echo "Creating folders"
-if [ ! -d CVR_reliability ]
-then
-	mkdir CVR_reliability
-fi
+if_missing_do mkdir CVR_reliability
 
 cd CVR_reliability
 

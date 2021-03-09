@@ -19,7 +19,7 @@ sdr=/bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc
 
 cd ${sdr}
 
-logname=fallf_${sub}_${ses}_pipe
+logname=glm_${sub}_${ses}_pipe
 
 # Preparing log folder and log file, removing the previous one
 if [[ ! -d "${wdr}/log" ]]; then mkdir ${wdr}/log; fi
@@ -34,8 +34,10 @@ exec 1>${wdr}/log/${logname} 2>&1
 date
 echo "************************************"
 
-# Run fALFF
+for task in motor pinel simon
+do
 singularity exec -e --no-home \
 -B ${wdr}:/data -B ${sdr}:/scripts \
 -B /export/home/smoia/scratch:/tmp \
-euskalibur.sif 04.first_level_analysis/07.compute_rsfc.sh ${sub} ${ses} /data /tmp
+euskalibur.sif 04.first_level_analysis/08.run_task_glm.sh ${sub} ${ses} ${task} /data /tmp
+done

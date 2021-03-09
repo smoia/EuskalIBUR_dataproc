@@ -12,27 +12,29 @@ ses=$2
 task=$3
 wdr=$4
 
-flpr=$5
+anat=${5:-none}
+aseg=${6:-none}
 
-fdir=$6
+fdir=$7
 
-vdsc=$7
+vdsc=$8
 
-TEs="$8"
-nTE=$9
+TEs="$9"
+nTE=${10}
 
-siot=${10}
+siot=${11}
 
-dspk=${11}
+dspk=${12}
 
-scriptdir=${12:-/scripts}
+scriptdir=${13:-/scripts}
 
-tmp=${13:-/tmp}
+tmp=${14:-/tmp}
 tmp=${tmp}/${sub}_${ses}_${task}
 
 # This is the absolute sbref. Don't change it.
 sbrf=${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
 mask=${sbrf}_brain_mask
+flpr=sub-${sub}_ses-${ses}
 
 ### print input
 printline=$( basename -- $0 )
@@ -81,7 +83,7 @@ echo "************************************"
 echo "fmat=${flpr}_task-${task}_echo-1_bold"
 fmat=${flpr}_task-${task}_echo-1_bold
 
-${scriptdir}/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} none ${sbrf} none none ${tmp}
+${scriptdir}/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} ${anat} ${sbrf} none ${aseg} ${tmp}
 
 for e in $( seq 1 ${nTE} )
 do
@@ -93,6 +95,14 @@ do
 	echo "bold=${flpr}_task-${task}_echo-${e}_bold_cr"
 	bold=${flpr}_task-${task}_echo-${e}_bold_cr
 	${scriptdir}/02.func_preproc/04.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf} none ${tmp}
+
+	echo "************************************"
+	echo "*** Func greyplot ${task} BOLD echo ${e} (pre)"
+	echo "************************************"
+	echo "************************************"
+	echo "bold=${flpr}_task-${task}_echo-${e}_bold_bet"
+	bold=${flpr}_task-${task}_echo-${e}_bold_bet
+	${scriptdir}/02.func_preproc/12.func_grayplot.sh ${bold} ${fdir} ${anat} ${sbrf} ${aseg} 4 ${tmp}
 done
 
 echo "************************************"
@@ -124,7 +134,7 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} none none ${sbrf} ${fdir} none no 0.3 0.05 5 yes yes yes yes ${tmp}
+	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} ${anat} ${aseg} ${sbrf} ${fdir} none no 0.3 0.05 4 yes yes yes yes ${tmp}
 	
 	echo "************************************"
 	echo "*** Func Pepolar ${task} BOLD ${e}"
@@ -141,6 +151,18 @@ do
 	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 5 ${mask} ${tmp}
 	echo "3dcalc -a ${tmp}/${bold}_sm.nii.gz -b ${mask}.nii.gz -expr 'a*b' -prefix ${fdir}/00.${bold}_native_preprocessed.nii.gz -short -gscale"
 	3dcalc -a ${tmp}/${bold}_sm.nii.gz -b ${mask}.nii.gz -expr 'a*b' -prefix ${fdir}/00.${bold}_native_preprocessed.nii.gz -short -gscale
+
+	echo "************************************"
+	echo "*** Func greyplot rest run ${run} BOLD ${e} (post)"
+	echo "************************************"
+	echo "************************************"
+	${scriptdir}/02.func_preproc/12.func_grayplot.sh ${bold}_sm ${fdir} ${anat} ${sbrf} ${aseg} 4 ${tmp}
+	echo "mv ${fdir}/${bold}_sm_gp_PVO.png ${fdir}/00.${bold}_native_preprocessed_gp_PVO.png"
+	mv ${fdir}/${bold}_sm_gp_PVO.png ${fdir}/00.${bold}_native_preprocessed_gp_PVO.png
+	echo "mv ${fdir}/${bold}_sm_gp_IJK.png ${fdir}/00.${bold}_native_preprocessed_gp_IJK.png"
+	mv ${fdir}/${bold}_sm_gp_IJK.png ${fdir}/00.${bold}_native_preprocessed_gp_IJK.png
+	echo "mv ${fdir}/${bold}_sm_gp_peel.png ${fdir}/00.${bold}_native_preprocessed_gp_peel.png"
+	mv ${fdir}/${bold}_sm_gp_peel.png ${fdir}/00.${bold}_native_preprocessed_gp_peel.png
 
 	# echo "************************************"
 	# echo "*** Func SPC ${task} BOLD ${e}"

@@ -1,10 +1,22 @@
 #!/usr/bin/env bash
 
-######### Motion cleaning for PJMASK
-# Author:  Stefano Moia
-# Version: 1.0
-# Date:    15.08.2019
-#########
+if_missing_do() {
+if [ $1 == 'mkdir' ]
+then
+	if [ ! -d $2 ]
+	then
+		mkdir "${@:2}"
+	fi
+elif [ ! -e $3 ]
+then
+	printf "%s is missing, " "$3"
+	case $1 in
+		copy ) echo "copying $2"; cp $2 $3 ;;
+		mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
+		* ) echo "and you shouldn't see this"; exit ;;
+	esac
+fi
+}
 
 sub=$1
 ses=$2
@@ -15,11 +27,11 @@ tmp=${4:-/tmp}
 cwd=$( pwd )
 cd ${wdr} || exit
 
-if [[ ! -d "ME_Denoising" ]]; then mkdir ME_Denoising; fi
+if_missing_do mkdir ME_Denoising
 
 cd ME_Denoising
 
-if [[ ! -d "sub-${sub}" ]]; then mkdir sub-${sub}; fi
+if_missing_do mkdir sub-${sub}
 
 flpr=sub-${sub}_ses-${ses}
 fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc

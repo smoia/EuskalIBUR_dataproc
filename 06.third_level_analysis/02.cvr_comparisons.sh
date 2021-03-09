@@ -13,7 +13,7 @@ then
        case $1 in
               copy ) echo "copying $2"; cp $2 $3 ;;
               mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
-              * ) "and you shouldn't see this"; exit ;;
+              * ) echo "and you shouldn't see this"; exit ;;
        esac
 fi
 }
@@ -33,7 +33,7 @@ if_missing_do mkdir CVR_reliability
 
 cd CVR_reliability
 
-mkdir reg normalised cov
+if_missing_do mkdir reg normalised cov
 
 # Copy files for transformation & create mask
 if_missing_do copy ${scriptdir}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ./reg/MNI_T1_brain.nii.gz

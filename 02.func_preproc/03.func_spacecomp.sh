@@ -82,24 +82,25 @@ echo "BETting ${func}"
 fslmaths ${tmp}/${func}_mcf -mas ${mref}_brain_mask ${tmp}/${func}_bet
 
 ## 02. Anat Coreg
+anat2mref=../reg/${anat}2${mref##*/}0GenericAffine
 
-if [[ "${anat}" != "none" && ! -e "../reg/${anat}2${mref}0GenericAffine.mat" ]]
+if [[ "${anat}" != "none" && ! -e "${anat2mref}.mat" ]]
 then
 	echo "Coregistering ${func} to ${anat}"
-	flirt -in ${anat}_brain -ref ${mref}_brain -out ${anat}2${mref} -omat ${anat}2${mref}_fsl.mat \
+	flirt -in ${anat}_brain -ref ${mref}_brain -out ${anat}2${mref##*/} -omat ${anat}2${mref##*/}_fsl.mat \
 	-searchry -90 90 -searchrx -90 90 -searchrz -90 90
 	echo "Affining for ANTs"
 	c3d_affine_tool -ref ${mref}_brain -src ${anat}_brain \
-	${anat}2${mref}_fsl.mat -fsl2ras -oitk ${anat}2${mref}0GenericAffine.mat
-	mv ${anat}2${mref}* ../reg/.
+	${anat}2${mref##*/}_fsl.mat -fsl2ras -oitk ${anat}2${mref##*/}0GenericAffine.mat
+	mv ${anat}2${mref##*/}* ../reg/.
 fi
-if [[ "${aseg}" != "none" && -e "../anat_preproc/${seg}_seg.nii.gz" && -e "../reg/${anat}2${aseg}0GenericAffine.mat" && ! -e "../anat_preproc/${seg}_seg2mref.nii.gz" ]]
+if [[ "${aseg}" != "none" && -e "../anat_preproc/${aseg}_seg.nii.gz" && -e "../reg/${anat}2${aseg}0GenericAffine.mat" && ! -e "../anat_preproc/${aseg}_seg2mref.nii.gz" ]]
 then
 	echo "Coregistering anatomical segmentation to ${func}"
 	antsApplyTransforms -d 3 -i ../anat_preproc/${aseg}_seg.nii.gz \
 						-r ${mref}.nii.gz -o ../anat_preproc/${aseg}_seg2mref.nii.gz \
 						-n Multilabel -v \
-						-t ../reg/${anat}2${mref}0GenericAffine.mat \
+						-t ${anat2mref}.mat \
 						-t [../reg/${anat}2${aseg}0GenericAffine.mat,1]
 fi
 ## 03. Split and affine to ANTs if required

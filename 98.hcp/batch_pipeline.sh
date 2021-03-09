@@ -20,72 +20,29 @@ then
 	mkdir ../LogFiles
 fi
 
-# # Run full preproc
-# joblist=""
-
-# for sub in 002 003 004 007 008 009
-# do
-# 	rm ${wdr}/../LogFiles/${sub}_01_preproc_pipe
-# 	qsub -q long.q -N "s_${sub}_01_EuskalIBUR" \
-# 	-o ${wdr}/../LogFiles/${sub}_01_preproc_pipe \
-# 	-e ${wdr}/../LogFiles/${sub}_01_preproc_pipe \
-# 	${wdr}/98.hcp/run_full_preproc_pipeline.sh ${sub} 01
-# 	joblist=${joblist}s_${sub}_01_EuskalIBUR,
-# done
-
-# joblist=${joblist::-1}
-
-# for sub in 002 003 004 007 008 009
-# do
-# 	for ses in $(seq -f %02g 2 10)
-# 	do
-# 		rm ${wdr}/../LogFiles/${sub}_${ses}_preproc_pipe
-# 		qsub -q long.q -N "s_${sub}_${ses}_EuskalIBUR" \
-# 		-hold_jid "${joblist}" \
-# 		-o ${wdr}/../LogFiles/${sub}_${ses}_preproc_pipe \
-# 		-e ${wdr}/../LogFiles/${sub}_${ses}_preproc_pipe \
-# 		${wdr}/98.hcp/run_full_preproc_pipeline.sh ${sub} ${ses}
-# 	done
-# 	# joblist=""
-# 	# for ses in $(seq -f %02g 1 10)
-# 	# do
-# 	# 	joblist=${joblist}s_${sub}_${ses}_EuskalIBUR,
-# 	# done
-# 	# joblist=${joblist::-1}
-# done
-
-# # Run fALFF
-# for sub in 001 002 003 004 007 008 009
-# do
-# 	for ses in $(seq -f %02g 1 10)
-# 	do
-# 		rm ${wdr}/../LogFiles/${sub}_${ses}_falff_pipe
-# 		qsub -q short.q -N "falff_${sub}_${ses}_EuskalIBUR" \
-# 		-o ${wdr}/../LogFiles/${sub}_${ses}_falff_pipe \
-# 		-e ${wdr}/../LogFiles/${sub}_${ses}_falff_pipe \
-# 		${wdr}/98.hcp/run_falff.sh ${sub} ${ses}
-# 		# -hold_jid "${joblist}" \
-# 	done
-# done
-
-# # Run GLMs
+joblist=""
+# # Run surrogates
 for sub in 001 002 003 004 007 008 009
 do
 	for ses in $(seq -f %02g 1 10)
 	do
-		rm ${wdr}/../LogFiles/${sub}_${ses}_glm_pipe
-		qsub -q long.q -N "glm_${sub}_${ses}_EuskalIBUR" \
-		-o ${wdr}/../LogFiles/${sub}_${ses}_glm_pipe \
-		-e ${wdr}/../LogFiles/${sub}_${ses}_glm_pipe \
-		${wdr}/98.hcp/run_ses_glm.sh ${sub} ${ses}
-		# -hold_jid "${joblist}" \
+		rm ${wdr}/../LogFiles/${sub}_${ses}_surr_pipe
+		qsub -q long.q -N "surr_${sub}_${ses}_EuskalIBUR" \
+		-o ${wdr}/../LogFiles/${sub}_${ses}_surr_pipe \
+		-e ${wdr}/../LogFiles/${sub}_${ses}_surr_pipe \
+		${wdr}/98.hcp/run_surrogates.sh ${sub} ${ses}
+		joblist=surr_${sub}_${ses}_EuskalIBUR,
 	done
-
-	rm ${wdr}/../LogFiles/${sub}_allses_glm_pipe
-	qsub -q long.q -N "glm_${sub}_allses_EuskalIBUR" \
-	-o ${wdr}/../LogFiles/${sub}_allses_glm_pipe \
-	-e ${wdr}/../LogFiles/${sub}_allses_glm_pipe \
-	${wdr}/98.hcp/run_Mennes.sh ${sub}
-	# -hold_jid "${joblist}" \
 done
 
+joblist=${joblist::-1}
+
+for n in $(seq -f %03g 0 34 1000)
+do
+	rm ${wdr}/../LogFiles/${n}_surr_icc_pipe
+	qsub -q long.q -N "icc_surr_${n}_EuskalIBUR" \
+	-hold_jid "${joblist}" \
+	-o ${wdr}/../LogFiles/${n}_surr_icc_pipe \
+	-e ${wdr}/../LogFiles/${n}_surr_icc_pipe \
+	${wdr}/98.hcp/run_surrogate_icc_split.sh cvr ${n} 33
+done

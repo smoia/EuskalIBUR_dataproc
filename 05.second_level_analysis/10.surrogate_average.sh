@@ -40,6 +40,8 @@ cwd=$(pwd)
 
 cd ${wdr}/Surr_reliability || exit
 
+if_missing_do mkdir surrogate_sets
+
 tmp=${tmp}/tmp.${map}_10sa
 replace_and mkdir ${tmp}
 
@@ -47,9 +49,9 @@ replace_and mkdir ${tmp}
 if_missing_do mask ${sdr}/90.template/MNI152_T1_1mm_GM_resamp_2.5mm_mcorr.nii.gz ./MNI_GM.nii.gz
 
 # Create folder ICC
-for n in $(seq -f %03g 0 1000)
+for n in $(seq -f %03g 0 999)
 do
-	runfslmerge="fslmerge -t ${tmp}/${map}_${n}_all"
+	runfslmerge="fslmerge -t surrogate_sets/${map}_${n}_all"
 	for sub in 001 002 003 004 007 008 009
 	do
 		for ses in $(seq -f %02g 1 10)
@@ -58,7 +60,7 @@ do
 		done
 	done
 	eval ${runfslmerge}
-	fslmaths ${tmp}/${map}_${n}_all -Tmean ${tmp}/${map}_average_${n}
+	fslmaths surrogate_sets/${map}_${n}_all -Tmean ${tmp}/${map}_average_${n}
 done
 
 echo "Merge all averages together"

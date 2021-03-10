@@ -80,8 +80,9 @@ do
 done
 
 echo "Threshold CVR outliers"
-fslmaths ${tmp}/${vprfx}_cvr -thr 2 -bin -mul 2 ${tmp}/${vprfx}_maxed_cvr
-fslmaths ${tmp}/${vprfx}_cvr -uthr 2 -add ${tmp}/${vprfx}_maxed_cvr ${tmp}/${vprfx}_cvr
+fslmaths ${tmp}/${vprfx}_cvr -thr 2.000001 -bin -mul 2 ${tmp}/${vprfx}_maxed_cvr
+fslmaths ${tmp}/${vprfx}_cvr -uthr -1.999999 -bin -mul -2 -add ${tmp}/${vprfx}_maxed_cvr ${tmp}/${vprfx}_maxed_cvr
+fslmaths ${tmp}/${vprfx}_cvr -uthr 2 -thr -2 -add ${tmp}/${vprfx}_maxed_cvr ${tmp}/${vprfx}_cvr
 
 # for map in cvr lag
 # do

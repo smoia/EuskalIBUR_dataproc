@@ -50,9 +50,9 @@ done
 for map in cvr lag
 do
 	rm ${wdr}/../LogFiles/${map}_surr_avg
-	qsub -q short.q -N "surr_${map}_avg_EuskalIBUR" \
+	qsub -q long.q -N "surr_${map}_avg_EuskalIBUR" \
 	-o ${wdr}/../LogFiles/${map}_surr_avg \
 	-e ${wdr}/../LogFiles/${map}_surr_avg \
-	${wdr}/98.hcp/run_average.sh cvr ${map}
+	${wdr}/98.hcp/run_average.sh ${map}
 	# -hold_jid "${joblist}"
 done

@@ -40,9 +40,19 @@ fi
 for n in $(seq -f %03g 0 11 1000)
 do
 	rm ${wdr}/../LogFiles/${n}_surr_icc_pipe
-	qsub -q short.q -N "icc_surr_${n}_EuskalIBUR" \
+	qsub -q long.q -N "icc_surr_${n}_EuskalIBUR" \
 	-o ${wdr}/../LogFiles/${n}_surr_icc_pipe \
 	-e ${wdr}/../LogFiles/${n}_surr_icc_pipe \
 	${wdr}/98.hcp/run_surrogate_icc_split.sh cvr ${n} 10
 	# -hold_jid "${joblist}" \
+done
+
+for map in cvr lag
+do
+	rm ${wdr}/../LogFiles/${map}_surr_avg
+	qsub -q short.q -N "surr_${map}_avg_EuskalIBUR" \
+	-o ${wdr}/../LogFiles/${map}_surr_avg \
+	-e ${wdr}/../LogFiles/${map}_surr_avg \
+	${wdr}/98.hcp/run_average.sh cvr ${map}
+	# -hold_jid "${joblist}"
 done

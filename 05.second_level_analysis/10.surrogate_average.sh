@@ -64,7 +64,7 @@ do
 done
 
 echo "Merge all averages together"
-fslmerge -t surr/${map}_all_surr.nii.gz ${tmp}/${map}_average_* 
+fslmerge -t surr/${map}_all_surr_avg.nii.gz ${tmp}/${map}_average_* 
 
 echo "End of script!"
 

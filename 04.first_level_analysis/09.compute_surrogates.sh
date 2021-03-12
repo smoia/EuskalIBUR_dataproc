@@ -55,7 +55,7 @@ do
 									  surr/${vol} #\
 									  #${vol}
 	rm ${tmp}/${vol}.nii.gz ${tmp}/${vol}.nii
-	for n in $(seq 0 999)
+	for n in $(seq -f %03g 0 999)
 	do
 		mv surr/${vol}/${tmp}${vol}_Surr_${n}.nii.gz surr/${vol}/${vol}_Surr_${n}.nii.gz
 	done

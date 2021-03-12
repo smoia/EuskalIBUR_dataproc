@@ -44,7 +44,7 @@ if_missing_do mkdir ICC ICC/lag ICC/cvr
 
 let maxiter=miniter+step
 
-for n in $(seq -f %03g miniter maxiter)
+for n in $(seq -f %03g ${miniter} ${maxiter})
 do
 	[[ ${n} -gt 1000 ]] && continue
 	if [[ ${n} -eq 1000 ]]

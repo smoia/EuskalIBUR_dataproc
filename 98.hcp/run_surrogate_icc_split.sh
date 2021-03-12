@@ -16,7 +16,7 @@ wdr=${4:-/data}
 sdr=${5:-/scripts}
 
 
-logname=surr_icc_${map}_log
+logname=surr_icc_${map}_${miniter}_log
 
 date
 

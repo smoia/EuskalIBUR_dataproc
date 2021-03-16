@@ -71,21 +71,24 @@ fi
 # # Run GLMs
 for sub in 001 002 003 004 007 008 009
 do
-	for ses in $(seq -f %02g 1 10)
+	for task in simon pinel motor
 	do
-		rm ${wdr}/../LogFiles/${sub}_${ses}_glm_pipe
-		qsub -q long.q -N "glm_${sub}_${ses}_EuskalIBUR" \
-		-o ${wdr}/../LogFiles/${sub}_${ses}_glm_pipe \
-		-e ${wdr}/../LogFiles/${sub}_${ses}_glm_pipe \
-		${wdr}/98.hcp/run_ses_glm.sh ${sub} ${ses}
-		# -hold_jid "${joblist}" \
-	done
+		for ses in $(seq -f %02g 1 10)
+		do
+			rm ${wdr}/../LogFiles/${sub}_${ses}_${task}_glm_pipe
+			qsub -q short.q -N "glm_${sub}_${ses}_${task}_EuskalIBUR" \
+			-o ${wdr}/../LogFiles/${sub}_${ses}_${task}_glm_pipe \
+			-e ${wdr}/../LogFiles/${sub}_${ses}_${task}_glm_pipe \
+			${wdr}/98.hcp/run_ses_glm.sh ${sub} ${ses} ${task}
+			# -hold_jid "${joblist}" \
+		done
 
-	rm ${wdr}/../LogFiles/${sub}_allses_glm_pipe
-	qsub -q long.q -N "glm_${sub}_allses_EuskalIBUR" \
-	-o ${wdr}/../LogFiles/${sub}_allses_glm_pipe \
-	-e ${wdr}/../LogFiles/${sub}_allses_glm_pipe \
-	${wdr}/98.hcp/run_Mennes.sh ${sub}
+	rm ${wdr}/../LogFiles/${sub}_allses_${task}_glm_pipe
+	qsub -q short.q -N "glm_${sub}_allses_${task}_EuskalIBUR" \
+	-o ${wdr}/../LogFiles/${sub}_allses_${task}_glm_pipe \
+	-e ${wdr}/../LogFiles/${sub}_allses_${task}_glm_pipe \
+	${wdr}/98.hcp/run_Mennes.sh ${sub} ${task}
 	# -hold_jid "${joblist}" \
+	done
 done
 

@@ -2,6 +2,8 @@
 #$ -cwd
 #$ -m be
 #$ -M s.moia@bcbl.eu
+#$ -l mem_free=10Gb
+#$ -l nodes=2:ppn=12
 
 module load singularity/3.3.0
 

@@ -17,7 +17,7 @@ PJMASK=$3
 
 cd ${3}/preproc/Surr_reliability/surr
 
-for map in cvr lag; do
+for map in cvr; do
 fslmerge -t std_${1}_${2}_${map} std_${1}_${2}_${map}/*
 fslmaths std_${1}_${2}_${map}.nii.gz -Tmean std_tavg_${map}_${1}_${2}
 rm std_${1}_${2}_${map}.nii.gz

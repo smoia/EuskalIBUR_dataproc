@@ -3,18 +3,18 @@
 if_missing_do() {
 if [ $1 == 'mkdir' ]
 then
-       if [ ! -d $2 ]
-       then
-              mkdir "${@:2}"
-       fi
+	if [ ! -d $2 ]
+	then
+		mkdir "${@:2}"
+	fi
 elif [ ! -e $3 ]
 then
-       printf "%s is missing, " "$3"
-       case $1 in
-              copy ) echo "copying $2"; cp $2 $3 ;;
-              mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
-              * ) echo "and you shouldn't see this"; exit ;;
-       esac
+	printf "%s is missing, " "$3"
+	case $1 in
+		copy ) echo "copying $2"; cp $2 $3 ;;
+		mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
+		* ) echo "and you shouldn't see this"; exit ;;
+	esac
 fi
 }
 
@@ -96,381 +96,43 @@ cd normalised
 
 for map in masked  # _physio_only # corrected
 do
-for inmap in cvr lag
-do
-# Compute ICC
-inmap=${inmap}_${map}
-rm ../LMEr_${inmap}.nii.gz
+	for inmap in cvr lag
+	do
+		# Compute ICC
+		inmap=${inmap}_${map}
+		rm ../LMEr_${inmap}.nii.gz
 
- 
-3dLMEr -prefix ../LMEr_${inmap}.nii.gz -jobs 10                \
-       -mask ../reg/MNI_T1_brain_mask.nii.gz                           \
-       -model  'model+(1|session)+(1|Subj)'                            \
-       -gltCode echo-2_vs_optcom  'model : 1*echo-2 -1*optcom'         \
-       -gltCode echo-2_vs_meica-cons  'model : 1*echo-2 -1*meica-cons' \
-       -gltCode echo-2_vs_meica-orth  'model : 1*echo-2 -1*meica-orth' \
-       -gltCode echo-2_vs_meica-aggr  'model : 1*echo-2 -1*meica-aggr' \
-       -gltCode optcom_vs_meica-cons  'model : 1*optcom -1*meica-cons' \
-       -gltCode optcom_vs_meica-orth  'model : 1*optcom -1*meica-orth' \
-       -gltCode optcom_vs_meica-aggr  'model : 1*optcom -1*meica-aggr' \
-       -gltCode meica-cons_vs_meica-orth  'model : 1*meica-cons -1*meica-orth' \
-       -gltCode meica-cons_vs_meica-aggr  'model : 1*meica-cons -1*meica-aggr' \
-       -gltCode meica-orth_vs_meica-aggr  'model : 1*meica-orth -1*meica-aggr' \
-       -glfCode all_vs_echo-2  'model : 1*echo-2 -1*optcom & 1*echo-2 -1*meica-aggr & 1*echo-2 -1*meica-orth & 1*echo-2 -1*meica-cons' \
-       -dataTable                                                      \
-       Subj session  model       InputFile                             \
-       001  01       echo-2      std_echo-2_${inmap}_001_01.nii.gz     \
-       001  02       echo-2      std_echo-2_${inmap}_001_02.nii.gz     \
-       001  03       echo-2      std_echo-2_${inmap}_001_03.nii.gz     \
-       001  04       echo-2      std_echo-2_${inmap}_001_04.nii.gz     \
-       001  05       echo-2      std_echo-2_${inmap}_001_05.nii.gz     \
-       001  06       echo-2      std_echo-2_${inmap}_001_06.nii.gz     \
-       001  07       echo-2      std_echo-2_${inmap}_001_07.nii.gz     \
-       001  08       echo-2      std_echo-2_${inmap}_001_08.nii.gz     \
-       001  09       echo-2      std_echo-2_${inmap}_001_09.nii.gz     \
-       001  10       echo-2      std_echo-2_${inmap}_001_10.nii.gz     \
-       002  01       echo-2      std_echo-2_${inmap}_002_01.nii.gz     \
-       002  02       echo-2      std_echo-2_${inmap}_002_02.nii.gz     \
-       002  03       echo-2      std_echo-2_${inmap}_002_03.nii.gz     \
-       002  04       echo-2      std_echo-2_${inmap}_002_04.nii.gz     \
-       002  05       echo-2      std_echo-2_${inmap}_002_05.nii.gz     \
-       002  06       echo-2      std_echo-2_${inmap}_002_06.nii.gz     \
-       002  07       echo-2      std_echo-2_${inmap}_002_07.nii.gz     \
-       002  08       echo-2      std_echo-2_${inmap}_002_08.nii.gz     \
-       002  09       echo-2      std_echo-2_${inmap}_002_09.nii.gz     \
-       002  10       echo-2      std_echo-2_${inmap}_002_10.nii.gz     \
-       003  01       echo-2      std_echo-2_${inmap}_003_01.nii.gz     \
-       003  02       echo-2      std_echo-2_${inmap}_003_02.nii.gz     \
-       003  03       echo-2      std_echo-2_${inmap}_003_03.nii.gz     \
-       003  04       echo-2      std_echo-2_${inmap}_003_04.nii.gz     \
-       003  05       echo-2      std_echo-2_${inmap}_003_05.nii.gz     \
-       003  06       echo-2      std_echo-2_${inmap}_003_06.nii.gz     \
-       003  07       echo-2      std_echo-2_${inmap}_003_07.nii.gz     \
-       003  08       echo-2      std_echo-2_${inmap}_003_08.nii.gz     \
-       003  09       echo-2      std_echo-2_${inmap}_003_09.nii.gz     \
-       003  10       echo-2      std_echo-2_${inmap}_003_10.nii.gz     \
-       004  01       echo-2      std_echo-2_${inmap}_004_01.nii.gz     \
-       004  02       echo-2      std_echo-2_${inmap}_004_02.nii.gz     \
-       004  03       echo-2      std_echo-2_${inmap}_004_03.nii.gz     \
-       004  04       echo-2      std_echo-2_${inmap}_004_04.nii.gz     \
-       004  05       echo-2      std_echo-2_${inmap}_004_05.nii.gz     \
-       004  06       echo-2      std_echo-2_${inmap}_004_06.nii.gz     \
-       004  07       echo-2      std_echo-2_${inmap}_004_07.nii.gz     \
-       004  08       echo-2      std_echo-2_${inmap}_004_08.nii.gz     \
-       004  09       echo-2      std_echo-2_${inmap}_004_09.nii.gz     \
-       004  10       echo-2      std_echo-2_${inmap}_004_10.nii.gz     \
-       007  01       echo-2      std_echo-2_${inmap}_007_01.nii.gz     \
-       007  02       echo-2      std_echo-2_${inmap}_007_02.nii.gz     \
-       007  03       echo-2      std_echo-2_${inmap}_007_03.nii.gz     \
-       007  04       echo-2      std_echo-2_${inmap}_007_04.nii.gz     \
-       007  05       echo-2      std_echo-2_${inmap}_007_05.nii.gz     \
-       007  06       echo-2      std_echo-2_${inmap}_007_06.nii.gz     \
-       007  07       echo-2      std_echo-2_${inmap}_007_07.nii.gz     \
-       007  08       echo-2      std_echo-2_${inmap}_007_08.nii.gz     \
-       007  09       echo-2      std_echo-2_${inmap}_007_09.nii.gz     \
-       007  10       echo-2      std_echo-2_${inmap}_007_10.nii.gz     \
-       008  01       echo-2      std_echo-2_${inmap}_008_01.nii.gz     \
-       008  02       echo-2      std_echo-2_${inmap}_008_02.nii.gz     \
-       008  03       echo-2      std_echo-2_${inmap}_008_03.nii.gz     \
-       008  04       echo-2      std_echo-2_${inmap}_008_04.nii.gz     \
-       008  05       echo-2      std_echo-2_${inmap}_008_05.nii.gz     \
-       008  06       echo-2      std_echo-2_${inmap}_008_06.nii.gz     \
-       008  07       echo-2      std_echo-2_${inmap}_008_07.nii.gz     \
-       008  08       echo-2      std_echo-2_${inmap}_008_08.nii.gz     \
-       008  09       echo-2      std_echo-2_${inmap}_008_09.nii.gz     \
-       008  10       echo-2      std_echo-2_${inmap}_008_10.nii.gz     \
-       009  01       echo-2      std_echo-2_${inmap}_009_01.nii.gz     \
-       009  02       echo-2      std_echo-2_${inmap}_009_02.nii.gz     \
-       009  03       echo-2      std_echo-2_${inmap}_009_03.nii.gz     \
-       009  04       echo-2      std_echo-2_${inmap}_009_04.nii.gz     \
-       009  05       echo-2      std_echo-2_${inmap}_009_05.nii.gz     \
-       009  06       echo-2      std_echo-2_${inmap}_009_06.nii.gz     \
-       009  07       echo-2      std_echo-2_${inmap}_009_07.nii.gz     \
-       009  08       echo-2      std_echo-2_${inmap}_009_08.nii.gz     \
-       009  09       echo-2      std_echo-2_${inmap}_009_09.nii.gz     \
-       009  10       echo-2      std_echo-2_${inmap}_009_10.nii.gz     \
-       001  01       optcom      std_optcom_${inmap}_001_01.nii.gz     \
-       001  02       optcom      std_optcom_${inmap}_001_02.nii.gz     \
-       001  03       optcom      std_optcom_${inmap}_001_03.nii.gz     \
-       001  04       optcom      std_optcom_${inmap}_001_04.nii.gz     \
-       001  05       optcom      std_optcom_${inmap}_001_05.nii.gz     \
-       001  06       optcom      std_optcom_${inmap}_001_06.nii.gz     \
-       001  07       optcom      std_optcom_${inmap}_001_07.nii.gz     \
-       001  08       optcom      std_optcom_${inmap}_001_08.nii.gz     \
-       001  09       optcom      std_optcom_${inmap}_001_09.nii.gz     \
-       001  10       optcom      std_optcom_${inmap}_001_10.nii.gz     \
-       002  01       optcom      std_optcom_${inmap}_002_01.nii.gz     \
-       002  02       optcom      std_optcom_${inmap}_002_02.nii.gz     \
-       002  03       optcom      std_optcom_${inmap}_002_03.nii.gz     \
-       002  04       optcom      std_optcom_${inmap}_002_04.nii.gz     \
-       002  05       optcom      std_optcom_${inmap}_002_05.nii.gz     \
-       002  06       optcom      std_optcom_${inmap}_002_06.nii.gz     \
-       002  07       optcom      std_optcom_${inmap}_002_07.nii.gz     \
-       002  08       optcom      std_optcom_${inmap}_002_08.nii.gz     \
-       002  09       optcom      std_optcom_${inmap}_002_09.nii.gz     \
-       002  10       optcom      std_optcom_${inmap}_002_10.nii.gz     \
-       003  01       optcom      std_optcom_${inmap}_003_01.nii.gz     \
-       003  02       optcom      std_optcom_${inmap}_003_02.nii.gz     \
-       003  03       optcom      std_optcom_${inmap}_003_03.nii.gz     \
-       003  04       optcom      std_optcom_${inmap}_003_04.nii.gz     \
-       003  05       optcom      std_optcom_${inmap}_003_05.nii.gz     \
-       003  06       optcom      std_optcom_${inmap}_003_06.nii.gz     \
-       003  07       optcom      std_optcom_${inmap}_003_07.nii.gz     \
-       003  08       optcom      std_optcom_${inmap}_003_08.nii.gz     \
-       003  09       optcom      std_optcom_${inmap}_003_09.nii.gz     \
-       003  10       optcom      std_optcom_${inmap}_003_10.nii.gz     \
-       004  01       optcom      std_optcom_${inmap}_004_01.nii.gz     \
-       004  02       optcom      std_optcom_${inmap}_004_02.nii.gz     \
-       004  03       optcom      std_optcom_${inmap}_004_03.nii.gz     \
-       004  04       optcom      std_optcom_${inmap}_004_04.nii.gz     \
-       004  05       optcom      std_optcom_${inmap}_004_05.nii.gz     \
-       004  06       optcom      std_optcom_${inmap}_004_06.nii.gz     \
-       004  07       optcom      std_optcom_${inmap}_004_07.nii.gz     \
-       004  08       optcom      std_optcom_${inmap}_004_08.nii.gz     \
-       004  09       optcom      std_optcom_${inmap}_004_09.nii.gz     \
-       004  10       optcom      std_optcom_${inmap}_004_10.nii.gz     \
-       007  01       optcom      std_optcom_${inmap}_007_01.nii.gz     \
-       007  02       optcom      std_optcom_${inmap}_007_02.nii.gz     \
-       007  03       optcom      std_optcom_${inmap}_007_03.nii.gz     \
-       007  04       optcom      std_optcom_${inmap}_007_04.nii.gz     \
-       007  05       optcom      std_optcom_${inmap}_007_05.nii.gz     \
-       007  06       optcom      std_optcom_${inmap}_007_06.nii.gz     \
-       007  07       optcom      std_optcom_${inmap}_007_07.nii.gz     \
-       007  08       optcom      std_optcom_${inmap}_007_08.nii.gz     \
-       007  09       optcom      std_optcom_${inmap}_007_09.nii.gz     \
-       007  10       optcom      std_optcom_${inmap}_007_10.nii.gz     \
-       008  01       optcom      std_optcom_${inmap}_008_01.nii.gz     \
-       008  02       optcom      std_optcom_${inmap}_008_02.nii.gz     \
-       008  03       optcom      std_optcom_${inmap}_008_03.nii.gz     \
-       008  04       optcom      std_optcom_${inmap}_008_04.nii.gz     \
-       008  05       optcom      std_optcom_${inmap}_008_05.nii.gz     \
-       008  06       optcom      std_optcom_${inmap}_008_06.nii.gz     \
-       008  07       optcom      std_optcom_${inmap}_008_07.nii.gz     \
-       008  08       optcom      std_optcom_${inmap}_008_08.nii.gz     \
-       008  09       optcom      std_optcom_${inmap}_008_09.nii.gz     \
-       008  10       optcom      std_optcom_${inmap}_008_10.nii.gz     \
-       009  01       optcom      std_optcom_${inmap}_009_01.nii.gz     \
-       009  02       optcom      std_optcom_${inmap}_009_02.nii.gz     \
-       009  03       optcom      std_optcom_${inmap}_009_03.nii.gz     \
-       009  04       optcom      std_optcom_${inmap}_009_04.nii.gz     \
-       009  05       optcom      std_optcom_${inmap}_009_05.nii.gz     \
-       009  06       optcom      std_optcom_${inmap}_009_06.nii.gz     \
-       009  07       optcom      std_optcom_${inmap}_009_07.nii.gz     \
-       009  08       optcom      std_optcom_${inmap}_009_08.nii.gz     \
-       009  09       optcom      std_optcom_${inmap}_009_09.nii.gz     \
-       009  10       optcom      std_optcom_${inmap}_009_10.nii.gz     \
-       001  01       meica-aggr  std_meica-aggr_${inmap}_001_01.nii.gz \
-       001  02       meica-aggr  std_meica-aggr_${inmap}_001_02.nii.gz \
-       001  03       meica-aggr  std_meica-aggr_${inmap}_001_03.nii.gz \
-       001  04       meica-aggr  std_meica-aggr_${inmap}_001_04.nii.gz \
-       001  05       meica-aggr  std_meica-aggr_${inmap}_001_05.nii.gz \
-       001  06       meica-aggr  std_meica-aggr_${inmap}_001_06.nii.gz \
-       001  07       meica-aggr  std_meica-aggr_${inmap}_001_07.nii.gz \
-       001  08       meica-aggr  std_meica-aggr_${inmap}_001_08.nii.gz \
-       001  09       meica-aggr  std_meica-aggr_${inmap}_001_09.nii.gz \
-       001  10       meica-aggr  std_meica-aggr_${inmap}_001_10.nii.gz \
-       002  01       meica-aggr  std_meica-aggr_${inmap}_002_01.nii.gz \
-       002  02       meica-aggr  std_meica-aggr_${inmap}_002_02.nii.gz \
-       002  03       meica-aggr  std_meica-aggr_${inmap}_002_03.nii.gz \
-       002  04       meica-aggr  std_meica-aggr_${inmap}_002_04.nii.gz \
-       002  05       meica-aggr  std_meica-aggr_${inmap}_002_05.nii.gz \
-       002  06       meica-aggr  std_meica-aggr_${inmap}_002_06.nii.gz \
-       002  07       meica-aggr  std_meica-aggr_${inmap}_002_07.nii.gz \
-       002  08       meica-aggr  std_meica-aggr_${inmap}_002_08.nii.gz \
-       002  09       meica-aggr  std_meica-aggr_${inmap}_002_09.nii.gz \
-       002  10       meica-aggr  std_meica-aggr_${inmap}_002_10.nii.gz \
-       003  01       meica-aggr  std_meica-aggr_${inmap}_003_01.nii.gz \
-       003  02       meica-aggr  std_meica-aggr_${inmap}_003_02.nii.gz \
-       003  03       meica-aggr  std_meica-aggr_${inmap}_003_03.nii.gz \
-       003  04       meica-aggr  std_meica-aggr_${inmap}_003_04.nii.gz \
-       003  05       meica-aggr  std_meica-aggr_${inmap}_003_05.nii.gz \
-       003  06       meica-aggr  std_meica-aggr_${inmap}_003_06.nii.gz \
-       003  07       meica-aggr  std_meica-aggr_${inmap}_003_07.nii.gz \
-       003  08       meica-aggr  std_meica-aggr_${inmap}_003_08.nii.gz \
-       003  09       meica-aggr  std_meica-aggr_${inmap}_003_09.nii.gz \
-       003  10       meica-aggr  std_meica-aggr_${inmap}_003_10.nii.gz \
-       004  01       meica-aggr  std_meica-aggr_${inmap}_004_01.nii.gz \
-       004  02       meica-aggr  std_meica-aggr_${inmap}_004_02.nii.gz \
-       004  03       meica-aggr  std_meica-aggr_${inmap}_004_03.nii.gz \
-       004  04       meica-aggr  std_meica-aggr_${inmap}_004_04.nii.gz \
-       004  05       meica-aggr  std_meica-aggr_${inmap}_004_05.nii.gz \
-       004  06       meica-aggr  std_meica-aggr_${inmap}_004_06.nii.gz \
-       004  07       meica-aggr  std_meica-aggr_${inmap}_004_07.nii.gz \
-       004  08       meica-aggr  std_meica-aggr_${inmap}_004_08.nii.gz \
-       004  09       meica-aggr  std_meica-aggr_${inmap}_004_09.nii.gz \
-       004  10       meica-aggr  std_meica-aggr_${inmap}_004_10.nii.gz \
-       007  01       meica-aggr  std_meica-aggr_${inmap}_007_01.nii.gz \
-       007  02       meica-aggr  std_meica-aggr_${inmap}_007_02.nii.gz \
-       007  03       meica-aggr  std_meica-aggr_${inmap}_007_03.nii.gz \
-       007  04       meica-aggr  std_meica-aggr_${inmap}_007_04.nii.gz \
-       007  05       meica-aggr  std_meica-aggr_${inmap}_007_05.nii.gz \
-       007  06       meica-aggr  std_meica-aggr_${inmap}_007_06.nii.gz \
-       007  07       meica-aggr  std_meica-aggr_${inmap}_007_07.nii.gz \
-       007  08       meica-aggr  std_meica-aggr_${inmap}_007_08.nii.gz \
-       007  09       meica-aggr  std_meica-aggr_${inmap}_007_09.nii.gz \
-       007  10       meica-aggr  std_meica-aggr_${inmap}_007_10.nii.gz \
-       008  01       meica-aggr  std_meica-aggr_${inmap}_008_01.nii.gz \
-       008  02       meica-aggr  std_meica-aggr_${inmap}_008_02.nii.gz \
-       008  03       meica-aggr  std_meica-aggr_${inmap}_008_03.nii.gz \
-       008  04       meica-aggr  std_meica-aggr_${inmap}_008_04.nii.gz \
-       008  05       meica-aggr  std_meica-aggr_${inmap}_008_05.nii.gz \
-       008  06       meica-aggr  std_meica-aggr_${inmap}_008_06.nii.gz \
-       008  07       meica-aggr  std_meica-aggr_${inmap}_008_07.nii.gz \
-       008  08       meica-aggr  std_meica-aggr_${inmap}_008_08.nii.gz \
-       008  09       meica-aggr  std_meica-aggr_${inmap}_008_09.nii.gz \
-       008  10       meica-aggr  std_meica-aggr_${inmap}_008_10.nii.gz \
-       009  01       meica-aggr  std_meica-aggr_${inmap}_009_01.nii.gz \
-       009  02       meica-aggr  std_meica-aggr_${inmap}_009_02.nii.gz \
-       009  03       meica-aggr  std_meica-aggr_${inmap}_009_03.nii.gz \
-       009  04       meica-aggr  std_meica-aggr_${inmap}_009_04.nii.gz \
-       009  05       meica-aggr  std_meica-aggr_${inmap}_009_05.nii.gz \
-       009  06       meica-aggr  std_meica-aggr_${inmap}_009_06.nii.gz \
-       009  07       meica-aggr  std_meica-aggr_${inmap}_009_07.nii.gz \
-       009  08       meica-aggr  std_meica-aggr_${inmap}_009_08.nii.gz \
-       009  09       meica-aggr  std_meica-aggr_${inmap}_009_09.nii.gz \
-       009  10       meica-aggr  std_meica-aggr_${inmap}_009_10.nii.gz \
-       001  01       meica-orth  std_meica-orth_${inmap}_001_01.nii.gz \
-       001  02       meica-orth  std_meica-orth_${inmap}_001_02.nii.gz \
-       001  03       meica-orth  std_meica-orth_${inmap}_001_03.nii.gz \
-       001  04       meica-orth  std_meica-orth_${inmap}_001_04.nii.gz \
-       001  05       meica-orth  std_meica-orth_${inmap}_001_05.nii.gz \
-       001  06       meica-orth  std_meica-orth_${inmap}_001_06.nii.gz \
-       001  07       meica-orth  std_meica-orth_${inmap}_001_07.nii.gz \
-       001  08       meica-orth  std_meica-orth_${inmap}_001_08.nii.gz \
-       001  09       meica-orth  std_meica-orth_${inmap}_001_09.nii.gz \
-       001  10       meica-orth  std_meica-orth_${inmap}_001_10.nii.gz \
-       002  01       meica-orth  std_meica-orth_${inmap}_002_01.nii.gz \
-       002  02       meica-orth  std_meica-orth_${inmap}_002_02.nii.gz \
-       002  03       meica-orth  std_meica-orth_${inmap}_002_03.nii.gz \
-       002  04       meica-orth  std_meica-orth_${inmap}_002_04.nii.gz \
-       002  05       meica-orth  std_meica-orth_${inmap}_002_05.nii.gz \
-       002  06       meica-orth  std_meica-orth_${inmap}_002_06.nii.gz \
-       002  07       meica-orth  std_meica-orth_${inmap}_002_07.nii.gz \
-       002  08       meica-orth  std_meica-orth_${inmap}_002_08.nii.gz \
-       002  09       meica-orth  std_meica-orth_${inmap}_002_09.nii.gz \
-       002  10       meica-orth  std_meica-orth_${inmap}_002_10.nii.gz \
-       003  01       meica-orth  std_meica-orth_${inmap}_003_01.nii.gz \
-       003  02       meica-orth  std_meica-orth_${inmap}_003_02.nii.gz \
-       003  03       meica-orth  std_meica-orth_${inmap}_003_03.nii.gz \
-       003  04       meica-orth  std_meica-orth_${inmap}_003_04.nii.gz \
-       003  05       meica-orth  std_meica-orth_${inmap}_003_05.nii.gz \
-       003  06       meica-orth  std_meica-orth_${inmap}_003_06.nii.gz \
-       003  07       meica-orth  std_meica-orth_${inmap}_003_07.nii.gz \
-       003  08       meica-orth  std_meica-orth_${inmap}_003_08.nii.gz \
-       003  09       meica-orth  std_meica-orth_${inmap}_003_09.nii.gz \
-       003  10       meica-orth  std_meica-orth_${inmap}_003_10.nii.gz \
-       004  01       meica-orth  std_meica-orth_${inmap}_004_01.nii.gz \
-       004  02       meica-orth  std_meica-orth_${inmap}_004_02.nii.gz \
-       004  03       meica-orth  std_meica-orth_${inmap}_004_03.nii.gz \
-       004  04       meica-orth  std_meica-orth_${inmap}_004_04.nii.gz \
-       004  05       meica-orth  std_meica-orth_${inmap}_004_05.nii.gz \
-       004  06       meica-orth  std_meica-orth_${inmap}_004_06.nii.gz \
-       004  07       meica-orth  std_meica-orth_${inmap}_004_07.nii.gz \
-       004  08       meica-orth  std_meica-orth_${inmap}_004_08.nii.gz \
-       004  09       meica-orth  std_meica-orth_${inmap}_004_09.nii.gz \
-       004  10       meica-orth  std_meica-orth_${inmap}_004_10.nii.gz \
-       007  01       meica-orth  std_meica-orth_${inmap}_007_01.nii.gz \
-       007  02       meica-orth  std_meica-orth_${inmap}_007_02.nii.gz \
-       007  03       meica-orth  std_meica-orth_${inmap}_007_03.nii.gz \
-       007  04       meica-orth  std_meica-orth_${inmap}_007_04.nii.gz \
-       007  05       meica-orth  std_meica-orth_${inmap}_007_05.nii.gz \
-       007  06       meica-orth  std_meica-orth_${inmap}_007_06.nii.gz \
-       007  07       meica-orth  std_meica-orth_${inmap}_007_07.nii.gz \
-       007  08       meica-orth  std_meica-orth_${inmap}_007_08.nii.gz \
-       007  09       meica-orth  std_meica-orth_${inmap}_007_09.nii.gz \
-       007  10       meica-orth  std_meica-orth_${inmap}_007_10.nii.gz \
-       008  01       meica-orth  std_meica-orth_${inmap}_008_01.nii.gz \
-       008  02       meica-orth  std_meica-orth_${inmap}_008_02.nii.gz \
-       008  03       meica-orth  std_meica-orth_${inmap}_008_03.nii.gz \
-       008  04       meica-orth  std_meica-orth_${inmap}_008_04.nii.gz \
-       008  05       meica-orth  std_meica-orth_${inmap}_008_05.nii.gz \
-       008  06       meica-orth  std_meica-orth_${inmap}_008_06.nii.gz \
-       008  07       meica-orth  std_meica-orth_${inmap}_008_07.nii.gz \
-       008  08       meica-orth  std_meica-orth_${inmap}_008_08.nii.gz \
-       008  09       meica-orth  std_meica-orth_${inmap}_008_09.nii.gz \
-       008  10       meica-orth  std_meica-orth_${inmap}_008_10.nii.gz \
-       009  01       meica-orth  std_meica-orth_${inmap}_009_01.nii.gz \
-       009  02       meica-orth  std_meica-orth_${inmap}_009_02.nii.gz \
-       009  03       meica-orth  std_meica-orth_${inmap}_009_03.nii.gz \
-       009  04       meica-orth  std_meica-orth_${inmap}_009_04.nii.gz \
-       009  05       meica-orth  std_meica-orth_${inmap}_009_05.nii.gz \
-       009  06       meica-orth  std_meica-orth_${inmap}_009_06.nii.gz \
-       009  07       meica-orth  std_meica-orth_${inmap}_009_07.nii.gz \
-       009  08       meica-orth  std_meica-orth_${inmap}_009_08.nii.gz \
-       009  09       meica-orth  std_meica-orth_${inmap}_009_09.nii.gz \
-       009  10       meica-orth  std_meica-orth_${inmap}_009_10.nii.gz \
-       001  01       meica-cons  std_meica-cons_${inmap}_001_01.nii.gz \
-       001  02       meica-cons  std_meica-cons_${inmap}_001_02.nii.gz \
-       001  03       meica-cons  std_meica-cons_${inmap}_001_03.nii.gz \
-       001  04       meica-cons  std_meica-cons_${inmap}_001_04.nii.gz \
-       001  05       meica-cons  std_meica-cons_${inmap}_001_05.nii.gz \
-       001  06       meica-cons  std_meica-cons_${inmap}_001_06.nii.gz \
-       001  07       meica-cons  std_meica-cons_${inmap}_001_07.nii.gz \
-       001  08       meica-cons  std_meica-cons_${inmap}_001_08.nii.gz \
-       001  09       meica-cons  std_meica-cons_${inmap}_001_09.nii.gz \
-       001  10       meica-cons  std_meica-cons_${inmap}_001_10.nii.gz \
-       002  01       meica-cons  std_meica-cons_${inmap}_002_01.nii.gz \
-       002  02       meica-cons  std_meica-cons_${inmap}_002_02.nii.gz \
-       002  03       meica-cons  std_meica-cons_${inmap}_002_03.nii.gz \
-       002  04       meica-cons  std_meica-cons_${inmap}_002_04.nii.gz \
-       002  05       meica-cons  std_meica-cons_${inmap}_002_05.nii.gz \
-       002  06       meica-cons  std_meica-cons_${inmap}_002_06.nii.gz \
-       002  07       meica-cons  std_meica-cons_${inmap}_002_07.nii.gz \
-       002  08       meica-cons  std_meica-cons_${inmap}_002_08.nii.gz \
-       002  09       meica-cons  std_meica-cons_${inmap}_002_09.nii.gz \
-       002  10       meica-cons  std_meica-cons_${inmap}_002_10.nii.gz \
-       003  01       meica-cons  std_meica-cons_${inmap}_003_01.nii.gz \
-       003  02       meica-cons  std_meica-cons_${inmap}_003_02.nii.gz \
-       003  03       meica-cons  std_meica-cons_${inmap}_003_03.nii.gz \
-       003  04       meica-cons  std_meica-cons_${inmap}_003_04.nii.gz \
-       003  05       meica-cons  std_meica-cons_${inmap}_003_05.nii.gz \
-       003  06       meica-cons  std_meica-cons_${inmap}_003_06.nii.gz \
-       003  07       meica-cons  std_meica-cons_${inmap}_003_07.nii.gz \
-       003  08       meica-cons  std_meica-cons_${inmap}_003_08.nii.gz \
-       003  09       meica-cons  std_meica-cons_${inmap}_003_09.nii.gz \
-       003  10       meica-cons  std_meica-cons_${inmap}_003_10.nii.gz \
-       004  01       meica-cons  std_meica-cons_${inmap}_004_01.nii.gz \
-       004  02       meica-cons  std_meica-cons_${inmap}_004_02.nii.gz \
-       004  03       meica-cons  std_meica-cons_${inmap}_004_03.nii.gz \
-       004  04       meica-cons  std_meica-cons_${inmap}_004_04.nii.gz \
-       004  05       meica-cons  std_meica-cons_${inmap}_004_05.nii.gz \
-       004  06       meica-cons  std_meica-cons_${inmap}_004_06.nii.gz \
-       004  07       meica-cons  std_meica-cons_${inmap}_004_07.nii.gz \
-       004  08       meica-cons  std_meica-cons_${inmap}_004_08.nii.gz \
-       004  09       meica-cons  std_meica-cons_${inmap}_004_09.nii.gz \
-       004  10       meica-cons  std_meica-cons_${inmap}_004_10.nii.gz \
-       007  01       meica-cons  std_meica-cons_${inmap}_007_01.nii.gz \
-       007  02       meica-cons  std_meica-cons_${inmap}_007_02.nii.gz \
-       007  03       meica-cons  std_meica-cons_${inmap}_007_03.nii.gz \
-       007  04       meica-cons  std_meica-cons_${inmap}_007_04.nii.gz \
-       007  05       meica-cons  std_meica-cons_${inmap}_007_05.nii.gz \
-       007  06       meica-cons  std_meica-cons_${inmap}_007_06.nii.gz \
-       007  07       meica-cons  std_meica-cons_${inmap}_007_07.nii.gz \
-       007  08       meica-cons  std_meica-cons_${inmap}_007_08.nii.gz \
-       007  09       meica-cons  std_meica-cons_${inmap}_007_09.nii.gz \
-       007  10       meica-cons  std_meica-cons_${inmap}_007_10.nii.gz \
-       008  01       meica-cons  std_meica-cons_${inmap}_008_01.nii.gz \
-       008  02       meica-cons  std_meica-cons_${inmap}_008_02.nii.gz \
-       008  03       meica-cons  std_meica-cons_${inmap}_008_03.nii.gz \
-       008  04       meica-cons  std_meica-cons_${inmap}_008_04.nii.gz \
-       008  05       meica-cons  std_meica-cons_${inmap}_008_05.nii.gz \
-       008  06       meica-cons  std_meica-cons_${inmap}_008_06.nii.gz \
-       008  07       meica-cons  std_meica-cons_${inmap}_008_07.nii.gz \
-       008  08       meica-cons  std_meica-cons_${inmap}_008_08.nii.gz \
-       008  09       meica-cons  std_meica-cons_${inmap}_008_09.nii.gz \
-       008  10       meica-cons  std_meica-cons_${inmap}_008_10.nii.gz \
-       009  01       meica-cons  std_meica-cons_${inmap}_009_01.nii.gz \
-       009  02       meica-cons  std_meica-cons_${inmap}_009_02.nii.gz \
-       009  03       meica-cons  std_meica-cons_${inmap}_009_03.nii.gz \
-       009  04       meica-cons  std_meica-cons_${inmap}_009_04.nii.gz \
-       009  05       meica-cons  std_meica-cons_${inmap}_009_05.nii.gz \
-       009  06       meica-cons  std_meica-cons_${inmap}_009_06.nii.gz \
-       009  07       meica-cons  std_meica-cons_${inmap}_009_07.nii.gz \
-       009  08       meica-cons  std_meica-cons_${inmap}_009_08.nii.gz \
-       009  09       meica-cons  std_meica-cons_${inmap}_009_09.nii.gz \
-       009  10       meica-cons  std_meica-cons_${inmap}_009_10.nii.gz \
-
-done
+		run3dLMEr="3dLMEr -prefix ../LMEr_${inmap}.nii.gz -jobs 10"
+		run3dLMEr="${run3dLMEr} -mask ../reg/MNI_T1_brain_mask.nii.gz"
+		run3dLMEr="${run3dLMEr} -model  'model+(1|session)+(1|Subj)'"
+		run3dLMEr="${run3dLMEr} -gltCode echo-2_vs_optcom  'model : 1*echo-2 -1*optcom'"
+		run3dLMEr="${run3dLMEr} -gltCode echo-2_vs_meica-cons  'model : 1*echo-2 -1*meica-cons'"
+		run3dLMEr="${run3dLMEr} -gltCode echo-2_vs_meica-orth  'model : 1*echo-2 -1*meica-orth'"
+		run3dLMEr="${run3dLMEr} -gltCode echo-2_vs_meica-aggr  'model : 1*echo-2 -1*meica-aggr'"
+		run3dLMEr="${run3dLMEr} -gltCode optcom_vs_meica-cons  'model : 1*optcom -1*meica-cons'"
+		run3dLMEr="${run3dLMEr} -gltCode optcom_vs_meica-orth  'model : 1*optcom -1*meica-orth'"
+		run3dLMEr="${run3dLMEr} -gltCode optcom_vs_meica-aggr  'model : 1*optcom -1*meica-aggr'"
+		run3dLMEr="${run3dLMEr} -gltCode meica-cons_vs_meica-orth  'model : 1*meica-cons -1*meica-orth'"
+		run3dLMEr="${run3dLMEr} -gltCode meica-cons_vs_meica-aggr  'model : 1*meica-cons -1*meica-aggr'"
+		run3dLMEr="${run3dLMEr} -gltCode meica-orth_vs_meica-aggr  'model : 1*meica-orth -1*meica-aggr'"
+		run3dLMEr="${run3dLMEr} -glfCode all_vs_echo-2  'model : 1*echo-2 -1*optcom & 1*echo-2 -1*meica-aggr & 1*echo-2 -1*meica-orth & 1*echo-2 -1*meica-cons'"
+		run3dLMEr="${run3dLMEr} -dataTable                                                     "
+		run3dLMEr="${run3dLMEr}       Subj session  model       InputFile                        "
+		for sub in 001 002 003 004 007 008 009
+		do
+			for ses in $( seq -f %02g 1 10)
+			do
+				for model in echo-2 optcom meica-cons meica-orth meica-aggr
+				do
+					run3dLMEr="${run3dLMEr}       ${sub}  ${ses}       ${model}      std_${model}_${inmap}_${sub}_${ses}.nii.gz"
+				done
+			done
+		done
+		echo ""
+		echo "${run3dLMEr}"
+		echo ""
+		eval ${run3dLMEr}
+	done
 done
 
 echo "End of script!"

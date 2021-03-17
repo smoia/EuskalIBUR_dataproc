@@ -21,7 +21,6 @@ fi
 ftype=${1:-optcom}
 lastses=${2:-10}
 wdr=${3:-/data}
-tmp=${4:-/tmp}
 
 ### Main ###
 cwd=$( pwd )
@@ -50,13 +49,13 @@ do
 
 	echo "Preparing transformation"
 	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std1Warp.nii.gz \
-			  ./reg/${sub}_T1w2std1Warp.nii.gz
+				  ./reg/${sub}_T1w2std1Warp.nii.gz
 	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std0GenericAffine.mat \
-	              ./reg/${sub}_T1w2std0GenericAffine.mat
+				  ./reg/${sub}_T1w2std0GenericAffine.mat
 	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat \
-	              ./reg/${sub}_T2w2sbref0GenericAffine.mat
+				  ./reg/${sub}_T2w2sbref0GenericAffine.mat
 	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat \
-	              ./reg/${sub}_T2w2T1w0GenericAffine.mat
+				  ./reg/${sub}_T2w2T1w0GenericAffine.mat
 
 	for map in masked_physio_only # corrected
 	do
@@ -90,90 +89,30 @@ cd normalised
 
 for map in masked_physio_only # corrected
 do
-for inmap in cvr lag
-do
-# Compute ICC
-inmap=${inmap}_${map}
-rm ../ICC2_${inmap}_${ftype}.nii.gz
+	for inmap in cvr lag
+	do
+		# Compute ICC
+		inmap=${inmap}_${map}
+		rm ../ICC2_${inmap}_${ftype}.nii.gz
 
-3dICC -prefix ../ICC2_${inmap}_${ftype}.nii.gz -jobs 10                                    \
-      -mask ../reg/MNI_T1_brain_mask.nii.gz                                                \
-      -model  '1+(1|session)+(1|Subj)'                                                     \
-      -tStat 'tFile'                                                                       \
-      -dataTable                                                                           \
-      Subj session         tFile                             InputFile                     \
-      001  01       std_${ftype}_tmap_${map}_001_01.nii.gz    std_${ftype}_${inmap}_001_01.nii.gz \
-      001  02       std_${ftype}_tmap_${map}_001_02.nii.gz    std_${ftype}_${inmap}_001_02.nii.gz \
-      001  03       std_${ftype}_tmap_${map}_001_03.nii.gz    std_${ftype}_${inmap}_001_03.nii.gz \
-      001  04       std_${ftype}_tmap_${map}_001_04.nii.gz    std_${ftype}_${inmap}_001_04.nii.gz \
-      001  05       std_${ftype}_tmap_${map}_001_05.nii.gz    std_${ftype}_${inmap}_001_05.nii.gz \
-      001  06       std_${ftype}_tmap_${map}_001_06.nii.gz    std_${ftype}_${inmap}_001_06.nii.gz \
-      001  07       std_${ftype}_tmap_${map}_001_07.nii.gz    std_${ftype}_${inmap}_001_07.nii.gz \
-      001  08       std_${ftype}_tmap_${map}_001_08.nii.gz    std_${ftype}_${inmap}_001_08.nii.gz \
-      001  09       std_${ftype}_tmap_${map}_001_09.nii.gz    std_${ftype}_${inmap}_001_09.nii.gz \
-      001  10       std_${ftype}_tmap_${map}_001_10.nii.gz    std_${ftype}_${inmap}_001_10.nii.gz \
-      002  01       std_${ftype}_tmap_${map}_002_01.nii.gz    std_${ftype}_${inmap}_002_01.nii.gz \
-      002  02       std_${ftype}_tmap_${map}_002_02.nii.gz    std_${ftype}_${inmap}_002_02.nii.gz \
-      002  03       std_${ftype}_tmap_${map}_002_03.nii.gz    std_${ftype}_${inmap}_002_03.nii.gz \
-      002  04       std_${ftype}_tmap_${map}_002_04.nii.gz    std_${ftype}_${inmap}_002_04.nii.gz \
-      002  05       std_${ftype}_tmap_${map}_002_05.nii.gz    std_${ftype}_${inmap}_002_05.nii.gz \
-      002  06       std_${ftype}_tmap_${map}_002_06.nii.gz    std_${ftype}_${inmap}_002_06.nii.gz \
-      002  07       std_${ftype}_tmap_${map}_002_07.nii.gz    std_${ftype}_${inmap}_002_07.nii.gz \
-      002  08       std_${ftype}_tmap_${map}_002_08.nii.gz    std_${ftype}_${inmap}_002_08.nii.gz \
-      002  09       std_${ftype}_tmap_${map}_002_09.nii.gz    std_${ftype}_${inmap}_002_09.nii.gz \
-      002  10       std_${ftype}_tmap_${map}_002_10.nii.gz    std_${ftype}_${inmap}_002_10.nii.gz \
-      003  01       std_${ftype}_tmap_${map}_003_01.nii.gz    std_${ftype}_${inmap}_003_01.nii.gz \
-      003  02       std_${ftype}_tmap_${map}_003_02.nii.gz    std_${ftype}_${inmap}_003_02.nii.gz \
-      003  03       std_${ftype}_tmap_${map}_003_03.nii.gz    std_${ftype}_${inmap}_003_03.nii.gz \
-      003  04       std_${ftype}_tmap_${map}_003_04.nii.gz    std_${ftype}_${inmap}_003_04.nii.gz \
-      003  05       std_${ftype}_tmap_${map}_003_05.nii.gz    std_${ftype}_${inmap}_003_05.nii.gz \
-      003  06       std_${ftype}_tmap_${map}_003_06.nii.gz    std_${ftype}_${inmap}_003_06.nii.gz \
-      003  07       std_${ftype}_tmap_${map}_003_07.nii.gz    std_${ftype}_${inmap}_003_07.nii.gz \
-      003  08       std_${ftype}_tmap_${map}_003_08.nii.gz    std_${ftype}_${inmap}_003_08.nii.gz \
-      003  09       std_${ftype}_tmap_${map}_003_09.nii.gz    std_${ftype}_${inmap}_003_09.nii.gz \
-      003  10       std_${ftype}_tmap_${map}_003_10.nii.gz    std_${ftype}_${inmap}_003_10.nii.gz \
-      004  01       std_${ftype}_tmap_${map}_004_01.nii.gz    std_${ftype}_${inmap}_004_01.nii.gz \
-      004  02       std_${ftype}_tmap_${map}_004_02.nii.gz    std_${ftype}_${inmap}_004_02.nii.gz \
-      004  03       std_${ftype}_tmap_${map}_004_03.nii.gz    std_${ftype}_${inmap}_004_03.nii.gz \
-      004  04       std_${ftype}_tmap_${map}_004_04.nii.gz    std_${ftype}_${inmap}_004_04.nii.gz \
-      004  05       std_${ftype}_tmap_${map}_004_05.nii.gz    std_${ftype}_${inmap}_004_05.nii.gz \
-      004  06       std_${ftype}_tmap_${map}_004_06.nii.gz    std_${ftype}_${inmap}_004_06.nii.gz \
-      004  07       std_${ftype}_tmap_${map}_004_07.nii.gz    std_${ftype}_${inmap}_004_07.nii.gz \
-      004  08       std_${ftype}_tmap_${map}_004_08.nii.gz    std_${ftype}_${inmap}_004_08.nii.gz \
-      004  09       std_${ftype}_tmap_${map}_004_09.nii.gz    std_${ftype}_${inmap}_004_09.nii.gz \
-      004  10       std_${ftype}_tmap_${map}_004_10.nii.gz    std_${ftype}_${inmap}_004_10.nii.gz \
-      007  01       std_${ftype}_tmap_${map}_007_01.nii.gz    std_${ftype}_${inmap}_007_01.nii.gz \
-      007  02       std_${ftype}_tmap_${map}_007_02.nii.gz    std_${ftype}_${inmap}_007_02.nii.gz \
-      007  03       std_${ftype}_tmap_${map}_007_03.nii.gz    std_${ftype}_${inmap}_007_03.nii.gz \
-      007  04       std_${ftype}_tmap_${map}_007_04.nii.gz    std_${ftype}_${inmap}_007_04.nii.gz \
-      007  05       std_${ftype}_tmap_${map}_007_05.nii.gz    std_${ftype}_${inmap}_007_05.nii.gz \
-      007  06       std_${ftype}_tmap_${map}_007_06.nii.gz    std_${ftype}_${inmap}_007_06.nii.gz \
-      007  07       std_${ftype}_tmap_${map}_007_07.nii.gz    std_${ftype}_${inmap}_007_07.nii.gz \
-      007  08       std_${ftype}_tmap_${map}_007_08.nii.gz    std_${ftype}_${inmap}_007_08.nii.gz \
-      007  09       std_${ftype}_tmap_${map}_007_09.nii.gz    std_${ftype}_${inmap}_007_09.nii.gz \
-      007  10       std_${ftype}_tmap_${map}_007_10.nii.gz    std_${ftype}_${inmap}_007_10.nii.gz \
-      008  01       std_${ftype}_tmap_${map}_008_01.nii.gz    std_${ftype}_${inmap}_008_01.nii.gz \
-      008  02       std_${ftype}_tmap_${map}_008_02.nii.gz    std_${ftype}_${inmap}_008_02.nii.gz \
-      008  03       std_${ftype}_tmap_${map}_008_03.nii.gz    std_${ftype}_${inmap}_008_03.nii.gz \
-      008  04       std_${ftype}_tmap_${map}_008_04.nii.gz    std_${ftype}_${inmap}_008_04.nii.gz \
-      008  05       std_${ftype}_tmap_${map}_008_05.nii.gz    std_${ftype}_${inmap}_008_05.nii.gz \
-      008  06       std_${ftype}_tmap_${map}_008_06.nii.gz    std_${ftype}_${inmap}_008_06.nii.gz \
-      008  07       std_${ftype}_tmap_${map}_008_07.nii.gz    std_${ftype}_${inmap}_008_07.nii.gz \
-      008  08       std_${ftype}_tmap_${map}_008_08.nii.gz    std_${ftype}_${inmap}_008_08.nii.gz \
-      008  09       std_${ftype}_tmap_${map}_008_09.nii.gz    std_${ftype}_${inmap}_008_09.nii.gz \
-      008  10       std_${ftype}_tmap_${map}_008_10.nii.gz    std_${ftype}_${inmap}_008_10.nii.gz \
-      009  01       std_${ftype}_tmap_${map}_009_01.nii.gz    std_${ftype}_${inmap}_009_01.nii.gz \
-      009  02       std_${ftype}_tmap_${map}_009_02.nii.gz    std_${ftype}_${inmap}_009_02.nii.gz \
-      009  03       std_${ftype}_tmap_${map}_009_03.nii.gz    std_${ftype}_${inmap}_009_03.nii.gz \
-      009  04       std_${ftype}_tmap_${map}_009_04.nii.gz    std_${ftype}_${inmap}_009_04.nii.gz \
-      009  05       std_${ftype}_tmap_${map}_009_05.nii.gz    std_${ftype}_${inmap}_009_05.nii.gz \
-      009  06       std_${ftype}_tmap_${map}_009_06.nii.gz    std_${ftype}_${inmap}_009_06.nii.gz \
-      009  07       std_${ftype}_tmap_${map}_009_07.nii.gz    std_${ftype}_${inmap}_009_07.nii.gz \
-      009  08       std_${ftype}_tmap_${map}_009_08.nii.gz    std_${ftype}_${inmap}_009_08.nii.gz \
-      009  09       std_${ftype}_tmap_${map}_009_09.nii.gz    std_${ftype}_${inmap}_009_09.nii.gz \
-      009  10       std_${ftype}_tmap_${map}_009_10.nii.gz    std_${ftype}_${inmap}_009_10.nii.gz
-
-done
+		run3dICC="3dICC -prefix ../ICC2_${inmap}_${ftype}.nii.gz -jobs 10"
+		run3dICC="${run3dICC} -mask ../reg/MNI_T1_brain_mask.nii.gz"
+		run3dICC="${run3dICC} -model  '1+(1|session)+(1|Subj)'"
+		run3dICC="${run3dICC} -tStat 'tFile'"
+		run3dICC="${run3dICC} -dataTable"
+		run3dICC="${run3dICC}      Subj session    tFile                           InputFile            "
+		for sub in 001 002 003 004 007 008 009
+		do
+			for ses in $( seq -f %02g 1 ${lastses} )
+			do
+				run3dICC="${run3dICC}      ${sub}  ${ses}  std_${ftype}_tmap_${map}_${sub}_${ses}.nii.gz  std_${ftype}_${inmap}_${sub}_${ses}.nii.gz"
+			done
+		done
+		echo ""
+		echo "${run3dICC}"
+		echo ""
+		eval ${run3dICC}
+	done
 done
 
 echo "End of script!"

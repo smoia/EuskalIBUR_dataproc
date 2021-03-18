@@ -96,7 +96,7 @@ done
 
 # Copy questionnaire and read it into arrays
 sub=( $(csvtool -t TAB namedcol subject ${wdr}/phenotype/questionnaire.tsv ) )
-ses=( $(csvtool -t TAB namedcol ses ${wdr}/phenotype/questionnaire.tsv ) )
+ses=( $(csvtool -t TAB namedcol session ${wdr}/phenotype/questionnaire.tsv ) )
 sex=( $(csvtool -t TAB namedcol sex ${wdr}/phenotype/questionnaire.tsv ) )
 sleep=( $(csvtool -t TAB namedcol sleep_hours_today ${wdr}/phenotype/questionnaire.tsv ) )
 exercise=( $(csvtool -t TAB namedcol exercise_hours_week_total_7days ${wdr}/phenotype/questionnaire.tsv ) )
@@ -113,18 +113,42 @@ for inmap in cvr lag
 do
 	# Compute ICC
 	inmap=${inmap}_masked
-	rm LMEr_${inmap}.nii.gz
+	rm LMEr_${inmap}_allregr.nii.gz
 
 	run3dLMEr="3dLMEr -prefix LMEr_${inmap}_allregr.nii.gz -jobs 10"
 	run3dLMEr="${run3dLMEr} -mask ${tmp}/reg/MNI_T1_brain_mask.nii.gz"
 	run3dLMEr="${run3dLMEr} -model 'sex+sleep+exercise+water+coffee+alcohol+systolic+diastolic+pulse+(1|session)+(1|Subj)'"
 	run3dLMEr="${run3dLMEr} -qVars 'sleep,exercise,water,coffee,alcohol,systolic,diastolic,pulse'"
-	run3dLMEr="${run3dLMEr} -dataTable                                                     "
+	run3dLMEr="${run3dLMEr} -dataTable  "
 	run3dLMEr="${run3dLMEr}       Subj session sex sleep exercise water coffee alcohol systolic diastolic pulse InputFile                        "
 
 	for k in $(seq 1 ${nrep})
 	do
 		run3dLMEr="${run3dLMEr}       ${sub[$k]}  ${ses[$k]} ${sex[$k]} ${sleep[$k]} ${exercise[$k]} ${water[$k]} ${coffee[$k]} ${alcohol[$k]} ${systolic[$k]} ${diastolic[$k]} ${pulse[$k]} std_optcom_${inmap}_${sub[$k]}_${ses[$k]}.nii.gz"
+	done
+	echo ""
+	echo "${run3dLMEr}"
+	echo ""
+	eval ${run3dLMEr}
+done
+
+# Compute only tension model
+for inmap in cvr lag
+do
+	# Compute ICC
+	inmap=${inmap}_masked
+	rm LMEr_${inmap}_onlytension.nii.gz
+
+	run3dLMEr="3dLMEr -prefix LMEr_${inmap}_onlytension.nii.gz -jobs 10"
+	run3dLMEr="${run3dLMEr} -mask ${tmp}/reg/MNI_T1_brain_mask.nii.gz"
+	run3dLMEr="${run3dLMEr} -model 'sex+systolic+diastolic+pulse+(1|session)+(1|Subj)'"
+	run3dLMEr="${run3dLMEr} -qVars 'systolic,diastolic,pulse'"
+	run3dLMEr="${run3dLMEr} -dataTable  "
+	run3dLMEr="${run3dLMEr}       Subj session sex systolic diastolic pulse InputFile                        "
+
+	for k in $(seq 1 ${nrep})
+	do
+		run3dLMEr="${run3dLMEr}       ${sub[$k]}  ${ses[$k]} ${sex[$k]} ${systolic[$k]} ${diastolic[$k]} ${pulse[$k]} std_optcom_${inmap}_${sub[$k]}_${ses[$k]}.nii.gz"
 	done
 	echo ""
 	echo "${run3dLMEr}"

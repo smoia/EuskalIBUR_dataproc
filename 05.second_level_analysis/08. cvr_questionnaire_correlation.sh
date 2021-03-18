@@ -42,7 +42,7 @@ cd CVR_correlation
 tmp=${tmp}/tmp.${task}_08cqc
 
 replace_and mkdir ${tmp}
-if_missing_do mkdir ${tmp}/reg ${tmp}/normalised ${tmp}/cov
+if_missing_do mkdir ${tmp}/reg ${tmp}/normalised
 
 # Copy files for transformation & create mask
 if_missing_do copy ${scriptdir}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ${tmp}/reg/MNI_T1_brain.nii.gz
@@ -77,14 +77,13 @@ do
 		do
 			if [ ${inmap} == "lag" ]; then origmap=cvr_lag; else origmap=${inmap}; fi
 			inmap=${inmap}_masked
-			if [ ! -e ./normalised/std_optcom_${inmap}_${sub}_${ses}.nii.gz ]
+			if [ ! -e ${tmp}/normalised/std_optcom_${inmap}_${sub}_${ses}.nii.gz ]
 			then
-				imcp ${wdr}/CVR/sub-${sub}_ses-${ses}_optcom_map_cvr/sub-${sub}_ses-${ses}_optcom_${origmap}_masked.nii.gz \
-					 ./${sub}_${ses}_optcom_${inmap}.nii.gz
+				infile=${wdr}/CVR/sub-${sub}_ses-${ses}_optcom_map_cvr/sub-${sub}_ses-${ses}_optcom_${origmap}_masked.nii.gz
 
-				echo "Transforming ${inmap} maps of session ${ses} to MNI"
-				antsApplyTransforms -d 3 -i ./${sub}_${ses}_optcom_${inmap}.nii.gz -r ${tmp}/reg/MNI_T1_brain.nii.gz \
-									-o ./normalised/std_optcom_${inmap}_${sub}_${ses}.nii.gz -n NearestNeighbor \
+				echo "Transforming ${inmap##*/} maps of session ${ses} to MNI"
+				antsApplyTransforms -d 3 -i ${infile} -r ${tmp}/reg/MNI_T1_brain.nii.gz \
+									-o ${tmp}/normalised/std_optcom_${inmap}_${sub}_${ses}.nii.gz -n NearestNeighbor \
 									-t ${tmp}/reg/${sub}_T1w2std1Warp.nii.gz \
 									-t ${tmp}/reg/${sub}_T1w2std0GenericAffine.mat \
 									-t ${tmp}/reg/${sub}_T2w2T1w0GenericAffine.mat \
@@ -95,39 +94,37 @@ do
 	done
 done
 
-cd normalised
+# Copy questionnaire and read it into arrays
+sub=( $(csvtool -t TAB namedcol subject ${wdr}/phenotype/questionnaire.tsv ) )
+ses=( $(csvtool -t TAB namedcol ses ${wdr}/phenotype/questionnaire.tsv ) )
+sex=( $(csvtool -t TAB namedcol sex ${wdr}/phenotype/questionnaire.tsv ) )
+sleep=( $(csvtool -t TAB namedcol sleep_hours_today ${wdr}/phenotype/questionnaire.tsv ) )
+exercise=( $(csvtool -t TAB namedcol exercise_hours_week_total_7days ${wdr}/phenotype/questionnaire.tsv ) )
+water=( $(csvtool -t TAB namedcol water_litres_day_average_7days ${wdr}/phenotype/questionnaire.tsv ) )
+coffee=( $(csvtool -t TAB namedcol coffee_units_day_average_7days ${wdr}/phenotype/questionnaire.tsv ) )
+alcohol=( $(csvtool -t TAB namedcol alcohol_units_week_average_7days ${wdr}/phenotype/questionnaire.tsv ) )
+systolic=( $(csvtool -t TAB namedcol systolic_tension_avg ${wdr}/phenotype/questionnaire.tsv ) )
+diastolic=( $(csvtool -t TAB namedcol diastolic_tension_avg ${wdr}/phenotype/questionnaire.tsv ) )
+pulse=( $(csvtool -t TAB namedcol pulse_avg ${wdr}/phenotype/questionnaire.tsv ) )
 
+let nrep=${#sub[@]}
+# Compute complete model
 for inmap in cvr lag
 do
 	# Compute ICC
 	inmap=${inmap}_masked
-	rm ../LMEr_${inmap}.nii.gz
+	rm LMEr_${inmap}.nii.gz
 
-	run3dLMEr="3dLMEr -prefix ../LMEr_${inmap}.nii.gz -jobs 10"
+	run3dLMEr="3dLMEr -prefix LMEr_${inmap}_allregr.nii.gz -jobs 10"
 	run3dLMEr="${run3dLMEr} -mask ${tmp}/reg/MNI_T1_brain_mask.nii.gz"
-	run3dLMEr="${run3dLMEr} -model  'model+(1|session)+(1|Subj)'"
-	run3dLMEr="${run3dLMEr} -gltCode echo-2_vs_optcom  'model : 1*echo-2 -1*optcom'"
-	run3dLMEr="${run3dLMEr} -gltCode echo-2_vs_meica-cons  'model : 1*echo-2 -1*meica-cons'"
-	run3dLMEr="${run3dLMEr} -gltCode echo-2_vs_meica-orth  'model : 1*echo-2 -1*meica-orth'"
-	run3dLMEr="${run3dLMEr} -gltCode echo-2_vs_meica-aggr  'model : 1*echo-2 -1*meica-aggr'"
-	run3dLMEr="${run3dLMEr} -gltCode optcom_vs_meica-cons  'model : 1*optcom -1*meica-cons'"
-	run3dLMEr="${run3dLMEr} -gltCode optcom_vs_meica-orth  'model : 1*optcom -1*meica-orth'"
-	run3dLMEr="${run3dLMEr} -gltCode optcom_vs_meica-aggr  'model : 1*optcom -1*meica-aggr'"
-	run3dLMEr="${run3dLMEr} -gltCode meica-cons_vs_meica-orth  'model : 1*meica-cons -1*meica-orth'"
-	run3dLMEr="${run3dLMEr} -gltCode meica-cons_vs_meica-aggr  'model : 1*meica-cons -1*meica-aggr'"
-	run3dLMEr="${run3dLMEr} -gltCode meica-orth_vs_meica-aggr  'model : 1*meica-orth -1*meica-aggr'"
-	run3dLMEr="${run3dLMEr} -glfCode all_vs_echo-2  'model : 1*echo-2 -1*optcom & 1*echo-2 -1*meica-aggr & 1*echo-2 -1*meica-orth & 1*echo-2 -1*meica-cons'"
+	run3dLMEr="${run3dLMEr} -model 'sex+sleep+exercise+water+coffee+alcohol+systolic+diastolic+pulse+(1|session)+(1|Subj)'"
+	run3dLMEr="${run3dLMEr} -qVars 'sleep,exercise,water,coffee,alcohol,systolic,diastolic,pulse'"
 	run3dLMEr="${run3dLMEr} -dataTable                                                     "
-	run3dLMEr="${run3dLMEr}       Subj session  model       InputFile                        "
-	for sub in 001 002 003 004 007 008 009
+	run3dLMEr="${run3dLMEr}       Subj session sex sleep exercise water coffee alcohol systolic diastolic pulse InputFile                        "
+
+	for k in $(seq 1 ${nrep})
 	do
-		for ses in $( seq -f %02g 1 10)
-		do
-			for model in echo-2 optcom meica-cons meica-orth meica-aggr
-			do
-				run3dLMEr="${run3dLMEr}       ${sub}  ${ses}       ${model}      std_${model}_${inmap}_${sub}_${ses}.nii.gz"
-			done
-		done
+		run3dLMEr="${run3dLMEr}       ${sub[$k]}  ${ses[$k]} ${sex[$k]} ${sleep[$k]} ${exercise[$k]} ${water[$k]} ${coffee[$k]} ${alcohol[$k]} ${systolic[$k]} ${diastolic[$k]} ${pulse[$k]} std_optcom_${inmap}_${sub[$k]}_${ses[$k]}.nii.gz"
 	done
 	echo ""
 	echo "${run3dLMEr}"

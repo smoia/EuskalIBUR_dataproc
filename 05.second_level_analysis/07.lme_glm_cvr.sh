@@ -25,6 +25,18 @@ case $1 in
 esac
 }
 
+extract_and_average() {
+k=1
+for n in $(seq ${1} 2 ${2})
+do
+	3dbucket -prefix ${3}_${k}.nii.gz -abuc ${4}'[${n}]' -overwrite
+	let k++
+done
+fslmerge -t ${3} ${3}_?.nii.gz
+fslmaths ${3} -Tmean ${3}
+}
+
+
 task=$1
 wdr=${2:-/data}
 sdr=${3:-/scripts}
@@ -69,17 +81,16 @@ do
 		case ${task} in
 			motor )
 				# Two GLT are coded: all motor activations, and all motor activations against the sham to remove visual stimuli"
-				3dbucket -prefix ${tmp}/${sub}_${ses}_allmotors.nii.gz -abuc ${rbuck}'[23]' -overwrite
-				3dbucket -prefix ${tmp}/${sub}_${ses}_motors_vs_sham.nii.gz -abuc ${rbuck}'[25]' -overwrite
+				extract_and_average 34 42 ${tmp}/${sub}_${ses}_allmotors ${rbuck}
+				extract_and_average 45 53 ${tmp}/${sub}_${ses}_motors_vs_sham ${rbuck}
 				bricks=$( allmotors motors_vs_sham )
 			;;
 			simon )
 				# Four GLTs are coded, good congruents, good incongruents, good congruents vs good incongruents and good congruents + good incongruents
-				3dbucket -prefix ${tmp}/${sub}_${ses}_all_congruent.nii.gz -abuc ${rbuck}'[17]' -overwrite
-				3dbucket -prefix ${tmp}/${sub}_${ses}_all_incongruent.nii.gz -abuc ${rbuck}'[19]' -overwrite
-				3dbucket -prefix ${tmp}/${sub}_${ses}_congruent_vs_incongruent.nii.gz -abuc ${rbuck}'[21]' -overwrite
-				3dbucket -prefix ${tmp}/${sub}_${ses}_congruent_and_incongruent.nii.gz -abuc ${rbuck}'[23]' -overwrite
-				bricks=$( all_congruent all_incongruent congruent_vs_incongruent congruent_and_incongruent )
+				3dbucket -prefix ${tmp}/${sub}_${ses}_all_congruent.nii.gz -abuc ${rbuck}'[25]' -overwrite
+				3dbucket -prefix ${tmp}/${sub}_${ses}_congruent_vs_incongruent.nii.gz -abuc ${rbuck}'[31]' -overwrite
+				3dbucket -prefix ${tmp}/${sub}_${ses}_congruent_and_incongruent.nii.gz -abuc ${rbuck}'[34]' -overwrite
+				bricks=$( all_congruent congruent_vs_incongruent congruent_and_incongruent )
 			;;
 			* ) echo "    !!! Warning !!! Invalid task: ${task}"; exit ;;
 		esac
@@ -127,23 +138,16 @@ do
 
 			run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
 			run3dLMEr="${run3dLMEr} -mask ${tmp}/${sub}_${ses}_mask.nii.gz"
-			run3dLMEr="${run3dLMEr} -model  '${brick}~${map}*cvr+(1|session)+(1|Subj)'"
+			run3dLMEr="${run3dLMEr} -model  '${map}*cvr+(1|session)+(1|Subj)'"
 			run3dLMEr="${run3dLMEr} -dataTable"
-			run3dLMEr="${run3dLMEr}     Subj session  model       InputFile"
-
-			listbrick=""
-			listmap=""
-			listcvr=""
+			run3dLMEr="${run3dLMEr}     Subj session  ${map}   cvr    InputFile"
 			for sub in 001 002 003 004 007 008 009
 			do
 				for ses in $( seq -f %02g 1 10; echo "allses" )
 				do
-					listbrick="${listbrick}     ${sub}  ${ses}       ${brick}      norm/${sub}_${ses}_${brick}.nii.gz"
-					listmap="${listmap}     ${sub}  ${ses}       ${map}      norm/${sub}_${ses}_r${run}_${map}.nii.gz"
-					listcvr="${listcvr}     ${sub}  ${ses}       cvr      norm/${sub}_${ses}_cvr.nii.gz"
+					run3dLMEr="${run3dLMEr}     ${sub}  ${ses}  norm/${sub}_${ses}_r${run}_${map}.nii.gz  norm/${sub}_${ses}_cvr.nii.gz  norm/${sub}_${ses}_${brick}.nii.gz"
 				done
 			done
-			run3dLMEr="${run3dLMEr} ${listbrick} ${listmap} ${listcvr}"
 			echo ""
 			echo "${run3dLMEr}"
 			echo ""

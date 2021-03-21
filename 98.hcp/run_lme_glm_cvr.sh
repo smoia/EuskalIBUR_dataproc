@@ -18,7 +18,7 @@ sdr=/bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc
 
 cd ${sdr}
 
-logname=lme_${task}_allses_pipe
+logname=lme_${task}_cvr_pipe
 
 # Preparing log folder and log file, removing the previous one
 if [[ ! -d "${wdr}/log" ]]; then mkdir ${wdr}/log; fi

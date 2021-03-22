@@ -39,7 +39,7 @@ if_missing_do mkdir CVR_correlation
 
 cd CVR_correlation
 
-tmp=${tmp}/tmp.${task}_08cqc
+tmp=${tmp}/tmp.08cqc
 
 replace_and mkdir ${tmp}
 if_missing_do mkdir ${tmp}/reg ${tmp}/normalised
@@ -107,7 +107,7 @@ systolic=( $(csvtool -t TAB namedcol systolic_tension_avg ${wdr}/phenotype/quest
 diastolic=( $(csvtool -t TAB namedcol diastolic_tension_avg ${wdr}/phenotype/questionnaire.tsv ) )
 pulse=( $(csvtool -t TAB namedcol pulse_avg ${wdr}/phenotype/questionnaire.tsv ) )
 
-let nrep=${#sub[@]}
+let nrep=${#sub[@]}-1
 # Compute complete model
 for inmap in cvr lag
 do

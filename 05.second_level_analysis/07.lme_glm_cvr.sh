@@ -58,6 +58,7 @@ replace_and mkdir ${tmp}
 
 if_missing_do mkdir lme norm reg
 if_missing_do copy ${sdr}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz reg/MNI_T1_brain.nii.gz
+if_missing_do mask reg/MNI_T1_brain.nii.gz reg/MNI_T1_brain_mask.nii.gz
 
 # Prepare to break GLM bricks
 for sub in 001 002 003 004 007 008 009
@@ -125,10 +126,6 @@ do
 	done
 done
 
-if_missing_do copy ${sdr}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ${tmp}/reg/MNI_T1_brain.nii.gz
-
-if_missing_do mask ${tmp}/reg/MNI_T1_brain.nii.gz ${tmp}/reg/MNI_T1_brain_mask.nii.gz
-
 for brick in "${bricks[@]}"
 do
 	if_missing_do mkdir lme/${brick}
@@ -141,7 +138,7 @@ do
 			rm ${outfile}
 
 			run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
-			run3dLMEr="${run3dLMEr} -mask ${tmp}/reg/MNI_T1_brain_mask.nii.gz"
+			run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
 			run3dLMEr="${run3dLMEr} -model  '${map}*cvr+(1|session)+(1|Subj)'"
 			run3dLMEr="${run3dLMEr} -dataTable"
 			run3dLMEr="${run3dLMEr}     Subj session  ${map}   cvr    InputFile"

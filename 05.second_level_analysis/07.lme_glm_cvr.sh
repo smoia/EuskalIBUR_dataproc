@@ -29,7 +29,7 @@ extract_and_average() {
 k=1
 for n in $(seq ${1} 2 ${2})
 do
-	3dbucket -prefix ${3}_${k}.nii.gz -abuc ${4}'[${n}]' -overwrite
+	3dbucket -prefix ${3}_${k}.nii.gz -abuc ${4}[${n}] -overwrite
 	let k++
 done
 fslmerge -t ${3} ${3}_?.nii.gz
@@ -83,14 +83,14 @@ do
 				# Two GLT are coded: all motor activations, and all motor activations against the sham to remove visual stimuli"
 				extract_and_average 34 42 ${tmp}/${sub}_${ses}_allmotors ${rbuck}
 				extract_and_average 45 53 ${tmp}/${sub}_${ses}_motors_vs_sham ${rbuck}
-				bricks=$( allmotors motors_vs_sham )
+				bricks=( allmotors motors_vs_sham )
 			;;
 			simon )
 				# Four GLTs are coded, good congruents, good incongruents, good congruents vs good incongruents and good congruents + good incongruents
 				3dbucket -prefix ${tmp}/${sub}_${ses}_all_congruent.nii.gz -abuc ${rbuck}'[25]' -overwrite
 				3dbucket -prefix ${tmp}/${sub}_${ses}_congruent_vs_incongruent.nii.gz -abuc ${rbuck}'[31]' -overwrite
 				3dbucket -prefix ${tmp}/${sub}_${ses}_congruent_and_incongruent.nii.gz -abuc ${rbuck}'[34]' -overwrite
-				bricks=$( all_congruent congruent_vs_incongruent congruent_and_incongruent )
+				bricks=( all_congruent congruent_vs_incongruent congruent_and_incongruent )
 			;;
 			* ) echo "    !!! Warning !!! Invalid task: ${task}"; exit ;;
 		esac

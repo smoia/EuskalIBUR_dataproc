@@ -102,8 +102,11 @@ do
 		# Copy RSFA & FALFF maps
 		for run in $( seq -f %02g 1 4 )
 		do
-			if_missing_do copy fALFF/sub-${sub}_ses-${ses}_task-rest_run-${run}_fALFF.nii.gz ${tmp}/${sub}_${ses}_r${run}_fALFF.nii.gz
-			if_missing_do copy RSFA/sub-${sub}_ses-${ses}_task-rest_run-${run}_RSFA.nii.gz ${tmp}/${sub}_${ses}_r${run}_RSFA.nii.gz
+			if [ ! -e ./norm/${sub}_${ses}_r${run}_fALFF.nii.gz ] || [ ! -e ./norm/${sub}_${ses}_r${run}_RSFA.nii.gz ]
+			then
+				if_missing_do copy fALFF/sub-${sub}_ses-${ses}_task-rest_run-${run}_fALFF.nii.gz ${tmp}/${sub}_${ses}_r${run}_fALFF.nii.gz
+				if_missing_do copy RSFA/sub-${sub}_ses-${ses}_task-rest_run-${run}_RSFA.nii.gz ${tmp}/${sub}_${ses}_r${run}_RSFA.nii.gz
+			fi
 			rsfc+=(r${run}_fALFF r${run}_RSFA)
 		done
 
@@ -143,7 +146,7 @@ do
 			run3dLMEr="${run3dLMEr}     Subj session  ${map}   cvr    InputFile"
 			for sub in 001 002 003 004 007 008 009
 			do
-				for ses in $( seq -f %02g 1 10; echo "allses" )
+				for ses in $( seq -f %02g 1 10 )
 				do
 					run3dLMEr="${run3dLMEr}     ${sub}  ${ses}  norm/${sub}_${ses}_r${run}_${map}.nii.gz  norm/${sub}_${ses}_cvr.nii.gz  norm/${sub}_${ses}_${brick}.nii.gz"
 				done

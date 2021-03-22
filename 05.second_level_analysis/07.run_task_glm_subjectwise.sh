@@ -320,7 +320,7 @@ eval ${run3dDeconvolve}
 
 run3dREMLfit="${run3dREMLfit::-1}\" -matrix ${mat}.1D"
 run3dREMLfit="${run3dREMLfit} -mask ${mask}.nii.gz"
-run3dREMLfit="${run3dREMLfit} -tout -verb -GOFORIT"
+run3dREMLfit="${run3dREMLfit} -tout -fout -verb -GOFORIT"
 run3dREMLfit="${run3dREMLfit} -Rfitts ${fitts}.nii.gz"
 run3dREMLfit="${run3dREMLfit} -Rbuck  ${rbuck}.nii.gz"
 run3dREMLfit="${run3dREMLfit} -Rerrts ${ertts}.nii.gz"

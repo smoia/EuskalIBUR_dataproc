@@ -74,7 +74,7 @@ do
 	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat \
 				  reg/${sub}_T2w2T1w0GenericAffine.mat
 
-	for ses in $( seq -f %02g 1 10; echo "allses" )
+	for ses in $( seq -f %02g 1 10 ) #; echo "allses" )
 	do
 		# Consider only contrasts of interest
 		rbuck=GLM/${task}/${sub}/${sub}_${ses}_task-${task}_spm.nii.gz
@@ -126,7 +126,7 @@ do
 done
 
 mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
-if_missing_do copy ${mask}.nii.gz ${tmp}/${sub}_${ses}_mask.nii.gz
+if_missing_do copy ${mask}.nii.gz ${tmp}/${sub}_mask.nii.gz
 
 for brick in "${bricks[@]}"
 do
@@ -140,7 +140,7 @@ do
 			rm ${outfile}
 
 			run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
-			run3dLMEr="${run3dLMEr} -mask ${tmp}/${sub}_${ses}_mask.nii.gz"
+			run3dLMEr="${run3dLMEr} -mask ${tmp}/${sub}_mask.nii.gz"
 			run3dLMEr="${run3dLMEr} -model  '${map}*cvr+(1|session)+(1|Subj)'"
 			run3dLMEr="${run3dLMEr} -dataTable"
 			run3dLMEr="${run3dLMEr}     Subj session  ${map}   cvr    InputFile"

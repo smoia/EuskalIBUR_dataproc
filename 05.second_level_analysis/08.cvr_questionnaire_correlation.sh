@@ -42,7 +42,7 @@ cd CVR_correlation
 tmp=${tmp}/tmp.08cqc
 
 replace_and mkdir ${tmp}
-if_missing_do mkdir ${tmp}/reg ${tmp}/normalised
+if_missing_do mkdir ${tmp}/reg ${tmp}/norm
 
 # Copy files for transformation & create mask
 if_missing_do copy ${scriptdir}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ${tmp}/reg/MNI_T1_brain.nii.gz
@@ -77,13 +77,13 @@ do
 		do
 			if [ ${inmap} == "lag" ]; then origmap=cvr_lag; else origmap=${inmap}; fi
 			inmap=${inmap}_masked
-			if [ ! -e ${tmp}/normalised/std_optcom_${inmap}_${sub}_${ses}.nii.gz ]
+			if [ ! -e ${tmp}/norm/std_optcom_${inmap}_${sub}_${ses}.nii.gz ]
 			then
 				infile=${wdr}/CVR/sub-${sub}_ses-${ses}_optcom_map_cvr/sub-${sub}_ses-${ses}_optcom_${origmap}_masked.nii.gz
 
 				echo "Transforming ${inmap##*/} maps of session ${ses} to MNI"
 				antsApplyTransforms -d 3 -i ${infile} -r ${tmp}/reg/MNI_T1_brain.nii.gz \
-									-o ${tmp}/normalised/std_optcom_${inmap}_${sub}_${ses}.nii.gz -n NearestNeighbor \
+									-o ${tmp}/norm/std_optcom_${inmap}_${sub}_${ses}.nii.gz -n NearestNeighbor \
 									-t ${tmp}/reg/${sub}_T1w2std1Warp.nii.gz \
 									-t ${tmp}/reg/${sub}_T1w2std0GenericAffine.mat \
 									-t ${tmp}/reg/${sub}_T2w2T1w0GenericAffine.mat \
@@ -124,7 +124,7 @@ do
 
 	for k in $(seq 1 ${nrep})
 	do
-		run3dLMEr="${run3dLMEr}       ${sub[$k]}  ${ses[$k]} ${sex[$k]} ${sleep[$k]} ${exercise[$k]} ${water[$k]} ${coffee[$k]} ${alcohol[$k]} ${systolic[$k]} ${diastolic[$k]} ${pulse[$k]} std_optcom_${inmap}_${sub[$k]}_${ses[$k]}.nii.gz"
+		run3dLMEr="${run3dLMEr}       ${sub[$k]}  ${ses[$k]} ${sex[$k]} ${sleep[$k]} ${exercise[$k]} ${water[$k]} ${coffee[$k]} ${alcohol[$k]} ${systolic[$k]} ${diastolic[$k]} ${pulse[$k]} ${tmp}/norm/std_optcom_${inmap}_${sub[$k]}_${ses[$k]}.nii.gz"
 	done
 	echo ""
 	echo "${run3dLMEr}"
@@ -148,7 +148,7 @@ do
 
 	for k in $(seq 1 ${nrep})
 	do
-		run3dLMEr="${run3dLMEr}       ${sub[$k]}  ${ses[$k]} ${sex[$k]} ${systolic[$k]} ${diastolic[$k]} ${pulse[$k]} std_optcom_${inmap}_${sub[$k]}_${ses[$k]}.nii.gz"
+		run3dLMEr="${run3dLMEr}       ${sub[$k]}  ${ses[$k]} ${sex[$k]} ${systolic[$k]} ${diastolic[$k]} ${pulse[$k]} ${tmp}/norm/std_optcom_${inmap}_${sub[$k]}_${ses[$k]}.nii.gz"
 	done
 	echo ""
 	echo "${run3dLMEr}"

@@ -117,7 +117,7 @@ do
 
 	run3dLMEr="3dLMEr -prefix LMEr_${inmap}_allregr.nii.gz -jobs 10"
 	run3dLMEr="${run3dLMEr} -mask ${tmp}/reg/MNI_T1_brain_mask.nii.gz"
-	run3dLMEr="${run3dLMEr} -model 'sex+sleep+exercise+water+coffee+alcohol+systolic+diastolic+pulse+(1|session)+(1|Subj)'"
+	run3dLMEr="${run3dLMEr} -model 'sex*(sleep+exercise+water+coffee+alcohol+systolic+diastolic+pulse)+(1|session)+(1|Subj)'"
 	run3dLMEr="${run3dLMEr} -qVars 'sleep,exercise,water,coffee,alcohol,systolic,diastolic,pulse'"
 	run3dLMEr="${run3dLMEr} -dataTable  "
 	run3dLMEr="${run3dLMEr}       Subj session sex sleep exercise water coffee alcohol systolic diastolic pulse InputFile                        "
@@ -141,7 +141,7 @@ do
 
 	run3dLMEr="3dLMEr -prefix LMEr_${inmap}_onlytension.nii.gz -jobs 10"
 	run3dLMEr="${run3dLMEr} -mask ${tmp}/reg/MNI_T1_brain_mask.nii.gz"
-	run3dLMEr="${run3dLMEr} -model 'sex+systolic+diastolic+pulse+(1|session)+(1|Subj)'"
+	run3dLMEr="${run3dLMEr} -model 'sex*(systolic+diastolic+pulse)+(1|session)+(1|Subj)'"
 	run3dLMEr="${run3dLMEr} -qVars 'systolic,diastolic,pulse'"
 	run3dLMEr="${run3dLMEr} -dataTable  "
 	run3dLMEr="${run3dLMEr}       Subj session sex systolic diastolic pulse InputFile                        "

@@ -35,4 +35,4 @@ echo "************************************"
 singularity exec -e --no-home \
 -B ${wdr}:/data -B ${sdr}:/scripts \
 -B /export/home/smoia/scratch:/tmp \
-euskalibur.sif 05.second_level_analysis/07.cvr_questionnaire_correlation.sh
+euskalibur.sif 05.second_level_analysis/08.cvr_questionnaire_correlation.sh

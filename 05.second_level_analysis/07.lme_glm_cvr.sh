@@ -125,8 +125,9 @@ do
 	done
 done
 
-mask=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_sbref_brain_mask
-if_missing_do copy ${mask}.nii.gz ${tmp}/${sub}_mask.nii.gz
+if_missing_do copy ${sdr}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ${tmp}/reg/MNI_T1_brain.nii.gz
+
+if_missing_do mask ${tmp}/reg/MNI_T1_brain.nii.gz ${tmp}/reg/MNI_T1_brain_mask.nii.gz
 
 for brick in "${bricks[@]}"
 do

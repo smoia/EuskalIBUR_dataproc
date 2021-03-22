@@ -141,7 +141,7 @@ do
 			rm ${outfile}
 
 			run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
-			run3dLMEr="${run3dLMEr} -mask ${tmp}/${sub}_mask.nii.gz"
+			run3dLMEr="${run3dLMEr} -mask ${tmp}/reg/MNI_T1_brain_mask.nii.gz"
 			run3dLMEr="${run3dLMEr} -model  '${map}*cvr+(1|session)+(1|Subj)'"
 			run3dLMEr="${run3dLMEr} -dataTable"
 			run3dLMEr="${run3dLMEr}     Subj session  ${map}   cvr    InputFile"

@@ -90,7 +90,7 @@ fi
 # done
 
 # Run LME for CVR
-for task in motor simon
+for task in motor # simon
 do
 	qsub -q long.q -N "lme_${task}_cvr_EuskalIBUR" \
 	-o ${wdr}/../LogFiles/lme_${task}_cvr_pipe \

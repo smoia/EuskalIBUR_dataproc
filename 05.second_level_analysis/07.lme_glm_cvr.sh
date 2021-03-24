@@ -140,7 +140,7 @@ if_missing_do lme/all_congruent
 replace_and wait lme/all_congruent/mod_all_congruent_fALFF_r-01_CVR.nii.gz
 
 3dLMEr -prefix lme/all_congruent/mod_all_congruent_fALFF_r-01_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -219,7 +219,7 @@ if_missing_do lme/all_congruent
 replace_and wait lme/all_congruent/mod_all_congruent_RSFA_r-01_CVR.nii.gz
 
 3dLMEr -prefix lme/all_congruent/mod_all_congruent_RSFA_r-01_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -299,7 +299,7 @@ if_missing_do lme/all_congruent
 replace_and wait lme/all_congruent/mod_all_congruent_fALFF_r-02_CVR.nii.gz
 
 3dLMEr -prefix lme/all_congruent/mod_all_congruent_fALFF_r-02_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -378,7 +378,7 @@ if_missing_do lme/all_congruent
 replace_and wait lme/all_congruent/mod_all_congruent_RSFA_r-02_CVR.nii.gz
 
 3dLMEr -prefix lme/all_congruent/mod_all_congruent_RSFA_r-02_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -458,7 +458,7 @@ if_missing_do lme/all_congruent
 replace_and wait lme/all_congruent/mod_all_congruent_fALFF_r-03_CVR.nii.gz
 
 3dLMEr -prefix lme/all_congruent/mod_all_congruent_fALFF_r-03_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -537,7 +537,7 @@ if_missing_do lme/all_congruent
 replace_and wait lme/all_congruent/mod_all_congruent_RSFA_r-03_CVR.nii.gz
 
 3dLMEr -prefix lme/all_congruent/mod_all_congruent_RSFA_r-03_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -617,7 +617,7 @@ if_missing_do lme/all_congruent
 replace_and wait lme/all_congruent/mod_all_congruent_fALFF_r-04_CVR.nii.gz
 
 3dLMEr -prefix lme/all_congruent/mod_all_congruent_fALFF_r-04_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -696,7 +696,7 @@ if_missing_do lme/all_congruent
 replace_and wait lme/all_congruent/mod_all_congruent_RSFA_r-04_CVR.nii.gz
 
 3dLMEr -prefix lme/all_congruent/mod_all_congruent_RSFA_r-04_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -776,7 +776,7 @@ if_missing_do lme/congruent_and_incongruent
 replace_and wait lme/congruent_and_incongruent/mod_congruent_and_incongruent_fALFF_r-01_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_and_incongruent/mod_congruent_and_incongruent_fALFF_r-01_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -855,7 +855,7 @@ if_missing_do lme/congruent_and_incongruent
 replace_and wait lme/congruent_and_incongruent/mod_congruent_and_incongruent_RSFA_r-01_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_and_incongruent/mod_congruent_and_incongruent_RSFA_r-01_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -935,7 +935,7 @@ if_missing_do lme/congruent_and_incongruent
 replace_and wait lme/congruent_and_incongruent/mod_congruent_and_incongruent_fALFF_r-02_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_and_incongruent/mod_congruent_and_incongruent_fALFF_r-02_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -1014,7 +1014,7 @@ if_missing_do lme/congruent_and_incongruent
 replace_and wait lme/congruent_and_incongruent/mod_congruent_and_incongruent_RSFA_r-02_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_and_incongruent/mod_congruent_and_incongruent_RSFA_r-02_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -1094,7 +1094,7 @@ if_missing_do lme/congruent_and_incongruent
 replace_and wait lme/congruent_and_incongruent/mod_congruent_and_incongruent_fALFF_r-03_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_and_incongruent/mod_congruent_and_incongruent_fALFF_r-03_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -1173,7 +1173,7 @@ if_missing_do lme/congruent_and_incongruent
 replace_and wait lme/congruent_and_incongruent/mod_congruent_and_incongruent_RSFA_r-03_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_and_incongruent/mod_congruent_and_incongruent_RSFA_r-03_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -1253,7 +1253,7 @@ if_missing_do lme/congruent_and_incongruent
 replace_and wait lme/congruent_and_incongruent/mod_congruent_and_incongruent_fALFF_r-04_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_and_incongruent/mod_congruent_and_incongruent_fALFF_r-04_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -1332,7 +1332,7 @@ if_missing_do lme/congruent_and_incongruent
 replace_and wait lme/congruent_and_incongruent/mod_congruent_and_incongruent_RSFA_r-04_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_and_incongruent/mod_congruent_and_incongruent_RSFA_r-04_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -1412,7 +1412,7 @@ if_missing_do lme/congruent_vs_incongruent
 replace_and wait lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_fALFF_r-01_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_fALFF_r-01_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -1491,7 +1491,7 @@ if_missing_do lme/congruent_vs_incongruent
 replace_and wait lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_RSFA_r-01_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_RSFA_r-01_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -1571,7 +1571,7 @@ if_missing_do lme/congruent_vs_incongruent
 replace_and wait lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_fALFF_r-02_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_fALFF_r-02_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -1650,7 +1650,7 @@ if_missing_do lme/congruent_vs_incongruent
 replace_and wait lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_RSFA_r-02_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_RSFA_r-02_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -1730,7 +1730,7 @@ if_missing_do lme/congruent_vs_incongruent
 replace_and wait lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_fALFF_r-03_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_fALFF_r-03_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -1809,7 +1809,7 @@ if_missing_do lme/congruent_vs_incongruent
 replace_and wait lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_RSFA_r-03_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_RSFA_r-03_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -1889,7 +1889,7 @@ if_missing_do lme/congruent_vs_incongruent
 replace_and wait lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_fALFF_r-04_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_fALFF_r-04_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -1968,7 +1968,7 @@ if_missing_do lme/congruent_vs_incongruent
 replace_and wait lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_RSFA_r-04_CVR.nii.gz
 
 3dLMEr -prefix lme/congruent_vs_incongruent/mod_congruent_vs_incongruent_RSFA_r-04_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -2048,7 +2048,7 @@ if_missing_do lme/allmotors
 replace_and wait lme/allmotors/mod_allmotors_fALFF_r-01_CVR.nii.gz
 
 3dLMEr -prefix lme/allmotors/mod_allmotors_fALFF_r-01_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -2127,7 +2127,7 @@ if_missing_do lme/allmotors
 replace_and wait lme/allmotors/mod_allmotors_RSFA_r-01_CVR.nii.gz
 
 3dLMEr -prefix lme/allmotors/mod_allmotors_RSFA_r-01_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -2207,7 +2207,7 @@ if_missing_do lme/allmotors
 replace_and wait lme/allmotors/mod_allmotors_fALFF_r-02_CVR.nii.gz
 
 3dLMEr -prefix lme/allmotors/mod_allmotors_fALFF_r-02_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -2286,7 +2286,7 @@ if_missing_do lme/allmotors
 replace_and wait lme/allmotors/mod_allmotors_RSFA_r-02_CVR.nii.gz
 
 3dLMEr -prefix lme/allmotors/mod_allmotors_RSFA_r-02_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -2366,7 +2366,7 @@ if_missing_do lme/allmotors
 replace_and wait lme/allmotors/mod_allmotors_fALFF_r-03_CVR.nii.gz
 
 3dLMEr -prefix lme/allmotors/mod_allmotors_fALFF_r-03_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -2445,7 +2445,7 @@ if_missing_do lme/allmotors
 replace_and wait lme/allmotors/mod_allmotors_RSFA_r-03_CVR.nii.gz
 
 3dLMEr -prefix lme/allmotors/mod_allmotors_RSFA_r-03_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -2525,7 +2525,7 @@ if_missing_do lme/allmotors
 replace_and wait lme/allmotors/mod_allmotors_fALFF_r-04_CVR.nii.gz
 
 3dLMEr -prefix lme/allmotors/mod_allmotors_fALFF_r-04_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -2604,7 +2604,7 @@ if_missing_do lme/allmotors
 replace_and wait lme/allmotors/mod_allmotors_RSFA_r-04_CVR.nii.gz
 
 3dLMEr -prefix lme/allmotors/mod_allmotors_RSFA_r-04_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -2684,7 +2684,7 @@ if_missing_do lme/motors_vs_sham
 replace_and wait lme/motors_vs_sham/mod_motors_vs_sham_fALFF_r-01_CVR.nii.gz
 
 3dLMEr -prefix lme/motors_vs_sham/mod_motors_vs_sham_fALFF_r-01_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -2763,7 +2763,7 @@ if_missing_do lme/motors_vs_sham
 replace_and wait lme/motors_vs_sham/mod_motors_vs_sham_RSFA_r-01_CVR.nii.gz
 
 3dLMEr -prefix lme/motors_vs_sham/mod_motors_vs_sham_RSFA_r-01_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -2843,7 +2843,7 @@ if_missing_do lme/motors_vs_sham
 replace_and wait lme/motors_vs_sham/mod_motors_vs_sham_fALFF_r-02_CVR.nii.gz
 
 3dLMEr -prefix lme/motors_vs_sham/mod_motors_vs_sham_fALFF_r-02_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -2922,7 +2922,7 @@ if_missing_do lme/motors_vs_sham
 replace_and wait lme/motors_vs_sham/mod_motors_vs_sham_RSFA_r-02_CVR.nii.gz
 
 3dLMEr -prefix lme/motors_vs_sham/mod_motors_vs_sham_RSFA_r-02_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -3002,7 +3002,7 @@ if_missing_do lme/motors_vs_sham
 replace_and wait lme/motors_vs_sham/mod_motors_vs_sham_fALFF_r-03_CVR.nii.gz
 
 3dLMEr -prefix lme/motors_vs_sham/mod_motors_vs_sham_fALFF_r-03_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -3081,7 +3081,7 @@ if_missing_do lme/motors_vs_sham
 replace_and wait lme/motors_vs_sham/mod_motors_vs_sham_RSFA_r-03_CVR.nii.gz
 
 3dLMEr -prefix lme/motors_vs_sham/mod_motors_vs_sham_RSFA_r-03_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \
@@ -3161,7 +3161,7 @@ if_missing_do lme/motors_vs_sham
 replace_and wait lme/motors_vs_sham/mod_motors_vs_sham_fALFF_r-04_CVR.nii.gz
 
 3dLMEr -prefix lme/motors_vs_sham/mod_motors_vs_sham_fALFF_r-04_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'fALFF*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  fALFF   cvr    InputFile  \
@@ -3240,7 +3240,7 @@ if_missing_do lme/motors_vs_sham
 replace_and wait lme/motors_vs_sham/mod_motors_vs_sham_RSFA_r-04_CVR.nii.gz
 
 3dLMEr -prefix lme/motors_vs_sham/mod_motors_vs_sham_RSFA_r-04_CVR.nii.gz \
--jobs 10 -mask reg/MNI_T1_brain_mask.nii.gz \
+-jobs 10 \
 -model  'RSFA*cvr+(1|session)+(1|Subj)' \
 -dataTable \
     Subj session  RSFA   cvr    InputFile  \

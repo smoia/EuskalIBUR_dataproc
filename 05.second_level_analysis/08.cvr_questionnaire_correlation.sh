@@ -42,12 +42,12 @@ cd CVR_correlation
 tmp=${tmp}/tmp.08cqc
 
 replace_and mkdir ${tmp}
-if_missing_do mkdir ${tmp}/reg ${tmp}/norm
+if_missing_do mkdir reg ${tmp}/norm
 
 # Copy files for transformation & create mask
-if_missing_do copy ${scriptdir}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz ${tmp}/reg/MNI_T1_brain.nii.gz
+if_missing_do copy ${scriptdir}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz reg/MNI_T1_brain.nii.gz
 
-if_missing_do mask ${tmp}/reg/MNI_T1_brain.nii.gz ${tmp}/reg/MNI_T1_brain_mask.nii.gz
+if_missing_do mask reg/MNI_T1_brain.nii.gz reg/MNI_T1_brain_mask.nii.gz
 
 # Copy & normalising
 for sub in $( seq -f %03g 1 10 )
@@ -61,13 +61,13 @@ do
 
 	echo "Preparing transformation"
 	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std1Warp.nii.gz \
-				  ${tmp}/reg/${sub}_T1w2std1Warp.nii.gz
+				  reg/${sub}_T1w2std1Warp.nii.gz
 	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_acq-uni_T1w2std0GenericAffine.mat \
-				  ${tmp}/reg/${sub}_T1w2std0GenericAffine.mat
+				  reg/${sub}_T1w2std0GenericAffine.mat
 	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref0GenericAffine.mat \
-				  ${tmp}/reg/${sub}_T2w2sbref0GenericAffine.mat
+				  reg/${sub}_T2w2sbref0GenericAffine.mat
 	if_missing_do copy ${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_ses-01_acq-uni_T1w0GenericAffine.mat \
-				  ${tmp}/reg/${sub}_T2w2T1w0GenericAffine.mat
+				  reg/${sub}_T2w2T1w0GenericAffine.mat
 
 	for ses in $( seq -f %02g 1 ${lastses} )
 	do
@@ -82,12 +82,12 @@ do
 				infile=${wdr}/CVR/sub-${sub}_ses-${ses}_optcom_map_cvr/sub-${sub}_ses-${ses}_optcom_${origmap}_masked.nii.gz
 
 				echo "Transforming ${inmap##*/} maps of session ${ses} to MNI"
-				antsApplyTransforms -d 3 -i ${infile} -r ${tmp}/reg/MNI_T1_brain.nii.gz \
+				antsApplyTransforms -d 3 -i ${infile} -r reg/MNI_T1_brain.nii.gz \
 									-o ${tmp}/norm/std_optcom_${inmap}_${sub}_${ses}.nii.gz -n NearestNeighbor \
-									-t ${tmp}/reg/${sub}_T1w2std1Warp.nii.gz \
-									-t ${tmp}/reg/${sub}_T1w2std0GenericAffine.mat \
-									-t ${tmp}/reg/${sub}_T2w2T1w0GenericAffine.mat \
-									-t [${tmp}/reg/${sub}_T2w2sbref0GenericAffine.mat,1]
+									-t reg/${sub}_T1w2std1Warp.nii.gz \
+									-t reg/${sub}_T1w2std0GenericAffine.mat \
+									-t reg/${sub}_T2w2T1w0GenericAffine.mat \
+									-t [reg/${sub}_T2w2sbref0GenericAffine.mat,1]
 				imrm ${sub}_${ses}_optcom_${inmap}.nii.gz
 			fi
 		done
@@ -116,8 +116,40 @@ do
 	rm LMEr_${inmap}_allregr.nii.gz
 
 	run3dLMEr="3dLMEr -prefix LMEr_${inmap}_allregr.nii.gz -jobs 10"
-	run3dLMEr="${run3dLMEr} -mask ${tmp}/reg/MNI_T1_brain_mask.nii.gz"
+	run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
 	run3dLMEr="${run3dLMEr} -model 'sex*(sleep+exercise+water+coffee+alcohol+systolic+diastolic+pulse)+(1|session)+(1|Subj)'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sleep :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'exercise :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'water :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'coffee :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'alcohol :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'systolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'diastolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'pulse :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F sleep :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F exercise :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F water :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F coffee :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F alcohol :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F systolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F diastolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F pulse :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M sleep :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M exercise :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M water :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M coffee :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M alcohol :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M systolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M diastolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M pulse :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F sleep :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F exercise :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F water :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F coffee :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F alcohol :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F systolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F diastolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F pulse :'"
 	run3dLMEr="${run3dLMEr} -qVars 'sleep,exercise,water,coffee,alcohol,systolic,diastolic,pulse'"
 	run3dLMEr="${run3dLMEr} -dataTable  "
 	run3dLMEr="${run3dLMEr}       Subj session sex sleep exercise water coffee alcohol systolic diastolic pulse InputFile                        "
@@ -140,8 +172,20 @@ do
 	rm LMEr_${inmap}_onlytension.nii.gz
 
 	run3dLMEr="3dLMEr -prefix LMEr_${inmap}_onlytension.nii.gz -jobs 10"
-	run3dLMEr="${run3dLMEr} -mask ${tmp}/reg/MNI_T1_brain_mask.nii.gz"
+	run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
 	run3dLMEr="${run3dLMEr} -model 'sex*(systolic+diastolic+pulse)+(1|session)+(1|Subj)'"
+	run3dLMEr="${run3dLMEr} -gltCode 'systolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'diastolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'pulse :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F systolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F diastolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F pulse :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M systolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M diastolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M pulse :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F systolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F diastolic :'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F pulse :'"
 	run3dLMEr="${run3dLMEr} -qVars 'systolic,diastolic,pulse'"
 	run3dLMEr="${run3dLMEr} -dataTable  "
 	run3dLMEr="${run3dLMEr}       Subj session sex systolic diastolic pulse InputFile                        "

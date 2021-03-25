@@ -83,7 +83,17 @@ do
 			motor )
 				# Two GLT are coded: all motor activations, and all motor activations against the sham to remove visual stimuli"
 				extract_and_average 34 42 ${tmp}/${sub}_${ses}_allmotors ${rbuck}
+                3dbucket -prefix ${tmp}/${sub}_${ses}_finger_left ${rbuck}
+                3dbucket -prefix ${tmp}/${sub}_${ses}_finger_right ${rbuck}
+                3dbucket -prefix ${tmp}/${sub}_${ses}_toe_left ${rbuck}
+                3dbucket -prefix ${tmp}/${sub}_${ses}_toe_right ${rbuck}
+                3dbucket -prefix ${tmp}/${sub}_${ses}_tongue ${rbuck}
 				extract_and_average 45 53 ${tmp}/${sub}_${ses}_motors_vs_sham ${rbuck}
+                3dbucket -prefix ${tmp}/${sub}_${ses}_finger_left_vs_sham ${rbuck}
+                3dbucket -prefix ${tmp}/${sub}_${ses}_finger_right_vs_sham ${rbuck}
+                3dbucket -prefix ${tmp}/${sub}_${ses}_toe_left_vs_sham ${rbuck}
+                3dbucket -prefix ${tmp}/${sub}_${ses}_toe_right_vs_sham ${rbuck}
+                3dbucket -prefix ${tmp}/${sub}_${ses}_tongue_vs_sham ${rbuck}
 				bricks=( allmotors motors_vs_sham )
 			;;
 			simon )
@@ -140,6 +150,9 @@ do
 			run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
 			run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
 			run3dLMEr="${run3dLMEr} -model  '${map}*cvr+(1|session)+(1|Subj)'"
+            run3dLMEr="${run3dLMEr} -gltCode  '${map}: cvr:'"
+            run3dLMEr="${run3dLMEr} -gltCode  'cvr:'"
+            run3dLMEr="${run3dLMEr} -gltCode  '${map}:'"
 			run3dLMEr="${run3dLMEr} -dataTable"
 			run3dLMEr="${run3dLMEr}     Subj session  ${map}   cvr    InputFile"
 			for sub in 001 002 003 004 007 008 009

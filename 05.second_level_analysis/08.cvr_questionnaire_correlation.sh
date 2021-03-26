@@ -106,61 +106,61 @@ diastolic=( $(csvtool -t TAB namedcol diastolic_tension_avg ${wdr}/phenotype/que
 pulse=( $(csvtool -t TAB namedcol pulse_avg ${wdr}/phenotype/questionnaire.tsv ) )
 
 let nrep=${#sub[@]}-1
-# # Compute complete model
-# for inmap in cvr lag
-# do
-# 	# Compute ICC
-# 	inmap=${inmap}_masked
-# 	rm LMEr_${inmap}_allregr.nii.gz
+# Compute complete model
+for inmap in cvr lag
+do
+	# Compute ICC
+	inmap=${inmap}_masked
+	rm LMEr_${inmap}_allregr.nii.gz
 
-# 	run3dLMEr="3dLMEr -prefix LMEr_${inmap}_allregr.nii.gz -jobs 10"
-# 	run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
-# 	run3dLMEr="${run3dLMEr} -model 'sex*(sleep+exercise+water+coffee+alcohol+systolic+diastolic+pulse)+(1|session)+(1|Subj)'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sleep:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'exercise:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'water:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'coffee:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'alcohol:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'systolic:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'diastolic:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'pulse:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F sleep:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F exercise:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F water:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F coffee:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F alcohol:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F systolic:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F diastolic:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F pulse:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M sleep:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M exercise:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M water:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M coffee:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M alcohol:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M systolic:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M diastolic:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M pulse:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F sleep:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F exercise:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F water:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F coffee:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F alcohol:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F systolic:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F diastolic:1'"
-# 	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F pulse:1'"
-# 	run3dLMEr="${run3dLMEr} -qVars 'sleep,exercise,water,coffee,alcohol,systolic,diastolic,pulse'"
-# 	run3dLMEr="${run3dLMEr} -dataTable  "
-# 	run3dLMEr="${run3dLMEr}       Subj session sex sleep exercise water coffee alcohol systolic diastolic pulse InputFile                        "
+	run3dLMEr="3dLMEr -prefix LMEr_${inmap}_allregr.nii.gz -jobs 10"
+	run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
+	run3dLMEr="${run3dLMEr} -model 'sex*(sleep+exercise+water+coffee+alcohol+systolic+diastolic+pulse)+(1|session)+(1|Subj)'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sleep:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'exercise:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'water:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'coffee:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'alcohol:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'systolic:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'diastolic:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'pulse:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F sleep:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F exercise:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F water:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F coffee:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F alcohol:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F systolic:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F diastolic:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M -1*F pulse:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M sleep:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M exercise:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M water:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M coffee:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M alcohol:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M systolic:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M diastolic:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*M pulse:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F sleep:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F exercise:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F water:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F coffee:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F alcohol:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F systolic:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F diastolic:1'"
+	run3dLMEr="${run3dLMEr} -gltCode 'sex: 1*F pulse:1'"
+	run3dLMEr="${run3dLMEr} -qVars 'sleep,exercise,water,coffee,alcohol,systolic,diastolic,pulse'"
+	run3dLMEr="${run3dLMEr} -dataTable  "
+	run3dLMEr="${run3dLMEr}       Subj session sex sleep exercise water coffee alcohol systolic diastolic pulse InputFile                        "
 
-# 	for k in $(seq 1 ${nrep})
-# 	do
-# 		run3dLMEr="${run3dLMEr}       ${sub[$k]}  ${ses[$k]} ${sex[$k]} ${sleep[$k]} ${exercise[$k]} ${water[$k]} ${coffee[$k]} ${alcohol[$k]} ${systolic[$k]} ${diastolic[$k]} ${pulse[$k]} norm/std_optcom_${inmap}_${sub[$k]}_${ses[$k]}.nii.gz"
-# 	done
-# 	echo ""
-# 	echo "${run3dLMEr}"
-# 	echo ""
-# 	eval ${run3dLMEr}
-# done
+	for k in $(seq 1 ${nrep})
+	do
+		run3dLMEr="${run3dLMEr}       ${sub[$k]}  ${ses[$k]} ${sex[$k]} ${sleep[$k]} ${exercise[$k]} ${water[$k]} ${coffee[$k]} ${alcohol[$k]} ${systolic[$k]} ${diastolic[$k]} ${pulse[$k]} norm/std_optcom_${inmap}_${sub[$k]}_${ses[$k]}.nii.gz"
+	done
+	echo ""
+	echo "${run3dLMEr}"
+	echo ""
+	eval ${run3dLMEr}
+done
 
 # Compute only tension model
 for inmap in cvr lag

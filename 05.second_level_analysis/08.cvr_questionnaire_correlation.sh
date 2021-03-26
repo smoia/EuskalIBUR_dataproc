@@ -39,7 +39,8 @@ if_missing_do mkdir CVR_correlation
 
 cd CVR_correlation
 
-if_missing_do mkdir reg norm
+if_missing_do mkdir reg
+if_missing_do mkdir norm
 
 # Copy files for transformation & create mask
 if_missing_do copy ${scriptdir}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz reg/MNI_T1_brain.nii.gz

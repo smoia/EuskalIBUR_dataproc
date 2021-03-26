@@ -89,14 +89,14 @@ fi
 # 	# -hold_jid "${joblist}" \
 # done
 
-# Run LME for CVR
-for task in motor simon
-do
-	qsub -q long.q -N "lme_${task}_cvr_EuskalIBUR" \
-	-o ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
-	-e ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
-	${wdr}/98.hcp/run_lme_glm_cvr.sh ${task}
-done
+# # Run LME for CVR
+# for task in motor simon
+# do
+# 	qsub -q long.q -N "lme_${task}_cvr_EuskalIBUR" \
+# 	-o ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
+# 	-e ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
+# 	${wdr}/98.hcp/run_lme_glm_cvr.sh ${task}
+# done
 
 # Run LME for questionnaire
 qsub -q long.q -N "lme_cvr_questionnaire_EuskalIBUR" \

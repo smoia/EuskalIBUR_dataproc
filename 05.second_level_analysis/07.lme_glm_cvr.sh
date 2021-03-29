@@ -150,9 +150,9 @@ do
 			run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
 			run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
 			run3dLMEr="${run3dLMEr} -model  '${map}*cvr+(1|session)+(1|Subj)'"
-            run3dLMEr="${run3dLMEr} -gltCode  '${map}: cvr:'"
-            run3dLMEr="${run3dLMEr} -gltCode  'cvr:'"
-            run3dLMEr="${run3dLMEr} -gltCode  '${map}:'"
+            run3dLMEr="${run3dLMEr} -gltCode  '${map} : cvr :'"
+            run3dLMEr="${run3dLMEr} -gltCode  'cvr :'"
+            run3dLMEr="${run3dLMEr} -gltCode  '${map} :'"
 			run3dLMEr="${run3dLMEr} -dataTable"
 			run3dLMEr="${run3dLMEr}     Subj session  ${map}   cvr    InputFile"
 			for sub in 001 002 003 004 007 008 009

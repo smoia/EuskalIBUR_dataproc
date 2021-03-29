@@ -31,7 +31,7 @@ do
 			qsub -q veryshort.q -N "avg_${sub}_${ses}_${fmap}_EuskalIBUR" \
 			-o ${wdr}/../LogFiles/${sub}_${ses}_${fmap}_avg \
 			-e ${wdr}/../LogFiles/${sub}_${ses}_${fmap}_avg \
-			${wdr}/98.hcp/tmp_avg.sh ${sub} ${ses} ${fmap}
+			${wdr}/98.hcp/run_tmp_avg.sh ${sub} ${ses} ${fmap}
 		done
 	done
 done

@@ -3,7 +3,7 @@
 #$ -m be
 #$ -M s.moia@bcbl.eu
 
-module load singularity/3.3.0
+module load fsl/5.0.10
 
 ##########################################################################################################################
 ##---START OF SCRIPT----------------------------------------------------------------------------------------------------##
@@ -13,29 +13,9 @@ date
 
 sub=$1
 ses=$2
+fmap=$3
 
-wdr=/bcbl/home/public/PJMASK_2/preproc
-sdr=/bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc
+cd /bcbl/home/public/PJMASK_2/preproc/Surr_reliability/surr
 
-cd ${sdr}
-
-logname=fallf_${sub}_${ses}_pipe
-
-# Preparing log folder and log file, removing the previous one
-if [[ ! -d "${wdr}/log" ]]; then mkdir ${wdr}/log; fi
-if [[ -e "${wdr}/log/${logname}" ]]; then rm ${wdr}/log/${logname}; fi
-
-echo "************************************" >> ${wdr}/log/${logname}
-
-exec 3>&1 4>&2
-
-exec 1>${wdr}/log/${logname} 2>&1
-
-date
-echo "************************************"
-
-# Run fALFF
-singularity exec -e --no-home \
--B ${wdr}:/data -B ${sdr}:/scripts \
--B /export/home/smoia/scratch:/tmp \
-euskalibur.sif 04.first_level_analysis/07.compute_rsfc.sh ${sub} ${ses} /data /tmp
+fslmerge -t std_${1}_${2}_${3}_all std_${1}_${2}_${3}/*
+fslmaths std_${1}_${2}_${3}_all -Tmean std_${1}_${2}_${3}_tavg

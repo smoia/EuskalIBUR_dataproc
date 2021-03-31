@@ -123,15 +123,15 @@ do
 
 		for map in $( echo "cvr"; echo "${rsfc[@]}"; echo "${bricks[@]}" )
 		do
-			if [ ! -e ./norm/${sub}_${ses}_${map}.nii.gz ]
-			then
+			# if [ ! -e ./norm/${sub}_${ses}_${map}.nii.gz ]
+			# then
 				antsApplyTransforms -d 3 -i ${tmp}/${sub}_${ses}_${map}.nii.gz -r ./reg/MNI_T1_brain.nii.gz \
 									-o ./norm/${sub}_${ses}_${map}.nii.gz -n NearestNeighbor \
 									-t ./reg/${sub}_T1w2std1Warp.nii.gz \
 									-t ./reg/${sub}_T1w2std0GenericAffine.mat \
 									-t ./reg/${sub}_T2w2T1w0GenericAffine.mat \
 									-t [./reg/${sub}_T2w2sbref0GenericAffine.mat,1]
-			fi
+			# fi
 		done
 	done
 done

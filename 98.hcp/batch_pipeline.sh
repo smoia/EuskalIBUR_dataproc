@@ -98,8 +98,8 @@ do
 	${wdr}/98.hcp/run_lme_glm_cvr.sh ${task}
 done
 
-# Run LME for questionnaire
-qsub -q long.q -N "lme_cvr_questionnaire_EuskalIBUR" \
--o ${wdr}/../LogFiles/lme_cvr_questionnaire_pipe \
--e ${wdr}/../LogFiles/lme_cvr_questionnaire_pipe \
-${wdr}/98.hcp/run_lme_cvr_questionnaire.sh
+# # Run LME for questionnaire
+# qsub -q long.q -N "lme_cvr_questionnaire_EuskalIBUR" \
+# -o ${wdr}/../LogFiles/lme_cvr_questionnaire_pipe \
+# -e ${wdr}/../LogFiles/lme_cvr_questionnaire_pipe \
+# ${wdr}/98.hcp/run_lme_cvr_questionnaire.sh

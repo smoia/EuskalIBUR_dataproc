@@ -189,7 +189,7 @@ do
 			do
 				for ses in $( seq -f %02g 1 10 )
 				do
-					run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_cvr.nii.gz  norm/${sub}_${ses}_${brick}.nii.gz"
+					run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_${map}.nii.gz  norm/${sub}_${ses}_${brick}.nii.gz"
 				done
 			done
 			echo ""

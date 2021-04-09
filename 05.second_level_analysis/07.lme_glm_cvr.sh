@@ -153,6 +153,7 @@ do
 	run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
 	run3dLMEr="${run3dLMEr} -model  'cvr+(cvr|session)+(cvr|Subj)'"
 	run3dLMEr="${run3dLMEr} -gltCode cvr 'cvr :'"
+	run3dLMEr="${run3dLMEr} -qVars 'cvr'"
 	run3dLMEr="${run3dLMEr} -dataTable"
 	run3dLMEr="${run3dLMEr}	 Subj session  cvr    InputFile"
 	for sub in 001 002 003 004 007 008 009
@@ -183,6 +184,7 @@ do
 			run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
 			run3dLMEr="${run3dLMEr} -model  '${map}+(${map}|session)+(${map}|Subj)'"
 			run3dLMEr="${run3dLMEr} -gltCode ${map} '${map} :'"
+			run3dLMEr="${run3dLMEr} -qVars '${map}'"
 			run3dLMEr="${run3dLMEr} -dataTable"
 			run3dLMEr="${run3dLMEr}	 Subj session  ${map}     InputFile"
 			for sub in 001 002 003 004 007 008 009
@@ -213,6 +215,7 @@ do
 		run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
 		run3dLMEr="${run3dLMEr} -model  'cvr+(cvr|session)+(cvr|Subj)'"
 		run3dLMEr="${run3dLMEr} -gltCode cvr 'cvr :'"
+		run3dLMEr="${run3dLMEr} -qVars 'cvr'"
 		run3dLMEr="${run3dLMEr} -dataTable"
 		run3dLMEr="${run3dLMEr}	 Subj session  cvr    InputFile"
 		for sub in 001 002 003 004 007 008 009

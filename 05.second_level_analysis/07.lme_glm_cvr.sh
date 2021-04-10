@@ -172,7 +172,7 @@ do
 
 	run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
 	run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
-	run3dLMEr="${run3dLMEr} -model  'cvr+(cvr|session)+(cvr|Subj)'"
+	run3dLMEr="${run3dLMEr} -model 'cvr+(cvr|session)+(cvr|Subj)'"
 	run3dLMEr="${run3dLMEr} -gltCode cvr 'cvr :'"
 	run3dLMEr="${run3dLMEr} -qVars 'cvr'"
 	run3dLMEr="${run3dLMEr} -qVarCenters 0"
@@ -204,7 +204,7 @@ do
 
 			run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
 			run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
-			run3dLMEr="${run3dLMEr} -model  '${map}+(${map}|session)+(${map}|Subj)'"
+			run3dLMEr="${run3dLMEr} -model '${map}+(${map}|session)+(${map}|Subj)'"
 			run3dLMEr="${run3dLMEr} -gltCode ${map} '${map} :'"
 			run3dLMEr="${run3dLMEr} -qVars '${map}'"
 			run3dLMEr="${run3dLMEr} -qVarCenters 0"
@@ -214,7 +214,7 @@ do
 			do
 				for ses in $( seq -f %02g 1 10 )
 				do
-					run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_${map}.nii.gz  norm/${sub}_${ses}_${brick}.nii.gz"
+					run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_r${run}_${map}_demean.nii.gz  norm/${sub}_${ses}_${brick}.nii.gz"
 				done
 			done
 			echo ""
@@ -236,7 +236,7 @@ do
 
 		run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
 		run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
-		run3dLMEr="${run3dLMEr} -model  'cvr+(cvr|session)+(cvr|Subj)'"
+		run3dLMEr="${run3dLMEr} -model 'cvr+(cvr|session)+(cvr|Subj)'"
 		run3dLMEr="${run3dLMEr} -gltCode cvr 'cvr :'"
 		run3dLMEr="${run3dLMEr} -qVars 'cvr'"
 		run3dLMEr="${run3dLMEr} -qVarCenters 0"
@@ -246,7 +246,7 @@ do
 		do
 			for ses in $( seq -f %02g 1 10 )
 			do
-				run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_cvr.nii.gz  norm/${sub}_${ses}_r${run}_${map}.nii.gz"
+				run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_cvr.nii.gz  norm/${sub}_${ses}_r${run}_${map}_demean.nii.gz"
 			done
 		done
 		echo ""

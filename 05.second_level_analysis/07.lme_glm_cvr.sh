@@ -142,6 +142,27 @@ do
 	done
 done
 
+for map in "${rsfc[@]}"
+do
+	if [ ! -e ./norm/009_10_${map}_demean.nii.gz ]
+	then
+		echo "Preparing to demean ${map}"
+		fslmerge -t ${tmp}/${map} norm/???_??_${map}.nii.gz
+		fslmaths ${tmp}/${map} -Tmean ${tmp}/${map}_mean
+		for sub in 001 002 003 004 007 008 009
+		do
+			for ses in $( seq -f %02g 1 10 )
+			do
+				fslmaths norm/${sub}_${ses}_${map} -sub ${tmp}/${map}_mean norm/${sub}_${ses}_${map}_demean
+			done
+		done
+	fi
+done
+
+
+
+
+
 for brick in "${bricks[@]}"
 do
 	if_missing_do mkdir lme/${brick}
@@ -154,6 +175,7 @@ do
 	run3dLMEr="${run3dLMEr} -model  'cvr+(cvr|session)+(cvr|Subj)'"
 	run3dLMEr="${run3dLMEr} -gltCode cvr 'cvr :'"
 	run3dLMEr="${run3dLMEr} -qVars 'cvr'"
+	run3dLMEr="${run3dLMEr} -qVarCenters 0"
 	run3dLMEr="${run3dLMEr} -dataTable"
 	run3dLMEr="${run3dLMEr}	 Subj session  cvr    InputFile"
 	for sub in 001 002 003 004 007 008 009
@@ -185,6 +207,7 @@ do
 			run3dLMEr="${run3dLMEr} -model  '${map}+(${map}|session)+(${map}|Subj)'"
 			run3dLMEr="${run3dLMEr} -gltCode ${map} '${map} :'"
 			run3dLMEr="${run3dLMEr} -qVars '${map}'"
+			run3dLMEr="${run3dLMEr} -qVarCenters 0"
 			run3dLMEr="${run3dLMEr} -dataTable"
 			run3dLMEr="${run3dLMEr}	 Subj session  ${map}     InputFile"
 			for sub in 001 002 003 004 007 008 009
@@ -216,6 +239,7 @@ do
 		run3dLMEr="${run3dLMEr} -model  'cvr+(cvr|session)+(cvr|Subj)'"
 		run3dLMEr="${run3dLMEr} -gltCode cvr 'cvr :'"
 		run3dLMEr="${run3dLMEr} -qVars 'cvr'"
+		run3dLMEr="${run3dLMEr} -qVarCenters 0"
 		run3dLMEr="${run3dLMEr} -dataTable"
 		run3dLMEr="${run3dLMEr}	 Subj session  cvr    InputFile"
 		for sub in 001 002 003 004 007 008 009

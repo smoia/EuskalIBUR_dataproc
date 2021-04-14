@@ -97,17 +97,17 @@ do
 					3dbucket -prefix ${tmp}/${sub}_${ses}_toe_right_vs_sham.nii.gz ${rbuck} -abuc ${rbuck}'[28]' -overwrite
 					3dbucket -prefix ${tmp}/${sub}_${ses}_tongue_vs_sham.nii.gz ${rbuck} -abuc ${rbuck}'[31]' -overwrite
 				fi
-					bricks=( allmotors motors_vs_sham finger_left finger_right toe_left toe_right tongue finger_left_vs_sham finger_right_vs_sham toe_left_vs_sham toe_right_vs_sham tongue_vs_sham )
+				bricks=( allmotors motors_vs_sham finger_left finger_right toe_left toe_right tongue finger_left_vs_sham finger_right_vs_sham toe_left_vs_sham toe_right_vs_sham tongue_vs_sham )
 			;;
 			simon )
 				# Four GLTs are coded, good congruents, good incongruents, good congruents vs good incongruents and good congruents + good incongruents
-				if [ ! -e ./norm/${sub}_${ses}_allmotors.nii.gz ]
+				if [ ! -e ./norm/${sub}_${ses}_all_congruent.nii.gz ]
 				then
 					3dbucket -prefix ${tmp}/${sub}_${ses}_all_congruent.nii.gz -abuc ${rbuck}'[25]' -overwrite
 					3dbucket -prefix ${tmp}/${sub}_${ses}_congruent_vs_incongruent.nii.gz -abuc ${rbuck}'[31]' -overwrite
 					3dbucket -prefix ${tmp}/${sub}_${ses}_congruent_and_incongruent.nii.gz -abuc ${rbuck}'[34]' -overwrite
-					bricks=( all_congruent congruent_vs_incongruent congruent_and_incongruent )
 				fi
+				bricks=( all_congruent congruent_vs_incongruent congruent_and_incongruent )
 			;;
 			* ) echo " !!! Warning !!! Invalid task: ${task}"; exit ;;
 		esac
@@ -225,36 +225,36 @@ do
 	done
 done
 
-if_missing_do mkdir lme/RSF
-# Compute 3dLME
-for map in fALFF RSFA
-do
-	for run in $( seq -f %02g 1 4 )
-	do
-		outfile=lme/RSF/mod_${map}_r-${run}_CVR.nii.gz
-		rm ${outfile}
+# if_missing_do mkdir lme/RSF
+# # Compute 3dLME
+# for map in fALFF RSFA
+# do
+# 	for run in $( seq -f %02g 1 4 )
+# 	do
+# 		outfile=lme/RSF/mod_${map}_r-${run}_CVR.nii.gz
+# 		rm ${outfile}
 
-		run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
-		run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
-		run3dLMEr="${run3dLMEr} -model 'cvr+(cvr|session)+(cvr|Subj)'"
-		run3dLMEr="${run3dLMEr} -gltCode cvr 'cvr :'"
-		run3dLMEr="${run3dLMEr} -vVars 'cvr'"
-		run3dLMEr="${run3dLMEr} -vVarCenters 0"
-		run3dLMEr="${run3dLMEr} -dataTable"
-		run3dLMEr="${run3dLMEr}	 Subj session  cvr    InputFile"
-		for sub in 001 002 003 004 007 008 009
-		do
-			for ses in $( seq -f %02g 1 10 )
-			do
-				run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_cvr.nii.gz  norm/${sub}_${ses}_r${run}_${map}_demean.nii.gz"
-			done
-		done
-		echo ""
-		echo "${run3dLMEr}"
-		echo ""
-		eval ${run3dLMEr}
-	done
-done
+# 		run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
+# 		run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
+# 		run3dLMEr="${run3dLMEr} -model 'cvr+(cvr|session)+(cvr|Subj)'"
+# 		run3dLMEr="${run3dLMEr} -gltCode cvr 'cvr :'"
+# 		run3dLMEr="${run3dLMEr} -vVars 'cvr'"
+# 		run3dLMEr="${run3dLMEr} -vVarCenters 0"
+# 		run3dLMEr="${run3dLMEr} -dataTable"
+# 		run3dLMEr="${run3dLMEr}	 Subj session  cvr    InputFile"
+# 		for sub in 001 002 003 004 007 008 009
+# 		do
+# 			for ses in $( seq -f %02g 1 10 )
+# 			do
+# 				run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_cvr.nii.gz  norm/${sub}_${ses}_r${run}_${map}_demean.nii.gz"
+# 			done
+# 		done
+# 		echo ""
+# 		echo "${run3dLMEr}"
+# 		echo ""
+# 		eval ${run3dLMEr}
+# 	done
+# done
 
 rm -rf ${tmp}
 

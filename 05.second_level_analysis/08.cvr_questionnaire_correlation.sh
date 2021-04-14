@@ -44,6 +44,8 @@ if_missing_do mkdir norm
 
 # Copy files for transformation & create mask
 if_missing_do copy ${scriptdir}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm.nii.gz reg/MNI_T1_brain.nii.gz
+if_missing_do copy ${scriptdir}/90.template/MNI152_T1_1mm_GM_resamp_2.5mm.nii.gz reg/MNI_T1_GM.nii.gz
+if_missing_do copy ${scriptdir}/90.template/MNI152_T1_1mm_GM_resamp_2.5mm_dil.nii.gz reg/MNI_T1_GM_dil.nii.gz
 
 if_missing_do mask reg/MNI_T1_brain.nii.gz reg/MNI_T1_brain_mask.nii.gz
 
@@ -75,10 +77,9 @@ do
 		do
 			if [ ${inmap} == "lag" ]; then origmap=cvr_lag; else origmap=${inmap}; fi
 			inmap=${inmap}_masked
+			infile=${wdr}/CVR/sub-${sub}_ses-${ses}_optcom_map_cvr/sub-${sub}_ses-${ses}_optcom_${origmap}_masked.nii.gz
 			if [ ! -e norm/std_optcom_${inmap}_${sub}_${ses}.nii.gz ]
 			then
-				infile=${wdr}/CVR/sub-${sub}_ses-${ses}_optcom_map_cvr/sub-${sub}_ses-${ses}_optcom_${origmap}_masked.nii.gz
-
 				echo "Transforming ${inmap##*/} maps of session ${ses} to MNI"
 				antsApplyTransforms -d 3 -i ${infile} -r reg/MNI_T1_brain.nii.gz \
 									-o norm/std_optcom_${inmap}_${sub}_${ses}.nii.gz -n NearestNeighbor \
@@ -88,9 +89,16 @@ do
 									-t [reg/${sub}_T2w2sbref0GenericAffine.mat,1]
 				imrm ${sub}_${ses}_optcom_${inmap}.nii.gz
 			fi
+			if [ ! -e norm/std_optcom_${inmap}_${sub}_${ses}_smooth.nii.gz ]
+			then
+				3dBlurInMask -input norm/std_optcom_${inmap}_${sub}_${ses}.nii.gz -mask reg/MNI_T1_GM_dil.nii.gz \
+							 -prefix norm/std_optcom_${inmap}_${sub}_${ses}_smooth.nii.gz -FWHM 5
+			fi
 		done
 	done
 done
+
+
 
 # Copy questionnaire and read it into arrays
 sub=( $(csvtool -t TAB namedcol subject ${wdr}/phenotype/questionnaire.tsv ) )
@@ -155,7 +163,7 @@ do
 
 	for k in $(seq 1 ${nrep})
 	do
-		run3dLMEr="${run3dLMEr}       ${sub[$k]}  ${ses[$k]} ${sex[$k]} ${sleep[$k]} ${exercise[$k]} ${water[$k]} ${coffee[$k]} ${alcohol[$k]} ${systolic[$k]} ${diastolic[$k]} ${pulse[$k]} norm/std_optcom_${inmap}_${sub[$k]}_${ses[$k]}.nii.gz"
+		run3dLMEr="${run3dLMEr}       ${sub[$k]}  ${ses[$k]} ${sex[$k]} ${sleep[$k]} ${exercise[$k]} ${water[$k]} ${coffee[$k]} ${alcohol[$k]} ${systolic[$k]} ${diastolic[$k]} ${pulse[$k]} norm/std_optcom_${inmap}_${sub[$k]}_${ses[$k]}_smooth.nii.gz"
 	done
 	echo ""
 	echo "${run3dLMEr}"
@@ -192,7 +200,7 @@ do
 
 	for k in $(seq 1 ${nrep})
 	do
-		run3dLMEr="${run3dLMEr}       ${sub[$k]}  ${ses[$k]} ${sex[$k]} ${systolic[$k]} ${diastolic[$k]} ${pulse[$k]} norm/std_optcom_${inmap}_${sub[$k]}_${ses[$k]}.nii.gz"
+		run3dLMEr="${run3dLMEr}       ${sub[$k]}  ${ses[$k]} ${sex[$k]} ${systolic[$k]} ${diastolic[$k]} ${pulse[$k]} norm/std_optcom_${inmap}_${sub[$k]}_${ses[$k]}_smooth.nii.gz"
 	done
 	echo ""
 	echo "${run3dLMEr}"

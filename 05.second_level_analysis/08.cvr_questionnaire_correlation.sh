@@ -104,8 +104,8 @@ done
 sub=( $(csvtool -t TAB namedcol subject ${wdr}/phenotype/questionnaire.tsv ) )
 ses=( $(csvtool -t TAB namedcol session ${wdr}/phenotype/questionnaire.tsv ) )
 sex=( $(csvtool -t TAB namedcol sex ${wdr}/phenotype/questionnaire.tsv ) )
-systolic=( $(csvtool -t TAB namedcol systolic_tension_avg ${wdr}/phenotype/questionnaire.tsv ) )
-pulsepressure=( $(csvtool -t TAB namedcol pulsepressure_tension_avg ${wdr}/phenotype/questionnaire.tsv ) )
+meanarterial=( $(csvtool -t TAB namedcol mean_arterial_pressure ${wdr}/phenotype/questionnaire.tsv ) )
+pulsepressure=( $(csvtool -t TAB namedcol pulse_pressure ${wdr}/phenotype/questionnaire.tsv ) )
 pulse=( $(csvtool -t TAB namedcol pulse_avg ${wdr}/phenotype/questionnaire.tsv ) )
 
 let nrep=${#sub[@]}-1

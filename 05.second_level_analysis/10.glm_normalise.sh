@@ -59,7 +59,7 @@ if_missing_do mkdir Dataset_QC
 
 cd Dataset_QC
 
-tmp=${tmp}/tmp.${task}_07lgc
+tmp=${tmp}/tmp.${task}_${sub}_${ses}_10gm
 replace_and mkdir ${tmp}
 
 if_missing_do mkdir norm reg

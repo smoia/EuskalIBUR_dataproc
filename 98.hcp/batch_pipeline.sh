@@ -69,6 +69,18 @@ do
 	done
 done
 
+for brick in ../preproc/Dataset_QC/norm/001_allses_*_Coef.nii.gz
+do
+	brick=${brick#*allses_}
+	brick=${brick%_Coef*}
+	rm ${wdr}/../LogFiles/${brick}_icc_pipe
+	qsub -q short.q -N "icc_${brick}_EuskalIBUR" \
+	-o ${wdr}/../LogFiles/${brick}_icc_pipe \
+	-e ${wdr}/../LogFiles/${brick}_icc_pipe \
+	${wdr}/98.hcp/run_glm_icc.sh ${brick%_Coef*}
+done
+
+
 # # Run LME for CVR
 # for task in motor #motor simon
 # do

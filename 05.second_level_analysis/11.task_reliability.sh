@@ -28,14 +28,15 @@ cd ${wdr}/Dataset_QC || exit
 echo "Creating folders"
 if_missing_do mkdir icc
 
-# Copy
 cd norm
 
+# Fix ICC out name for 3dICC
+brickout=${brickname%#*}_${brickname##*#}
+
 # Compute ICC
+rm ../icc/ICC2_${brickout}.nii.gz
 
-rm ../icc/ICC2_${brickname}.nii.gz
-
-run3dICC="3dICC -prefix ../icc/ICC2_${brickname}.nii.gz -jobs 10"
+run3dICC="3dICC -prefix ../icc/ICC2_${brickout}.nii.gz -jobs 10"
 run3dICC="${run3dICC} -mask ../reg/MNI_T1_brain_mask.nii.gz"
 run3dICC="${run3dICC} -model  '1+(1|session)+(1|Subj)'"
 run3dICC="${run3dICC} -tStat 'tFile'"

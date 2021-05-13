@@ -54,31 +54,58 @@ fi
 # 	# joblist=${joblist::-1}
 # done
 
-for task in simon motor pinel
+# for task in simon motor pinel
+# do
+# 	for sub in 001 002 003 004 007 008 009
+# 	do
+# 		for ses in 01 allses # $( seq -f %02g 2 10) # $( seq -f %02g 1 10; echo "allses" )
+# 		do
+# 			rm ${wdr}/../LogFiles/${sub}_${ses}_icc_pipe
+# 			qsub -q short.q -N "icc_${sub}_${ses}_EuskalIBUR" \
+# 			-o ${wdr}/../LogFiles/${sub}_${ses}_icc_pipe \
+# 			-e ${wdr}/../LogFiles/${sub}_${ses}_icc_pipe \
+# 			${wdr}/98.hcp/run_glm_norm.sh ${task} ${sub} ${ses}
+# 		done
+# 	done
+# done
+
+# for brick in ../preproc/Dataset_QC/norm/001_allses_*_Coef.nii.gz
+# do
+# 	brick=${brick#*allses_}
+# 	brick=${brick%_Coef*}
+# 	rm ${wdr}/../LogFiles/${brick}_icc_pipe
+# 	qsub -q short.q -N "icc_${brick}_EuskalIBUR" \
+# 	-o ${wdr}/../LogFiles/${brick}_icc_pipe \
+# 	-e ${wdr}/../LogFiles/${brick}_icc_pipe \
+# 	${wdr}/98.hcp/run_glm_icc.sh ${brick%_Coef*}
+# done
+
+joblist=""
+for sub in 001 002 003 004 007 008 009
 do
-	for sub in 001 002 003 004 007 008 009
+	for ses in $( seq -f %02g 1 10)
 	do
-		for ses in 01 allses # $( seq -f %02g 2 10) # $( seq -f %02g 1 10; echo "allses" )
-		do
-			rm ${wdr}/../LogFiles/${sub}_${ses}_icc_pipe
-			qsub -q short.q -N "icc_${sub}_${ses}_EuskalIBUR" \
-			-o ${wdr}/../LogFiles/${sub}_${ses}_icc_pipe \
-			-e ${wdr}/../LogFiles/${sub}_${ses}_icc_pipe \
-			${wdr}/98.hcp/run_glm_norm.sh ${task} ${sub} ${ses}
-		done
+		rm ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe
+		qsub -q short.q -N "norm_${sub}_${ses}_EuskalIBUR" \
+		-o ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
+		-e ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
+		${wdr}/98.hcp/run_falff_norm.sh ${sub} ${ses}
+		joblist=${joblist}norm_${sub}_${ses}_EuskalIBUR,
 	done
 done
 
-for brick in ../preproc/Dataset_QC/norm/001_allses_*_Coef.nii.gz
+joblist=${joblist::-1}
+
+for run in $( seq -f %02g 1 4)
 do
-	brick=${brick#*allses_}
-	brick=${brick%_Coef*}
-	rm ${wdr}/../LogFiles/${brick}_icc_pipe
-	qsub -q short.q -N "icc_${brick}_EuskalIBUR" \
-	-o ${wdr}/../LogFiles/${brick}_icc_pipe \
-	-e ${wdr}/../LogFiles/${brick}_icc_pipe \
-	${wdr}/98.hcp/run_glm_icc.sh ${brick%_Coef*}
+	rm ${wdr}/../LogFiles/${run}_icc_pipe
+	qsub -q short.q -N "icc_${run}_EuskalIBUR" \
+	-hold_jid "${joblist}" \
+	-o ${wdr}/../LogFiles/${run}_icc_pipe \
+	-e ${wdr}/../LogFiles/${run}_icc_pipe \
+	${wdr}/98.hcp/run_falff_icc.sh ${run}
 done
+
 
 
 # # Run LME for CVR

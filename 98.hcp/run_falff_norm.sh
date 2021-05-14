@@ -11,7 +11,8 @@ module load singularity/3.3.0
 
 date
 
-run=$1
+sub=$1
+ses=$2
 
 wdr=/bcbl/home/public/PJMASK_2/preproc
 sdr=/bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc

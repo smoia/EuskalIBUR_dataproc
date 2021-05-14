@@ -26,7 +26,7 @@ esac
 }
 
 slice_coeffs() {
-# $1:brickname $2:bckimg $3:[p/q] $4:pval $5:picdir
+# $1:brickname $2:bckimg $3:[p/q] $4:pval $5:picdir $6:sub $7:ses
 fsleyes render -of ${1}_tmp_axial.png --size 1900 200 \
 --scene lightbox --zaxis 2 --sliceSpacing 12 --zrange 19.3 139.9 --ncols 10 --nrows 1 --hideCursor --showColourBar --colourBarLocation right --colourBarLabelSide bottom-right --colourBarSize 80.0 --labelSize 12 --performance 3 --movieSync \
 ${2}.nii.gz --name "anat" --overlayType volume --alpha 100.0 --brightness 49.75000000000001 --contrast 49.90029860765409 --cmap greyscale --negativeCmap greyscale --displayRange 0.0 631.9035656738281 --clippingRange 0.0 631.9035656738281 --gamma 0.0 --cmapResolution 256 --interpolation none --invert --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
@@ -42,7 +42,7 @@ ${1}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap brain_c
 # Mount visions
 convert -append ${1}_tmp_axial.png ${1}_tmp_sagittal.png ${1}_tmp_coronal.png +repage ${1}_${3}-${4}.png
 rm ${1}_tmp*
-mv ${1}_${3}-${4}.png ${5}/${3}-${4}/.
+mv ${1}_${3}-${4}.png ${5}/${3}-${4}/${6}_${7}_${1}_${3}-${4}.png
 }
 
 # Declare z-value
@@ -111,17 +111,17 @@ do
 			# mask the functional brick with the right tstat
 			fslmaths ${brickname}_Tstat -abs -thr ${thr} -bin -mul ${brick} ${brickname}_fmkd
 			# fsleyes all the way
-			slice_coeffs ${brickname} ${bckimg} p ${pval} ${picdir}
+			slice_coeffs ${brickname} ${bckimg} p ${pval} ${picdir} ${sub} ${ses}
 
 			[ -z "${zvals[${pval}]}" ] && continue || echo "Computing FDR with z=${zvals[${pval}]}"
 			if_missing_do mkdir ${picdir}/q-${pval}
 			3dFDR -input ${brickname}_Tstat.nii.gz -prefix ${brickname}_FDR.nii.gz
 			fslmaths ${brickname}_FDR -thr ${zvals[${pval}]} -bin -mul ${brick} ${brickname}_fmkd
-			slice_coeffs ${brickname} ${bckimg} q ${pval} ${picdir}
+			slice_coeffs ${brickname} ${bckimg} q ${pval} ${picdir} ${sub} ${ses}
 		done
 	done
 done
 
-rm -rf ${tmp}/${task}
+rm -rf ${tmp}
 
 cd ${cwd}

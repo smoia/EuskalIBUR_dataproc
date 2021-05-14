@@ -80,33 +80,31 @@ fi
 # 	${wdr}/98.hcp/run_glm_icc.sh ${brick%_Coef*}
 # done
 
-joblist=""
-for sub in 001 002 003 004 007 008 009
-do
-	for ses in $( seq -f %02g 1 10)
-	do
-		rm ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe
-		qsub -q short.q -N "norm_${sub}_${ses}_EuskalIBUR" \
-		-o ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
-		-e ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
-		${wdr}/98.hcp/run_falff_norm.sh ${sub} ${ses}
-		joblist=${joblist}norm_${sub}_${ses}_EuskalIBUR,
-	done
-done
+# joblist=""
+# for sub in 001 002 003 004 007 008 009
+# do
+# 	for ses in $( seq -f %02g 1 10)
+# 	do
+# 		rm ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe
+# 		qsub -q short.q -N "norm_${sub}_${ses}_EuskalIBUR" \
+# 		-o ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
+# 		-e ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
+# 		${wdr}/98.hcp/run_falff_norm.sh ${sub} ${ses}
+# 		joblist=${joblist}norm_${sub}_${ses}_EuskalIBUR,
+# 	done
+# done
 
-joblist=${joblist::-1}
+# joblist=${joblist::-1}
 
 for run in $( seq -f %02g 1 4)
 do
 	rm ${wdr}/../LogFiles/${run}_icc_pipe
 	qsub -q short.q -N "icc_${run}_EuskalIBUR" \
-	-hold_jid "${joblist}" \
 	-o ${wdr}/../LogFiles/${run}_icc_pipe \
 	-e ${wdr}/../LogFiles/${run}_icc_pipe \
 	${wdr}/98.hcp/run_falff_icc.sh ${run}
+	# -hold_jid "${joblist}" \
 done
-
-
 
 # # Run LME for CVR
 # for task in motor #motor simon

@@ -19,7 +19,7 @@ sdr=/bcbl/home/public/PJMASK_2/EuskalIBUR_dataproc
 
 cd ${sdr}
 
-logname=norm_falff_${run}_pipe
+logname=norm_falff_${sub}_${ses}_pipe
 
 # Preparing log folder and log file, removing the previous one
 if [[ ! -d "${wdr}/log" ]]; then mkdir ${wdr}/log; fi

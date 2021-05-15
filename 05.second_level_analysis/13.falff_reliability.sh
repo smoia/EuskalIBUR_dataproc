@@ -19,6 +19,7 @@ fi
 }
 
 run=${1}
+lastses=${2}
 wdr=${2:-/data}
 
 ### Main ###

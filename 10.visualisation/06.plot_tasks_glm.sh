@@ -79,7 +79,7 @@ replace_and mkdir ${tmp}
 # Set the T1 in native space
 bckimg=${wdr}/sub-${sub}/ses-01/reg/sub-${sub}_ses-01_T2w2sub-${sub}_sbref
 
-for sfx in spm spm-IM
+for sfx in spm #spm-IM
 do
 	# Check number of bricks and remove one cause 0-index
 	lastbrick=$( fslval ${sub}_01_task-${task}_${sfx} dim5 )

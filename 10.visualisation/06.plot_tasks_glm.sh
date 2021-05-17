@@ -42,7 +42,7 @@ ${1}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap brain_c
 # Mount visions
 convert -append ${1}_tmp_axial.png ${1}_tmp_sagittal.png ${1}_tmp_coronal.png +repage ${1}_${3}-${4}.png
 rm ${1}_tmp*
-mv ${1}_${3}-${4}.png ${5}/${3}-${4}/${6}_${7}_${1}_${3}-${4}.png
+mv ${1}_${3}-${4}.png ${5}/${3}-${4}/${6}_${7}_${1##*/}_${3}-${4}.png
 }
 
 # Declare z-value

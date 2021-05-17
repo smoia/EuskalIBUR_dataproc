@@ -99,7 +99,7 @@ do
 		ndof=($( 3dinfo -verb ${rbuck} | grep statpar | awk -F " = " '{ print $3 }' ))
 		printf "%s " "DoF found:" "${ndof[@]}"
 		echo ""
-		dof="${ndof[3]}"
+		dof="${ndof[2]}"
 		echo "DoF selected: ${dof}"
 		thr=$( cdf -p2t fitt ${pval} ${dof} | awk -F " = " '{ print $2 }' )
 		echo "thr: ${thr}"

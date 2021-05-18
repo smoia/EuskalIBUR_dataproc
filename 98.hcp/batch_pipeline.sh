@@ -96,24 +96,30 @@ fi
 
 # joblist=${joblist::-1}
 
-for run in $( seq -f %02g 1 4)
-do
-	rm ${wdr}/../LogFiles/${run}_icc_pipe
-	qsub -q short.q -N "icc_${run}_EuskalIBUR" \
-	-o ${wdr}/../LogFiles/${run}_icc_pipe \
-	-e ${wdr}/../LogFiles/${run}_icc_pipe \
-	${wdr}/98.hcp/run_falff_icc.sh ${run}
-	# -hold_jid "${joblist}" \
-done
-
-# # Run LME for CVR
-# for task in motor #motor simon
+# for run in $( seq -f %02g 1 4)
 # do
-# 	qsub -q long.q -N "lme_${task}_cvr_EuskalIBUR" \
-# 	-o ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
-# 	-e ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
-# 	${wdr}/98.hcp/run_lme_glm_cvr.sh ${task}
+# 	rm ${wdr}/../LogFiles/${run}_icc_pipe
+# 	qsub -q short.q -N "icc_${run}_EuskalIBUR" \
+# 	-o ${wdr}/../LogFiles/${run}_icc_pipe \
+# 	-e ${wdr}/../LogFiles/${run}_icc_pipe \
+# 	${wdr}/98.hcp/run_falff_icc.sh ${run}
+# 	# -hold_jid "${joblist}" \
 # done
+
+# Run LME for CVR
+qsub -q long.q -N "lme_falff_cvr_EuskalIBUR" \
+-o ${wdr}/../LogFiles/lme_falff_cvr_pipe \
+-e ${wdr}/../LogFiles/lme_falff_cvr_pipe \
+${wdr}/98.hcp/run_lme_glm_cvr.sh falff
+
+for task in motor simon
+do
+	qsub -q long.q -N "lme_${task}_cvr_EuskalIBUR" \
+	-hold_jid "lme_falff_cvr_EuskalIBUR" \
+	-o ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
+	-e ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
+	${wdr}/98.hcp/run_lme_glm_cvr.sh ${task}
+done
 
 # # Run LME for questionnaire
 # qsub -q long.q -N "lme_cvr_questionnaire_EuskalIBUR" \

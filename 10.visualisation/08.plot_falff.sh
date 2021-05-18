@@ -57,7 +57,7 @@ for ses in $( seq -f %02g 1 ${lastses} )
 do
 	falff=sub-${sub}_ses-${ses}_task-rest_run-${run}_fALFF
 	# fsleyes all the way
-	fsleyes render -of ${picdir}/run-${run}/${sub}_${ses}_r-${run}_fALFF.png --size 1900 200 \
+	fsleyes render -of ${picdir}/${sub}_${ses}_r-${run}_fALFF.png --size 1900 200 \
 	--scene lightbox --zaxis 2 --sliceSpacing 12 --zrange 19.3 139.9 --ncols 10 --nrows 1 --hideCursor --bgColour 1.0 1.0 1.0 --fgColour 0.0 0.0 0.0 --showColourBar --colourBarLocation right --colourBarLabelSide bottom-right --colourBarSize 80.0 --labelSize 12 --performance 3 --movieSync \
 	${bckimg}.nii.gz --name "anat" --overlayType volume --alpha 100.0 --brightness 49.75000000000001 --contrast 49.90029860765409 --cmap greyscale --negativeCmap greyscale --displayRange 0.0 631.9035656738281 --clippingRange 0.0 631.9035656738281 --gamma 0.0 --cmapResolution 256 --interpolation none --invert --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
 	${falff}.nii.gz --name "fALFF" --overlayType volume --alpha 100.0 --cmap brain_colours_1hot --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0

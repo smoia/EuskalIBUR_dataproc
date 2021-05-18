@@ -109,11 +109,17 @@ do
 				fi
 				bricks=( all_congruent congruent_vs_incongruent congruent_and_incongruent )
 			;;
+			falff ) echo "Skip task" ;;
 			* ) echo " !!! Warning !!! Invalid task: ${task}"; exit ;;
 		esac
 
-		# Copy CVR maps
+		# Copy CVR maps and slightly smooth
 		if_missing_do copy CVR/${sub}_${ses}_cvr.nii.gz ${tmp}/${sub}_${ses}_cvr.nii.gz
+		if_missing_do mask ${tmp}/${sub}_${ses}_cvr.nii.gz ${tmp}/${sub}_${ses}_cvr_mask.nii.gz
+
+		3dBlurInMask -input ${tmp}/${sub}_${ses}_cvr.nii.gz -mask ${tmp}/${sub}_${ses}_cvr_mask.nii.gz \
+					 -prefix ${tmp}/${sub}_${ses}_cvr.nii.gz -FWHM 5 -overwrite
+
 
 		rsfc=()
 		# Copy RSFA & FALFF maps
@@ -142,7 +148,7 @@ do
 	done
 done
 
-for map in "${rsfc[@]}"
+for map in $( echo "cvr"; echo "${rsfc[@]}"; echo "${bricks[@]}" )
 do
 	if [ ! -e ./norm/009_10_${map}_demean.nii.gz ]
 	then
@@ -158,10 +164,6 @@ do
 		done
 	fi
 done
-
-
-
-
 
 for brick in "${bricks[@]}"
 do
@@ -182,7 +184,7 @@ do
 	do
 		for ses in $( seq -f %02g 1 10 )
 		do
-			run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_cvr.nii.gz  norm/${sub}_${ses}_${brick}.nii.gz"
+			run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_cvr_demean.nii.gz  norm/${sub}_${ses}_${brick}_demean.nii.gz"
 		done
 	done
 	echo ""
@@ -214,7 +216,7 @@ do
 			do
 				for ses in $( seq -f %02g 1 10 )
 				do
-					run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_r${run}_${map}_demean.nii.gz  norm/${sub}_${ses}_${brick}.nii.gz"
+					run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_r${run}_${map}_demean.nii.gz  norm/${sub}_${ses}_${brick}_demean.nii.gz"
 				done
 			done
 			echo ""
@@ -225,36 +227,39 @@ do
 	done
 done
 
-# if_missing_do mkdir lme/RSF
-# # Compute 3dLME
-# for map in fALFF RSFA
-# do
-# 	for run in $( seq -f %02g 1 4 )
-# 	do
-# 		outfile=lme/RSF/cause_${map}_r-${run}_CVR.nii.gz
-# 		rm ${outfile}
+if [ "${task}" == "falff" ]
+then
+	if_missing_do mkdir lme/RSF
+	# Compute 3dLME
+	for map in fALFF RSFA
+	do
+		for run in $( seq -f %02g 1 4 )
+		do
+			outfile=lme/RSF/cause_${map}_r-${run}_CVR.nii.gz
+			rm ${outfile}
 
-# 		run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
-# 		run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
-# 		run3dLMEr="${run3dLMEr} -model 'cvr+(cvr|session)+(cvr|Subj)'"
-# 		run3dLMEr="${run3dLMEr} -gltCode cvr 'cvr :'"
-# 		run3dLMEr="${run3dLMEr} -vVars 'cvr'"
-# 		run3dLMEr="${run3dLMEr} -vVarCenters 0"
-# 		run3dLMEr="${run3dLMEr} -dataTable"
-# 		run3dLMEr="${run3dLMEr}	 Subj session  cvr    InputFile"
-# 		for sub in 001 002 003 004 007 008 009
-# 		do
-# 			for ses in $( seq -f %02g 1 10 )
-# 			do
-# 				run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_cvr.nii.gz  norm/${sub}_${ses}_r${run}_${map}_demean.nii.gz"
-# 			done
-# 		done
-# 		echo ""
-# 		echo "${run3dLMEr}"
-# 		echo ""
-# 		eval ${run3dLMEr}
-# 	done
-# done
+			run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
+			run3dLMEr="${run3dLMEr} -mask reg/MNI_T1_brain_mask.nii.gz"
+			run3dLMEr="${run3dLMEr} -model 'cvr+(cvr|session)+(cvr|Subj)'"
+			run3dLMEr="${run3dLMEr} -gltCode cvr 'cvr :'"
+			run3dLMEr="${run3dLMEr} -vVars 'cvr'"
+			run3dLMEr="${run3dLMEr} -vVarCenters 0"
+			run3dLMEr="${run3dLMEr} -dataTable"
+			run3dLMEr="${run3dLMEr}	 Subj session  cvr    InputFile"
+			for sub in 001 002 003 004 007 008 009
+			do
+				for ses in $( seq -f %02g 1 10 )
+				do
+					run3dLMEr="${run3dLMEr}	 ${sub}  ${ses}  norm/${sub}_${ses}_cvr_demean.nii.gz  norm/${sub}_${ses}_r${run}_${map}_demean.nii.gz"
+				done
+			done
+			echo ""
+			echo "${run3dLMEr}"
+			echo ""
+			eval ${run3dLMEr}
+		done
+	done
+fi
 
 rm -rf ${tmp}
 

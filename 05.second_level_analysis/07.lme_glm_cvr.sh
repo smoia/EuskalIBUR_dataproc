@@ -231,7 +231,7 @@ done
 # do
 # 	for run in $( seq -f %02g 1 4 )
 # 	do
-# 		outfile=lme/RSF/mod_${map}_r-${run}_CVR.nii.gz
+# 		outfile=lme/RSF/cause_${map}_r-${run}_CVR.nii.gz
 # 		rm ${outfile}
 
 # 		run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"

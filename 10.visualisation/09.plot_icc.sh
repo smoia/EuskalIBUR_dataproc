@@ -27,7 +27,8 @@ esac
 
 brick=$1
 wdr=${2:-/data}
-tmp=${3:-.}
+sdr=${3:-/scripts}
+tmp=${4:-.}
 
 ### print input
 printline=$( basename -- $0 )

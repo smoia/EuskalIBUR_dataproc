@@ -43,6 +43,7 @@ cwd=$(pwd)
 cd ${wdr}/Mennes_replication/fALFF || exit
 
 picdir=${wdr}/Mennes_replication/fALFF/pics/run-${run}
+if_missing_do mkdir ${picdir%/*}
 if_missing_do mkdir ${picdir}
 
 tmp=${tmp}/tmp.${sub}_${run}_08pf

@@ -113,13 +113,13 @@ do
 			* ) echo " !!! Warning !!! Invalid task: ${task}"; exit ;;
 		esac
 
-		# Copy CVR maps and slightly smooth
+		# Copy CVR maps, mask outliers, and slightly smooth
 		if_missing_do copy CVR/${sub}_${ses}_cvr.nii.gz ${tmp}/${sub}_${ses}_cvr.nii.gz
-		if_missing_do mask ${tmp}/${sub}_${ses}_cvr.nii.gz ${tmp}/${sub}_${ses}_cvr_mask.nii.gz
+		fslmaths ${tmp}/${sub}_${ses}_cvr.nii.gz -abs -thr 2 -bin ${tmp}/${sub}_${ses}_cvr_mask.nii.gz
+		fslmaths ${tmp}/${sub}_${ses}_cvr.nii.gz -mas ${tmp}/${sub}_${ses}_cvr_mask.nii.gz ${tmp}/${sub}_${ses}_cvr.nii.gz
 
 		3dBlurInMask -input ${tmp}/${sub}_${ses}_cvr.nii.gz -mask ${tmp}/${sub}_${ses}_cvr_mask.nii.gz \
 					 -prefix ${tmp}/${sub}_${ses}_cvr.nii.gz -FWHM 5 -overwrite
-
 
 		rsfc=()
 		# Copy RSFA & FALFF maps

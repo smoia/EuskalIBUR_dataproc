@@ -113,9 +113,10 @@ do
 			* ) echo " !!! Warning !!! Invalid task: ${task}"; exit ;;
 		esac
 
-		# Copy CVR maps, mask outliers, and slightly smooth
+		# Copy CVR maps, clip it, mask outliers, and slightly smooth
 		if_missing_do copy CVR/${sub}_${ses}_cvr.nii.gz ${tmp}/${sub}_${ses}_cvr.nii.gz
-		fslmaths ${tmp}/${sub}_${ses}_cvr.nii.gz -abs -uthr 3 -bin ${tmp}/${sub}_${ses}_cvr_mask.nii.gz
+		fslmaths ${tmp}/${sub}_${ses}_cvr.nii.gz -min 3 -max -3 ${tmp}/${sub}_${ses}_cvr.nii.gz
+		fslmaths ${tmp}/${sub}_${ses}_cvr.nii.gz -abs -bin ${tmp}/${sub}_${ses}_cvr_mask.nii.gz
 		fslmaths ${tmp}/${sub}_${ses}_cvr.nii.gz -mas ${tmp}/${sub}_${ses}_cvr_mask.nii.gz ${tmp}/${sub}_${ses}_cvr.nii.gz
 
 		3dBlurInMask -input ${tmp}/${sub}_${ses}_cvr.nii.gz -mask ${tmp}/${sub}_${ses}_cvr_mask.nii.gz \

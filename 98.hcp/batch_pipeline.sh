@@ -108,7 +108,6 @@ joblist=${joblist::-1}
 
 # Run LME for CVR
 qsub -q long.q -N "lme_falff_cvr_EuskalIBUR" \
--hold_jid "${joblist}" \
 -o ${wdr}/../LogFiles/lme_falff_cvr_pipe \
 -e ${wdr}/../LogFiles/lme_falff_cvr_pipe \
 ${wdr}/98.hcp/run_lme_glm_cvr.sh falff

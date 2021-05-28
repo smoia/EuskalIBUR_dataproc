@@ -50,7 +50,7 @@ replace_and mkdir ${tmp}
 cd ${wdr} || exit
 
 if_missing_do mkdir Mennes_replication
-if_missing_do mkdir Mennes_replication/ALFF #Mennes_replication/fALFF Mennes_replication/RSFA
+if_missing_do mkdir Mennes_replication/ALFF Mennes_replication/fALFF Mennes_replication/RSFA
 
 cd Mennes_replication
 
@@ -61,9 +61,9 @@ do
 		   -mask ${mask}.nii.gz -no_rs_out -nodetrend \
 		   -prefix ${tmp}/${input}
 
-	# 3dresample -input ${tmp}/${input}_fALFF+orig -prefix fALFF/${flpr}_task-rest_run-${run}_fALFF.nii.gz
+	3dresample -input ${tmp}/${input}_fALFF+orig -prefix fALFF/${flpr}_task-rest_run-${run}_fALFF.nii.gz
 	3dresample -input ${tmp}/${input}_ALFF+orig -prefix ALFF/${flpr}_task-rest_run-${run}_ALFF.nii.gz
-	# 3dresample -input ${tmp}/${input}_RSFA+orig -prefix RSFA/${flpr}_task-rest_run-${run}_RSFA.nii.gz
+	3dresample -input ${tmp}/${input}_RSFA+orig -prefix RSFA/${flpr}_task-rest_run-${run}_RSFA.nii.gz
 done
 
 rm -rf ${tmp}

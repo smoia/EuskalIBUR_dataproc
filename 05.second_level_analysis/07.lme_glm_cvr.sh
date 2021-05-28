@@ -128,11 +128,11 @@ do
 		do
 			if [ ! -e ./norm/${sub}_${ses}_r${run}_fALFF.nii.gz ] || [ ! -e ./norm/${sub}_${ses}_r${run}_RSFA.nii.gz ] || [ ! -e ./norm/${sub}_${ses}_r${run}_ALFF.nii.gz ]
 			then
-				if_missing_do copy fALFF/sub-${sub}_ses-${ses}_task-rest_run-${run}_fALFF.nii.gz ${tmp}/${sub}_${ses}_r${run}_fALFF.nii.gz
+				# if_missing_do copy fALFF/sub-${sub}_ses-${ses}_task-rest_run-${run}_fALFF.nii.gz ${tmp}/${sub}_${ses}_r${run}_fALFF.nii.gz
 				if_missing_do copy ALFF/sub-${sub}_ses-${ses}_task-rest_run-${run}_ALFF.nii.gz ${tmp}/${sub}_${ses}_r${run}_ALFF.nii.gz
-				if_missing_do copy RSFA/sub-${sub}_ses-${ses}_task-rest_run-${run}_RSFA.nii.gz ${tmp}/${sub}_${ses}_r${run}_RSFA.nii.gz
+				# if_missing_do copy RSFA/sub-${sub}_ses-${ses}_task-rest_run-${run}_RSFA.nii.gz ${tmp}/${sub}_${ses}_r${run}_RSFA.nii.gz
 			fi
-			rsfc+=(r${run}_fALFF r${run}_ALFF r${run}_RSFA)
+			rsfc+=(r${run}_ALFF) #r${run}_fALFF r${run}_RSFA)
 		done
 
 		for map in $( echo "cvr"; echo "${rsfc[@]}"; echo "${bricks[@]}" )
@@ -199,7 +199,7 @@ for brick in "${bricks[@]}"
 do
 	if_missing_do mkdir lme/${brick}
 	# Compute 3dLME
-	for map in fALFF RSFA ALFF
+	for map in ALFF #fALFF RSFA ALFF
 	do
 		for run in $( seq -f %02g 1 4 )
 		do
@@ -233,7 +233,7 @@ if [ "${task}" == "falff" ]
 then
 	if_missing_do mkdir lme/RSF
 	# Compute 3dLME
-	for map in fALFF RSFA ALFF
+	for map in ALFF #fALFF RSFA ALFF
 	do
 		for run in $( seq -f %02g 1 4 )
 		do

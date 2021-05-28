@@ -50,7 +50,7 @@ replace_and mkdir ${tmp}
 cd ${wdr} || exit
 
 if_missing_do mkdir Mennes_replication
-if_missing_do mkdir Mennes_replication/fALFF Mennes_replication/RSFA
+if_missing_do mkdir Mennes_replication/ALFF Mennes_replication/fALFF Mennes_replication/RSFA
 
 cd Mennes_replication
 

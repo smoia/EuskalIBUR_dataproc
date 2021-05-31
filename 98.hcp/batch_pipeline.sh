@@ -97,7 +97,7 @@ done
 
 joblist=${joblist::-1}
 
-# Run normalisation
+# Run falff normalisation
 joblist2=""
 for sub in 001 002 003 004 007 008 009
 do
@@ -108,7 +108,7 @@ do
 		-hold_jid "${joblist}" \
 		-o ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
 		-e ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
-		${wdr}/98.hcp/run_falff.sh ${sub} ${ses}
+		${wdr}/98.hcp/run_falff_norm.sh ${sub} ${ses}
 		joblist2=${joblist2}norm_${sub}_${ses}_EuskalIBUR,
 	done
 done

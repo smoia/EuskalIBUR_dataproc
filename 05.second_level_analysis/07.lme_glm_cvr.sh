@@ -152,19 +152,19 @@ done
 
 for map in $( echo "cvr"; echo "${rsfc[@]}"; echo "${bricks[@]}" )
 do
-	if [ ! -e ./norm/009_10_${map}_demean.nii.gz ]
-	then
-		echo "Preparing to demean ${map}"
-		fslmerge -t ${tmp}/${map} norm/???_??_${map}.nii.gz
-		fslmaths ${tmp}/${map} -Tmean ${tmp}/${map}_mean
-		for sub in 001 002 003 004 007 008 009
-		do
+	for sub in 001 002 003 004 007 008 009
+	do
+		if [ ! -e ./norm/${sub}_10_${map}_demean.nii.gz ]
+		then
+			echo "Preparing to demean ${map} in sub ${sub}"
+			fslmerge -t ${tmp}/${map}_${sub} norm/${sub}_??_${map}.nii.gz
+			fslmaths ${tmp}/${map}_${sub} -Tmean ${tmp}/${map}_${sub}_mean
 			for ses in $( seq -f %02g 1 10 )
 			do
-				fslmaths norm/${sub}_${ses}_${map} -sub ${tmp}/${map}_mean norm/${sub}_${ses}_${map}_demean
+				fslmaths norm/${sub}_${ses}_${map} -sub ${tmp}/${map}_${sub}_mean norm/${sub}_${ses}_${map}_demean
 			done
-		done
-	fi
+		fi
+	done
 done
 
 for brick in "${bricks[@]}"

@@ -97,35 +97,6 @@ done
 
 joblist=${joblist::-1}
 
-# Run falff normalisation
-joblist2=""
-for sub in 001 002 003 004 007 008 009
-do
-	for ses in $( seq -f %02g 1 10)
-	do
-		rm ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe
-		qsub -q short.q -N "norm_${sub}_${ses}_EuskalIBUR" \
-		-hold_jid "${joblist}" \
-		-o ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
-		-e ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
-		${wdr}/98.hcp/run_falff_norm.sh ${sub} ${ses}
-		joblist2=${joblist2}norm_${sub}_${ses}_EuskalIBUR,
-	done
-done
-
-joblist2=${joblist2::-1}
-
-# Run fALFF ICC
-for run in $( seq -f %02g 1 4)
-do
-	rm ${wdr}/../LogFiles/${run}_icc_pipe
-	qsub -q short.q -N "icc_${run}_EuskalIBUR" \
-	-hold_jid "${joblist2}" \
-	-o ${wdr}/../LogFiles/${run}_icc_pipe \
-	-e ${wdr}/../LogFiles/${run}_icc_pipe \
-	${wdr}/98.hcp/run_falff_icc.sh ${run}
-done
-
 # Run LME for CVR, RSFC, and GLM
 qsub -q long.q -N "lme_falff_cvr_EuskalIBUR" \
 -hold_jid "${joblist}" \

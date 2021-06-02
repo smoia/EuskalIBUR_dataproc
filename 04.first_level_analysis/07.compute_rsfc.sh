@@ -56,7 +56,7 @@ cd Mennes_replication
 
 for run in $( seq -f %02g 1 4 )
 do
-	input=02.${flpr}_task-rest_run-${run}_optcom_bold_native_meica_preprocessed
+	input=00.${flpr}_task-rest_run-${run}_optcom_bold_native_preprocessed
 	3dRSFC -input ${fdir}/${input}.nii.gz -band 0.01 0.1 \
 		   -mask ${mask}.nii.gz -no_rs_out -nodetrend \
 		   -prefix ${tmp}/${input}

@@ -80,37 +80,37 @@ fi
 # 	${wdr}/98.hcp/run_glm_icc.sh ${brick%_Coef*}
 # done
 
-# Run falff
-joblist=""
-for sub in 001 002 003 004 007 008 009
-do
-	for ses in $( seq -f %02g 1 10)
-	do
-		rm ${wdr}/../LogFiles/${sub}_${ses}_rsfc_pipe
-		qsub -q veryshort.q -N "rsfc_${sub}_${ses}_EuskalIBUR" \
-		-o ${wdr}/../LogFiles/${sub}_${ses}_rsfc_pipe \
-		-e ${wdr}/../LogFiles/${sub}_${ses}_rsfc_pipe \
-		${wdr}/98.hcp/run_falff.sh ${sub} ${ses}
-		joblist=${joblist}rsfc_${sub}_${ses}_EuskalIBUR,
-	done
-done
+# # Run falff
+# joblist=""
+# for sub in 001 002 003 004 007 008 009
+# do
+# 	for ses in $( seq -f %02g 1 10)
+# 	do
+# 		rm ${wdr}/../LogFiles/${sub}_${ses}_rsfc_pipe
+# 		qsub -q veryshort.q -N "rsfc_${sub}_${ses}_EuskalIBUR" \
+# 		-o ${wdr}/../LogFiles/${sub}_${ses}_rsfc_pipe \
+# 		-e ${wdr}/../LogFiles/${sub}_${ses}_rsfc_pipe \
+# 		${wdr}/98.hcp/run_falff.sh ${sub} ${ses}
+# 		joblist=${joblist}rsfc_${sub}_${ses}_EuskalIBUR,
+# 	done
+# done
 
-joblist=${joblist::-1}
+# joblist=${joblist::-1}
 
 # Run LME for CVR, RSFC, and GLM
 qsub -q long.q -N "lme_falff_cvr_EuskalIBUR" \
--hold_jid "${joblist}" \
 -o ${wdr}/../LogFiles/lme_falff_cvr_pipe \
 -e ${wdr}/../LogFiles/lme_falff_cvr_pipe \
 ${wdr}/98.hcp/run_lme_glm_cvr.sh falff
+# -hold_jid "${joblist}" \
 
 for task in motor simon
 do
 	qsub -q long.q -N "lme_${task}_cvr_EuskalIBUR" \
-	-hold_jid "lme_falff_cvr_EuskalIBUR" \
 	-o ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
 	-e ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
 	${wdr}/98.hcp/run_lme_glm_cvr.sh ${task}
+	# -hold_jid "lme_falff_cvr_EuskalIBUR" \
 done
 
 # # Run LME for questionnaire

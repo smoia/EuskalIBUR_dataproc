@@ -81,26 +81,38 @@ run3dDeconvolve="3dDeconvolve -input ${tmp}/${func_in}.nii.gz -float \
 
 if [[ "${den_detrend}" == "yes" ]]
 then
+	echo "Consider trends"
 	run3dDeconvolve="${run3dDeconvolve} -polort ${polort}"
+else
+	echo "Skip trends"
 fi
 
 if [[ "${den_motreg}" == "yes" ]]
 then
+	echo "Consider motion parameters"
 	run3dDeconvolve="${run3dDeconvolve} -ortvec ${fmat}_mcf_demean.par motdemean \
  -ortvec ${fmat}_mcf_deriv1.par motderiv1"
+else
+	echo "Skip motion parameters"
 fi
 
 if [ -e "${fmat}_rej_ort.1D" ] && [[ "${den_meica}" == "yes" ]]
 then
+	echo "Consider meica"
 	run3dDeconvolve="${run3dDeconvolve} -ortvec ${fmat}_rej_ort.1D meica"
+else
+	echo "Skip meica"
 fi
 
 if [ -e "${func}_avg_tissue.1D" ] && [[ "${den_tissues}" == "yes" ]]
 then
+	echo "Consider average tissues"
 	run3dDeconvolve="${run3dDeconvolve} -num_stimts  2 \
  -stim_file 1 ${func}_avg_tissue.1D'[0]' -stim_base 1 -stim_label 1 CSF \
  -stim_file 2 ${func}_avg_tissue.1D'[2]' -stim_base 2 -stim_label 2 WM"
 	# -cenmode ZERO \
+else
+	echo "Skip detrend"
 fi
 
 # Report the 3dDeconvolve call

@@ -44,8 +44,8 @@ func=${func_in%.nii*}
 if [[ ! -e "${mref}_brain_mask" && "${mref}" != "none" ]]
 then
 	echo "BETting reference ${mref}"
-	bet ${mref} ${tmp}/${mref}_brain -R -f 0.5 -g 0 -n -m
-	mref=${tmp}/${mref}_brain
+	bet ${mref} ${mref}_brain -R -f 0.5 -g 0 -n -m
+	mref=${mref}_brain
 elif [[ "${mref}" == "none" ]]
 then
 	bet ${tmp}/${func} ${tmp}/${func}_brain -R -f 0.5 -g 0 -n -m

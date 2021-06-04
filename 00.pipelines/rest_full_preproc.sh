@@ -26,7 +26,7 @@ siot=${11}
 
 dspk=${12}
 
-scriptdir=${13:-/scripts}
+sdr=${13:-/scripts}
 
 tmp=${14:-/tmp}
 tmp=${tmp}/${sub}_${ses}_rest_run-${run}
@@ -74,7 +74,7 @@ do
 
 	echo "bold=${flpr}_task-rest_run-${run}_echo-${e}_bold"
 	bold=${flpr}_task-rest_run-${run}_echo-${e}_bold
-	${scriptdir}/02.func_preproc/01.func_correct.sh ${bold} ${fdir} ${vdsc} ${dspk} ${siot} ${tmp}
+	${sdr}/02.func_preproc/01.func_correct.sh ${bold} ${fdir} ${vdsc} ${dspk} ${siot} ${tmp}
 done
 
 echo "************************************"
@@ -85,7 +85,7 @@ echo "************************************"
 echo "fmat=${flpr}_task-rest_run-${run}_echo-1_bold"
 fmat=${flpr}_task-rest_run-${run}_echo-1_bold
 
-${scriptdir}/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} ${anat} ${sbrf} none ${aseg} ${tmp}
+${sdr}/02.func_preproc/03.func_spacecomp.sh ${fmat}_cr ${fdir} ${anat} ${sbrf} none ${aseg} ${tmp}
 
 for e in $( seq 1 ${nTE} )
 do
@@ -96,7 +96,7 @@ do
 
 	echo "bold=${flpr}_task-rest_run-${run}_echo-${e}_bold_cr"
 	bold=${flpr}_task-rest_run-${run}_echo-${e}_bold_cr
-	${scriptdir}/02.func_preproc/04.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf} none ${tmp}
+	${sdr}/02.func_preproc/04.func_realign.sh ${bold} ${fmat} ${mask} ${fdir} ${sbrf} none ${tmp}
 
 	echo "************************************"
 	echo "*** Func greyplot rest run ${run} BOLD echo ${e} (pre)"
@@ -104,7 +104,7 @@ do
 	echo "************************************"
 	echo "bold=${flpr}_task-rest_run-${run}_echo-${e}_bold_bet"
 	bold=${flpr}_task-rest_run-${run}_echo-${e}_bold_bet
-	${scriptdir}/02.func_preproc/12.func_grayplot.sh ${bold} ${fdir} ${anat} ${sbrf} ${aseg} 4 ${tmp}
+	${sdr}/02.func_preproc/12.func_grayplot.sh ${bold} ${fdir} ${anat} ${sbrf} ${aseg} 4 ${tmp}
 done
 
 echo "************************************"
@@ -112,14 +112,14 @@ echo "*** Func MEICA rest run ${run} BOLD"
 echo "************************************"
 echo "************************************"
 
-${scriptdir}/02.func_preproc/05.func_meica.sh ${fmat}_bet ${fdir} "${TEs}" none ${tmp} ${scriptdir}
+${sdr}/02.func_preproc/05.func_meica.sh ${fmat}_bet ${fdir} "${TEs}" none ${tmp} ${sdr}
 
 echo "************************************"
 echo "*** Func T2smap rest run ${run} BOLD"
 echo "************************************"
 echo "************************************"
 # Since t2smap gives different results from tedana, prefer the former for optcom
-${scriptdir}/02.func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}" ${tmp}
+${sdr}/02.func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}" ${tmp}
 
 # As it's rest_run-${run}, don't skip anything!
 # Also repeat everything twice for meica-denoised and not
@@ -137,32 +137,32 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} ${anat} ${aseg} ${sbrf} ${fdir} none yes 0.3 0.05 4 yes yes yes yes ${tmp}
+	${sdr}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} ${anat} ${aseg} ${sbrf} ${fdir} none yes 0.3 0.05 4 yes yes yes yes ${tmp}
 	echo "immv ${tmp}/${bold}_den ${tmp}/${bold}_denmeica"
 	immv ${tmp}/${bold}_den ${tmp}/${bold}_denmeica
-	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} ${anat} ${aseg} ${sbrf} ${fdir} none yes 0.3 0.05 4 yes yes no yes ${tmp}
+	${sdr}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} ${anat} ${aseg} ${sbrf} ${fdir} none yes 0.3 0.05 4 yes yes no yes ${tmp}
 	
 	echo "************************************"
 	echo "*** Func Pepolar rest run ${run} BOLD ${e}"
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/02.func_pepolar.sh ${bold}_denmeica ${fdir} ${sbrf}_topup none none ${tmp}
+	${sdr}/02.func_preproc/02.func_pepolar.sh ${bold}_denmeica ${fdir} ${sbrf}_topup none none ${tmp}
 	echo "immv ${tmp}/${bold}_tpp ${tmp}/${bold}_tppmeica"
 	immv ${tmp}/${bold}_tpp ${tmp}/${bold}_tppmeica
-	${scriptdir}/02.func_preproc/02.func_pepolar.sh ${bold}_den ${fdir} ${sbrf}_topup none none ${tmp}
+	${sdr}/02.func_preproc/02.func_pepolar.sh ${bold}_den ${fdir} ${sbrf}_topup none none ${tmp}
 
 	echo "************************************"
 	echo "*** Func smoothing rest run ${run} BOLD ${e}"
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tppmeica ${fdir} 5 ${mask} ${tmp}
+	${sdr}/02.func_preproc/08.func_smooth.sh ${bold}_tppmeica ${fdir} 5 ${mask} ${tmp}
 	echo "3dcalc -a ${tmp}/${bold}_sm.nii.gz -b ${mask}.nii.gz -expr 'a*b' -prefix ${fdir}/02.${bold}_native_meica_preprocessed.nii.gz -short -gscale"
 	3dcalc -a ${tmp}/${bold}_sm.nii.gz -b ${mask}.nii.gz -expr 'a*b' -prefix ${fdir}/02.${bold}_native_meica_preprocessed.nii.gz -short -gscale
 	echo "immv ${tmp}/${bold}_sm ${tmp}/${bold}_smmeica"
 	immv ${tmp}/${bold}_sm ${tmp}/${bold}_smmeica
-	${scriptdir}/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 5 ${mask} ${tmp}
+	${sdr}/02.func_preproc/08.func_smooth.sh ${bold}_tpp ${fdir} 5 ${mask} ${tmp}
 	echo "3dcalc -a ${tmp}/${bold}_sm.nii.gz -b ${mask}.nii.gz -expr 'a*b' -prefix ${fdir}/00.${bold}_native_preprocessed.nii.gz -short -gscale"
 	3dcalc -a ${tmp}/${bold}_sm.nii.gz -b ${mask}.nii.gz -expr 'a*b' -prefix ${fdir}/00.${bold}_native_preprocessed.nii.gz -short -gscale
 
@@ -170,14 +170,14 @@ do
 	echo "*** Func greyplot rest run ${run} BOLD ${e} (post)"
 	echo "************************************"
 	echo "************************************"
-	${scriptdir}/02.func_preproc/12.func_grayplot.sh ${bold}_smmeica ${fdir} ${anat} ${sbrf} ${aseg} 4 ${tmp}
+	${sdr}/02.func_preproc/12.func_grayplot.sh ${bold}_smmeica ${fdir} ${anat} ${sbrf} ${aseg} 4 ${tmp}
 	echo "mv ${fdir}/${bold}_smmeica_gp_PVO.png ${fdir}/02.${bold}_native_meica_preprocessed_gp_PVO.png"
 	mv ${fdir}/${bold}_smmeica_gp_PVO.png ${fdir}/02.${bold}_native_meica_preprocessed_gp_PVO.png
 	echo "mv ${fdir}/${bold}_smmeica_gp_IJK.png ${fdir}/02.${bold}_native_meica_preprocessed_gp_IJK.png"
 	mv ${fdir}/${bold}_smmeica_gp_IJK.png ${fdir}/02.${bold}_native_meica_preprocessed_gp_IJK.png
 	echo "mv ${fdir}/${bold}_smmeica_gp_peel.png ${fdir}/02.${bold}_native_meica_preprocessed_gp_peel.png"
 	mv ${fdir}/${bold}_smmeica_gp_peel.png ${fdir}/02.${bold}_native_meica_preprocessed_gp_peel.png
-	${scriptdir}/02.func_preproc/12.func_grayplot.sh ${bold}_sm ${fdir} ${anat} ${sbrf} ${aseg} 4 ${tmp}
+	${sdr}/02.func_preproc/12.func_grayplot.sh ${bold}_sm ${fdir} ${anat} ${sbrf} ${aseg} 4 ${tmp}
 	echo "mv ${fdir}/${bold}_sm_gp_PVO.png ${fdir}/00.${bold}_native_preprocessed_gp_PVO.png"
 	mv ${fdir}/${bold}_sm_gp_PVO.png ${fdir}/00.${bold}_native_preprocessed_gp_PVO.png
 	echo "mv ${fdir}/${bold}_sm_gp_IJK.png ${fdir}/00.${bold}_native_preprocessed_gp_IJK.png"
@@ -190,10 +190,10 @@ do
 	# echo "************************************"
 	# echo "************************************"
 
-	# ${scriptdir}/02.func_preproc/09.func_spc.sh ${bold}_smmeica ${fdir} ${tmp}
+	# ${sdr}/02.func_preproc/09.func_spc.sh ${bold}_smmeica ${fdir} ${tmp}
 	# echo "immv ${tmp}/${bold}_SPC ${fdir}/03.${bold}_native_meica_SPC_preprocessed"
 	# immv ${tmp}/${bold}_SPC ${fdir}/03.${bold}_native_meica_SPC_preprocessed
-	# ${scriptdir}/02.func_preproc/09.func_spc.sh ${bold}_sm ${fdir} ${tmp}
+	# ${sdr}/02.func_preproc/09.func_spc.sh ${bold}_sm ${fdir} ${tmp}
 
 	# # Rename output
 	# echo "immv ${tmp}/${bold}_SPC ${fdir}/01.${bold}_native_SPC_preprocessed"

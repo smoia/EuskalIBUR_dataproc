@@ -3,9 +3,8 @@
 
 sub=$1
 ses=$2
-TR=${3:-1.5}
-wdr=${4:-/data}
-tmp=${5:-/tmp}
+wdr=${3:-/data}
+tmp=${4:-/tmp}
 
 ### Main ###
 cwd=$( pwd )
@@ -24,10 +23,6 @@ fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
 flpr=sub-${sub}_ses-${ses}
 meica_fldr=${fdir}/${flpr}_task-breathhold_concat_bold_bet_meica
 meica_mix=${meica_fldr}/ica_mixing.tsv
-
-sbrf=${wdr}/sub-${sub}/ses-01/func_preproc/sub-${sub}_ses-01_task-breathhold_rec-magnitude_echo-1_sbref
-func=${fdir}/${flpr}_task-breathhold_optcom_bold_bet
-bold=${flpr}_task-breathhold
 
 cd decomp || exit
 

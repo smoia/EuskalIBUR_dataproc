@@ -15,23 +15,24 @@
 
 sub=$1
 ses=$2
-wdr=${3:-/data}
-overwrite=${4:-no}
+maindir=${3:-preprocessed}
+overwrite=${4:-overwrite}
 
 run_anat=${5:-false}
 run_sbref=${6:-false}
 
-tmp=${7:-/tmp}
+wdr=${7:-/data}
+sdr=${8:-/scripts}
+tmp=${9:-/tmp}
 
 flpr=sub-${sub}_ses-${ses}
 
 anat1=${flpr}_acq-uni_T1w 
 anat2=${flpr}_T2w
 
-adir=${wdr}/sub-${sub}/ses-${ses}/anat_preproc
-fdir=${wdr}/sub-${sub}/ses-${ses}/func_preproc
-fmap=${wdr}/sub-${sub}/ses-${ses}/fmap_preproc
-stdp=/scripts/90.template
+adir=${wdr}/${maindir}/sub-${sub}/ses-${ses}/anat_preproc
+fdir=${wdr}/${maindir}/sub-${sub}/ses-${ses}/func_preproc
+fmap=${wdr}/${maindir}/sub-${sub}/ses-${ses}/fmap_preproc
 
 vdsc=10
 std=MNI152_T1_1mm_brain
@@ -49,7 +50,7 @@ siot=none
 # Despiking
 dspk=none
 
-first_ses_path=${wdr}/sub-${sub}/ses-01
+first_ses_path=${wdr}/${maindir}/sub-${sub}/ses-01
 
 uni_sbref=${first_ses_path}/reg/sub-${sub}_sbref
 uni_adir=${first_ses_path}/anat_preproc
@@ -85,8 +86,8 @@ echo ""
 #########   Prepare folders  #########
 ######################################
 
-/scripts/prepare_folder.sh ${sub} ${ses} ${wdr} ${overwrite} \
-				   ${anat1} ${anat2} ${stdp} ${std}
+${sdr}/prepare_folder.sh ${sub} ${ses} ${maindir} ${overwrite} \
+						 ${anat1} ${anat2} ${std} ${wdr} ${sdr}
 
 if [[ "${overwrite}" == "overwrite" ]]
 then
@@ -104,7 +105,7 @@ then
 	if [ ${ses} -eq 1 ]
 	then
 		# If asked & it's ses 01, run anat
-		/scripts/00.pipelines/anat_preproc.sh ${sub} ${ses} ${wdr} ${anat1} ${anat2} \
+		${sdr}/00.pipelines/anat_preproc.sh ${sub} ${ses} ${wdr} ${anat1} ${anat2} \
 						  ${adir} ${std} ${mmres}
 	elif [ ${ses} -gt 1 ] && [ ! -d ${uni_adir} ]
 	then
@@ -136,7 +137,7 @@ then
 	if [ ${ses} -eq 1 ]
 	then
 		# If asked & it's ses 01, run sbref
-		/scripts/00.pipelines/sbref_preproc.sh ${sub} ${ses} ${wdr} ${flpr} ${fdir} ${fmap} ${anat2} ${adir}
+		${sdr}/00.pipelines/sbref_preproc.sh ${sub} ${ses} ${wdr}/${maindir} ${flpr} ${fdir} ${fmap} ${anat2} ${adir}
 	elif [ ${ses} -gt 1 ] && [ ! -d ${uni_adir} ]
 	then
 		# If it isn't ses 01 but that ses wasn't run, exit.
@@ -148,18 +149,18 @@ then
 	elif [ ${ses} -gt 1 ] && [ -d ${uni_adir} ]
 	then
 		# If it isn't ses 01, and that ses was run, copy relevant files.
-		imcp ${uni_sbref} ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
-		imcp ${uni_sbref}_brain ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_brain
-		imcp ${uni_sbref}_brain_mask ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_brain_mask
-		imcp ${wdr}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref ${wdr}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref
+		imcp ${uni_sbref} ${wdr}/${maindir}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref
+		imcp ${uni_sbref}_brain ${wdr}/${maindir}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_brain
+		imcp ${uni_sbref}_brain_mask ${wdr}/${maindir}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_brain_mask
+		imcp ${wdr}/${maindir}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref ${wdr}/${maindir}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref
 
-		mkdir ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_topup
-		cp -R ${uni_sbref}_topup/* ${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_topup/.
+		mkdir ${wdr}/${maindir}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_topup
+		cp -R ${uni_sbref}_topup/* ${wdr}/${maindir}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref_topup/.
 
-		cp ${wdr}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref_fsl.mat \
-		   ${wdr}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref_fsl.mat
-		cp ${wdr}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref0GenericAffine.mat \
-		   ${wdr}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref0GenericAffine.mat
+		cp ${wdr}/${maindir}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref_fsl.mat \
+		   ${wdr}/${maindir}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref_fsl.mat
+		cp ${wdr}/${maindir}/sub-${sub}/ses-01/reg/${anat2}2sub-${sub}_sbref0GenericAffine.mat \
+		   ${wdr}/${maindir}/sub-${sub}/ses-${ses}/reg/${anat2}2sub-${sub}_sbref0GenericAffine.mat
 	fi
 fi
 
@@ -173,9 +174,9 @@ anat=sub-${sub}_ses-01_T2w
 
 for task in motor pinel simon
 do
-	/scripts/00.pipelines/task_preproc.sh ${sub} ${ses} ${task} ${wdr} ${anat} ${aseg} \
+	${sdr}/00.pipelines/task_preproc.sh ${sub} ${ses} ${task} ${wdr}/${maindir} ${anat} ${aseg} \
 										  ${fdir} ${vdsc} "${TEs}" \
-										  ${nTE} ${siot} ${dspk} /scripts ${tmp}
+										  ${nTE} ${siot} ${dspk} ${sdr} ${tmp}
 done
 
 
@@ -185,9 +186,9 @@ done
 
 for run in 01 02 03 04
 do
-	/scripts/00.pipelines/rest_full_preproc.sh ${sub} ${ses} ${run} ${wdr} ${anat} ${aseg} \
+	${sdr}/00.pipelines/rest_full_preproc.sh ${sub} ${ses} ${run} ${wdr}/${maindir} ${anat} ${aseg} \
 										       ${fdir} ${vdsc} "${TEs}" \
-										       ${nTE} ${siot} ${dspk} /scripts ${tmp}
+										       ${nTE} ${siot} ${dspk} ${sdr} ${tmp}
 done
 
 

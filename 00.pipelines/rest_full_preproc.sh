@@ -121,6 +121,9 @@ echo "************************************"
 # Since t2smap gives different results from tedana, prefer the former for optcom
 ${scriptdir}/02.func_preproc/06.func_optcom.sh ${fmat}_bet ${fdir} "${TEs}" ${tmp}
 
+echo "fmat=${flpr}_task-rest_run-${run}_concat_bold"
+fmat=${flpr}_task-rest_run-${run}_concat_bold
+
 # As it's rest_run-${run}, don't skip anything!
 # Also repeat everything twice for meica-denoised and not
 for e in $( seq 1 ${nTE}; echo "optcom" )

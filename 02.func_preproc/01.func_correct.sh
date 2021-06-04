@@ -81,6 +81,6 @@ then
 fi
 
 ## 03. Change name to script output
-immv ${funcsource} ${tmp}/${func}_cr
+mv ${funcsource}.nii.gz ${tmp}/${func}_cr.nii.gz
 
 cd ${cwd}

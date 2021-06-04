@@ -9,16 +9,21 @@
 
 sub=$1
 ses=$2
-wdr=$3
-overwrite=$4
+dirname=${3:-preprocessed}
+overwrite=${4:-overwrite}
 
-anat1=$5
-anat2=$6
+flpr=sub-${sub}_ses-${ses}
 
-stdp=$7
+anat1=${5:-${flpr}_acq-uni_T1w}
+anat2=${6:-${flpr}_T2w}
 
-std=$8
+std=${7:-MNI152_T1_1mm_brain_resamp_2.5mm}
 
+wdr=${8:-/data}
+sdr=${9:-/scripts}
+
+# shellcheck source=./utils.sh
+source ${sdr}/utils.sh
 ######################################
 ######### Script starts here #########
 ######################################
@@ -31,35 +36,27 @@ echo "*** Preparing folders"
 echo "************************************"
 echo "************************************"
 
-cd ${wdr}/sub-${sub}/ses-${ses} || exit
+cd ${wdr} || exit
+
 if [[ "${overwrite}" == "overwrite" ]]
 then
-	for fld in func_preproc fmap_preproc reg anat_preproc
-	do
-		if [[ -d "${fld}" ]]
-		then
-			if [[ "${fld}" == "func_preproc" ]]
-			then
-				# backup only the necessary files for meica
-				for bck in ${fld}/*_meica
-				do
-					[[ -e "${bck}" && -e "${bck/ica_mixing.tsv}" ]] || break
-					echo "Backing up sub${bck#*sub*}"
-					tar -zcvf $( date +%F_%H-%M-%S )_sub${bck#*sub*}_bck.tar.gz ${bck}/ica_decomposition.json ${bck}/ica_mixing.tsv
-				done
-			fi
-				
-			rm -r ${fld}
-		fi
-		mkdir ${fld}
-	done
-
-	imcp func/*.nii.gz func_preproc/.
-	imcp anat/${anat1}.nii.gz anat_preproc/.
-	imcp anat/${anat2}.nii.gz anat_preproc/.
-	imcp fmap/*.nii.gz fmap_preproc/.
-	imcp ${stdp}/${std}.nii.gz reg/.
-
+	replace_and mkdir ${dirname}
+else
+	if_missing_do mkdir ${dirname}
 fi
+
+if_missing_do mkdir ${dirname}/sub-${sub} ${dirname}/sub-${sub}/ses-${ses}
+
+
+for fld in func_preproc fmap_preproc reg anat_preproc
+do
+	if_missing_do mkdir ${dirname}/sub-${sub}/ses-${ses}/${fld}
+done
+
+imcp sub-${sub}/ses-${ses}/func/*.nii.gz ${dirname}/sub-${sub}/ses-${ses}/func_preproc/.
+if_missing_do copy sub-${sub}/ses-${ses}/anat/${anat1}.nii.gz ${dirname}/sub-${sub}/ses-${ses}/anat_preproc/${anat1}.nii.gz
+if_missing_do copy sub-${sub}/ses-${ses}/anat/${anat2}.nii.gz ${dirname}/sub-${sub}/ses-${ses}/anat_preproc/${anat2}.nii.gz
+imcp sub-${sub}/ses-${ses}/fmap/*.nii.gz ${dirname}/sub-${sub}/ses-${ses}/fmap_preproc/.
+if_missing_do copy ${sdr}/90.template/${std}.nii.gz ${dirname}/sub-${sub}/ses-${ses}/reg/${std}.nii.gz
 
 cd ${cwd}

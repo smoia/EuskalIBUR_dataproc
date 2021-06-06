@@ -10,8 +10,8 @@
 # files
 func_in=$1
 fmat=$2
-anat=$3  # If "none", it won't run average tissue
-aref=$4  # If "none", it won't run average tissue
+aseg=$3  # If "none", it won't run average tissue
+anat=$4  # If "none", it won't run average tissue
 mref=$5
 # folders
 fdir=$6
@@ -45,23 +45,23 @@ cd ${fdir} || exit
 func=${func_in%_*}
 
 #!# Maybe this can go in a separate file
-if [[ -e "${adir}/${anat}_seg_eroded.nii.gz" ]] && [[ "${den_tissues}" == "yes" ]]
+if [[ -e "${adir}/${aseg}_seg_eroded.nii.gz" ]] && [[ "${den_tissues}" == "yes" ]]
 then
-	if [[ ! -e "${adir}/${anat}_seg_eroded2mref.nii.gz" || ! -e "${adir}/${anat}_GM_native.nii.gz" ]]
+	if [[ ! -e "${adir}/${aseg}_seg2mref.nii.gz" || ! -e "${adir}/${aseg}_GM_native.nii.gz" ]]
 	then
 		echo "Coregistering segmentations to ${func}"
-		antsApplyTransforms -d 3 -i ${adir}/${anat}_seg_eroded.nii.gz -r ${mref}.nii.gz \
-		-o ${adir}/${anat}_seg_eroded2mref.nii.gz -n MultiLabel \
-		-t ../reg/${aref}2${mref##*/}0GenericAffine.mat \
-		-t [../reg/${aref}2${anat}0GenericAffine.mat,1]
-		antsApplyTransforms -d 3 -i ${adir}/${anat}_GM_dilated.nii.gz -r ${mref}.nii.gz \
-		-o ${adir}/${anat}_GM_native.nii.gz -n MultiLabel \
-		-t ../reg/${aref}2${mref##*/}0GenericAffine.mat \
-		-t [../reg/${aref}2${anat}0GenericAffine.mat,1]
+		antsApplyTransforms -d 3 -i ${adir}/${aseg}_seg_eroded.nii.gz -r ${mref}.nii.gz \
+		-o ${adir}/${aseg}_seg2mref.nii.gz -n MultiLabel \
+		-t ../reg/${anat}2${mref##*/}0GenericAffine.mat \
+		-t [../reg/${anat}2${aseg}0GenericAffine.mat,1]
+		antsApplyTransforms -d 3 -i ${adir}/${aseg}_GM_dilated.nii.gz -r ${mref}.nii.gz \
+		-o ${adir}/${aseg}_GM_native.nii.gz -n MultiLabel \
+		-t ../reg/${anat}2${mref##*/}0GenericAffine.mat \
+		-t [../reg/${anat}2${aseg}0GenericAffine.mat,1]
 	fi
 	echo "Extracting average WM and CSF in ${func}"
 	3dDetrend -polort ${polort} -prefix ${tmp}/${func}_dtd.nii.gz ${tmp}/${func_in}.nii.gz -overwrite
-	fslmeants -i ${tmp}/${func}_dtd.nii.gz -o ${func}_avg_tissue.1D --label=${adir}/${anat}_seg_eroded2mref.nii.gz
+	fslmeants -i ${tmp}/${func}_dtd.nii.gz -o ${func}_avg_tissue.1D --label=${adir}/${aseg}_seg2mref.nii.gz
 fi
 
 ## 04. Nuisance computation

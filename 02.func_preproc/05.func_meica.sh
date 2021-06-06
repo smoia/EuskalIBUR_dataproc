@@ -89,6 +89,6 @@ cp -r figures ${fdir}/${func}_meica/figures/.
 1dtranspose rej.tr.1D > rejected.1D
 
 3dTproject -ort accepted.1D -polort -1 -prefix ${tmp}/tr.1D -input rejected.1D -overwrite
-1dtranspose ${tmp}/tr.1D > ${fdir}/${func}_rej_ort.1D
+1dtranspose ${tmp}/tr.1D > ${fdir}/${func_in%_*}_rej_ort.1D
 
 cd ${cwd}

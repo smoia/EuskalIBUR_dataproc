@@ -41,11 +41,11 @@ cd ${fdir} || exit
 #Read and process input
 func=${func_in%.nii*}
 
-if [[ ! -e "${mref}_brain_mask" && "${mref}" != "none" ]]
+if [[ ! -e "${mref}_brain_mask.nii.gz" && "${mref}" != "none" ]]
 then
 	echo "BETting reference ${mref}"
-	bet ${mref} ${tmp}/${mref}_brain -R -f 0.5 -g 0 -n -m
-	mref=${tmp}/${mref}_brain
+	bet ${mref} ${mref}_brain -R -f 0.5 -g 0 -n -m
+	mref=${mref}_brain
 elif [[ "${mref}" == "none" ]]
 then
 	bet ${tmp}/${func} ${tmp}/${func}_brain -R -f 0.5 -g 0 -n -m
@@ -81,14 +81,18 @@ else
 	seg=../anat_preproc/${aseg}_seg2mref
 fi
 
+tseg=${tmp}/${seg##*/}
+
+fslmaths ${seg} ${tseg} -odt short
+
 #Plot some grayplots!
-3dGrayplot -input ${tmp}/${func}.nii.gz -mask ${seg}.nii.gz \
+3dGrayplot -input ${tmp}/${func}.nii.gz -mask ${tseg}.nii.gz \
 		   -prefix ${func}_gp_PVO.png -dimen 1800 1200 \
 		   -polort ${pol} -pvorder -percent
-3dGrayplot -input ${tmp}/${func}.nii.gz -mask ${seg}.nii.gz \
+3dGrayplot -input ${tmp}/${func}.nii.gz -mask ${tseg}.nii.gz \
 		   -prefix ${func}_gp_IJK.png -dimen 1800 1200 \
 		   -polort ${pol} -ijkorder -percent
-3dGrayplot -input ${tmp}/${func}.nii.gz -mask ${seg}.nii.gz \
+3dGrayplot -input ${tmp}/${func}.nii.gz -mask ${tseg}.nii.gz \
 		   -prefix ${func}_gp_peel.png -dimen 1800 1200 \
 		   -polort ${pol} -peelorder -percent
 

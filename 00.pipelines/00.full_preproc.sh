@@ -87,7 +87,7 @@ echo ""
 ######################################
 
 ${sdr}/prepare_folder.sh ${sub} ${ses} ${maindir} ${overwrite} \
-						 ${anat1} ${anat2} ${std} ${wdr} ${sdr}
+						 ${anat1} ${anat2} ${std} ${wdr} ${sdr} ${tmp}
 
 if [[ "${overwrite}" == "overwrite" ]]
 then

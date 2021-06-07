@@ -171,7 +171,7 @@ for brick in "${bricks[@]}"
 do
 	if_missing_do mkdir lme/${brick}
 	# Compute 3dLME for CVR and GLM
-	outfile=lme/${brick}/cause_${brick}_CVR.nii.gz
+	outfile=lme/${brick}/cause_${brick}_CVR_nodemean.nii.gz
 	rm ${outfile}
 
 	run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
@@ -203,7 +203,7 @@ do
 	do
 		for run in $( seq -f %02g 1 1 ) #4 )
 		do
-			outfile=lme/${brick}/cause_${brick}_${map}_r-${run}.nii.gz
+			outfile=lme/${brick}/cause_${brick}_${map}_r-${run}_nodemean.nii.gz
 			rm ${outfile}
 
 			run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"
@@ -237,7 +237,7 @@ then
 	do
 		for run in $( seq -f %02g 1 1 ) #4 )
 		do
-			outfile=lme/RSF/cause_${map}_r-${run}_CVR.nii.gz
+			outfile=lme/RSF/cause_${map}_r-${run}_CVR_nodemean.nii.gz
 			rm ${outfile}
 
 			run3dLMEr="3dLMEr -prefix ${outfile} -jobs 10"

@@ -140,10 +140,10 @@ do
 	echo "************************************"
 	echo "************************************"
 
-	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} ${aseg} ${anat} ${sbrf} ${fdir} ${adir} yes 0.3 0.05 4 yes yes yes yes ${tmp}
+	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} ${aseg} ${anat} ${sbrf} ${fdir} ${adir} yes 0.3 0.05 4 yes yes yes no ${tmp}
 	echo "immv ${tmp}/${bold}_den ${tmp}/${bold}_denmeica"
 	immv ${tmp}/${bold}_den ${tmp}/${bold}_denmeica
-	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} ${aseg} ${anat} ${sbrf} ${fdir} ${adir} yes 0.3 0.05 4 yes yes no yes ${tmp}
+	${scriptdir}/02.func_preproc/07.func_nuiscomp.sh ${bold}_bet ${fmat} ${aseg} ${anat} ${sbrf} ${fdir} ${adir} yes 0.3 0.05 4 yes yes no no ${tmp}
 	
 	echo "************************************"
 	echo "*** Func Pepolar rest run ${run} BOLD ${e}"

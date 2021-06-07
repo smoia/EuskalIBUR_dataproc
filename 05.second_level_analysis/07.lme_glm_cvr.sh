@@ -53,7 +53,7 @@ cwd=$(pwd)
 
 cd ${wdr}/Mennes_replication || exit
 
-tmp=${tmp}/tmp.${task}_07lgc
+tmp=${tmp}/tmp.${task}_07lgc_nodemean
 replace_and mkdir ${tmp}
 
 if_missing_do mkdir lme norm reg

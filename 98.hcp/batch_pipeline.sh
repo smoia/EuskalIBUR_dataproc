@@ -98,18 +98,18 @@ fi
 # joblist=${joblist::-1}
 
 # Run LME for CVR, RSFC, and GLM
-qsub -q long.q -N "lme_falff_cvr_EuskalIBUR" \
--o ${wdr}/../LogFiles/lme_falff_cvr_pipe \
--e ${wdr}/../LogFiles/lme_falff_cvr_pipe \
-${wdr}/98.hcp/run_lme_glm_cvr.sh falff
+qsub -q long.q -N "lme_nd_falff_cvr_EuskalIBUR" \
+-o ${wdr}/../LogFiles/lme_nd_falff_cvr_pipe \
+-e ${wdr}/../LogFiles/lme_nd_falff_cvr_pipe \
+${wdr}/98.hcp/run_lme_nd_glm_cvr.sh falff
 # -hold_jid "${joblist}" \
 
 for task in motor simon
 do
-	qsub -q long.q -N "lme_${task}_cvr_EuskalIBUR" \
-	-o ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
-	-e ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
-	${wdr}/98.hcp/run_lme_glm_cvr.sh ${task}
+	qsub -q long.q -N "lme_nd_${task}_cvr_EuskalIBUR" \
+	-o ${wdr}/../LogFiles/lme_nd_${task}_cvr_pipe \
+	-e ${wdr}/../LogFiles/lme_nd_${task}_cvr_pipe \
+	${wdr}/98.hcp/run_lme_nd_glm_cvr.sh ${task}
 	# -hold_jid "lme_falff_cvr_EuskalIBUR" \
 done
 

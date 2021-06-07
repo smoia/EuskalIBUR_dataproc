@@ -101,7 +101,7 @@ fi
 qsub -q long.q -N "lme_nd_falff_cvr_EuskalIBUR" \
 -o ${wdr}/../LogFiles/lme_nd_falff_cvr_pipe \
 -e ${wdr}/../LogFiles/lme_nd_falff_cvr_pipe \
-${wdr}/98.hcp/run_lme_nd_glm_cvr.sh falff
+${wdr}/98.hcp/run_lme_glm_cvr.sh falff
 # -hold_jid "${joblist}" \
 
 for task in motor simon
@@ -109,7 +109,7 @@ do
 	qsub -q long.q -N "lme_nd_${task}_cvr_EuskalIBUR" \
 	-o ${wdr}/../LogFiles/lme_nd_${task}_cvr_pipe \
 	-e ${wdr}/../LogFiles/lme_nd_${task}_cvr_pipe \
-	${wdr}/98.hcp/run_lme_nd_glm_cvr.sh ${task}
+	${wdr}/98.hcp/run_lme_glm_cvr.sh ${task}
 	# -hold_jid "lme_falff_cvr_EuskalIBUR" \
 done
 

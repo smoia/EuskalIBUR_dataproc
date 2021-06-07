@@ -126,26 +126,26 @@ do
 		# Copy RSFA & FALFF & ALFF maps
 		for run in $( seq -f %02g 1 4 )
 		do
-			if [ ! -e ./norm/${sub}_${ses}_r${run}_fALFF.nii.gz ] || [ ! -e ./norm/${sub}_${ses}_r${run}_RSFA.nii.gz ] || [ ! -e ./norm/${sub}_${ses}_r${run}_ALFF.nii.gz ]
-			then
+			# if [ ! -e ./norm/${sub}_${ses}_r${run}_fALFF.nii.gz ] || [ ! -e ./norm/${sub}_${ses}_r${run}_RSFA.nii.gz ] || [ ! -e ./norm/${sub}_${ses}_r${run}_ALFF.nii.gz ]
+			# then
 				if_missing_do copy fALFF/sub-${sub}_ses-${ses}_task-rest_run-${run}_fALFF.nii.gz ${tmp}/${sub}_${ses}_r${run}_fALFF.nii.gz
 				if_missing_do copy ALFF/sub-${sub}_ses-${ses}_task-rest_run-${run}_ALFF.nii.gz ${tmp}/${sub}_${ses}_r${run}_ALFF.nii.gz
 				if_missing_do copy RSFA/sub-${sub}_ses-${ses}_task-rest_run-${run}_RSFA.nii.gz ${tmp}/${sub}_${ses}_r${run}_RSFA.nii.gz
-			fi
+			# fi
 			rsfc+=(r${run}_fALFF r${run}_ALFF r${run}_RSFA)
 		done
 
 		for map in $( echo "cvr"; echo "${rsfc[@]}"; echo "${bricks[@]}" )
 		do
-			if [ ! -e ./norm/${sub}_${ses}_${map}.nii.gz ]
-			then
+			# if [ ! -e ./norm/${sub}_${ses}_${map}.nii.gz ]
+			# then
 				antsApplyTransforms -d 3 -i ${tmp}/${sub}_${ses}_${map}.nii.gz -r ./reg/MNI_T1_brain.nii.gz \
 									-o ./norm/${sub}_${ses}_${map}.nii.gz -n NearestNeighbor \
 									-t ./reg/${sub}_T1w2std1Warp.nii.gz \
 									-t ./reg/${sub}_T1w2std0GenericAffine.mat \
 									-t ./reg/${sub}_T2w2T1w0GenericAffine.mat \
 									-t [./reg/${sub}_T2w2sbref0GenericAffine.mat,1]
-			fi
+			# fi
 		done
 	done
 done
@@ -154,8 +154,8 @@ for map in $( echo "cvr"; echo "${rsfc[@]}"; echo "${bricks[@]}" )
 do
 	for sub in 001 002 003 004 007 008 009
 	do
-		if [ ! -e ./norm/${sub}_10_${map}_demean.nii.gz ]
-		then
+		# if [ ! -e ./norm/${sub}_10_${map}_demean.nii.gz ]
+		# then
 			echo "Preparing to demean ${map} in sub ${sub}"
 			fslmerge -t ${tmp}/${map}_${sub} norm/${sub}_??_${map}.nii.gz
 			fslmaths ${tmp}/${map}_${sub} -Tmean ${tmp}/${map}_${sub}_mean
@@ -163,7 +163,7 @@ do
 			do
 				fslmaths norm/${sub}_${ses}_${map} -sub ${tmp}/${map}_${sub}_mean norm/${sub}_${ses}_${map}_demean
 			done
-		fi
+		# fi
 	done
 done
 
@@ -201,7 +201,7 @@ do
 	# Compute 3dLME
 	for map in fALFF RSFA ALFF
 	do
-		for run in $( seq -f %02g 1 4 )
+		for run in $( seq -f %02g 1 1 ) #4 )
 		do
 			outfile=lme/${brick}/cause_${brick}_${map}_r-${run}.nii.gz
 			rm ${outfile}
@@ -235,7 +235,7 @@ then
 	# Compute 3dLME
 	for map in fALFF RSFA ALFF
 	do
-		for run in $( seq -f %02g 1 4 )
+		for run in $( seq -f %02g 1 1 ) #4 )
 		do
 			outfile=lme/RSF/cause_${map}_r-${run}_CVR.nii.gz
 			rm ${outfile}

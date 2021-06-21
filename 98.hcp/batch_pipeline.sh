@@ -80,6 +80,15 @@ fi
 # 	${wdr}/98.hcp/run_glm_icc.sh ${brick%_Coef*}
 # done
 
+brick=finger_right_vs_sham#0
+rm ${wdr}/../LogFiles/${brick}_icc_pipe
+qsub -q short.q -N "icc_${brick}_EuskalIBUR" \
+-o ${wdr}/../LogFiles/${brick}_icc_pipe \
+-e ${wdr}/../LogFiles/${brick}_icc_pipe \
+${wdr}/98.hcp/run_glm_icc.sh ${brick}
+
+/bcbl/home/public/PJMASK_2/preproc/Dataset_QC/norm/008_allses_finger_right_vs_sham#0_Coef.nii.gz
+
 # # Run falff
 # joblist=""
 # for sub in 001 002 003 004 007 008 009

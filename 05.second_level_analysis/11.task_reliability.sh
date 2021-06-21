@@ -20,6 +20,7 @@ fi
 
 brickname=${1}
 wdr=${2:-/data}
+lastses=${3:-10}
 
 ### Main ###
 cwd=$( pwd )

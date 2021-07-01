@@ -74,7 +74,7 @@ do
 	brick=${brick#*allses_}
 	brick=${brick%_Coef*}
 	rm ${wdr}/../LogFiles/${brick}_icc_pipe
-	qsub -q short.q -N "icc_${brick}_EuskalIBUR" \
+	qsub -q long.q -N "icc_${brick}_EuskalIBUR" \
 	-o ${wdr}/../LogFiles/${brick}_icc_pipe \
 	-e ${wdr}/../LogFiles/${brick}_icc_pipe \
 	${wdr}/98.hcp/run_glm_icc.sh ${brick%_Coef*}

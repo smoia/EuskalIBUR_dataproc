@@ -26,7 +26,7 @@ cwd=$( pwd )
 cd ${wdr}/Dataset_QC || exit
 
 echo "Creating folders"
-if_missing_do mkdir MEMA
+if_missing_do mkdir mema
 
 cd norm
 

@@ -37,4 +37,4 @@ echo "************************************"
 singularity exec -e --no-home \
 -B ${wdr}:/data -B ${sdr}:/scripts \
 -B /export/home/smoia/scratch:/tmp \
-euskalibur.sif 05.second_level_analysis/14.mema.sh ${brick} /data
+euskalibur.sif 05.second_level_analysis/14.task_mema.sh ${brick} /data

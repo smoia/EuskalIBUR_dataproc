@@ -6,18 +6,16 @@
 # Date:    22.11.2019
 #########
 
+anat1=$1
+anat2=$2
 
-sub=$1
-ses=$2
-wdr=$3
+adir=$3
 
-anat1=$4
-anat2=$5
+std=$4
+mmres=$5
 
-adir=$6
-
-std=$7
-mmres=$8
+sdr=${6:-/scripts}
+tmp=${7:-/tmp}
 
 ### print input
 printline=$( basename -- $0 )
@@ -31,46 +29,39 @@ echo "*** Anat correction ${anat1}"
 echo "************************************"
 echo "************************************"
 
-/scripts/01.anat_preproc/01.anat_correct.sh ${anat1} ${adir}
+${sdr}/01.anat_preproc/01.anat_correct.sh ${tmp}/${anat1} ${adir} none ${tmp}
 
 echo "************************************"
 echo "*** Anat correction ${anat2}"
 echo "************************************"
 echo "************************************"
 
-/scripts/01.anat_preproc/01.anat_correct.sh ${anat2} ${adir} ${anat1}
+${sdr}/01.anat_preproc/01.anat_correct.sh ${tmp}/${anat2} ${adir} ${tmp}/${anat1} ${tmp}
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat2}"
 echo "************************************"
 echo "************************************"
 
-/scripts/01.anat_preproc/02.anat_skullstrip.sh ${anat2}_bfc ${adir} none ${anat1} none
+${sdr}/01.anat_preproc/02.anat_skullstrip.sh ${tmp}/${anat2}_bfc ${adir} none ${anat1} none
 
 echo "************************************"
 echo "*** Anat skullstrip ${anat1}"
 echo "************************************"
 echo "************************************"
 
-/scripts/01.anat_preproc/02.anat_skullstrip.sh ${anat1}_bfc ${adir} ${anat1}_brain_mask none ${anat2}
+${sdr}/01.anat_preproc/02.anat_skullstrip.sh ${tmp}/${anat1}_bfc ${adir} ${anat1}_brain_mask ${tmp}/${anat2}
 
 echo "************************************"
 echo "*** Anat segment"
 echo "************************************"
 echo "************************************"
 
-/scripts/01.anat_preproc/03.anat_segment.sh ${anat1}_brain ${adir}
+${sdr}/01.anat_preproc/03.anat_segment.sh ${anat1}_brain ${adir} ${tmp}
 
 echo "************************************"
 echo "*** Anat normalise"
 echo "************************************"
 echo "************************************"
 
-/scripts/01.anat_preproc/04.anat_normalize.sh ${anat1}_brain ${adir} ${std} ${mmres}
-
-echo "************************************"
-echo "*** Clearspace"
-echo "************************************"
-echo "************************************"
-
-/scripts/00.pipelines/clearspace.sh ${sub} ${ses} ${wdr} anat
+${sdr}/01.anat_preproc/04.anat_normalize.sh ${anat1}_brain ${adir} ${std} ${mmres}

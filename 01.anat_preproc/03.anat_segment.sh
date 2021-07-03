@@ -16,6 +16,8 @@ adir=$2
 tmp=${3:-/tmp}
 tmp=${tmp}/03as_${1}
 
+# shellcheck source=EuskalIBUR_dataproc/utils.sh
+source ${sdr}/utils.sh
 ######################################
 ######### Script starts here #########
 ######################################

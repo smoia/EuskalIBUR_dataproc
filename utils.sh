@@ -12,6 +12,7 @@ then
 	printf "%s is missing, " "$3"
 	case $1 in
 		copy ) echo "copying $2"; cp $2 $3 ;;
+		move ) echo "moving $2"; mv $2 $3 ;;
 		mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
 		* ) echo "and you shouldn't see this"; exit ;;
 	esac

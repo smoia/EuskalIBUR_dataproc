@@ -15,7 +15,8 @@ fdir=$2
 pepl=${3:-none}
 brev=${4:-none}
 bfor=${5:-none}
-tmp=${6:-.}
+tmp=${6:-/tmp}
+sdr=${7:-/scripts}
 
 ### print input
 printline=$( basename -- $0 )
@@ -30,25 +31,26 @@ cd ${fdir} || exit
 
 #Read and process input
 func=${func_in%_*}
+func=${func##*/}
 
 ## 01. PEpolar
 # If there isn't an estimated field, make it.
 if [[ "${pepl}" == "none" ]]
 then
-	pepl=${func}_topup
+	pepl=${func_in}_topup
 
 	mkdir ${pepl}
 	fslmerge -t ${pepl}/mgdmap ${brev} ${bfor}
 
 	cd ${pepl}
 	echo "Computing PEPOLAR map for ${func}"
-	topup --imain=mgdmap --datain=/scripts/acqparam.txt --out=outtp --verbose
+	topup --imain=mgdmap --datain=${sdr}/acqparam.txt --out=outtp --verbose
 	cd ..
 fi
 
 # 03.2. Applying the warping to the functional volume
 echo "Applying PEPOLAR map on ${func}"
-applytopup --imain=${tmp}/${func_in} --datain=/scripts/acqparam.txt --inindex=1 \
+applytopup --imain=${func_in} --datain=${sdr}/acqparam.txt --inindex=1 \
 --topup=${pepl}/outtp --out=${tmp}/${func}_tpp --verbose --method=jac
 
 cd ${cwd}

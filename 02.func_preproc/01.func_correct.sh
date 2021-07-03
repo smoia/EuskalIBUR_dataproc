@@ -8,7 +8,7 @@
 
 ## Variables
 # functional
-func=$1
+func_in=$1
 # folders
 fdir=$2
 # discard
@@ -20,11 +20,12 @@ dspk=${4:-none}
 siot=${5:-none}
 
 ## Temp folder
-tmp=${6:-.}
+tmp=${6:-/tmp}
 
 ### print input
 printline=$( basename -- $0 )
 echo "${printline} " "$@"
+
 ######################################
 ######### Script starts here #########
 ######################################
@@ -33,12 +34,16 @@ cwd=$(pwd)
 
 cd ${fdir} || exit
 
-nTR=$(fslval ${tmp}/${func} dim4)
+#Read and process input
+func=${func_in%.nii.gz}
+func=${func##*/}
+
+nTR=$(fslval ${func_in} dim4)
 
 ## 01. Corrections
 # 01.1. Discard first volumes if there's more than one TR
 
-funcsource=${tmp}/${func}
+funcsource=${func_in}
 if [[ "${nTR}" -gt "1" && "${vdsc}" -gt "0" ]]
 then
 	echo "Discarding first ${vdsc} volumes"
@@ -81,6 +86,6 @@ then
 fi
 
 ## 03. Change name to script output
-immv ${funcsource} ${tmp}/${func}_cr
+mv ${funcsource}.nii.gz ${tmp}/${func}_cr.nii.gz
 
 cd ${cwd}

@@ -15,7 +15,7 @@ adir=$2
 ## Optional
 # mask
 mask=${3:-none}
-aref=${4:-none}
+aref_in=${4:-none}
 c3dsrc=${5:-yes}
 
 ######################################
@@ -28,6 +28,8 @@ cd ${adir} || exit
 
 #Read and process input
 anat=${anat_in%_*}
+anat=${anat##*/}
+aref=${aref_in##*/}
 
 if [[ "${mask}" == "none" ]]
 then
@@ -54,7 +56,7 @@ if [[ "${aref}" != "none" ]] && [[ -e ../reg/${anat}2${aref}_fsl.mat ]]
 then
 	# If a reference is specified, coreg the mask to the reference
 	echo "Flirting ${mask} into ${aref}"
-	flirt -in ${mask} -ref ${aref} -cost normmi -searchcost normmi \
+	flirt -in ${mask} -ref ${aref_in} -cost normmi -searchcost normmi \
 		  -init ../reg/${anat}2${aref}_fsl.mat -o ${aref}_brain_mask \
 		  -applyxfm -interp nearestneighbour
 fi

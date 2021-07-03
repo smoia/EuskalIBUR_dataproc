@@ -5,6 +5,7 @@ if [ $1 == 'mkdir' ]
 then
 	if [ ! -d $2 ]
 	then
+		echo "Create folder(s)" ${@:2}
 		mkdir "${@:2}"
 	fi
 elif [ ! -e $3 ]

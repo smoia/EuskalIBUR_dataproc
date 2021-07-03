@@ -45,10 +45,11 @@ then
 else
 	if_missing_do mkdir ${dirname}
 fi
-
 if_missing_do mkdir ${dirname}/sub-${sub}
 if_missing_do mkdir ${dirname}/sub-${sub}/ses-${ses}
-if_missing_do mkdir ${tmp}/${dirname}_${flpr}
+if_missing_do mkdir ${tmp}/${dirname}
+if_missing_do mkdir ${tmp}/${dirname}/sub-${sub}
+if_missing_do mkdir ${tmp}/${dirname}/sub-${sub}/ses-${ses}
 
 
 for fld in func_preproc fmap_preproc reg anat_preproc

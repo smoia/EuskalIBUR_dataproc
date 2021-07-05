@@ -54,6 +54,25 @@ fi
 # 	# joblist=${joblist::-1}
 # done
 
+for sub in 001 002 003 004 007 008 009
+do
+	for ses in $(seq -f %02g 1 10)
+	do
+		for e in $( seq 1 ${nTE}; echo "optcom" )
+		do
+			if [ ${e} != "optcom" ]
+			then
+				e=echo-${e}
+			fi
+			rm ${wdr}/../LogFiles/${sub}_${ses}_${e}_grayplots_pipe
+			qsub -q long.q -N "s_${sub}_${ses}_${e}_EuskalIBUR" \
+			-o ${wdr}/../LogFiles/${sub}_${ses}_${e}_grayplots_pipe \
+			-e ${wdr}/../LogFiles/${sub}_${ses}_${e}_grayplots_pipe \
+			${wdr}/98.hcp/run_grayplots.sh ${sub} ${ses} ${e}
+		done
+	done
+done
+
 # for task in simon motor pinel
 # do
 # 	for sub in 001 002 003 004 007 008 009
@@ -81,17 +100,17 @@ fi
 # 	${wdr}/98.hcp/run_glm_icc.sh ${brick%_Coef*}
 # done
 
-# Run MEMA
-for brick in ../preproc/Dataset_QC/norm/001_allses_*_Coef.nii.gz
-do
-	brick=${brick#*allses_}
-	brick=${brick%_Coef*}
-	rm ${wdr}/../LogFiles/${brick}_mema_pipe
-	qsub -q veryshort.q -N "mema_${brick}_EuskalIBUR" \
-	-o ${wdr}/../LogFiles/${brick}_mema_pipe \
-	-e ${wdr}/../LogFiles/${brick}_mema_pipe \
-	${wdr}/98.hcp/run_glm_mema.sh ${brick%_Coef*}
-done
+# # Run MEMA
+# for brick in ../preproc/Dataset_QC/norm/001_allses_*_Coef.nii.gz
+# do
+# 	brick=${brick#*allses_}
+# 	brick=${brick%_Coef*}
+# 	rm ${wdr}/../LogFiles/${brick}_mema_pipe
+# 	qsub -q veryshort.q -N "mema_${brick}_EuskalIBUR" \
+# 	-o ${wdr}/../LogFiles/${brick}_mema_pipe \
+# 	-e ${wdr}/../LogFiles/${brick}_mema_pipe \
+# 	${wdr}/98.hcp/run_glm_mema.sh ${brick%_Coef*}
+# done
 
 # # Run falff
 # joblist=""

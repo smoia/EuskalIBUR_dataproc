@@ -43,9 +43,9 @@ singularity exec -e --no-home \
 -B /export/home/smoia/scratch:/tmp \
 euskalibur.sif 02.func_preproc/12.func_grayplot.sh \
 00.sub-${sub}_ses-${ses}_task-rest_run-${run}_${echo}_bold_native_preprocessed \
-${wdr}/sub-${sub}/ses-${ses}/func_preproc \
+/data/sub-${sub}/ses-${ses}/func_preproc \
 sub-${sub}_ses-01_T2w \
-${wdr}/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref \
+/data/sub-${sub}/ses-${ses}/reg/sub-${sub}_sbref \
 sub-${sub}_ses-01_acq-uni_T1w \
 -1
 done

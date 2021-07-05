@@ -58,7 +58,7 @@ for sub in 001 002 003 004 007 008 009
 do
 	for ses in $(seq -f %02g 1 10)
 	do
-		for e in $( seq 1 ${nTE}; echo "optcom" )
+		for e in $( seq 1 5; echo "optcom" )
 		do
 			if [ ${e} != "optcom" ]
 			then

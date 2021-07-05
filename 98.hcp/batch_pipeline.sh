@@ -65,7 +65,7 @@ do
 				e=echo-${e}
 			fi
 			rm ${wdr}/../LogFiles/${sub}_${ses}_${e}_grayplots_pipe
-			qsub -q long.q -N "s_${sub}_${ses}_${e}_EuskalIBUR" \
+			qsub -q short.q -N "s_${sub}_${ses}_${e}_EuskalIBUR" \
 			-o ${wdr}/../LogFiles/${sub}_${ses}_${e}_grayplots_pipe \
 			-e ${wdr}/../LogFiles/${sub}_${ses}_${e}_grayplots_pipe \
 			${wdr}/98.hcp/run_grayplots.sh ${sub} ${ses} ${e}

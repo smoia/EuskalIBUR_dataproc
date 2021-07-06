@@ -56,7 +56,7 @@ case ${task} in
 		bricks=( all_congruent_0 all_incongruent_0 congruent_vs_incongruent_0 congruent_and_incongruent_t_0 )
 		;;
 	pinel )
-		bricks=( all_visual_0 all_auditory_0 all_motor_0 all_sentences_0 all_calc_0 all_motor_vs_sentences_0 all_calc_vs_sentences_0 vertical_vs_horizontal_cb_0 auditory_vs_visual_0 visual_vs_cb_0 auditory_calc_vs_noncalc_0 visual_calc_vs_noncalc_0 right_vs_left_0 )
+		bricks=( all_visual_0 all_auditory_0 all_motor_0 all_sentences_0 all_calc_0 vertical_vs_horizontal_cb_0 all_calc_vs_sentences_0 all_motor_vs_sentences_0 auditory_vs_visual_0 visual_vs_cb_0 auditory_calc_vs_noncalc_0 visual_calc_vs_noncalc_0 right_vs_left_0 )
 		;;
 	falff )
 		bricks=( fALFF_run-01 fALFF_run-02 fALFF_run-03 fALFF_run-04 )

@@ -54,24 +54,24 @@ fi
 # 	# joblist=${joblist::-1}
 # done
 
-for sub in 001 002 003 004 007 008 009
-do
-	for ses in $(seq -f %02g 1 10)
-	do
-		for e in $( seq 1 5; echo "optcom" )
-		do
-			if [ ${e} != "optcom" ]
-			then
-				e=echo-${e}
-			fi
-			rm ${wdr}/../LogFiles/${sub}_${ses}_${e}_grayplots_pipe
-			qsub -q short.q -N "s_${sub}_${ses}_${e}_EuskalIBUR" \
-			-o ${wdr}/../LogFiles/${sub}_${ses}_${e}_grayplots_pipe \
-			-e ${wdr}/../LogFiles/${sub}_${ses}_${e}_grayplots_pipe \
-			${wdr}/98.hcp/run_grayplots.sh ${sub} ${ses} ${e}
-		done
-	done
-done
+# for sub in 001 002 003 004 007 008 009
+# do
+# 	for ses in $(seq -f %02g 1 10)
+# 	do
+# 		for e in $( seq 1 5; echo "optcom" )
+# 		do
+# 			if [ ${e} != "optcom" ]
+# 			then
+# 				e=echo-${e}
+# 			fi
+# 			rm ${wdr}/../LogFiles/${sub}_${ses}_${e}_grayplots_pipe
+# 			qsub -q short.q -N "s_${sub}_${ses}_${e}_EuskalIBUR" \
+# 			-o ${wdr}/../LogFiles/${sub}_${ses}_${e}_grayplots_pipe \
+# 			-e ${wdr}/../LogFiles/${sub}_${ses}_${e}_grayplots_pipe \
+# 			${wdr}/98.hcp/run_grayplots.sh ${sub} ${ses} ${e}
+# 		done
+# 	done
+# done
 
 # for task in simon motor pinel
 # do
@@ -158,21 +158,21 @@ done
 # 	${wdr}/98.hcp/run_falff_icc.sh ${run}
 # done
 
-# # Run LME for CVR, RSFC, and GLM
-# qsub -q long.q -N "lme_falff_cvr_EuskalIBUR" \
-# -hold_jid "${joblist}" \
-# -o ${wdr}/../LogFiles/lme_falff_cvr_pipe \
-# -e ${wdr}/../LogFiles/lme_falff_cvr_pipe \
-# ${wdr}/98.hcp/run_lme_glm_cvr.sh falff
+# Run LME for CVR, RSFC, and GLM
+qsub -q long.q -N "lme_falff_cvr_EuskalIBUR" \
+-hold_jid "${joblist}" \
+-o ${wdr}/../LogFiles/lme_falff_cvr_pipe \
+-e ${wdr}/../LogFiles/lme_falff_cvr_pipe \
+${wdr}/98.hcp/run_lme_glm_cvr.sh falff
 
-# for task in motor simon
-# do
-# 	qsub -q long.q -N "lme_${task}_cvr_EuskalIBUR" \
-# 	-hold_jid "lme_falff_cvr_EuskalIBUR" \
-# 	-o ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
-# 	-e ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
-# 	${wdr}/98.hcp/run_lme_glm_cvr.sh ${task}
-# done
+for task in motor simon
+do
+	qsub -q long.q -N "lme_${task}_cvr_EuskalIBUR" \
+	-hold_jid "lme_falff_cvr_EuskalIBUR" \
+	-o ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
+	-e ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
+	${wdr}/98.hcp/run_lme_glm_cvr.sh ${task}
+done
 
 # # Run LME for questionnaire
 # qsub -q long.q -N "lme_cvr_questionnaire_EuskalIBUR" \

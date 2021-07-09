@@ -158,20 +158,20 @@ fi
 # 	${wdr}/98.hcp/run_falff_icc.sh ${run}
 # done
 
-# Run LME for CVR, RSFC, and GLM
-qsub -q long.q -N "lme_falff_cvr_EuskalIBUR" \
--o ${wdr}/../LogFiles/lme_falff_cvr_pipe \
--e ${wdr}/../LogFiles/lme_falff_cvr_pipe \
-${wdr}/98.hcp/run_lme_glm_cvr.sh falff
-# -hold_jid "${joblist}" \
+# # Run LME for CVR, RSFC, and GLM
+# qsub -q long.q -N "lme_falff_cvr_EuskalIBUR" \
+# -o ${wdr}/../LogFiles/lme_falff_cvr_pipe \
+# -e ${wdr}/../LogFiles/lme_falff_cvr_pipe \
+# ${wdr}/98.hcp/run_lme_glm_cvr.sh falff
+# # -hold_jid "${joblist}" \
 
-for task in motor simon
+for task in motor #simon
 do
 	qsub -q long.q -N "lme_${task}_cvr_EuskalIBUR" \
-	-hold_jid "lme_falff_cvr_EuskalIBUR" \
 	-o ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
 	-e ${wdr}/../LogFiles/lme_${task}_cvr_pipe \
 	${wdr}/98.hcp/run_lme_glm_cvr.sh ${task}
+	# -hold_jid "lme_falff_cvr_EuskalIBUR" \
 done
 
 # # Run LME for questionnaire

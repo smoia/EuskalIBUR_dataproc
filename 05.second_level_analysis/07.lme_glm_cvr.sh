@@ -82,7 +82,7 @@ do
 		case ${task} in
 			motor )
 				# Two GLT are coded: all motor activations, and all motor activations against the sham to remove visual stimuli"
-				if [ ! -e ./norm/${sub}_${ses}_allmotors.nii.gz ]
+				if [ ! -e ./norm/${sub}_${ses}_tongue_vs_sham.nii.gz ]
 				then
 					# extract_and_average 34 42 ${tmp}/${sub}_${ses}_allmotors ${rbuck}
 					# 3dbucket -prefix ${tmp}/${sub}_${ses}_finger_left.nii.gz ${rbuck} -abuc ${rbuck}'[1]' -overwrite

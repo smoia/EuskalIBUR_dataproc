@@ -84,20 +84,20 @@ do
 				# Two GLT are coded: all motor activations, and all motor activations against the sham to remove visual stimuli"
 				if [ ! -e ./norm/${sub}_${ses}_allmotors.nii.gz ]
 				then
-					extract_and_average 34 42 ${tmp}/${sub}_${ses}_allmotors ${rbuck}
+					# extract_and_average 34 42 ${tmp}/${sub}_${ses}_allmotors ${rbuck}
 					# 3dbucket -prefix ${tmp}/${sub}_${ses}_finger_left.nii.gz ${rbuck} -abuc ${rbuck}'[1]' -overwrite
 					# 3dbucket -prefix ${tmp}/${sub}_${ses}_finger_right.nii.gz ${rbuck} -abuc ${rbuck}'[4]' -overwrite
 					# 3dbucket -prefix ${tmp}/${sub}_${ses}_toe_left.nii.gz ${rbuck} -abuc ${rbuck}'[7]' -overwrite
 					# 3dbucket -prefix ${tmp}/${sub}_${ses}_toe_right.nii.gz ${rbuck} -abuc ${rbuck}'[10]' -overwrite
 					# 3dbucket -prefix ${tmp}/${sub}_${ses}_tongue.nii.gz ${rbuck} -abuc ${rbuck}'[13]' -overwrite
-					extract_and_average 45 53 ${tmp}/${sub}_${ses}_motors_vs_sham ${rbuck}
-					# 3dbucket -prefix ${tmp}/${sub}_${ses}_finger_left_vs_sham.nii.gz ${rbuck} -abuc ${rbuck}'[19]' -overwrite
-					# 3dbucket -prefix ${tmp}/${sub}_${ses}_finger_right_vs_sham.nii.gz ${rbuck} -abuc ${rbuck}'[22]' -overwrite
-					# 3dbucket -prefix ${tmp}/${sub}_${ses}_toe_left_vs_sham.nii.gz ${rbuck} -abuc ${rbuck}'[25]' -overwrite
-					# 3dbucket -prefix ${tmp}/${sub}_${ses}_toe_right_vs_sham.nii.gz ${rbuck} -abuc ${rbuck}'[28]' -overwrite
-					# 3dbucket -prefix ${tmp}/${sub}_${ses}_tongue_vs_sham.nii.gz ${rbuck} -abuc ${rbuck}'[31]' -overwrite
+					# extract_and_average 45 53 ${tmp}/${sub}_${ses}_motors_vs_sham ${rbuck}
+					3dbucket -prefix ${tmp}/${sub}_${ses}_finger_left_vs_sham.nii.gz ${rbuck} -abuc ${rbuck}'[19]' -overwrite
+					3dbucket -prefix ${tmp}/${sub}_${ses}_finger_right_vs_sham.nii.gz ${rbuck} -abuc ${rbuck}'[22]' -overwrite
+					3dbucket -prefix ${tmp}/${sub}_${ses}_toe_left_vs_sham.nii.gz ${rbuck} -abuc ${rbuck}'[25]' -overwrite
+					3dbucket -prefix ${tmp}/${sub}_${ses}_toe_right_vs_sham.nii.gz ${rbuck} -abuc ${rbuck}'[28]' -overwrite
+					3dbucket -prefix ${tmp}/${sub}_${ses}_tongue_vs_sham.nii.gz ${rbuck} -abuc ${rbuck}'[31]' -overwrite
 				fi
-				bricks=( allmotors motors_vs_sham ) #finger_left finger_right toe_left toe_right tongue finger_left_vs_sham finger_right_vs_sham toe_left_vs_sham toe_right_vs_sham tongue_vs_sham )
+				bricks=( finger_left_vs_sham finger_right_vs_sham toe_left_vs_sham toe_right_vs_sham tongue_vs_sham ) #allmotors motors_vs_sham finger_left finger_right toe_left toe_right tongue finger_left_vs_sham finger_right_vs_sham toe_left_vs_sham toe_right_vs_sham tongue_vs_sham )
 			;;
 			simon )
 				# Four GLTs are coded, good congruents, good incongruents, good congruents vs good incongruents and good congruents + good incongruents
@@ -201,7 +201,7 @@ do
 	# Compute 3dLME
 	for map in fALFF RSFA ALFF
 	do
-		for run in $( seq -f %02g 1 4 )
+		for run in 01 #$( seq -f %02g 1 4 )
 		do
 			outfile=lme/${brick}/cause_${brick}_${map}_r-${run}.nii.gz
 			rm ${outfile}
@@ -235,7 +235,7 @@ then
 	# Compute 3dLME
 	for map in fALFF RSFA ALFF
 	do
-		for run in $( seq -f %02g 1 4 )
+		for run in 01 #$( seq -f %02g 1 4 )
 		do
 			outfile=lme/RSF/cause_${map}_r-${run}_CVR.nii.gz
 			rm ${outfile}

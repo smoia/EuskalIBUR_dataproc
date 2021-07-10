@@ -165,7 +165,7 @@ fi
 # ${wdr}/98.hcp/run_lme_glm_cvr.sh falff
 # # -hold_jid "${joblist}" \
 
-for task in motor #simon
+for task in simon #motor #simon
 do
 	qsub -q long.q -N "lme_${task}_cvr_EuskalIBUR" \
 	-o ${wdr}/../LogFiles/lme_${task}_cvr_pipe \

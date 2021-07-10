@@ -50,12 +50,11 @@ mv ${1}_${3}-${4}.png ${5}/.
 declare -A zvals
 zvals=( [0.1]=1.64 [0.05]=1.96 [0.02]=2.33 [0.01]=2.58 [0.005]=2.81 [0.002]=3.09 [0.001]=3.29 )
 
-fmap=$1
-analysis=$2
-pval=${3:-0.01}
-wdr=${4:-/data}
-sdr=${5:-/scripts}
-tmp=${6:-.}
+task=$1
+pval=${2:-0.01}
+wdr=${3:-/data}
+sdr=${4:-/scripts}
+tmp=${5:-.}
 
 ### print input
 printline=$( basename -- $0 )
@@ -66,52 +65,89 @@ echo "${printline} " "$@"
 
 cwd=$(pwd)
 
-cd ${wdr}/CVR_questionnaire || exit
+cd ${wdr}/Mennes_replication/lme || exit
 
-picdir=${wdr}/CVR_questionnaire/pics
+picdir=${wdr}/Mennes_replication/pics
 if_missing_do mkdir ${picdir}
-if_missing_do mkdir ${picdir}/${analysis}
+if_missing_do mkdir ${picdir}/lme
+if_missing_do mkdir ${picdir}/lme/${task}
 
-tmp=${tmp}/tmp.${fmap}_${analysis}_p-${pval}_06ptg
+tmp=${tmp}/tmp.${task}_p-${pval}_06ptg
 replace_and mkdir ${tmp}
 
 # Set the T1 in native space
 bckimg=${sdr}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm
 
-# Check number of bricks and remove one cause 0-index
-rbuck=LMEr_${fmap}_masked_${analysis}.nii.gz
-lastbrick=$( fslval ${rbuck} dim5 )
-let lastbrick--
-[ ! -e ${rbuck} ] && echo "Missing volume ${rbuck}" && return || echo "Exploding ${rbuck}"
-for brick in $(seq 0 ${lastbrick})
+rsfc=()
+for run in $( seq -f %02g 1 4 )
 do
-	# Break bricks
-	brickname=$( 3dinfo -label "${rbuck}[${brick}]" )
-	brickname=${brickname// /_}
-	3dbucket -prefix ${tmp}/${fmap}_${analysis}_${brickname}.nii.gz -abuc "${rbuck}[${brick}]" -overwrite
+	rsfc+=(fALFF_r${run} ALFF_r${run} RSFA_r${run})
 done
 
-# Find right tstat value
-[ -z "${zvals[${pval}]}" ] && echo "Selected pval ${pval} not in list" && return 
-thr=${zvals[${pval}]}
-echo "thr: ${thr}"
+case ${task} in
+	motor )
+		volumes=( finger_left_vs_sham finger_right_vs_sham toe_left_vs_sham toe_right_vs_sham tongue_vs_sham ) #allmotors motors_vs_sham finger_left finger_right toe_left toe_right tongue finger_left_vs_sham finger_right_vs_sham toe_left_vs_sham toe_right_vs_sham tongue_vs_sham )
+		rsfc+=( CVR )
+		;;
+	simon )
+		volumes=( all_congruent congruent_vs_incongruent congruent_and_incongruent )
+		rsfc+=( CVR )
+		;;
+	falff )
+		volumes=( "${rsfc[@]}" )
+		rsfc=( CVR )
+		;;
+	* ) echo "wrong task ${task}."; exit ;;
+esac
 
-for brick in ${tmp}/${fmap}_${analysis}_*_Z.nii.gz
+# Check number of volumes and remove one cause 0-index
+
+for vol in "${volumes[@]}"
 do
-	echo ${brick##*/}
-	brickname=${brick%_Z.nii.gz}
-	# mask the functional brick with the right tstat
-	fslmaths ${brickname}_Z -abs -thr ${thr} -bin -mul ${brick} ${brickname}_fmkd
-	# fsleyes all the way
-	slice_coeffs ${brickname} ${bckimg} p ${pval} ${picdir}/${analysis}
+	for rsf in "${rsfc[@]}"
+	do 
+		if [ ${task} == "falff" ]
+		then
+			fldr=RSF
+		else
+			fldr=${vol}
+		fi
+		cd ${fldr} || continue
 
-	# Repeat with FDR
-	echo "Computing FDR with z=${thr}"
-	3dFDR -input ${brickname}_Z.nii.gz -prefix ${brickname}_FDR.nii.gz
-	fslmaths ${brickname}_FDR -thr ${thr} -bin -mul ${brick} ${brickname}_fmkd
-	slice_coeffs ${brickname} ${bckimg} q ${pval} ${picdir}/${analysis}
+		rbuck=cause_${vol}_${rsf}.nii.gz
+		lastbrick=$( fslval ${rbuck} dim5 )
+		let lastbrick--
+		[ ! -e ${rbuck} ] && echo "Missing volume ${rbuck}" && return || echo "Exploding ${rbuck}"
+		for brick in $(seq 0 ${lastbrick})
+		do
+			# Break volumes
+			brickname=$( 3dinfo -label "${rbuck}[${brick}]" )
+			brickname=${brickname// /_}
+			3dbucket -prefix ${tmp}/${vol}_${rsf}_${brickname}.nii.gz -abuc "${rbuck}[${brick}]" -overwrite
+		done
+
+		# Find right tstat value
+		[ -z "${zvals[${pval}]}" ] && echo "Selected pval ${pval} not in list" && return 
+		thr=${zvals[${pval}]}
+		echo "thr: ${thr}"
+
+		for brick in ${tmp}/${vol}_${rsf}_*_Z.nii.gz
+		do
+			echo ${brick##*/}
+			brickname=${brick%_Z.nii.gz}
+			# mask the functional brick with the right tstat
+			fslmaths ${brickname}_Z -abs -thr ${thr} -bin -mul ${brick} ${brickname}_fmkd
+			# fsleyes all the way
+			slice_coeffs ${brickname} ${bckimg} p ${pval} ${picdir}/lme/${task}
+
+			# Repeat with FDR
+			echo "Computing FDR with z=${thr}"
+			3dFDR -input ${brickname}_Z.nii.gz -prefix ${brickname}_FDR.nii.gz
+			fslmaths ${brickname}_FDR -thr ${thr} -bin -mul ${brick} ${brickname}_fmkd
+			slice_coeffs ${brickname} ${bckimg} q ${pval} ${picdir}/lme/${task}
+		done
+	done
 done
-
 rm -rf ${tmp}/${task}
 
 cd ${cwd}

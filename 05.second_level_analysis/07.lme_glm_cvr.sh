@@ -101,13 +101,14 @@ do
 			;;
 			simon )
 				# Four GLTs are coded, good congruents, good incongruents, good congruents vs good incongruents and good congruents + good incongruents
-				if [ ! -e ./norm/${sub}_${ses}_all_congruent.nii.gz ]
+				if [ ! -e ./norm/${sub}_${ses}_all_incongruent.nii.gz ]
 				then
-					3dbucket -prefix ${tmp}/${sub}_${ses}_all_congruent.nii.gz -abuc ${rbuck}'[25]' -overwrite
-					3dbucket -prefix ${tmp}/${sub}_${ses}_congruent_vs_incongruent.nii.gz -abuc ${rbuck}'[31]' -overwrite
-					3dbucket -prefix ${tmp}/${sub}_${ses}_congruent_and_incongruent.nii.gz -abuc ${rbuck}'[34]' -overwrite
+					# 3dbucket -prefix ${tmp}/${sub}_${ses}_all_congruent.nii.gz -abuc ${rbuck}'[25]' -overwrite
+					3dbucket -prefix ${tmp}/${sub}_${ses}_all_incongruent.nii.gz -abuc ${rbuck}'[28]' -overwrite
+					# 3dbucket -prefix ${tmp}/${sub}_${ses}_congruent_vs_incongruent.nii.gz -abuc ${rbuck}'[31]' -overwrite
+					# 3dbucket -prefix ${tmp}/${sub}_${ses}_congruent_and_incongruent.nii.gz -abuc ${rbuck}'[34]' -overwrite
 				fi
-				bricks=( all_congruent congruent_vs_incongruent congruent_and_incongruent )
+				bricks=( all_incongruent ) #all_congruent congruent_vs_incongruent congruent_and_incongruent )
 			;;
 			falff ) echo "Skip task" ;;
 			* ) echo " !!! Warning !!! Invalid task: ${task}"; exit ;;

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 if_missing_do() {
 if [ $1 == 'mkdir' ]
 then
@@ -81,12 +82,12 @@ bckimg=${sdr}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm
 rsfc=()
 for run in $( seq -f %02g 1 4 )
 do
-	rsfc+=(fALFF_r${run} ALFF_r${run} RSFA_r${run})
+	rsfc+=(fALFF_r-${run} ALFF_r-${run} RSFA_r-${run})
 done
 
 case ${task} in
 	motor )
-		volumes=( finger_left_vs_sham finger_right_vs_sham toe_left_vs_sham toe_right_vs_sham tongue_vs_sham ) #allmotors motors_vs_sham finger_left finger_right toe_left toe_right tongue finger_left_vs_sham finger_right_vs_sham toe_left_vs_sham toe_right_vs_sham tongue_vs_sham )
+		volumes=( allmotors motors_vs_sham ) #finger_left_vs_sham finger_right_vs_sham toe_left_vs_sham toe_right_vs_sham tongue_vs_sham ) #allmotors motors_vs_sham finger_left finger_right toe_left toe_right tongue finger_left_vs_sham finger_right_vs_sham toe_left_vs_sham toe_right_vs_sham tongue_vs_sham )
 		rsfc+=( CVR )
 		;;
 	simon )
@@ -104,6 +105,7 @@ esac
 
 for vol in "${volumes[@]}"
 do
+	echo "Working on volume ${vol}"
 	for rsf in "${rsfc[@]}"
 	do 
 		if [ ${task} == "falff" ]
@@ -113,6 +115,7 @@ do
 			fldr=${vol}
 		fi
 		cd ${fldr} || continue
+		pwd
 
 		rbuck=cause_${vol}_${rsf}.nii.gz
 		lastbrick=$( fslval ${rbuck} dim5 )
@@ -146,8 +149,9 @@ do
 			fslmaths ${brickname}_FDR -thr ${thr} -bin -mul ${brick} ${brickname}_fmkd
 			slice_coeffs ${brickname} ${bckimg} q ${pval} ${picdir}/lme/${task}
 		done
+		cd ${wdr}/Mennes_replication/lme || exit
 	done
 done
-rm -rf ${tmp}/${task}
+# rm -rf ${tmp}/${task}
 
 cd ${cwd}

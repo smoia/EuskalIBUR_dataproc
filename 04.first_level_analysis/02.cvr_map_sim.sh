@@ -66,7 +66,7 @@ fi
 replace_and() {
 case $1 in
 	mkdir) if [ -d $2 ]; then rm -rf $2; fi; mkdir $2 ;;
-	touch) if [ -d $2 ]; then rm -rf $2; fi; touch $2 ;;
+	touch) if [ -e $2 ]; then rm -rf $2; fi; touch $2 ;;
 esac
 }
 

@@ -22,25 +22,28 @@ fi
 replace_and() {
 case $1 in
 	mkdir) if [ -d $2 ]; then rm -rf $2; fi; mkdir $2 ;;
-	touch) if [ -d $2 ]; then rm -rf $2; fi; touch $2 ;;
+	touch) if [ -e $2 ]; then rm -rf $2; fi; touch $2 ;;
 esac
 }
 
 slice_coeffs() {
+cmap=red-yellow #brain_colours_1hot
+ncmap=blue-lightblue #cool
 # $1:brickname $2:bckimg $3:[p/q] $4:pval $5:picdir
 echo "plot ${1##*/} $3 $4"
+drange=$( fslstats ${1}_fmkd.nii.gz -a -P 98 )
 fsleyes render -of ${1}_tmp_axial.png --size 1900 200 \
 --scene lightbox --zaxis 2 --sliceSpacing 12 --zrange 19.3 139.9 --ncols 10 --nrows 1 --hideCursor --showColourBar --colourBarLocation right --colourBarLabelSide bottom-right --colourBarSize 80.0 --labelSize 12 --performance 3 --movieSync \
 ${2}.nii.gz --name "anat" --overlayType volume --alpha 100.0 --brightness 49.75000000000001 --contrast 49.90029860765409 --cmap greyscale --negativeCmap greyscale --displayRange 0.0 10000 --clippingRange 0.0 10000 --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
-${1}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap brain_colours_1hot --negativeCmap cool --useNegativeCmap --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
+${1}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap ${cmap} --negativeCmap ${ncmap} --useNegativeCmap --displayRange 0.0 ${drange} --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
 fsleyes render -of ${1}_tmp_sagittal.png --size 1900 200 \
 --scene lightbox --zaxis 0 --sliceSpacing 13 --zrange 39.5 169 --ncols 10 --nrows 1 --hideCursor --showColourBar --colourBarLocation right --colourBarLabelSide bottom-right --colourBarSize 80.0 --labelSize 12 --performance 3 --movieSync \
 ${2}.nii.gz --name "anat" --overlayType volume --alpha 100.0 --brightness 49.75000000000001 --contrast 49.90029860765409 --cmap greyscale --negativeCmap greyscale --displayRange 0.0 10000 --clippingRange 0.0 10000 --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
-${1}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap brain_colours_1hot --negativeCmap cool --useNegativeCmap --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
+${1}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap ${cmap} --negativeCmap ${ncmap} --useNegativeCmap --displayRange 0.0 ${drange} --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
 fsleyes render -of ${1}_tmp_coronal.png --size 1900 200 \
 --scene lightbox --zaxis 1 --sliceSpacing 15 --zrange 21 169 --ncols 10 --nrows 1 --hideCursor --showColourBar --colourBarLocation right --colourBarLabelSide bottom-right --colourBarSize 80.0 --labelSize 12 --performance 3 --movieSync \
 ${2}.nii.gz --name "anat" --overlayType volume --alpha 100.0 --brightness 49.75000000000001 --contrast 49.90029860765409 --cmap greyscale --negativeCmap greyscale --displayRange 0.0 10000 --clippingRange 0.0 10000 --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0 \
-${1}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap brain_colours_1hot --negativeCmap cool --useNegativeCmap --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
+${1}_fmkd.nii.gz --name "beta" --overlayType volume --alpha 100.0 --cmap ${cmap} --negativeCmap ${ncmap} --useNegativeCmap --displayRange 0.0 ${drange} --gamma 0.0 --cmapResolution 256 --interpolation none --numSteps 100 --blendFactor 0.1 --smoothing 0 --resolution 100 --numInnerSteps 10 --clipMode intersection --volume 0
 # Mount visions
 convert -append ${1}_tmp_axial.png ${1}_tmp_sagittal.png ${1}_tmp_coronal.png +repage ${1}_${3}-${4}.png
 rm ${1}_tmp*
@@ -80,7 +83,7 @@ replace_and mkdir ${tmp}
 bckimg=${sdr}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm
 
 rsfc=()
-for run in $( seq -f %02g 1 4 )
+for run in 01 #$( seq -f %02g 1 4 )
 do
 	rsfc+=(fALFF_r-${run} ALFF_r-${run} RSFA_r-${run})
 done
@@ -91,7 +94,7 @@ case ${task} in
 		rsfc+=( CVR )
 		;;
 	simon )
-		volumes=( all_congruent congruent_vs_incongruent congruent_and_incongruent )
+		volumes=( all_congruent all_incongruent congruent_vs_incongruent congruent_and_incongruent )
 		rsfc+=( CVR )
 		;;
 	falff )
@@ -143,11 +146,11 @@ do
 			# fsleyes all the way
 			slice_coeffs ${brickname} ${bckimg} p ${pval} ${picdir}/lme/${task}
 
-			# Repeat with FDR
-			echo "Computing FDR with z=${thr}"
-			3dFDR -input ${brickname}_Z.nii.gz -prefix ${brickname}_FDR.nii.gz
-			fslmaths ${brickname}_FDR -thr ${thr} -bin -mul ${brick} ${brickname}_fmkd
-			slice_coeffs ${brickname} ${bckimg} q ${pval} ${picdir}/lme/${task}
+			# # Repeat with FDR
+			# echo "Computing FDR with z=${thr}"
+			# 3dFDR -input ${brickname}_Z.nii.gz -prefix ${brickname}_FDR.nii.gz
+			# fslmaths ${brickname}_FDR -thr ${thr} -bin -mul ${brick} ${brickname}_fmkd
+			# slice_coeffs ${brickname} ${bckimg} q ${pval} ${picdir}/lme/${task}
 		done
 		cd ${wdr}/Mennes_replication/lme || exit
 	done

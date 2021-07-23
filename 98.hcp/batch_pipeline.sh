@@ -73,39 +73,17 @@ fi
 # 	done
 # done
 
-for sub in 001 002 003 004 007 008 009
+# Run MEMA
+for brick in ../preproc/Dataset_QC/norm/001_allses_*_Coef.nii.gz
 do
-	rm ${wdr}/../LogFiles/${sub}_allses_pinel_pipe
-	qsub -q short.q -N "pinel_${sub}_allses_EuskalIBUR" \
-	-o ${wdr}/../LogFiles/${sub}_allses_pinel_pipe \
-	-e ${wdr}/../LogFiles/${sub}_allses_pinel_pipe \
-	${wdr}/98.hcp/run_Mennes.sh ${sub}
-	joblist=${joblist}pinel_${sub}_allses_EuskalIBUR,
+	brick=${brick#*allses_}
+	brick=${brick%_Coef*}
+	rm ${wdr}/../LogFiles/${brick}_mema_pipe
+	qsub -q veryshort.q -N "mema_${brick}_EuskalIBUR" \
+	-o ${wdr}/../LogFiles/${brick}_mema_pipe \
+	-e ${wdr}/../LogFiles/${brick}_mema_pipe \
+	${wdr}/98.hcp/run_glm_mema.sh ${brick%_Coef*}
 done
-
-joblist=${joblist::-1}
-
-for sub in 001 002 003 004 007 008 009
-do
-	rm ${wdr}/../LogFiles/${sub}_allses_norm_pipe
-	qsub -q short.q -N "norm_${sub}_allses_EuskalIBUR" \
-	-hold_jid "${joblist}" \
-	-o ${wdr}/../LogFiles/${sub}_allses_norm_pipe \
-	-e ${wdr}/../LogFiles/${sub}_allses_norm_pipe \
-	${wdr}/98.hcp/run_glm_norm.sh pinel ${sub} allses
-done
-
-# # Run MEMA
-# for brick in ../preproc/Dataset_QC/norm/001_allses_*_Coef.nii.gz
-# do
-# 	brick=${brick#*allses_}
-# 	brick=${brick%_Coef*}
-# 	rm ${wdr}/../LogFiles/${brick}_mema_pipe
-# 	qsub -q veryshort.q -N "mema_${brick}_EuskalIBUR" \
-# 	-o ${wdr}/../LogFiles/${brick}_mema_pipe \
-# 	-e ${wdr}/../LogFiles/${brick}_mema_pipe \
-# 	${wdr}/98.hcp/run_glm_mema.sh ${brick%_Coef*}
-# done
 
 # # Run falff
 # joblist=""

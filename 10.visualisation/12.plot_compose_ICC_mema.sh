@@ -94,7 +94,8 @@ do
 	composite -geometry +234+0 ${tmp}/c2.png ${tmp}/l1.png +repage ${tmp}/l2.png
 	if [ ${n} -lt ${nbricks} ]
 	then
-		convert ${tmp}/l2.png -fill black -draw "rectangle 1805,0 1900,195" ${tmp}/${bricks[$n]}_${bricks[$n]}_q-0.05.png
+		mv ${tmp}/l2.png ${tmp}/${bricks[$n]}_${bricks[$n]}_q-0.05.png
+		# convert ${tmp}/l2.png -fill black -draw "rectangle 1805,0 1900,195" ${tmp}/${bricks[$n]}_${bricks[$n]}_q-0.05.png
 	else
 		mv ${tmp}/l2.png ${tmp}/${bricks[$n]}_${bricks[$n]}_q-0.05.png
 	fi

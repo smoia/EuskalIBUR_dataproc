@@ -32,7 +32,7 @@ exec 1>${wdr}/log/${logname} 2>&1
 
 date
 echo "************************************"
-for task in motor pinel simon
+for task in pinel #motor pinel simon
 do
 singularity exec -e --no-home \
 -B ${wdr}:/data -B ${sdr}:/scripts \

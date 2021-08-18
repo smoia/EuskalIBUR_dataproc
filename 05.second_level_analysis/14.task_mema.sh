@@ -43,6 +43,21 @@ run3dMEMA="${run3dMEMA} -set ${brickout}"
 for sub in 001 002 003 004 007 008 009
 do
 	run3dMEMA="${run3dMEMA}      ${sub} ${sub}_allses_${brickname}_Coef.nii.gz  ${sub}_allses_${brickname}_Tstat.nii.gz"
+	# Repeat for each subject
+	rm ../mema/MEMA_${brickout}_sub-${sub}.nii.gz
+	run3dMEMAsubj="3dMEMA -prefix ../mema/MEMA_${brickout}_sub-${sub}.nii.gz -jobs 10"
+	run3dMEMAsubj="${run3dMEMAsubj} -mask ../reg/MNI_T1_brain_mask.nii.gz"
+	run3dMEMAsubj="${run3dMEMAsubj} -jobs 4 -max_zeros 4 -HKtest"
+	run3dMEMAsubj="${run3dMEMAsubj} -set ${brickout}"
+	for ses in $( seq -f %02g 1 10 )
+	do
+		run3dMEMAsubj="${run3dMEMAsubj}      ${ses} ${sub}_${ses}_${brickname}_Coef.nii.gz  ${sub}_${ses}_${brickname}_Tstat.nii.gz"
+	done
+	echo ""
+	echo "${run3dMEMAsubj}"
+	echo ""
+	eval ${run3dMEMAsubj}
+
 done
 echo ""
 echo "${run3dMEMA}"

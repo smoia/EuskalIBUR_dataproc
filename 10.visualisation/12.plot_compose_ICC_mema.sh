@@ -66,7 +66,7 @@ case ${task} in
 esac
 
 runICCconvert="convert"
-runMEMAconvert="convert"
+# runMEMAconvert="convert"
 nbricks=${#bricks[@]}
 let nbricks--
 for n in $( seq 0 ${nbricks} )
@@ -85,21 +85,21 @@ do
 	fi
 	runICCconvert="${runICCconvert} ${tmp}/ICC2_${bricks[$n]}.png"
 
-	#Run twice for mema if it's not fALFF
-	[ "${task}" == "falff" ] && continue 
-	convert ${bricks[$n]}_${bricks[$n]}_q-0.05.png -crop 1900x195+0+0 +repage ${tmp}/ax.png
-	convert ${bricks[$n]}_${bricks[$n]}_q-0.05.png -crop 172x192+911+408 +repage ${tmp}/c1.png
-	convert ${bricks[$n]}_${bricks[$n]}_q-0.05.png -crop 172x192+1272+408 +repage ${tmp}/c2.png
-	composite -geometry +71+0 ${tmp}/c1.png ${tmp}/ax.png +repage ${tmp}/l1.png
-	composite -geometry +234+0 ${tmp}/c2.png ${tmp}/l1.png +repage ${tmp}/l2.png
-	if [ ${n} -lt ${nbricks} ]
-	then
-		mv ${tmp}/l2.png ${tmp}/${bricks[$n]}_${bricks[$n]}_q-0.05.png
-		# convert ${tmp}/l2.png -fill black -draw "rectangle 1805,0 1900,195" ${tmp}/${bricks[$n]}_${bricks[$n]}_q-0.05.png
-	else
-		mv ${tmp}/l2.png ${tmp}/${bricks[$n]}_${bricks[$n]}_q-0.05.png
-	fi
-	runMEMAconvert="${runMEMAconvert} ${tmp}/${bricks[$n]}_${bricks[$n]}_q-0.05.png"
+	# #Run twice for mema if it's not fALFF
+	# [ "${task}" == "falff" ] && continue 
+	# convert ${bricks[$n]}_${bricks[$n]}_q-0.05.png -crop 1900x195+0+0 +repage ${tmp}/ax.png
+	# convert ${bricks[$n]}_${bricks[$n]}_q-0.05.png -crop 172x192+911+408 +repage ${tmp}/c1.png
+	# convert ${bricks[$n]}_${bricks[$n]}_q-0.05.png -crop 172x192+1272+408 +repage ${tmp}/c2.png
+	# composite -geometry +71+0 ${tmp}/c1.png ${tmp}/ax.png +repage ${tmp}/l1.png
+	# composite -geometry +234+0 ${tmp}/c2.png ${tmp}/l1.png +repage ${tmp}/l2.png
+	# if [ ${n} -lt ${nbricks} ]
+	# then
+	# 	mv ${tmp}/l2.png ${tmp}/${bricks[$n]}_${bricks[$n]}_q-0.05.png
+	# 	# convert ${tmp}/l2.png -fill black -draw "rectangle 1805,0 1900,195" ${tmp}/${bricks[$n]}_${bricks[$n]}_q-0.05.png
+	# else
+	# 	mv ${tmp}/l2.png ${tmp}/${bricks[$n]}_${bricks[$n]}_q-0.05.png
+	# fi
+	# runMEMAconvert="${runMEMAconvert} ${tmp}/${bricks[$n]}_${bricks[$n]}_q-0.05.png"
 done
 
 runICCconvert="${runICCconvert} -background black -splice 0x30+0+0 -append +repage ${tmp}/ICC2_${task}.png"
@@ -109,9 +109,9 @@ composite -geometry +0+0 ${sdr}/10.visualisation/canvas/${task}_tasks_overlay.pn
 
 [ "${task}" == "falff" ] && rm -rf ${tmp} && exit 
 
-runMEMAconvert="${runMEMAconvert} -background black -splice 0x30+0+0 -append +repage ${tmp}/${task}_${task}_q-0.05.png"
-echo "+++ ${runMEMAconvert}"
-eval ${runMEMAconvert}
-composite -geometry +0+0 ${sdr}/10.visualisation/canvas/${task}_tasks_overlay.png ${tmp}/${task}_${task}_q-0.05.png ${picdir}/${task}_${task}_q-0.05.png
+# runMEMAconvert="${runMEMAconvert} -background black -splice 0x30+0+0 -append +repage ${tmp}/${task}_${task}_q-0.05.png"
+# echo "+++ ${runMEMAconvert}"
+# eval ${runMEMAconvert}
+# composite -geometry +0+0 ${sdr}/10.visualisation/canvas/${task}_tasks_overlay.png ${tmp}/${task}_${task}_q-0.05.png ${picdir}/${task}_${task}_q-0.05.png
 
 cd ${cwd}

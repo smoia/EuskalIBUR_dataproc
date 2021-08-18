@@ -3,18 +3,18 @@
 if_missing_do() {
 if [ $1 == 'mkdir' ]
 then
-       if [ ! -d $2 ]
-       then
-              mkdir "${@:2}"
-       fi
+	if [ ! -d $2 ]
+	then
+		mkdir "${@:2}"
+	fi
 elif [ ! -e $3 ]
 then
-       printf "%s is missing, " "$3"
-       case $1 in
-              copy ) echo "copying $2"; cp $2 $3 ;;
-              mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
-              * ) echo "and you shouldn't see this"; exit ;;
-       esac
+	printf "%s is missing, " "$3"
+	case $1 in
+		copy ) echo "copying $2"; cp $2 $3 ;;
+		mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
+		* ) echo "and you shouldn't see this"; exit ;;
+	esac
 fi
 }
 
@@ -42,7 +42,6 @@ run3dMEMA="${run3dMEMA} -jobs 4 -max_zeros 4 -HKtest"
 run3dMEMA="${run3dMEMA} -set ${brickout}"
 for sub in 001 002 003 004 007 008 009
 do
-       001 001_allses_acalc#0_Coef.nii.gz 001_allses_acalc#0_Tstat.nii.gz
 	run3dMEMA="${run3dMEMA}      ${sub} ${sub}_allses_${brickname}_Coef.nii.gz  ${sub}_allses_${brickname}_Tstat.nii.gz"
 done
 echo ""

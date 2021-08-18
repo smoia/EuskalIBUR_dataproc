@@ -3,18 +3,18 @@
 if_missing_do() {
 if [ $1 == 'mkdir' ]
 then
-       if [ ! -d $2 ]
-       then
-              mkdir "${@:2}"
-       fi
+	if [ ! -d $2 ]
+	then
+		mkdir "${@:2}"
+	fi
 elif [ ! -e $3 ]
 then
-       printf "%s is missing, " "$3"
-       case $1 in
-              copy ) echo "copying $2"; cp $2 $3 ;;
-              mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
-              * ) echo "and you shouldn't see this"; exit ;;
-       esac
+	printf "%s is missing, " "$3"
+	case $1 in
+		copy ) echo "copying $2"; cp $2 $3 ;;
+		mask ) echo "binarising $2"; fslmaths $2 -bin $3 ;;
+		* ) echo "and you shouldn't see this"; exit ;;
+	esac
 fi
 }
 

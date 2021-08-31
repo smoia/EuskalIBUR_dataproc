@@ -34,9 +34,9 @@ cd norm
 # Compute ICC
 for map in fALFF ALFF RSFA
 do
-	rm ../icc/ICC2_fALFF_run-${run}.nii.gz
+	rm ../icc/ICC2_${map}_run-${run}.nii.gz
 
-	run3dICC="3dICC -prefix ../icc/ICC2_fALFF_run-${run}.nii.gz -jobs 10"
+	run3dICC="3dICC -prefix ../icc/ICC2_${map}_run-${run}.nii.gz -jobs 10"
 	run3dICC="${run3dICC} -mask ../reg/MNI_T1_brain_mask.nii.gz"
 	run3dICC="${run3dICC} -model  '1+(1|session)+(1|Subj)'"
 	run3dICC="${run3dICC} -dataTable"
@@ -45,7 +45,7 @@ do
 	do
 		for ses in $( seq -f %02g 1 ${lastses} )
 		do
-			run3dICC="${run3dICC}      ${sub}  ${ses}  ${sub}_${ses}_fALFF_run-${run}.nii.gz"
+			run3dICC="${run3dICC}      ${sub}  ${ses}  ${sub}_${ses}_${map}_run-${run}.nii.gz"
 		done
 	done
 	echo ""

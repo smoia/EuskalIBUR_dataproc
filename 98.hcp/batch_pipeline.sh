@@ -54,17 +54,17 @@ fi
 # 	# joblist=${joblist::-1}
 # done
 
-# Run MEMA
-for brick in ../preproc/Dataset_QC/norm/001_allses_*_Coef.nii.gz
-do
-	brick=${brick#*allses_}
-	brick=${brick%_Coef*}
-	rm ${wdr}/../LogFiles/${brick}_mema_pipe
-	qsub -q short.q -N "mema_${brick}_EuskalIBUR" \
-	-o ${wdr}/../LogFiles/${brick}_mema_pipe \
-	-e ${wdr}/../LogFiles/${brick}_mema_pipe \
-	${wdr}/98.hcp/run_glm_mema.sh ${brick%_Coef*}
-done
+# # Run MEMA
+# for brick in ../preproc/Dataset_QC/norm/001_allses_*_Coef.nii.gz
+# do
+# 	brick=${brick#*allses_}
+# 	brick=${brick%_Coef*}
+# 	rm ${wdr}/../LogFiles/${brick}_mema_pipe
+# 	qsub -q short.q -N "mema_${brick}_EuskalIBUR" \
+# 	-o ${wdr}/../LogFiles/${brick}_mema_pipe \
+# 	-e ${wdr}/../LogFiles/${brick}_mema_pipe \
+# 	${wdr}/98.hcp/run_glm_mema.sh ${brick%_Coef*}
+# done
 
 # # Run falff
 # joblist=""
@@ -83,33 +83,33 @@ done
 
 # joblist=${joblist::-1}
 
-# Run falff normalisation
-joblist2=""
-for sub in 001 002 003 004 007 008 009
-do
-	for ses in $( seq -f %02g 1 10)
-	do
-		rm ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe
-		qsub -q short.q -N "norm_${sub}_${ses}_EuskalIBUR" \
-		-o ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
-		-e ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
-		${wdr}/98.hcp/run_falff_norm.sh ${sub} ${ses}
-		joblist2=${joblist2}norm_${sub}_${ses}_EuskalIBUR,
-		# -hold_jid "${joblist}" \
-	done
-done
+# # Run falff normalisation
+# joblist2=""
+# for sub in 001 002 003 004 007 008 009
+# do
+# 	for ses in $( seq -f %02g 1 10)
+# 	do
+# 		rm ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe
+# 		qsub -q short.q -N "norm_${sub}_${ses}_EuskalIBUR" \
+# 		-o ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
+# 		-e ${wdr}/../LogFiles/${sub}_${ses}_norm_pipe \
+# 		${wdr}/98.hcp/run_falff_norm.sh ${sub} ${ses}
+# 		joblist2=${joblist2}norm_${sub}_${ses}_EuskalIBUR,
+# 		# -hold_jid "${joblist}" \
+# 	done
+# done
 
-joblist2=${joblist2::-1}
+# joblist2=${joblist2::-1}
 
 # Run fALFF ICC
 for run in $( seq -f %02g 1 4)
 do
 	rm ${wdr}/../LogFiles/${run}_icc_pipe
-	qsub -q long.q -N "icc_${run}_EuskalIBUR" \
-	-hold_jid "${joblist2}" \
+	qsub -q short.q -N "icc_${run}_EuskalIBUR" \
 	-o ${wdr}/../LogFiles/${run}_icc_pipe \
 	-e ${wdr}/../LogFiles/${run}_icc_pipe \
 	${wdr}/98.hcp/run_falff_icc.sh ${run}
+	# -hold_jid "${joblist2}" \
 done
 
 # # Run LME for CVR, RSFC, and GLM

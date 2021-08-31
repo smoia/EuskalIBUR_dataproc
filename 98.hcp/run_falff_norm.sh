@@ -39,3 +39,5 @@ singularity exec -e --no-home \
 -B ${wdr}:/data -B ${sdr}:/scripts \
 -B /export/home/smoia/scratch:/tmp \
 euskalibur.sif 05.second_level_analysis/12.falff_normalise.sh ${sub} ${ses} /data /scripts /tmp
+
+date

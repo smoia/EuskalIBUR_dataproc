@@ -114,6 +114,6 @@ do
 	slice_coeffs ${brickname} ${bckimg} q ${pval} ${picdir}/${analysis}
 done
 
-rm -rf ${tmp}/${task}
+# rm -rf ${tmp}
 
 cd ${cwd}

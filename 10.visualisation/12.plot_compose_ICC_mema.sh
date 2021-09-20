@@ -61,6 +61,12 @@ case ${task} in
 	falff )
 		bricks=( fALFF_run-01 fALFF_run-02 fALFF_run-03 fALFF_run-04 )
 		;;
+	alff )
+		bricks=( ALFF_run-01 ALFF_run-02 ALFF_run-03 ALFF_run-04 )
+		;;
+	rsfa )
+		bricks=( RSFA_run-01 RSFA_run-02 RSFA_run-03 RSFA_run-04 )
+		;;
 	* ) echo "Nothing to be seen"; exit
 		;;
 esac

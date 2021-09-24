@@ -6,26 +6,10 @@ import peakdet as pk
 
 TASKS = ['motor', 'simon', 'pinel', 'rest_run-01', 'rest_run-02', 'rest_run-03', 'rest_run-04', 'breathhold']
 
-
-# # # # # # # # # # #
-#  # # # # # # # # #
-# # # # # # # # # #
-
-# PPG & Belt
-
-# Get to the right folder
-os.chdir('/bcbl/home/public/PJMASK_2/preproc')  # This should work but I can't check since I'm on Unix
-
-# These are the indexes for subject, session and task
-sub = 1  # up to 10
-ses = 1  # up to 10 or 11 (sub-004 & sub-010)
-task = 0  # 0: 'motor', 1: 'simon', 2: 'pinel', 3: 'rest_run-01',
-          # 4: 'rest_run-02', 5: 'rest_run-03', 6: 'rest_run-04'
-          
-def shortcut(): #defining a function, this way I don´t have to copy and paste each time
+def shortcut(sub, ses, task, tasklist=TASKS): #defining a function, this way I don´t have to copy and paste each time
     # Copy from here...
-    print(f'subject: {sub:03g}; session:{ses:02g}; task:{TASKS[task]}')
-    filename = os.path.join(f'sub-{sub:03g}', f'ses-{ses:02g}', 'func_phys', f'sub-{sub:03g}_ses-{ses:02g}_task-{TASKS[task]}_physio')
+    print(f'subject: {sub:03g}; session:{ses:02g}; task:{tasklist[task]}')
+    filename = os.path.join(f'sub-{sub:03g}', f'ses-{ses:02g}', 'func_phys', f'sub-{sub:03g}_ses-{ses:02g}_task-{tasklist[task]}_physio')
 
     if ses >= 7:
         ch = 4  # 4 is PPG; 2 is Belt
@@ -47,9 +31,27 @@ def shortcut(): #defining a function, this way I don´t have to copy and paste e
 
     # If you see that not enough peaks get selected, you might tune the next function with thresh=x, dist=y
     phys = pk.operations.peakfind_physio(phys, thresh=0.02, dist=dist)
+    
+    return phys
 
     # ... to here
 
+# # # # # # # # # # #
+#  # # # # # # # # #
+# # # # # # # # # #
+
+# PPG & Belt
+
+# Get to the right folder
+os.chdir('/bcbl/home/public/PJMASK_2/preproc')  # This should work but I can't check since I'm on Unix
+
+# These are the indexes for subject, session and task
+sub = 1  # up to 10
+ses = 1  # up to 10 or 11 (sub-004 & sub-010)
+task = 0  # 0: 'motor', 1: 'simon', 2: 'pinel', 3: 'rest_run-01',
+          # 4: 'rest_run-02', 5: 'rest_run-03', 6: 'rest_run-04'
+          
+phys = shortcut(sub, ses, task)
 
 # Run the next one alone (manual editing)
 phys = pk.operations.edit_physio(phys)

@@ -32,7 +32,7 @@ def shortcut(sub, ses, task, tasklist=TASKS): #defining a function, this way I d
     # If you see that not enough peaks get selected, you might tune the next function with thresh=x, dist=y
     phys = pk.operations.peakfind_physio(phys, thresh=0.02, dist=dist)
     
-    return phys
+    return phys, filename, ch_name
 
     # ... to here
 
@@ -51,7 +51,7 @@ ses = 1  # up to 10 or 11 (sub-004 & sub-010)
 task = 0  # 0: 'motor', 1: 'simon', 2: 'pinel', 3: 'rest_run-01',
           # 4: 'rest_run-02', 5: 'rest_run-03', 6: 'rest_run-04'
           
-phys = shortcut(sub, ses, task)
+phys, filename, ch_name = shortcut(sub, ses, task)
 
 # Run the next one alone (manual editing)
 phys = pk.operations.edit_physio(phys)

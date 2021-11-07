@@ -53,11 +53,10 @@ declare -A zvals
 zvals=( [0.1]=1.64 [0.05]=1.96 [0.02]=2.33 [0.01]=2.58 [0.005]=2.81 [0.002]=3.09 [0.001]=3.29 )
 
 fmap=$1
-analysis=$2
-pval=${3:-0.01}
-wdr=${4:-/data}
-sdr=${5:-/scripts}
-tmp=${6:-.}
+pval=${2:-0.05}
+wdr=${3:-/data}
+sdr=${4:-/scripts}
+tmp=${5:-.}
 
 ### print input
 printline=$( basename -- $0 )
@@ -68,20 +67,19 @@ echo "${printline} " "$@"
 
 cwd=$(pwd)
 
-cd ${wdr}/CVR_questionnaire || exit
+cd ${wdr}/cvr_vitals || exit
 
-picdir=${wdr}/CVR_questionnaire/pics
+picdir=${wdr}/cvr_vitals/pics
 if_missing_do mkdir ${picdir}
-if_missing_do mkdir ${picdir}/${analysis}
 
-tmp=${tmp}/tmp.${fmap}_${analysis}_p-${pval}_06ptg
+tmp=${tmp}/tmp.${fmap}_p-${pval}_06ptg
 replace_and mkdir ${tmp}
 
 # Set the T1 in native space
 bckimg=${sdr}/90.template/MNI152_T1_1mm_brain_resamp_2.5mm
 
 # Check number of bricks and remove one cause 0-index
-rbuck=LMEr_${fmap}_masked_${analysis}.nii.gz
+rbuck=LMEr_${fmap}.nii.gz
 lastbrick=$( fslval ${rbuck} dim5 )
 let lastbrick--
 [ ! -e ${rbuck} ] && echo "Missing volume ${rbuck}" && return || echo "Exploding ${rbuck}"
@@ -90,7 +88,7 @@ do
 	# Break bricks
 	brickname=$( 3dinfo -label "${rbuck}[${brick}]" )
 	brickname=${brickname// /_}
-	3dbucket -prefix ${tmp}/${fmap}_${analysis}_${brickname}.nii.gz -abuc "${rbuck}[${brick}]" -overwrite
+	3dbucket -prefix ${tmp}/${fmap}_${brickname}.nii.gz -abuc "${rbuck}[${brick}]" -overwrite
 done
 
 # Find right tstat value
@@ -98,20 +96,20 @@ done
 thr=${zvals[${pval}]}
 echo "thr: ${thr}"
 
-for brick in ${tmp}/${fmap}_${analysis}_*_Z.nii.gz
+for brick in ${tmp}/${fmap}_*_Z.nii.gz
 do
 	echo ${brick##*/}
 	brickname=${brick%_Z.nii.gz}
 	# mask the functional brick with the right tstat
 	fslmaths ${brickname}_Z -abs -thr ${thr} -bin -mul ${brick} ${brickname}_fmkd
 	# fsleyes all the way
-	slice_coeffs ${brickname} ${bckimg} p ${pval} ${picdir}/${analysis}
+	slice_coeffs ${brickname} ${bckimg} p ${pval} ${picdir}
 
 	# Repeat with FDR
 	echo "Computing FDR with z=${thr}"
 	3dFDR -input ${brickname}_Z.nii.gz -prefix ${brickname}_FDR.nii.gz
 	fslmaths ${brickname}_FDR -thr ${thr} -bin -mul ${brick} ${brickname}_fmkd
-	slice_coeffs ${brickname} ${bckimg} q ${pval} ${picdir}/${analysis}
+	slice_coeffs ${brickname} ${bckimg} q ${pval} ${picdir}
 done
 
 # rm -rf ${tmp}
